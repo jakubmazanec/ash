@@ -1,0 +1,1 @@
+'use strict';var patchTypes ={	PATCH_NONE: 'PatchNone',	PATCH_VNODE: 'PatchVNode',	PATCH_TEXT: 'PatchText',	PATCH_PROPERTIES: 'PatchProperties',	PATCH_ORDER: 'PatchOrder',	PATCH_INSERT: 'PatchInsert',	PATCH_REMOVE: 'PatchRemove'};module.exports = patchTypes;

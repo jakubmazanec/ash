@@ -1,0 +1,36 @@
+@import 'before';
+@import '../function/b';
+
+// Sets up top and bottom border, as a paragraph rules, in rem, using pseudoelements
+@mixin rule-above($border, $padding-left: 1, $padding-right: false)
+{
+	position: relative;
+
+	@if not $border or $border == none or $border == 'none'
+	{
+		&:before
+		{
+			content: none;
+		}
+	} @else if not $padding-right // centered rule
+	{
+		@include before(top 0 left 50%)
+		{
+			width: b($padding-left);
+			height: 0;
+			margin-left: b($padding-left / -2);
+			border-bottom: $border;
+
+			@content;
+		}
+	} @else // normal rule 
+	{
+		@include before(top 0 left $padding-left right $padding-right)
+		{
+			height: 0;
+			border-bottom: $border;
+
+			@content;
+		}
+	}
+}

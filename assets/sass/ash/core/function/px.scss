@@ -1,0 +1,7 @@
+@import 'strip-units';
+
+// Converts value to px
+@function px($value: 1)
+{
+	@return (strip-units($value) * 1px);
+}

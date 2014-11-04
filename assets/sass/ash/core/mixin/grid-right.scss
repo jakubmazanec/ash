@@ -1,0 +1,8 @@
+@import '../function/_';
+@import '../function/percent';
+
+// Sets right
+@mixin grid-right($right: _(grid columns), $parent-columns: _(grid columns))
+{
+	right: percent($right / $parent-columns);
+}

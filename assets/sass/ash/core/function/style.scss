@@ -1,0 +1,13 @@
+@import '_';
+
+// Return value from the list of styles
+@function style($values...)
+{
+	@if type-of($values) != arglist
+	{
+	  @return _('styles.' + $values);
+	} @else
+	{
+		@return _(join(styles, $values, space));
+	}	
+}

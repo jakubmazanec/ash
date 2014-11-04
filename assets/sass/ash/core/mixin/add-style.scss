@@ -1,0 +1,6 @@
+@import '../function/_';
+
+@mixin add-style($value)
+{
+	$__objects: _('styles', $value, true) !global;
+}	

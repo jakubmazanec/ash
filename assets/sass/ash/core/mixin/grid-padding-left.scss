@@ -1,0 +1,8 @@
+@import '../function/_';
+@import '../function/percent';
+
+// Sets  left padding
+@mixin grid-padding-left($padding-left: _(grid columns), $parent-columns: _(grid columns))
+{
+	padding-left: percent($padding-left / $parent-columns);
+}

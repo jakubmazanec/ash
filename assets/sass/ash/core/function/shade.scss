@@ -1,0 +1,14 @@
+@import 'percent';
+@import 'strip-units';
+
+// Creates shade of color; if weight is 0, color is unchanged
+@function shade($color, $weight: 50%)
+{
+	@if unit($weight) == '%'
+	{ 
+		@return mix(#000, $color, $weight);
+	} @else
+	{
+		@return mix(#000, $color, percent(strip-units($weight)));
+	}
+}

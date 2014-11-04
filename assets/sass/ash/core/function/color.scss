@@ -1,0 +1,12 @@
+@import '_';
+
+@function color($values...)
+{
+  @if type-of($values) != arglist
+	{ 
+	  @return _('colors.' + $values);
+	} @else
+	{ 
+		@return _(flatten-list(join(colors, $values, space)));
+	}
+}

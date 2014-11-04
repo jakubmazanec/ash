@@ -1,0 +1,240 @@
+@function flatten-list($list) {
+  $result: ();
+
+  @if length($list) == 1 {
+    @return $list;
+  }
+
+  @each $item in $list {
+    @if length($item) > 1 {
+      $flatten: flatten-list($item);
+      @each $i in $flatten {
+        $result: append($result, $i, list-separator($list));
+      }
+    }
+
+    @else {
+      $result: append($result, $item, list-separator($list));
+    }
+  }
+
+  @return $result;
+}
+
+@function __length($number, $unit)
+{
+	$strings: 'px' 'cm' 'mm' '%' 'ch' 'pica' 'in' 'em' 'rem' 'pt' 'pc' 'ex' 'vw' 'vh' 'vmin' 'vmax';
+	$units: 1px 1cm 1mm 1% 1ch 1pica 1in 1em 1rem 1pt 1pc 1ex 1vw 1vh 1vmin 1vmax;
+	$index: index($strings, $unit);
+	
+	@if not $index
+	{
+		@warn "Unknown unit `#{$unit}`.";
+		@return false;
+	}
+	
+	@return $number * nth($units, $index);
+}
+
+@function number($string)
+{
+	// Matrices
+	$strings: '0' '1' '2' '3' '4' '5' '6' '7' '8' '9';
+	$numbers: 0 1 2 3 4 5 6 7 8 9;
+	
+	// Result
+	$result: 0;
+	$divider: 0;
+	$minus: false;
+
+	// Looping through all characters
+	@for $i from 1 through str-length($string)
+	{
+		$character: str-slice($string, $i, $i);
+		$index: index($strings, $character);
+	
+		@if $character == '-'
+		{
+			$minus: true;
+		}	@else if $character == '.'
+		{
+			$divider: 1;
+		} @else
+		{
+			@if not $index
+			{
+				$result: if($minus, $result * -1, $result);
+				@return __length($result, str-slice($string, $i));
+			}
+
+			$number: nth($numbers, $index);
+			
+			@if $divider == 0
+			{
+				$result: $result * 10;
+			}
+			
+			@else
+			{
+				// Move the decimal dot to the left
+				$divider: $divider * 10;
+				$number: $number / $divider;
+			}
+			
+			$result: $result + $number;
+		}
+	}
+	
+	@return if($minus, $result * -1, $result);
+}
+
+$__objects: ();
+
+@function parse-levels($string)
+{
+	@if type-of($string) == number
+	{
+		$string: '' + $string;
+	} @else
+	{
+		$string: unquote($string);
+	}
+	
+	$__levels: ();
+	$__last: 1;
+	@for $i from 1 through str-length($string)
+	{
+		$__char: str-slice($string, $i, $i);
+		
+		@if $__char == '.'/*  or $__char == '/' */
+		{
+			$__levels: append($__levels, unquote(str-slice($string, $__last, $i - 1)));
+			$__last: $i + 1;
+		}
+	}
+
+	$__levels: append($__levels, unquote(str-slice($string, $__last, str-length($string))));
+	
+	@return $__levels;
+}
+
+
+@function map-merge-recursive($map1, $map2)
+{
+	$ret: $map1;
+
+	@each $key, $value in $map2
+	{
+		@if map-get($ret, $key) != null and type-of($value) == map and type-of(map-get($ret, $key)) == map
+		{
+			$value: map-merge-recursive(map-get($ret, $key), $value);
+		}
+
+		$ret: map-merge($ret, ($key: $value));
+	}
+
+	@return $ret;
+}
+
+@function _($keys, $value: null, $deep: false)
+{
+	$__keysAsString: false;
+	
+	@if type-of($keys) != 'list'
+	{
+		$__keysAsString: true;
+		$keys: parse-levels($keys);
+	} @else
+	{
+		$keys: flatten-list($keys);
+	}
+	
+	@if $value == null
+	{
+		// read object and return value		
+		$output: $__objects;
+		
+		@for $i from 1 through length($keys)
+		{
+			$__key: nth($keys, $i);
+			@if $__keysAsString
+			{
+				$__keyStart: str-slice($__key, 1, 1);
+				$__keyAsNumber: false;
+			
+				@if str-index('01234567890', $__keyStart)
+				{
+					$__keyAsNumber: number($__key);
+				}
+			
+				@if $__keyAsNumber and unit($__keyAsNumber) == ""
+				{
+					$__key: number($__key);
+				}
+			}
+
+			@if ($output == null)
+			{
+				@error $output 'cannot be null. Keys:' $keys;
+			}
+		 
+			$output: map-get($output, $__key);
+		}
+		
+		@return $output;
+	} @else
+	{
+		// add value to object		
+		@if length($keys) <= 1
+		{
+			// object with only one level
+			$new:
+			(
+				nth($keys, 1): $value
+			);
+			
+			@if $deep
+			{
+				@return map-merge-recursive($__objects, $new); 
+			} @else
+			{
+				@return map-merge($__objects, $new);  
+			}
+		} @else
+		{
+			// object with more than one level 
+			$new: ();
+			$temp:
+			(
+				nth($levels, length($keys)): $value
+			);
+			
+			@for $i from length($keys) - 1 through 1
+			{
+				$new: map-merge($new,
+				(
+					nth($levels, $i): $temp
+				));
+				$temp: $new;
+			}
+			
+			$new:
+			(
+				nth($keys, 1): map-get($new, nth($keys, 1))
+			);
+			
+			@if $deep
+			{
+				@return map-merge-recursive($__objects, $new); 
+			} @else
+			{
+				@return map-merge($__objects, $new);  
+			}
+		}
+	}
+}
+
+@mixin _($keys, $value, $deep: false)
+{
+	$__objects: _($keys, $value, $deep) !global;
+}

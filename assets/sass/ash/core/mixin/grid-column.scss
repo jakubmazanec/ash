@@ -1,0 +1,9 @@
+@import '../function/_';
+@import 'grid';
+
+// Sets grid column
+@mixin grid-column($columns: _(grid columns), $gutter-multiple: 0, $parent-columns: _(grid columns), $margin-left: 0, $margin-right: 0)
+{
+	@include grid(left);
+	@include grid($columns, $gutter-multiple, $parent-columns, $margin-left, $margin-right);
+}

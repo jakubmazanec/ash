@@ -1,0 +1,30 @@
+@import '../function/b';
+
+// Sets size & borders to create an arrow
+@mixin arrow($size, $color: #000, $direction: 'up')
+{
+	width: 0;
+	height: 0;
+	
+	@if $direction == up or $direction == 'up'
+	{
+		border-bottom: b($size) solid $color;
+		border-right: b($size) solid transparent;
+		border-left: b($size) solid transparent;
+	}	@else if $direction == down or $direction == 'down'
+	{
+		border-right: b($size) solid transparent;
+		border-left: b($size) solid transparent;
+		border-top: b($size) solid $color;
+	}	@else if $direction == right or $direction == 'right'
+	{
+		border-top: b($size) solid transparent;
+		border-bottom: b($size) solid transparent;
+		border-left: b($size) solid $color;
+	}	@else if $direction == left or $direction == 'left'
+	{
+		border-top: b($size) solid transparent;
+		border-bottom: b($size) solid transparent;
+		border-right: b($size) solid $color;
+	} // if
+} // arrow

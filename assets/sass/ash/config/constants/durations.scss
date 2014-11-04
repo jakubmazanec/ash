@@ -1,0 +1,42 @@
+/** durations */
+@include _(durations, 
+(
+	// brief duration shortcuts
+	fastest: 0.15s, // for "visual polish" (e.g. link color change)
+	faster: 0.2s, // for general base ui movements (e.g. opacity change, menu sliding out, etc-)
+	fast: 0.4s, // longer ui movements, when interaction isn't always necessary
+	normal: 0.6s,
+	slow: 0.8s,
+	slower: 1.2s,
+	slowest: 1.6s,
+
+	// longer duration shortcuts
+	shortest: 2s,
+	shorter: 3s,
+	short: 4s,
+	long: 6s,
+	longer: 8s,
+	longest: 10s,
+
+	// all values
+	1: 0.15s,
+	2: 0.2s,
+	3: 0.4s,
+	4: 0.6s,
+	5: 0.8s,
+	6: 1.2s,
+	7: 1.6s,
+	8: 2s,
+	9: 2.5s,
+	10: 3s,
+	11: 3.5s,
+	12: 4s,
+	13: 6s,
+	14: 8s,
+	15: 10s,
+	16: 12s,
+	17: 14s,
+	18: 16s,
+	19: 18s,
+	20: 20s
+));

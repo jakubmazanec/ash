@@ -1,0 +1,19 @@
+@import '../function/px';
+
+// Sets media query for screen width
+@mixin screen-width($lower-bound: 1, $upper-bound: false)
+{
+	@if not $upper-bound
+	{
+		@media only screen and (min-width: 0) and (max-width: px($lower-bound))
+		{
+			@content;
+		}
+	} @else
+	{
+		@media only screen and (min-width: px($lower-bound)) and (max-width: px($upper-bound))
+		{
+			@content;
+		}
+	}
+}

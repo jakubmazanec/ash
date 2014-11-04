@@ -1,0 +1,17 @@
+// Hides text
+@mixin hide-text($important: false)
+{
+	@if $important
+	{
+		color: transparent !important;
+		font-size: 0 !important;
+		line-height: 0 !important;
+		text-shadow: none !important;
+	} @else
+	{
+		color: transparent;
+		font-size: 0;
+		line-height: 0;
+		text-shadow: none;
+	}
+}

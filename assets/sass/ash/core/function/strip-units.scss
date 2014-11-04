@@ -1,0 +1,6 @@
+// Strips the units from a value
+// Based on: bourbon.io
+@function strip-units($value)
+{
+	@return ($value / ($value * 0 + 1));
+}

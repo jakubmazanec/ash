@@ -1,0 +1,15 @@
+@import 'position';
+
+@mixin before($positions: false, $position: absolute, $content: '')
+{
+	&:before
+	{
+		content: $content;
+		@if $positions
+		{
+			@include position($position, $positions);
+		}
+		
+		@content;
+	}
+}

@@ -1,0 +1,880 @@
+@charset "UTF-8";
+/* @function g($columns: 1, $parent-columns: $ash-grid__columns)
+{
+	@return percent($columns / $parent-columns)
+} */
+/** colors */
+/** color names */
+/** durations */
+/** typographic scale */
+@font-face {
+  font-family: "Font Awesome";
+  font-weight: 400;
+  font-style: normal;
+  src: url("../fonts/fontawesome.svg#fontawesomeregular") format("svg"), url("../fonts/fontawesome.woff") format("woff"); }
+@font-face {
+  font-family: "Brandon Text";
+  font-weight: 700;
+  font-style: normal;
+  src: url("../fonts/brandon_text_bold.svg#brandon_textbold") format("svg"), url("../fonts/brandon_text_bold.woff") format("woff"); }
+@font-face {
+  font-family: "Brandon Text";
+  font-weight: 700;
+  font-style: italic;
+  src: url("../fonts/brandon_text_bold_italic.svg#brandon_textbold_italic") format("svg"), url("../fonts/brandon_text_bold_italic.woff") format("woff"); }
+@font-face {
+  font-family: "Brandon Text";
+  font-weight: 300;
+  font-style: normal;
+  src: url("../fonts/brandon_text_light.svg#brandon_textlight") format("svg"), url("../fonts/brandon_text_light.woff") format("woff"); }
+@font-face {
+  font-family: "Brandon Text";
+  font-weight: 300;
+  font-style: italic;
+  src: url("../fonts/brandon_text_light_italic.svg#brandon_textlight_italic") format("svg"), url("../fonts/brandon_text_light_italic.woff") format("woff"); }
+@font-face {
+  font-family: "Brandon Text";
+  font-weight: 600;
+  font-style: normal;
+  src: url("../fonts/brandon_text_medium.svg#brandon_textmedium") format("svg"), url("../fonts/brandon_text_medium.woff") format("woff"); }
+@font-face {
+  font-family: "Brandon Text";
+  font-weight: 600;
+  font-style: italic;
+  src: url("../fonts/brandon_text_medium_italic.svg#brandon_textmedium_italic") format("svg"), url("../fonts/brandon_text_medium_italic.woff") format("woff"); }
+@font-face {
+  font-family: "Brandon Text";
+  font-weight: 400;
+  font-style: normal;
+  src: url("../fonts/brandon_text_regular.svg#brandon_text_regularregular") format("svg"), url("../fonts/brandon_text_regular.woff") format("woff"); }
+@font-face {
+  font-family: "Brandon Text";
+  font-weight: 400;
+  font-style: italic;
+  src: url("../fonts/brandon_text_regular_italic.svg#brandon_textregular_italic") format("svg"), url("../fonts/brandon_text_regular_italic.woff") format("woff"); }
+@font-face {
+  font-family: "Brandon Text";
+  font-weight: 200;
+  font-style: normal;
+  src: url("../fonts/brandon_text_thin.svg#brandon_textthin") format("svg"), url("../fonts/brandon_text_thin.woff") format("woff"); }
+@font-face {
+  font-family: "Brandon Text";
+  font-weight: 200;
+  font-style: italic;
+  src: url("../fonts/brandon_text_thin_italic.svg#brandon_textthin_italic") format("svg"), url("../fonts/brandon_text_thin_italic.woff") format("woff"); }
+@font-face {
+  font-family: "Brandon Grotesque";
+  font-weight: 700;
+  font-style: normal;
+  src: url("../fonts/brandon_grotesque_bold.svg#brandon_grotesquebold") format("svg"), url("../fonts/brandon_grotesque_bold.woff") format("woff"); }
+@font-face {
+  font-family: "Brandon Grotesque";
+  font-weight: 700;
+  font-style: italic;
+  src: url("../fonts/brandon_grotesque_bold_italic.svg#brandon_grotesquebold_italic") format("svg"), url("../fonts/brandon_grotesque_bold_italic.woff") format("woff"); }
+@font-face {
+  font-family: "Brandon Grotesque";
+  font-weight: 300;
+  font-style: normal;
+  src: url("../fonts/brandon_grotesque_light.svg#brandon_grotesquelight") format("svg"), url("../fonts/brandon_grotesque_light.woff") format("woff"); }
+@font-face {
+  font-family: "Brandon Grotesque";
+  font-weight: 300;
+  font-style: italic;
+  src: url("../fonts/brandon_grotesque_light_italic.svg#brandon_grotesquelight_italic") format("svg"), url("../fonts/brandon_grotesque_light_italic.woff") format("woff"); }
+@font-face {
+  font-family: "Brandon Grotesque";
+  font-weight: 600;
+  font-style: normal;
+  src: url("../fonts/brandon_grotesque_medium.svg#brandon_grotesquemedium") format("svg"), url("../fonts/brandon_grotesque_medium.woff") format("woff"); }
+@font-face {
+  font-family: "Brandon Grotesque";
+  font-weight: 600;
+  font-style: italic;
+  src: url("../fonts/brandon_grotesque_medium_italic.svg#brandon_grotesqueMdIt") format("svg"), url("../fonts/brandon_grotesque_medium_italic.woff") format("woff"); }
+@font-face {
+  font-family: "Brandon Grotesque";
+  font-weight: 400;
+  font-style: normal;
+  src: url("../fonts/brandon_grotesque_regular.svg#brandon_grotesque_regularRg") format("svg"), url("../fonts/brandon_grotesque_regular.woff") format("woff"); }
+@font-face {
+  font-family: "Brandon Grotesque";
+  font-weight: 400;
+  font-style: italic;
+  src: url("../fonts/brandon_grotesque_regular_italic.svg#brandon_grotesqueRgIt") format("svg"), url("../fonts/brandon_grotesque_regular_italic.woff") format("woff"); }
+@font-face {
+  font-family: "Brandon Grotesque";
+  font-weight: 200;
+  font-style: normal;
+  src: url("../fonts/brandon_grotesque_thin.svg#brandon_grotesquethin") format("svg"), url("../fonts/brandon_grotesque_thin.woff") format("woff"); }
+@font-face {
+  font-family: "Brandon Grotesque";
+  font-weight: 200;
+  font-style: italic;
+  src: url("../fonts/brandon_grotesque_thin_italic.svg#brandon_grotesquethin_italic") format("svg"), url("../fonts/brandon_grotesque_thin_italic.woff") format("woff"); }
+/**
+ * grid
+ */
+/*! normalize.css v3.0.1 | MIT License | git.io/normalize */
+/**
+ * 1. Set default font family to sans-serif.
+ * 2. Prevent iOS text size adjust after orientation change, without disabling
+ *    user zoom.
+ */
+html {
+  font-family: sans-serif;
+  /* 1 */
+  -ms-text-size-adjust: 100%;
+  /* 2 */
+  -webkit-text-size-adjust: 100%;
+  /* 2 */ }
+
+/**
+ * Remove default margin.
+ */
+body {
+  margin: 0; }
+
+/* HTML5 display definitions
+   ========================================================================== */
+/**
+ * Correct `block` display not defined for any HTML5 element in IE 8/9.
+ * Correct `block` display not defined for `details` or `summary` in IE 10/11 and Firefox.
+ * Correct `block` display not defined for `main` in IE 11.
+ */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section,
+summary {
+  display: block; }
+
+/**
+ * 1. Correct `inline-block` display not defined in IE 8/9.
+ * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.
+ */
+audio,
+canvas,
+progress,
+video {
+  display: inline-block;
+  /* 1 */
+  vertical-align: baseline;
+  /* 2 */ }
+
+/**
+ * Prevent modern browsers from displaying `audio` without controls.
+ * Remove excess height in iOS 5 devices.
+ */
+audio:not([controls]) {
+  display: none;
+  height: 0; }
+
+/**
+ * Address `[hidden]` styling not present in IE 8/9/10.
+ * Hide the `template` element in IE 8/9/11, Safari, and Firefox < 22.
+ */
+[hidden],
+template {
+  display: none; }
+
+/* Links
+   ========================================================================== */
+/**
+ * Remove the gray background color from active links in IE 10.
+ */
+a {
+  background: transparent; }
+
+/**
+ * Improve readability when focused and also mouse hovered in all browsers.
+ */
+a:active,
+a:hover {
+  outline: 0; }
+
+/* Text-level semantics
+   ========================================================================== */
+/**
+ * Address styling not present in IE 8/9/10/11, Safari, and Chrome.
+ */
+abbr[title] {
+  border-bottom: 1px dotted; }
+
+/**
+ * Address style set to `bolder` in Firefox 4+, Safari, and Chrome.
+ */
+b,
+strong {
+  font-weight: bold; }
+
+/**
+ * Address styling not present in Safari and Chrome.
+ */
+dfn {
+  font-style: italic; }
+
+/**
+ * Address variable `h1` font-size and margin within `section` and `article`
+ * contexts in Firefox 4+, Safari, and Chrome.
+ */
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0; }
+
+/**
+ * Address styling not present in IE 8/9.
+ */
+mark {
+  background: #ff0;
+  color: #000; }
+
+/**
+ * Address inconsistent and variable font size in all browsers.
+ */
+small {
+  font-size: 80%; }
+
+/**
+ * Prevent `sub` and `sup` affecting `line-height` in all browsers.
+ */
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline; }
+
+sup {
+  top: -0.5em; }
+
+sub {
+  bottom: -0.25em; }
+
+/* Embedded content
+   ========================================================================== */
+/**
+ * Remove border when inside `a` element in IE 8/9/10.
+ */
+img {
+  border: 0; }
+
+/**
+ * Correct overflow not hidden in IE 9/10/11.
+ */
+svg:not(:root) {
+  overflow: hidden; }
+
+/* Grouping content
+   ========================================================================== */
+/**
+ * Address margin not present in IE 8/9 and Safari.
+ */
+figure {
+  margin: 1em 40px; }
+
+/**
+ * Address differences between Firefox and other browsers.
+ */
+hr {
+  box-sizing: content-box;
+  height: 0; }
+
+/**
+ * Contain overflow in all browsers.
+ */
+pre {
+  overflow: auto; }
+
+/**
+ * Address odd `em`-unit font size rendering in all browsers.
+ */
+code,
+kbd,
+pre,
+samp {
+  font-family: monospace, monospace;
+  font-size: 1em; }
+
+/* Forms
+   ========================================================================== */
+/**
+ * Known limitation: by default, Chrome and Safari on OS X allow very limited
+ * styling of `select`, unless a `border` property is set.
+ */
+/**
+ * 1. Correct color not being inherited.
+ *    Known issue: affects color of disabled elements.
+ * 2. Correct font properties not being inherited.
+ * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.
+ */
+button,
+input,
+optgroup,
+select,
+textarea {
+  color: inherit;
+  /* 1 */
+  font: inherit;
+  /* 2 */
+  margin: 0;
+  /* 3 */ }
+
+/**
+ * Address `overflow` set to `hidden` in IE 8/9/10/11.
+ */
+button {
+  overflow: visible; }
+
+/**
+ * Address inconsistent `text-transform` inheritance for `button` and `select`.
+ * All other form control elements do not inherit `text-transform` values.
+ * Correct `button` style inheritance in Firefox, IE 8/9/10/11, and Opera.
+ * Correct `select` style inheritance in Firefox.
+ */
+button,
+select {
+  text-transform: none; }
+
+/**
+ * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+ *    and `video` controls.
+ * 2. Correct inability to style clickable `input` types in iOS.
+ * 3. Improve usability and consistency of cursor style between image-type
+ *    `input` and others.
+ */
+button,
+html input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  -webkit-appearance: button;
+  /* 2 */
+  cursor: pointer;
+  /* 3 */ }
+
+/**
+ * Re-set default cursor for disabled elements.
+ */
+button[disabled],
+html input[disabled] {
+  cursor: default; }
+
+/**
+ * Remove inner padding and border in Firefox 4+.
+ */
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0; }
+
+/**
+ * Address Firefox 4+ setting `line-height` on `input` using `!important` in
+ * the UA stylesheet.
+ */
+input {
+  line-height: normal; }
+
+/**
+ * It's recommended that you don't attempt to style these elements.
+ * Firefox's implementation doesn't respect box-sizing, padding, or width.
+ *
+ * 1. Address box sizing set to `content-box` in IE 8/9/10.
+ * 2. Remove excess padding in IE 8/9/10.
+ */
+input[type="checkbox"],
+input[type="radio"] {
+  box-sizing: border-box;
+  /* 1 */
+  padding: 0;
+  /* 2 */ }
+
+/**
+ * Fix the cursor style for Chrome's increment/decrement buttons. For certain
+ * `font-size` values of the `input`, it causes the cursor style of the
+ * decrement button to change from `default` to `text`.
+ */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  height: auto; }
+
+/**
+ * 1. Address `appearance` set to `searchfield` in Safari and Chrome.
+ * 2. Address `box-sizing` set to `border-box` in Safari and Chrome
+ *    (include `-moz` to future-proof).
+ */
+input[type="search"] {
+  -webkit-appearance: textfield;
+  /* 1 */
+  /* 2 */
+  box-sizing: content-box; }
+
+/**
+ * Remove inner padding and search cancel button in Safari and Chrome on OS X.
+ * Safari (but not Chrome) clips the cancel button when the search input has
+ * padding (and `textfield` appearance).
+ */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none; }
+
+/**
+ * Define consistent border, margin, and padding.
+ */
+fieldset {
+  border: 1px solid #c0c0c0;
+  margin: 0 2px;
+  padding: 0.35em 0.625em 0.75em; }
+
+/**
+ * 1. Correct `color` not being inherited in IE 8/9/10/11.
+ * 2. Remove padding so people aren't caught out if they zero out fieldsets.
+ */
+legend {
+  border: 0;
+  /* 1 */
+  padding: 0;
+  /* 2 */ }
+
+/**
+ * Remove default vertical scrollbar in IE 8/9/10/11.
+ */
+textarea {
+  overflow: auto; }
+
+/**
+ * Don't inherit the `font-weight` (applied by a rule above).
+ * NOTE: the default cannot safely be changed in Chrome and Safari on OS X.
+ */
+optgroup {
+  font-weight: bold; }
+
+/* Tables
+   ========================================================================== */
+/**
+ * Remove most spacing between table cells.
+ */
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+td,
+th {
+  padding: 0; }
+
+/**
+ * Page
+ */
+html {
+  color: #2d0c3d;
+  background-color: #ffffff;
+  font-size: 20px;
+  font-family: "Brandon Text", Futura, "Gill Sans", Calibri, "Dejavu Sans", "Lucida Sans", sans-serif; }
+
+body {
+  box-sizing: border-box;
+  position: relative;
+  z-index: 0;
+  width: 100%;
+  min-height: 100%;
+  padding: 0 1.4rem;
+  font-size: 1rem;
+  line-height: 1.4; }
+
+body:before {
+  display: none !important;
+  content: '{"colors": {"1": {"base": "#3d1152", "shade": {"1": "#2d0c3d", "2": "#1e0829", "3": "#0f0414", "4": "black"}, "tint": {"1": "#634074", "2": "#8a7097", "3": "#b19fb9", "4": "#d8cfdc"}}, "2": {"base": "#d8d8d8", "shade": {"1": "#c2c2c2", "2": "#adadad", "3": "#979797", "4": "#828282"}, "tint": {"1": "#e0e0e0", "2": "#e8e8e8", "3": "#efefef", "4": "#ffffff"}}, "3": {"base": "#009abf", "shade": {"1": "#00738f", "2": "#004d5f", "3": "#00262f", "4": "black"}, "tint": {"1": "#19a4c5", "2": "#3fb3cf", "3": "#7fccdf", "4": "#bfe5ef"}}, "4": {"base": "#f8bf00", "shade": {"1": "#ba8f00", "2": "#7c5f00", "3": "#3e2f00", "4": "black"}, "tint": {"1": "#f8c519", "2": "#f9cf3f", "3": "#fbdf7f", "4": "#fdefbf"}}, "5": {"base": "#00c4b4", "shade": {"1": "#009387", "2": "#00625a", "3": "#00312d", "4": "black"}, "tint": {"1": "#19c9bb", "2": "#3fd2c6", "3": "#7fe1d9", "4": "#bff0ec"}}, "6": {"base": "#435cc8", "shade": {"1": "#324596", "2": "#212e64", "3": "#101732", "4": "black"}, "tint": {"1": "#556ccd", "2": "#7284d5", "3": "#a1ade3", "4": "#d0d6f1"}}, "7": {"base": "#91d5ad", "shade": {"1": "#6c9f81", "2": "#486a56", "3": "#24352b", "4": "black"}, "tint": {"1": "#9cd9b5", "2": "#acdfc1", "3": "#c8ead6", "4": "#e3f4ea"}}, "8": {"base": "#ffbf3d", "shade": {"1": "#bf8f2d", "2": "#7f5f1e", "3": "#3f2f0f", "4": "black"}, "tint": {"1": "#ffc550", "2": "#ffcf6d", "3": "#ffdf9e", "4": "#ffefce"}}, "9": {"base": "#633511", "shade": {"1": "#4a270c", "2": "#311a08", "3": "#180d04", "4": "black"}, "tint": {"1": "#724928", "2": "#8a674c", "3": "#b19a88", "4": "#d8ccc3"}}, "10": {"base": "#e7d780", "shade": {"1": "#ada160", "2": "#736b40", "3": "#393520", "4": "black"}, "tint": {"1": "#e9db8c", "2": "#ede19f", "3": "#f3ebbf", "4": "#f9f5df"}}, "11": {"base": "#cb003d", "shade": {"1": "#98002d", "2": "#65001e", "3": "#32000f", "4": "black"}, "tint": {"1": "#d01950", "2": "#d83f6d", "3": "#e57f9e", "4": "#f2bfce"}}, "12": {"base": "#876479", "shade": {"1": "#654b5a", "2": "#43323c", "3": "#21191e", "4": "black"}, "tint": {"1": "#937386", "2": "#a58a9a", "3": "#c3b1bc", "4": "#e1d8dd"}}, "13": {"base": "#ff8fa0", "shade": {"1": "#bf6b78", "2": "#7f4750", "3": "#3f2328", "4": "black"}, "tint": {"1": "#ff9aa9", "2": "#ffabb7", "3": "#ffc7cf", "4": "#ffe3e7"}}, "14": {"base": "#e1261c", "shade": {"1": "#a81c15", "2": "#70130e", "3": "#380907", "4": "black"}, "tint": {"1": "#e43b32", "2": "#e85c54", "3": "#f0928d", "4": "#f7c8c6"}}, "15": {"base": "#ff5c36", "shade": {"1": "#bf4528", "2": "#7f2e1b", "3": "#3f170d", "4": "black"}, "tint": {"1": "#ff6c4a", "2": "#ff8468", "3": "#ffad9a", "4": "#ffd6cc"}}, "16": {"base": "#ea6953", "shade": {"1": "#af4e3e", "2": "#753429", "3": "#3a1a14", "4": "black"}, "tint": {"1": "#ec7864", "2": "#ef8e7e", "3": "#f4b4a9", "4": "#f9d9d4"}}, "17": {"base": "#e9b88b", "shade": {"1": "#ae8a68", "2": "#745c45", "3": "#3a2e22", "4": "black"}, "tint": {"1": "#ebbf96", "2": "#eec9a8", "3": "#f4dbc5", "4": "#f9ede2"}}, "yl-gn": {"sequence-3": {"1": "#f7fcb9", "2": "#addd8e", "3": "#31a354"}, "sequence-4": {"1": "#ffffcc", "2": "#c2e699", "3": "#78c679", "4": "#238443"}, "sequence-5": {"1": "#ffffcc", "2": "#c2e699", "3": "#78c679", "4": "#31a354", "5": "#006837"}, "sequence-6": {"1": "#ffffcc", "2": "#d9f0a3", "3": "#addd8e", "4": "#78c679", "5": "#31a354", "6": "#006837"}, "sequence-7": {"1": "#ffffcc", "2": "#d9f0a3", "3": "#addd8e", "4": "#78c679", "5": "#41ab5d", "6": "#238443", "7": "#005a32"}, "sequence-8": {"1": "#ffffe5", "2": "#f7fcb9", "3": "#d9f0a3", "4": "#addd8e", "5": "#78c679", "6": "#41ab5d", "7": "#238443", "8": "#005a32"}, "sequence-9": {"1": "#ffffe5", "2": "#f7fcb9", "3": "#d9f0a3", "4": "#addd8e", "5": "#78c679", "6": "#41ab5d", "7": "#238443", "8": "#006837", "9": "#004529"}}, "text": {"base": "#3d1152", "shade": {"1": "#2d0c3d", "2": "#1e0829", "3": "#0f0414", "4": "black"}, "tint": {"1": "#634074", "2": "#8a7097", "3": "#b19fb9", "4": "#d8cfdc"}}, "background": {"base": "#d8d8d8", "shade": {"1": "#c2c2c2", "2": "#adadad", "3": "#979797", "4": "#828282"}, "tint": {"1": "#e0e0e0", "2": "#e8e8e8", "3": "#efefef", "4": "#ffffff"}}, "primary-1": {"base": "#009abf", "shade": {"1": "#00738f", "2": "#004d5f", "3": "#00262f", "4": "black"}, "tint": {"1": "#19a4c5", "2": "#3fb3cf", "3": "#7fccdf", "4": "#bfe5ef"}}, "primary-2": {"base": "#00c4b4", "shade": {"1": "#009387", "2": "#00625a", "3": "#00312d", "4": "black"}, "tint": {"1": "#19c9bb", "2": "#3fd2c6", "3": "#7fe1d9", "4": "#bff0ec"}}, "primary-3": {"base": "#435cc8", "shade": {"1": "#324596", "2": "#212e64", "3": "#101732", "4": "black"}, "tint": {"1": "#556ccd", "2": "#7284d5", "3": "#a1ade3", "4": "#d0d6f1"}}, "primary-4": {"base": "#91d5ad", "shade": {"1": "#6c9f81", "2": "#486a56", "3": "#24352b", "4": "black"}, "tint": {"1": "#9cd9b5", "2": "#acdfc1", "3": "#c8ead6", "4": "#e3f4ea"}}, "secondary-1": {"base": "#f8bf00", "shade": {"1": "#ba8f00", "2": "#7c5f00", "3": "#3e2f00", "4": "black"}, "tint": {"1": "#f8c519", "2": "#f9cf3f", "3": "#fbdf7f", "4": "#fdefbf"}}, "secondary-2": {"base": "#ffbf3d", "shade": {"1": "#bf8f2d", "2": "#7f5f1e", "3": "#3f2f0f", "4": "black"}, "tint": {"1": "#ffc550", "2": "#ffcf6d", "3": "#ffdf9e", "4": "#ffefce"}}, "secondary-3": {"base": "#633511", "shade": {"1": "#4a270c", "2": "#311a08", "3": "#180d04", "4": "black"}, "tint": {"1": "#724928", "2": "#8a674c", "3": "#b19a88", "4": "#d8ccc3"}}, "secondary-4": {"base": "#e7d780", "shade": {"1": "#ada160", "2": "#736b40", "3": "#393520", "4": "black"}, "tint": {"1": "#e9db8c", "2": "#ede19f", "3": "#f3ebbf", "4": "#f9f5df"}}, "tertiary-1": {"base": "#cb003d", "shade": {"1": "#98002d", "2": "#65001e", "3": "#32000f", "4": "black"}, "tint": {"1": "#d01950", "2": "#d83f6d", "3": "#e57f9e", "4": "#f2bfce"}}, "tertiary-2": {"base": "#876479", "shade": {"1": "#654b5a", "2": "#43323c", "3": "#21191e", "4": "black"}, "tint": {"1": "#937386", "2": "#a58a9a", "3": "#c3b1bc", "4": "#e1d8dd"}}, "tertiary-3": {"base": "#ff8fa0", "shade": {"1": "#bf6b78", "2": "#7f4750", "3": "#3f2328", "4": "black"}, "tint": {"1": "#ff9aa9", "2": "#ffabb7", "3": "#ffc7cf", "4": "#ffe3e7"}}, "quaternary-1": {"base": "#e1261c", "shade": {"1": "#a81c15", "2": "#70130e", "3": "#380907", "4": "black"}, "tint": {"1": "#e43b32", "2": "#e85c54", "3": "#f0928d", "4": "#f7c8c6"}}, "quaternary-2": {"base": "#ff5c36", "shade": {"1": "#bf4528", "2": "#7f2e1b", "3": "#3f170d", "4": "black"}, "tint": {"1": "#ff6c4a", "2": "#ff8468", "3": "#ffad9a", "4": "#ffd6cc"}}, "quaternary-3": {"base": "#ea6953", "shade": {"1": "#af4e3e", "2": "#753429", "3": "#3a1a14", "4": "black"}, "tint": {"1": "#ec7864", "2": "#ef8e7e", "3": "#f4b4a9", "4": "#f9d9d4"}}, "quaternary-4": {"base": "#e9b88b", "shade": {"1": "#ae8a68", "2": "#745c45", "3": "#3a2e22", "4": "black"}, "tint": {"1": "#ebbf96", "2": "#eec9a8", "3": "#f4dbc5", "4": "#f9ede2"}}}, "durations": {"fastest": "0.15s", "faster": "0.2s", "fast": "0.4s", "normal": "0.6s", "slow": "0.8s", "slower": "1.2s", "slowest": "1.6s", "shortest": "2s", "shorter": "3s", "short": "4s", "long": "6s", "longer": "8s", "longest": "10s", "1": "0.15s", "2": "0.2s", "3": "0.4s", "4": "0.6s", "5": "0.8s", "6": "1.2s", "7": "1.6s", "8": "2s", "9": "2.5s", "10": "3s", "11": "3.5s", "12": "4s", "13": "6s", "14": "8s", "15": "10s", "16": "12s", "17": "14s", "18": "16s", "19": "18s", "20": "20s"}, "typographic-scale": {"1": 10, "2": 12, "3": 14, "4": 16, "5": 18, "6": 20, "7": 22, "8": 24, "9": 28, "10": 32, "11": 36, "12": 40, "13": 48, "14": 60, "15": 72, "16": 84, "17": 96, "18": 108, "19": 120, "20": 132}, "grid": {"baseline-height": 28, "columns": 12, "baseline-to-gutter-ratio": 2, "breakpoints": {"base": [["1px", "100px"], ["101px", "200px"], ["201px", "300px"], ["301px", "400px"], ["401px", "500px"], ["501px", "600px"], ["601px", "700px"], ["701px", "800px"], ["801px", "900px"], ["901px", "1000px"], ["1001px", "1100px"], ["1101px", "1200px"], ["1201px", "1300px"], ["1301px", "1400px"], ["1401px", "1500px"], ["1501px", "1600px"], ["1601px", "1700px"], ["1701px", "1800px"], ["1801px", "1900px"], ["1901px", "2000px"], ["2001px", "9999px"]], "devices": [["1px", "320px"], ["321px", "480px"], ["481px", "640px"], ["641px", "768px"], ["769px", "800px"], ["801px", "853px"], ["854px", "1024px"], ["1025px", "1280px"], ["1281px", "1366px"], ["1367px", "1440px"], ["1441px", "1600px"], ["1601px", "1920px"], ["1921px", "2560px"], ["2561px", "9999px"]]}, "gutter-width": 56}, "styles": {"color": "#2d0c3d", "background-color": "#ffffff", "font-size": 20, "line-height": 1.4, "font-weight": "normal", "font-family": ["Brandon Text", "Futura", "Gill Sans", "Calibri", "Dejavu Sans", "Lucida Sans", "sans-serif"], "selection": {"color": "#ffffff", "background-color": "#f8bf00"}, "heading": {"color": "#3d1152", "font-family": ["Brandon Grotesque", "Futura", "Gill Sans", "Calibri", "Dejavu Sans", "Arial", "sans-serif"], "story-title": {"font-size": 72, "font-weight": 700}, "story-level-1": {"font-size": 48, "font-weight": 700}, "story-level-2": {"font-size": 32, "font-weight": 700}, "story-level-3": {"font-size": 20, "font-weight": 700}, "story-level-4": {"font-size": 18, "font-weight": 700}, "section-title": {"font-size": 48, "font-weight": 700}, "section-level-1": {"font-size": 18, "font-weight": 700}, "section-level-2": {"font-size": 16, "font-weight": 700}, "section-level-3": {"font-size": 14, "font-weight": 700}, "section-level-4": {"font-size": 12, "font-weight": 700}}, "link": {"default": {"color": "#3d1152", "background-color": "transparent", "font-weight": 600, "underline-width": "0.1rem", "underline-color": "#f8bf00", "underline-position": "1.1em", "transition": [["color", "0.15s", "ease-in"], ["background-color", "0.15s", "ease-in"], ["border-color", "0.15s", "ease-in"]]}, "visited": {"color": "#3d1152", "background-color": "transparent", "underline-color": "#f8bf00"}, "focus": {"color": "#f8bf00", "background-color": "transparent", "underline-color": "#f8bf00", "outline": [0, "none"]}, "hover": {"color": "#f8bf00", "background-color": "transparent", "underline-color": "#f8bf00"}}, "heading-link": {"default": {"color": "#3d1152", "background-color": "transparent", "font-weight": "inherit", "underline-width": 0, "underline-color": "transparent", "underline-position": "1.2em", "transition": [["color", "0.15s", "ease-in"], ["background-color", "0.15s", "ease-in"], ["border-color", "0.15s", "ease-in"]]}, "visited": {"color": "#3d1152", "background-color": "transparent", "underline-color": "transparent"}, "focus": {"color": "#f8bf00", "background-color": "transparent", "underline-color": "transparent", "outline": [0, "none"]}, "hover": {"color": "#f8bf00", "background-color": "transparent", "underline-color": "transparent"}}}}'; }
+
+head {
+  font-family: '{"colors": {"1": {"base": "#3d1152", "shade": {"1": "#2d0c3d", "2": "#1e0829", "3": "#0f0414", "4": "black"}, "tint": {"1": "#634074", "2": "#8a7097", "3": "#b19fb9", "4": "#d8cfdc"}}, "2": {"base": "#d8d8d8", "shade": {"1": "#c2c2c2", "2": "#adadad", "3": "#979797", "4": "#828282"}, "tint": {"1": "#e0e0e0", "2": "#e8e8e8", "3": "#efefef", "4": "#ffffff"}}, "3": {"base": "#009abf", "shade": {"1": "#00738f", "2": "#004d5f", "3": "#00262f", "4": "black"}, "tint": {"1": "#19a4c5", "2": "#3fb3cf", "3": "#7fccdf", "4": "#bfe5ef"}}, "4": {"base": "#f8bf00", "shade": {"1": "#ba8f00", "2": "#7c5f00", "3": "#3e2f00", "4": "black"}, "tint": {"1": "#f8c519", "2": "#f9cf3f", "3": "#fbdf7f", "4": "#fdefbf"}}, "5": {"base": "#00c4b4", "shade": {"1": "#009387", "2": "#00625a", "3": "#00312d", "4": "black"}, "tint": {"1": "#19c9bb", "2": "#3fd2c6", "3": "#7fe1d9", "4": "#bff0ec"}}, "6": {"base": "#435cc8", "shade": {"1": "#324596", "2": "#212e64", "3": "#101732", "4": "black"}, "tint": {"1": "#556ccd", "2": "#7284d5", "3": "#a1ade3", "4": "#d0d6f1"}}, "7": {"base": "#91d5ad", "shade": {"1": "#6c9f81", "2": "#486a56", "3": "#24352b", "4": "black"}, "tint": {"1": "#9cd9b5", "2": "#acdfc1", "3": "#c8ead6", "4": "#e3f4ea"}}, "8": {"base": "#ffbf3d", "shade": {"1": "#bf8f2d", "2": "#7f5f1e", "3": "#3f2f0f", "4": "black"}, "tint": {"1": "#ffc550", "2": "#ffcf6d", "3": "#ffdf9e", "4": "#ffefce"}}, "9": {"base": "#633511", "shade": {"1": "#4a270c", "2": "#311a08", "3": "#180d04", "4": "black"}, "tint": {"1": "#724928", "2": "#8a674c", "3": "#b19a88", "4": "#d8ccc3"}}, "10": {"base": "#e7d780", "shade": {"1": "#ada160", "2": "#736b40", "3": "#393520", "4": "black"}, "tint": {"1": "#e9db8c", "2": "#ede19f", "3": "#f3ebbf", "4": "#f9f5df"}}, "11": {"base": "#cb003d", "shade": {"1": "#98002d", "2": "#65001e", "3": "#32000f", "4": "black"}, "tint": {"1": "#d01950", "2": "#d83f6d", "3": "#e57f9e", "4": "#f2bfce"}}, "12": {"base": "#876479", "shade": {"1": "#654b5a", "2": "#43323c", "3": "#21191e", "4": "black"}, "tint": {"1": "#937386", "2": "#a58a9a", "3": "#c3b1bc", "4": "#e1d8dd"}}, "13": {"base": "#ff8fa0", "shade": {"1": "#bf6b78", "2": "#7f4750", "3": "#3f2328", "4": "black"}, "tint": {"1": "#ff9aa9", "2": "#ffabb7", "3": "#ffc7cf", "4": "#ffe3e7"}}, "14": {"base": "#e1261c", "shade": {"1": "#a81c15", "2": "#70130e", "3": "#380907", "4": "black"}, "tint": {"1": "#e43b32", "2": "#e85c54", "3": "#f0928d", "4": "#f7c8c6"}}, "15": {"base": "#ff5c36", "shade": {"1": "#bf4528", "2": "#7f2e1b", "3": "#3f170d", "4": "black"}, "tint": {"1": "#ff6c4a", "2": "#ff8468", "3": "#ffad9a", "4": "#ffd6cc"}}, "16": {"base": "#ea6953", "shade": {"1": "#af4e3e", "2": "#753429", "3": "#3a1a14", "4": "black"}, "tint": {"1": "#ec7864", "2": "#ef8e7e", "3": "#f4b4a9", "4": "#f9d9d4"}}, "17": {"base": "#e9b88b", "shade": {"1": "#ae8a68", "2": "#745c45", "3": "#3a2e22", "4": "black"}, "tint": {"1": "#ebbf96", "2": "#eec9a8", "3": "#f4dbc5", "4": "#f9ede2"}}, "yl-gn": {"sequence-3": {"1": "#f7fcb9", "2": "#addd8e", "3": "#31a354"}, "sequence-4": {"1": "#ffffcc", "2": "#c2e699", "3": "#78c679", "4": "#238443"}, "sequence-5": {"1": "#ffffcc", "2": "#c2e699", "3": "#78c679", "4": "#31a354", "5": "#006837"}, "sequence-6": {"1": "#ffffcc", "2": "#d9f0a3", "3": "#addd8e", "4": "#78c679", "5": "#31a354", "6": "#006837"}, "sequence-7": {"1": "#ffffcc", "2": "#d9f0a3", "3": "#addd8e", "4": "#78c679", "5": "#41ab5d", "6": "#238443", "7": "#005a32"}, "sequence-8": {"1": "#ffffe5", "2": "#f7fcb9", "3": "#d9f0a3", "4": "#addd8e", "5": "#78c679", "6": "#41ab5d", "7": "#238443", "8": "#005a32"}, "sequence-9": {"1": "#ffffe5", "2": "#f7fcb9", "3": "#d9f0a3", "4": "#addd8e", "5": "#78c679", "6": "#41ab5d", "7": "#238443", "8": "#006837", "9": "#004529"}}, "text": {"base": "#3d1152", "shade": {"1": "#2d0c3d", "2": "#1e0829", "3": "#0f0414", "4": "black"}, "tint": {"1": "#634074", "2": "#8a7097", "3": "#b19fb9", "4": "#d8cfdc"}}, "background": {"base": "#d8d8d8", "shade": {"1": "#c2c2c2", "2": "#adadad", "3": "#979797", "4": "#828282"}, "tint": {"1": "#e0e0e0", "2": "#e8e8e8", "3": "#efefef", "4": "#ffffff"}}, "primary-1": {"base": "#009abf", "shade": {"1": "#00738f", "2": "#004d5f", "3": "#00262f", "4": "black"}, "tint": {"1": "#19a4c5", "2": "#3fb3cf", "3": "#7fccdf", "4": "#bfe5ef"}}, "primary-2": {"base": "#00c4b4", "shade": {"1": "#009387", "2": "#00625a", "3": "#00312d", "4": "black"}, "tint": {"1": "#19c9bb", "2": "#3fd2c6", "3": "#7fe1d9", "4": "#bff0ec"}}, "primary-3": {"base": "#435cc8", "shade": {"1": "#324596", "2": "#212e64", "3": "#101732", "4": "black"}, "tint": {"1": "#556ccd", "2": "#7284d5", "3": "#a1ade3", "4": "#d0d6f1"}}, "primary-4": {"base": "#91d5ad", "shade": {"1": "#6c9f81", "2": "#486a56", "3": "#24352b", "4": "black"}, "tint": {"1": "#9cd9b5", "2": "#acdfc1", "3": "#c8ead6", "4": "#e3f4ea"}}, "secondary-1": {"base": "#f8bf00", "shade": {"1": "#ba8f00", "2": "#7c5f00", "3": "#3e2f00", "4": "black"}, "tint": {"1": "#f8c519", "2": "#f9cf3f", "3": "#fbdf7f", "4": "#fdefbf"}}, "secondary-2": {"base": "#ffbf3d", "shade": {"1": "#bf8f2d", "2": "#7f5f1e", "3": "#3f2f0f", "4": "black"}, "tint": {"1": "#ffc550", "2": "#ffcf6d", "3": "#ffdf9e", "4": "#ffefce"}}, "secondary-3": {"base": "#633511", "shade": {"1": "#4a270c", "2": "#311a08", "3": "#180d04", "4": "black"}, "tint": {"1": "#724928", "2": "#8a674c", "3": "#b19a88", "4": "#d8ccc3"}}, "secondary-4": {"base": "#e7d780", "shade": {"1": "#ada160", "2": "#736b40", "3": "#393520", "4": "black"}, "tint": {"1": "#e9db8c", "2": "#ede19f", "3": "#f3ebbf", "4": "#f9f5df"}}, "tertiary-1": {"base": "#cb003d", "shade": {"1": "#98002d", "2": "#65001e", "3": "#32000f", "4": "black"}, "tint": {"1": "#d01950", "2": "#d83f6d", "3": "#e57f9e", "4": "#f2bfce"}}, "tertiary-2": {"base": "#876479", "shade": {"1": "#654b5a", "2": "#43323c", "3": "#21191e", "4": "black"}, "tint": {"1": "#937386", "2": "#a58a9a", "3": "#c3b1bc", "4": "#e1d8dd"}}, "tertiary-3": {"base": "#ff8fa0", "shade": {"1": "#bf6b78", "2": "#7f4750", "3": "#3f2328", "4": "black"}, "tint": {"1": "#ff9aa9", "2": "#ffabb7", "3": "#ffc7cf", "4": "#ffe3e7"}}, "quaternary-1": {"base": "#e1261c", "shade": {"1": "#a81c15", "2": "#70130e", "3": "#380907", "4": "black"}, "tint": {"1": "#e43b32", "2": "#e85c54", "3": "#f0928d", "4": "#f7c8c6"}}, "quaternary-2": {"base": "#ff5c36", "shade": {"1": "#bf4528", "2": "#7f2e1b", "3": "#3f170d", "4": "black"}, "tint": {"1": "#ff6c4a", "2": "#ff8468", "3": "#ffad9a", "4": "#ffd6cc"}}, "quaternary-3": {"base": "#ea6953", "shade": {"1": "#af4e3e", "2": "#753429", "3": "#3a1a14", "4": "black"}, "tint": {"1": "#ec7864", "2": "#ef8e7e", "3": "#f4b4a9", "4": "#f9d9d4"}}, "quaternary-4": {"base": "#e9b88b", "shade": {"1": "#ae8a68", "2": "#745c45", "3": "#3a2e22", "4": "black"}, "tint": {"1": "#ebbf96", "2": "#eec9a8", "3": "#f4dbc5", "4": "#f9ede2"}}}, "durations": {"fastest": "0.15s", "faster": "0.2s", "fast": "0.4s", "normal": "0.6s", "slow": "0.8s", "slower": "1.2s", "slowest": "1.6s", "shortest": "2s", "shorter": "3s", "short": "4s", "long": "6s", "longer": "8s", "longest": "10s", "1": "0.15s", "2": "0.2s", "3": "0.4s", "4": "0.6s", "5": "0.8s", "6": "1.2s", "7": "1.6s", "8": "2s", "9": "2.5s", "10": "3s", "11": "3.5s", "12": "4s", "13": "6s", "14": "8s", "15": "10s", "16": "12s", "17": "14s", "18": "16s", "19": "18s", "20": "20s"}, "typographic-scale": {"1": 10, "2": 12, "3": 14, "4": 16, "5": 18, "6": 20, "7": 22, "8": 24, "9": 28, "10": 32, "11": 36, "12": 40, "13": 48, "14": 60, "15": 72, "16": 84, "17": 96, "18": 108, "19": 120, "20": 132}, "grid": {"baseline-height": 28, "columns": 12, "baseline-to-gutter-ratio": 2, "breakpoints": {"base": [["1px", "100px"], ["101px", "200px"], ["201px", "300px"], ["301px", "400px"], ["401px", "500px"], ["501px", "600px"], ["601px", "700px"], ["701px", "800px"], ["801px", "900px"], ["901px", "1000px"], ["1001px", "1100px"], ["1101px", "1200px"], ["1201px", "1300px"], ["1301px", "1400px"], ["1401px", "1500px"], ["1501px", "1600px"], ["1601px", "1700px"], ["1701px", "1800px"], ["1801px", "1900px"], ["1901px", "2000px"], ["2001px", "9999px"]], "devices": [["1px", "320px"], ["321px", "480px"], ["481px", "640px"], ["641px", "768px"], ["769px", "800px"], ["801px", "853px"], ["854px", "1024px"], ["1025px", "1280px"], ["1281px", "1366px"], ["1367px", "1440px"], ["1441px", "1600px"], ["1601px", "1920px"], ["1921px", "2560px"], ["2561px", "9999px"]]}, "gutter-width": 56}, "styles": {"color": "#2d0c3d", "background-color": "#ffffff", "font-size": 20, "line-height": 1.4, "font-weight": "normal", "font-family": ["Brandon Text", "Futura", "Gill Sans", "Calibri", "Dejavu Sans", "Lucida Sans", "sans-serif"], "selection": {"color": "#ffffff", "background-color": "#f8bf00"}, "heading": {"color": "#3d1152", "font-family": ["Brandon Grotesque", "Futura", "Gill Sans", "Calibri", "Dejavu Sans", "Arial", "sans-serif"], "story-title": {"font-size": 72, "font-weight": 700}, "story-level-1": {"font-size": 48, "font-weight": 700}, "story-level-2": {"font-size": 32, "font-weight": 700}, "story-level-3": {"font-size": 20, "font-weight": 700}, "story-level-4": {"font-size": 18, "font-weight": 700}, "section-title": {"font-size": 48, "font-weight": 700}, "section-level-1": {"font-size": 18, "font-weight": 700}, "section-level-2": {"font-size": 16, "font-weight": 700}, "section-level-3": {"font-size": 14, "font-weight": 700}, "section-level-4": {"font-size": 12, "font-weight": 700}}, "link": {"default": {"color": "#3d1152", "background-color": "transparent", "font-weight": 600, "underline-width": "0.1rem", "underline-color": "#f8bf00", "underline-position": "1.1em", "transition": [["color", "0.15s", "ease-in"], ["background-color", "0.15s", "ease-in"], ["border-color", "0.15s", "ease-in"]]}, "visited": {"color": "#3d1152", "background-color": "transparent", "underline-color": "#f8bf00"}, "focus": {"color": "#f8bf00", "background-color": "transparent", "underline-color": "#f8bf00", "outline": [0, "none"]}, "hover": {"color": "#f8bf00", "background-color": "transparent", "underline-color": "#f8bf00"}}, "heading-link": {"default": {"color": "#3d1152", "background-color": "transparent", "font-weight": "inherit", "underline-width": 0, "underline-color": "transparent", "underline-position": "1.2em", "transition": [["color", "0.15s", "ease-in"], ["background-color", "0.15s", "ease-in"], ["border-color", "0.15s", "ease-in"]]}, "visited": {"color": "#3d1152", "background-color": "transparent", "underline-color": "transparent"}, "focus": {"color": "#f8bf00", "background-color": "transparent", "underline-color": "transparent", "outline": [0, "none"]}, "hover": {"color": "#f8bf00", "background-color": "transparent", "underline-color": "transparent"}}}}'; }
+
+/**
+ * Typography
+ */
+/** body copy */
+p {
+  margin: 0;
+  -webkit-font-feature-settings: 'kern', 'liga';
+     -moz-font-feature-settings: 'kern', 'liga';
+          font-feature-settings: 'kern', 'liga';
+  -webkit-hyphens: auto;
+     -moz-hyphens: auto;
+      -ms-hyphens: auto;
+          hyphens: auto;
+  hyphenate-limit-lines: 3;
+  hyphenate-limit-chars: 4 2 2;
+  hyphenate-limit-zone: 2em; }
+
+::-moz-selection {
+  color: #ffffff;
+  background: #f8bf00;
+  text-shadow: none; }
+
+::selection {
+  color: #ffffff;
+  background: #f8bf00;
+  text-shadow: none; }
+
+/** links */
+a {
+  -webkit-transition: color 0.15s ease-in, background-color 0.15s ease-in, border-color 0.15s ease-in;
+          transition: color 0.15s ease-in, background-color 0.15s ease-in, border-color 0.15s ease-in;
+  color: #3d1152;
+  background-color: transparent;
+  background-image: -webkit-linear-gradient(top, transparent 50%, #f8bf00 50%);
+  background-image: linear-gradient(to bottom, transparent 50%, #f8bf00 50%);
+  background-position: 0 1.1em;
+  background-repeat: repeat-x;
+  background-size: 0.2rem 0.2rem;
+  text-decoration: none;
+  font-weight: 600; }
+  a:visited {
+    color: #3d1152;
+    background-color: transparent;
+    background-image: -webkit-linear-gradient(top, transparent 50%, #f8bf00 50%);
+    background-image: linear-gradient(to bottom, transparent 50%, #f8bf00 50%); }
+  a:focus {
+    color: #f8bf00;
+    background-color: transparent;
+    background-image: -webkit-linear-gradient(top, transparent 50%, #f8bf00 50%);
+    background-image: linear-gradient(to bottom, transparent 50%, #f8bf00 50%);
+    outline: 0 none; }
+  a:hover, a:active {
+    color: #f8bf00;
+    background-color: transparent;
+    background-image: -webkit-linear-gradient(top, transparent 50%, #f8bf00 50%);
+    background-image: linear-gradient(to bottom, transparent 50%, #f8bf00 50%); }
+
+/** headings */
+h1, h2, h3, h4, h5, h6, .ash-heading--story-title, .ash-heading--story-level-1, .ash-heading--story-level-2, .ash-heading--story-level-3, .ash-heading--story-level-4, .ash-heading--section-title, .ash-heading--section-level-1, .ash-heading--section-level-2, .ash-heading--section-level-3, .ash-heading--section-level-4 {
+  margin: 0;
+  padding: 0;
+  color: #3d1152;
+  font-family: "Brandon Grotesque", Futura, "Gill Sans", Calibri, "Dejavu Sans", Arial, sans-serif;
+  -webkit-font-feature-settings: 'kern', 'liga';
+     -moz-font-feature-settings: 'kern', 'liga';
+          font-feature-settings: 'kern', 'liga';
+  -webkit-hyphens: none;
+     -moz-hyphens: none;
+      -ms-hyphens: none;
+          hyphens: none; }
+  h1 a, h2 a, h3 a, h4 a, h5 a, h6 a, .ash-heading--story-title a, .ash-heading--story-level-1 a, .ash-heading--story-level-2 a, .ash-heading--story-level-3 a, .ash-heading--story-level-4 a, .ash-heading--section-title a, .ash-heading--section-level-1 a, .ash-heading--section-level-2 a, .ash-heading--section-level-3 a, .ash-heading--section-level-4 a {
+    -webkit-transition: color 0.15s ease-in, background-color 0.15s ease-in, border-color 0.15s ease-in;
+            transition: color 0.15s ease-in, background-color 0.15s ease-in, border-color 0.15s ease-in;
+    color: #3d1152;
+    background-color: transparent;
+    background-image: none;
+    font-weight: inherit; }
+    h1 a:visited, h2 a:visited, h3 a:visited, h4 a:visited, h5 a:visited, h6 a:visited, .ash-heading--story-title a:visited, .ash-heading--story-level-1 a:visited, .ash-heading--story-level-2 a:visited, .ash-heading--story-level-3 a:visited, .ash-heading--story-level-4 a:visited, .ash-heading--section-title a:visited, .ash-heading--section-level-1 a:visited, .ash-heading--section-level-2 a:visited, .ash-heading--section-level-3 a:visited, .ash-heading--section-level-4 a:visited {
+      color: #3d1152;
+      background-color: transparent;
+      background-image: none; }
+    h1 a:focus, h2 a:focus, h3 a:focus, h4 a:focus, h5 a:focus, h6 a:focus, .ash-heading--story-title a:focus, .ash-heading--story-level-1 a:focus, .ash-heading--story-level-2 a:focus, .ash-heading--story-level-3 a:focus, .ash-heading--story-level-4 a:focus, .ash-heading--section-title a:focus, .ash-heading--section-level-1 a:focus, .ash-heading--section-level-2 a:focus, .ash-heading--section-level-3 a:focus, .ash-heading--section-level-4 a:focus {
+      color: #f8bf00;
+      background-color: transparent;
+      background-image: none;
+      outline: 0 none; }
+    h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover, .ash-heading--story-title a:hover, .ash-heading--story-level-1 a:hover, .ash-heading--story-level-2 a:hover, .ash-heading--story-level-3 a:hover, .ash-heading--story-level-4 a:hover, .ash-heading--section-title a:hover, .ash-heading--section-level-1 a:hover, .ash-heading--section-level-2 a:hover, .ash-heading--section-level-3 a:hover, .ash-heading--section-level-4 a:hover, h1 a:active, h2 a:active, h3 a:active, h4 a:active, h5 a:active, h6 a:active, .ash-heading--story-title a:active, .ash-heading--story-level-1 a:active, .ash-heading--story-level-2 a:active, .ash-heading--story-level-3 a:active, .ash-heading--story-level-4 a:active, .ash-heading--section-title a:active, .ash-heading--section-level-1 a:active, .ash-heading--section-level-2 a:active, .ash-heading--section-level-3 a:active, .ash-heading--section-level-4 a:active {
+      color: #f8bf00;
+      background-color: transparent;
+      background-image: none; }
+
+h1, h2, h3, h4, h5, h6 {
+  /* @extend .ash-heading--story-level-1; */ }
+
+.ash-heading--story-title {
+  margin: 2.8rem 1.4rem;
+  padding-top: 0;
+  font-size: 3.6rem;
+  line-height: 1.16667;
+  font-weight: 700;
+  text-align: center;
+  position: relative; }
+  .ash-heading--story-title:before {
+    content: none; }
+  .ash-heading--story-title b {
+    display: block;
+    margin-top: 1.4rem;
+    font-size: 0.8rem;
+    line-height: 1.75;
+    text-transform: uppercase; }
+  .ash-heading--story-title .author {
+    display: block;
+    margin-top: 0.7rem;
+    font-size: 1.2rem;
+    line-height: 1.16667;
+    font-weight: 600; }
+.ash-heading--story-level-1 {
+  margin: 5.6rem 1.4rem 2.8rem;
+  padding-top: 2.8rem;
+  font-size: 2.4rem;
+  line-height: 1.16667;
+  font-weight: 700;
+  text-align: center;
+  position: relative; }
+  .ash-heading--story-level-1:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 5.6rem;
+    height: 0;
+    margin-left: -2.8rem;
+    border-bottom: 0.1rem solid #f8bf00; }
+  .ash-heading--story-level-1 b {
+    display: block;
+    margin-top: 0.7rem;
+    font-size: 0.8rem;
+    line-height: 1.75;
+    text-transform: uppercase; }
+.ash-heading--story-level-2 {
+  margin: 2.8rem 1.4rem 0.7rem;
+  padding: 0;
+  font-size: 1.6rem;
+  line-height: 1.3125;
+  font-weight: 700;
+  text-align: left;
+  position: relative; }
+  .ash-heading--story-level-2:before {
+    content: none; }
+.ash-heading--story-level-3 {
+  margin: 2.8rem 1.4rem 0.7rem;
+  padding: 0;
+  font-size: 1rem;
+  line-height: 1.4;
+  font-weight: 700;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: relative; }
+  .ash-heading--story-level-3:before {
+    content: none; }
+.ash-heading--story-level-4 {
+  margin: 2.8rem 1.4rem 0.7rem;
+  padding: 0;
+  font-size: 0.9rem;
+  line-height: 1.55556;
+  font-weight: 700;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: relative; }
+  .ash-heading--story-level-4:before {
+    content: none; }
+.ash-heading--section-title {
+  margin: 2.8rem 1.4rem;
+  padding: 0;
+  font-size: 2.4rem;
+  line-height: 1.16667;
+  font-weight: 700;
+  text-align: center;
+  position: relative; }
+  .ash-heading--section-title:before {
+    content: none; }
+  .ash-heading--section-title b {
+    display: block;
+    margin-top: 0.7rem;
+    font-size: 0.8rem;
+    line-height: 1.75;
+    text-transform: uppercase; }
+.ash-heading--section-level-1 {
+  margin: 2.8rem 1.4rem 0.7rem;
+  padding: 1.4rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.55556;
+  font-weight: 700;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: relative; }
+  .ash-heading--section-level-1:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 5.6rem;
+    height: 0;
+    margin-left: -2.8rem;
+    border-bottom: 0.1rem solid #f8bf00;
+    left: 0;
+    margin-left: 0; }
+.ash-heading--section-level-2 {
+  margin: 0 1.4rem 0.7rem;
+  padding: 0;
+  font-size: 0.8rem;
+  line-height: 1.75;
+  font-weight: 700;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: relative; }
+  .ash-heading--section-level-2:before {
+    content: none; }
+.ash-heading--section-level-3 {
+  margin: 0 1.4rem 0.7rem;
+  padding: 0;
+  font-size: 0.7rem;
+  line-height: 2;
+  font-weight: 700;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: relative; }
+  .ash-heading--section-level-3:before {
+    content: none; }
+.ash-heading--section-level-4 {
+  margin: 0 1.4rem 0.7rem;
+  padding: 0;
+  font-size: 0.6rem;
+  line-height: 1.16667;
+  font-weight: 700;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: relative; }
+  .ash-heading--section-level-4:before {
+    content: none; }
+
+/** lists */
+ul {
+  margin: 0; }
+
+ol {
+  margin: 0; }
+
+.ash-list {
+  margin: 0.7rem 1.4rem;
+  padding: 0 0 0 2.1rem;
+  list-style: none; }
+  .ash-list li {
+    position: relative; }
+    .ash-list li:before {
+      content: "◊";
+      position: absolute;
+      top: 0;
+      right: 100%;
+      width: 1.4rem;
+      height: 1.4rem;
+      color: #f8bf00;
+      font-weight: 600;
+      text-align: center;
+      counter-increment: ash-list; }
+    .ash-list li ul {
+      margin: 0;
+      padding: 0 0 0 2.8rem;
+      list-style: none; }
+  .ash-list--ordered {
+    margin: 0.7rem 1.4rem;
+    padding: 0 0 0 2.1rem;
+    list-style: decimal; }
+    .ash-list--ordered ol {
+      margin: 0;
+      padding: 0 0 0 2.1rem;
+      list-style: decimal; }
+
+/** decorations */
+hr {
+  display: block;
+  height: 0;
+  border: 0;
+  /* border-top: 1px solid style(color); */
+  margin: 1em 0;
+  padding: 0; }
+
+/**
+ * images
+ */
+img {
+  vertical-align: middle; }
+
+figure {
+  margin: 0; }
+  figure img {
+    width: 100%;
+    height: auto; }
+
+/**
+ * Forms
+ */
+form {
+  margin: 0; }
+
+fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0 none; }
+
+label[for] {
+  cursor: pointer; }
+
+input[type='text'], input[type='email'], input[type='password'], input[type='search'], input[type='tel'], input[type='url'] {
+  color: inherit;
+  font-size: inherit; }
+input[type='radio'], input[type='checkbox'] {
+  vertical-align: middle; }
+input[type='submit'] {
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit; }
+
+textarea {
+  resize: vertical;
+  color: inherit;
+  font-size: inherit; }
+
+/**
+ * print styles
+ */
+@media print {
+  * {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important; }
+
+  a {
+    text-decoration: underline; }
+    a:visited {
+      text-decoration: underline; }
+    a[href]:after {
+      content: " (" attr(href) ")"; }
+
+  abbr[title]:after {
+    content: " (" attr(title) ")"; }
+
+  a[href^="javascript:"]:after,
+  a[href^="#"]:after {
+    content: ""; }
+
+  pre,
+  blockquote {
+    border: 1px solid #999;
+    page-break-inside: avoid; }
+
+  thead {
+    display: table-header-group; }
+
+  tr,
+  img {
+    page-break-inside: avoid; }
+
+  img {
+    max-width: 100% !important; }
+
+  @page {
+    margin: 0.5cm; }
+  p,
+  h2,
+  h3 {
+    orphans: 3;
+    widows: 3; }
+
+  h2,
+  h3 {
+    page-break-after: avoid; } }

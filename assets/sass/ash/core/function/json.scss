@@ -1,0 +1,126 @@
+//
+// https://github.com/HugoGiraudel/SassyJSON/
+//
+
+// Proof quote a value
+// --------------------------------------------------------------------------------
+// @param $value: value to be quoted
+// --------------------------------------------------------------------------------
+// @return [string] quoted value
+
+@function __proof-quote($value) {
+	@return '"' + $value + '"';
+}
+
+// Encode a bool to JSON
+// --------------------------------------------------------------------------------
+// @param $bool: bool to be encoded
+// --------------------------------------------------------------------------------
+// @return [bool] boolean
+
+@function __json-encode-bool($boolean) {
+	@return $boolean;
+}
+
+// Encode a color to JSON
+// --------------------------------------------------------------------------------
+// @param $color: color to be encoded
+// --------------------------------------------------------------------------------
+// @return [string] encoded color
+
+@function __json-encode-color($color) {
+	@return __proof-quote($color);
+}
+
+// Encode a list to JSON
+// --------------------------------------------------------------------------------
+// @param $list: list to be encoded
+// --------------------------------------------------------------------------------
+// @return [string] encoded list
+
+@function __json-encode-list($list) {
+	$str: "";
+	@each $item in $list {
+		$str: $str + ', ' + json($item);
+	}
+	@return '[' + str-slice($str, 3) + ']';
+}
+
+// Encode a map to JSON
+// --------------------------------------------------------------------------------
+// @param $map: map to be encoded
+// --------------------------------------------------------------------------------
+// @return [string] encoded map
+
+@function __json-encode-map($map) {
+	$str: "";
+	@each $key, $value in $map {
+		$str: $str + ', ' + __proof-quote($key) + ': ' + json($value);
+	}
+	@return '{' + str-slice($str, 3) + '}';
+}
+
+// Encode a number to JSON
+// --------------------------------------------------------------------------------
+// @param $number: number to be encoded
+// --------------------------------------------------------------------------------
+// @return [string] encoded number
+
+@function __json-encode-number($number) {
+	@return if(unitless($number), $number, __proof-quote($number));
+}
+
+// Encode a string to JSON
+// --------------------------------------------------------------------------------
+// @param $string: string to be encoded
+// --------------------------------------------------------------------------------
+// @return [string] encoded string
+
+@function __json-encode-string($string) {
+	@return __proof-quote($string);
+}
+
+// Encode `null` to JSON
+// --------------------------------------------------------------------------------
+// @param $null: `null`
+// --------------------------------------------------------------------------------
+// @return [string] `null`
+
+@function __json-encode-null($null) {
+	@return "null";
+}
+
+// JSON.stringify a value and pass it as a font-family of head element
+// --------------------------------------------------------------------------------
+// @param $value: value to be stringified
+// @parem $flag: output driver
+
+@mixin json($value) {
+		// All browsers except IE8-
+		body:before {
+			display: none !important;
+			content: json($value);
+		}
+
+		// All browsers except Opera (Presto based)
+		head {
+			font-family: json($value);
+		}
+}
+// Delay the encoding of ta literal to JSON
+// to a type-specific method
+// --------------------------------------------------------------------------------
+// @param $value: value to be stringified
+// --------------------------------------------------------------------------------
+// @throw "Unknown type for $value ({x})."
+// --------------------------------------------------------------------------------
+// @return [string|false] JSON encoded string
+
+@function json($value) {
+	$type: type-of($value);
+	@if function_exists('__json-encode-#{$type}') {
+		@return call('__json-encode-#{$type}', $value);
+	}
+	@warn "Unknown type for #{$value} (#{$type}).";
+	@return false;
+}

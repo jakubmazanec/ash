@@ -1,0 +1,54 @@
+/**
+ * Forms
+ */
+
+form
+{	
+	margin: 0;
+}
+
+fieldset
+{
+	margin: 0;
+	padding: 0;
+	border: 0 none;
+}
+	
+label[for]
+{
+	cursor: pointer;
+}	
+	
+input
+{
+	&[type='text'],
+	&[type='email'],
+	&[type='password'],
+	&[type='search'],
+	&[type='tel'],
+	&[type='url']
+	{			
+		color: inherit;
+		font-size: inherit;
+	} 
+	
+	&[type='radio'], &[type='checkbox']
+	{
+		vertical-align: middle;
+	}
+	
+	&[type='submit']
+	{
+		color: inherit;
+		font-size: inherit;
+		line-height: inherit;
+	}
+	}
+	
+textarea
+{
+	resize: vertical;
+		
+	color: inherit;
+	font-size: inherit;	
+}

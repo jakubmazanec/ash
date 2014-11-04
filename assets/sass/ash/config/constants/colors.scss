@@ -1,0 +1,424 @@
+/** colors */
+
+@include add-color(
+(
+	1:
+	(
+		base: #3d1152,
+		shade:
+		(
+			1: shade(#3d1152, 25%),
+			2: shade(#3d1152, 50%),
+			3: shade(#3d1152, 75%),
+			4: shade(#3d1152, 100%)
+		),
+		tint:
+		(
+			1: tint(#3d1152, 20%),
+			2: tint(#3d1152, 40%),
+			3: tint(#3d1152, 60%),
+			4: tint(#3d1152, 80%)
+		)
+	),
+
+	2:
+	(
+		base: #d8d8d8,
+		shade:
+		(
+			1: #c2c2c2,
+			2: #adadad,
+			3: #979797,
+			4: #828282
+		),
+		tint:
+		(
+			1: #e0e0e0,
+			2: #e8e8e8,
+			3: #efefef,
+			4: #ffffff
+		)
+	),
+
+	3:
+	(
+		base: #009abf,
+		shade:
+		(
+			1: shade(#009abf, 25%),
+			2: shade(#009abf, 50%),
+			3: shade(#009abf, 75%),
+			4: shade(#009abf, 100%)
+		),
+		tint:
+		(
+			1: tint(#009abf, 10%),
+			2: tint(#009abf, 25%),
+			3: tint(#009abf, 50%),
+			4: tint(#009abf, 75%)
+		)
+	),
+
+	4:
+	(
+		base: #f8bf00,
+		shade:
+		(
+			1: shade(#f8bf00, 25%),
+			2: shade(#f8bf00, 50%),
+			3: shade(#f8bf00, 75%),
+			4: shade(#f8bf00, 100%)
+		),
+		tint:
+		(
+			1: tint(#f8bf00, 10%),
+			2: tint(#f8bf00, 25%),
+			3: tint(#f8bf00, 50%),
+			4: tint(#f8bf00, 75%)
+		)
+	),
+
+	5:
+	(
+		base: #00c4b4,
+		shade:
+		(
+			1: shade(#00c4b4, 25%),
+			2: shade(#00c4b4, 50%),
+			3: shade(#00c4b4, 75%),
+			4: shade(#00c4b4, 100%)
+		),
+		tint:
+		(
+			1: tint(#00c4b4, 10%),
+			2: tint(#00c4b4, 25%),
+			3: tint(#00c4b4, 50%),
+			4: tint(#00c4b4, 75%)
+		)
+	),
+
+	6:
+	(
+		base: #435cc8,
+		shade:
+		(
+			1: shade(#435cc8, 25%),
+			2: shade(#435cc8, 50%),
+			3: shade(#435cc8, 75%),
+			4: shade(#435cc8, 100%)
+		),
+		tint:
+		(
+			1: tint(#435cc8, 10%),
+			2: tint(#435cc8, 25%),
+			3: tint(#435cc8, 50%),
+			4: tint(#435cc8, 75%)
+		)
+	),
+
+	7:
+	(
+		base: #91d5ad,
+		shade:
+		(
+			1: shade(#91d5ad, 25%),
+			2: shade(#91d5ad, 50%),
+			3: shade(#91d5ad, 75%),
+			4: shade(#91d5ad, 100%)
+		),
+		tint:
+		(
+			1: tint(#91d5ad, 10%),
+			2: tint(#91d5ad, 25%),
+			3: tint(#91d5ad, 50%),
+			4: tint(#91d5ad, 75%)
+		)
+	),
+
+	8:
+	(
+		base: #ffbf3d,
+		shade:
+		(
+			1: shade(#ffbf3d, 25%),
+			2: shade(#ffbf3d, 50%),
+			3: shade(#ffbf3d, 75%),
+			4: shade(#ffbf3d, 100%)
+		),
+		tint:
+		(
+			1: tint(#ffbf3d, 10%),
+			2: tint(#ffbf3d, 25%),
+			3: tint(#ffbf3d, 50%),
+			4: tint(#ffbf3d, 75%)
+		)
+	),
+
+	9:
+	(
+		base: #633511,
+		shade:
+		(
+			1: shade(#633511, 25%),
+			2: shade(#633511, 50%),
+			3: shade(#633511, 75%),
+			4: shade(#633511, 100%)
+		),
+		tint:
+		(
+			1: tint(#633511, 10%),
+			2: tint(#633511, 25%),
+			3: tint(#633511, 50%),
+			4: tint(#633511, 75%)
+		)
+	),
+
+	10:
+	(
+		base: #e7d780,
+		shade:
+		(
+			1: shade(#e7d780, 25%),
+			2: shade(#e7d780, 50%),
+			3: shade(#e7d780, 75%),
+			4: shade(#e7d780, 100%)
+		),
+		tint:
+		(
+			1: tint(#e7d780, 10%),
+			2: tint(#e7d780, 25%),
+			3: tint(#e7d780, 50%),
+			4: tint(#e7d780, 75%)
+		)
+	),
+
+	11:
+	(
+		base: #cb003d,
+		shade:
+		(
+			1: shade(#cb003d, 25%),
+			2: shade(#cb003d, 50%),
+			3: shade(#cb003d, 75%),
+			4: shade(#cb003d, 100%)
+		),
+		tint:
+		(
+			1: tint(#cb003d, 10%),
+			2: tint(#cb003d, 25%),
+			3: tint(#cb003d, 50%),
+			4: tint(#cb003d, 75%)
+		)
+	),
+
+	12:
+	(
+		base: #876479,
+		shade:
+		(
+			1: shade(#876479, 25%),
+			2: shade(#876479, 50%),
+			3: shade(#876479, 75%),
+			4: shade(#876479, 100%)
+		),
+		tint:
+		(
+			1: tint(#876479, 10%),
+			2: tint(#876479, 25%),
+			3: tint(#876479, 50%),
+			4: tint(#876479, 75%)
+		)
+	),
+
+	13:
+	(
+		base: #ff8fa0,
+		shade:
+		(
+			1: shade(#ff8fa0, 25%),
+			2: shade(#ff8fa0, 50%),
+			3: shade(#ff8fa0, 75%),
+			4: shade(#ff8fa0, 100%)
+		),
+		tint:
+		(
+			1: tint(#ff8fa0, 10%),
+			2: tint(#ff8fa0, 25%),
+			3: tint(#ff8fa0, 50%),
+			4: tint(#ff8fa0, 75%)
+		)
+	),
+
+	14:
+	(
+		base: #e1261c,
+		shade:
+		(
+			1: shade(#e1261c, 25%),
+			2: shade(#e1261c, 50%),
+			3: shade(#e1261c, 75%),
+			4: shade(#e1261c, 100%)
+		),
+		tint:
+		(
+			1: tint(#e1261c, 10%),
+			2: tint(#e1261c, 25%),
+			3: tint(#e1261c, 50%),
+			4: tint(#e1261c, 75%)
+		)
+	),
+
+	15:
+	(
+		base: #ff5c36,
+		shade:
+		(
+			1: shade(#ff5c36, 25%),
+			2: shade(#ff5c36, 50%),
+			3: shade(#ff5c36, 75%),
+			4: shade(#ff5c36, 100%)
+		),
+		tint:
+		(
+			1: tint(#ff5c36, 10%),
+			2: tint(#ff5c36, 25%),
+			3: tint(#ff5c36, 50%),
+			4: tint(#ff5c36, 75%)
+		)
+	),
+
+	16:
+	(
+		base: #ea6953,
+		shade:
+		(
+			1: shade(#ea6953, 25%),
+			2: shade(#ea6953, 50%),
+			3: shade(#ea6953, 75%),
+			4: shade(#ea6953, 100%)
+		),
+		tint:
+		(
+			1: tint(#ea6953, 10%),
+			2: tint(#ea6953, 25%),
+			3: tint(#ea6953, 50%),
+			4: tint(#ea6953, 75%)
+		)
+	),
+
+	17:
+	(
+		base: #e9b88b,
+		shade:
+		(
+			1: shade(#e9b88b, 25%),
+			2: shade(#e9b88b, 50%),
+			3: shade(#e9b88b, 75%),
+			4: shade(#e9b88b, 100%)
+		),
+		tint:
+		(
+			1: tint(#e9b88b, 10%),
+			2: tint(#e9b88b, 25%),
+			3: tint(#e9b88b, 50%),
+			4: tint(#e9b88b, 75%)
+		)
+	)
+));
+
+
+@include add-color(
+(
+	yl-gn:
+	(
+		sequence-3:
+		(
+			1: rgb(247, 252, 185),
+			2: rgb(173, 221, 142),
+			3: rgb(49, 163, 84)
+		),
+		sequence-4:
+		(
+			1: rgb(255, 255, 204),
+			2: rgb(194, 230, 153),
+			3: rgb(120, 198, 121),
+			4: rgb(35, 132, 67)
+		),
+		sequence-5:
+		(
+			1: rgb(255, 255, 204),
+			2: rgb(194, 230, 153),
+			3: rgb(120, 198, 121),
+			4: rgb(49, 163, 84),
+			5: rgb(0, 104, 55)
+		),
+		sequence-6:
+		(
+			1: rgb(255, 255, 204),
+			2: rgb(217, 240, 163),
+			3: rgb(173, 221, 142),
+			4: rgb(120, 198, 121),
+			5: rgb(49, 163, 84),
+			6: rgb(0, 104, 55)
+		),
+		sequence-7:
+		(
+			1: rgb(255, 255, 204),
+			2: rgb(217, 240, 163),
+			3: rgb(173, 221, 142),
+			4: rgb(120, 198, 121),
+			5: rgb(65, 171, 93),
+			6: rgb(35, 132, 67),
+			7: rgb(0, 90, 50)
+		),
+		sequence-8:
+		(
+			1: rgb(255, 255, 229),
+			2: rgb(247, 252, 185),
+			3: rgb(217, 240, 163),
+			4: rgb(173, 221, 142),
+			5: rgb(120, 198, 121),
+			6: rgb(65, 171, 93),
+			7: rgb(35, 132, 67),
+			8: rgb(0, 90, 50)
+		),
+		sequence-9:
+		(
+			1: rgb(255, 255, 229),
+			2: rgb(247, 252, 185),
+			3: rgb(217, 240, 163),
+			4: rgb(173, 221, 142),
+			5: rgb(120, 198, 121),
+			6: rgb(65, 171, 93),
+			7: rgb(35, 132, 67),
+			8: rgb(0, 104, 55),
+			9: rgb(0, 69, 41)
+		)
+	)
+));
+
+
+
+
+/** color names */
+
+@include add-color(
+(
+	text: color(1),
+	background: color(2),
+	primary-1: color(3),
+	primary-2: color(5),
+	primary-3: color(6),
+	primary-4: color(7),
+	secondary-1: color(4),
+	secondary-2: color(8),
+	secondary-3: color(9),
+	secondary-4: color(10),
+	tertiary-1: color(11),
+	tertiary-2: color(12),
+	tertiary-3: color(13),
+	quaternary-1: color(14),
+	quaternary-2: color(15),
+	quaternary-3: color(16),
+	quaternary-4: color(17)
+));

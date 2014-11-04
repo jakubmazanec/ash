@@ -1,0 +1,10 @@
+@import 'position';
+
+@mixin fixed($values, $z: false)
+{
+	@include position(fixed, $values);
+	@if $z
+	{
+		z-index: $z;
+	}
+}

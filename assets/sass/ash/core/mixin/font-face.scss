@@ -1,0 +1,23 @@
+// Sets up @font-face
+// Order of the includes matters, and it is: normal, bold, italic, bold+italic.
+// Based on: bourbon.io
+
+@mixin font-face($font-family, $file-path, $weight: normal, $style: normal, $svg: null)
+{
+	@font-face
+	{
+		font-family: $font-family;
+		font-weight: $weight;
+		font-style: $style;
+
+		@if $svg
+		{
+			src:
+				url('#{$file-path}.svg##{$svg}') format('svg'),
+				url('#{$file-path}.woff') format('woff');
+		} @else
+		{
+			src: url('#{$file-path}.woff') format('woff');
+		}
+	}
+}

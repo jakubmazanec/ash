@@ -1,0 +1,9 @@
+@import '../function/_';
+@import '../function/percent';
+
+// Sets grid column width
+@mixin grid-width($columns: _(grid columns), $parent-columns: _(grid columns))
+{
+	@include grid;
+	width: percent($columns / $parent-columns);
+}

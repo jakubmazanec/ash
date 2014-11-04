@@ -1,0 +1,18 @@
+@import '../function/_';
+@import '../function/px';
+
+// Creates fixed-width margin-centered grid column
+@mixin grid-centered($columns: _(grid columns), $max-width: false)
+{
+	@if $max-width == true
+	{
+		max-width: px($columns * $ash-grid__column-width);
+		margin-left: auto;
+		margin-right: auto;
+	} @else
+	{
+		width: px($columns * $ash-grid__column-width);
+		margin-left: auto;
+		margin-right: auto;
+	}	// if
+}

@@ -1,0 +1,7 @@
+@import 'strip-units';
+
+// Converts value to percent
+@function percent($value: 1)
+{
+	@return (strip-units($value) * 100%);
+}

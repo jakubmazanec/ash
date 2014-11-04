@@ -1,0 +1,19 @@
+@import '../function/_';
+
+// Sets media query for screen width
+@mixin breakpoint($lower-bound: 1, $upper-bound: false, $list: _(grid breakpoints))
+{
+	@if not $upper-bound
+	{
+		@media only screen and (min-width: nth(nth($list, $lower-bound), 1)) and (max-width: nth(nth($list, $lower-bound), 2))
+		{
+			@content;
+		}
+	} @else
+	{
+		@media only screen and (min-width: nth(nth($list, $lower-bound), 1)) and (max-width: nth(nth($list, $upper-bound), 2))
+		{
+			@content;
+		}
+	}
+}

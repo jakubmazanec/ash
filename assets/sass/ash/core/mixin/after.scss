@@ -1,0 +1,16 @@
+@import 'position';
+
+@mixin after($positions: false, $position: absolute, $content: '')
+{
+	&:after
+	{
+		content: $content;
+		
+		@if $positions
+		{
+			@include position($position, $positions);
+		}
+		
+		@content;
+	}
+}

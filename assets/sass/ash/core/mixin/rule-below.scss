@@ -1,0 +1,35 @@
+@import '../function/b';
+@import 'after';
+
+@mixin rule-below($border, $padding-left: 1, $padding-right: false)
+{
+	position: relative;
+
+	@if not $border on $border == none or $border == 'none'
+	{
+		&:after
+		{
+			content: none;
+		}
+	} @else if not $padding-right // centered rule
+	{
+		@include after(bottom 0 left 50%)
+		{
+			width: b($padding-left);
+			height: 0;
+			margin-left: b($padding-left / -2);
+			border-bottom: $border;
+
+			@content;
+		}
+	} @else // normal rule 
+	{
+		@include after(bottom 0 left $padding-left right $padding-right)
+		{
+			height: 0;
+			border-bottom: $border;
+
+			@content;
+		}
+	} // @if	
+}

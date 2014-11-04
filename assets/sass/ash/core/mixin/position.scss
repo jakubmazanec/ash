@@ -1,0 +1,48 @@
+@import '../function/b';
+
+//
+// Position mixins
+//
+
+// Position mixins; if values are unitless, baseline height multiples in rem are used
+//
+// Example:
+// @include absolute(left 1 top 5px);
+
+@mixin position($position, $values)
+{
+	position: $position;
+
+	@each $o in (top right bottom left)
+	{
+		$i: index($values, $o);
+
+		@if $i and $i + 1 <= length($values)
+		{
+			$value: nth($values, $i + 1);
+
+			@if type-of($value) == number
+			{ 
+				@if $value == 0
+				{
+					#{$o}: 0;
+				} @else if unitless($value)
+				{
+					#{$o}: b($value);
+				} @else
+				{
+					#{$o}: $value;
+				}
+			}	@else if unquote($value) == inherit
+			{
+				#{$o}: inherit;
+			}	@else if unquote($value) == auto
+			{
+				#{$o}: auto;
+			} @else
+			{
+				#{$o}: $value;
+			}
+		}
+	}
+}

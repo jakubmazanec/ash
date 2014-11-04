@@ -1,0 +1,26 @@
+@import '../function/_';
+@import '../function/percent';
+
+// Sets correct box sizing for the grid
+@mixin grid($columns: false, $gutter-multiple: 0, $parent-columns: _(grid columns), $margin-left: 0, $margin-right: 0)
+{
+	box-sizing: border-box;
+
+	@if $columns == right or $columns == 'right'
+	{
+		float: right;
+	}
+	@if $columns == left or $columns == 'left'
+	{
+		float: left;
+	} @else if type-of($columns) == number
+	{
+		float: left;
+		width: percent($columns / $parent-columns);  
+		margin-left: percent($margin-left / $parent-columns);
+		margin-right: percent($margin-right / $parent-columns);
+
+		padding-left: rem($gutter-multiple * (_(grid baseline-height) * _(grid baseline-to-gutter-ratio) / 2));
+		padding-right: rem($gutter-multiple * (_(grid baseline-height) * _(grid baseline-to-gutter-ratio) / 2));
+	}
+}

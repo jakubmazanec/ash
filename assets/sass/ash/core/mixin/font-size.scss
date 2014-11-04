@@ -1,0 +1,16 @@
+@import '../function/style';
+@import '../function/rem';
+@import '../function/_';
+
+// Sets font size & line height
+@mixin font-size($font-size: style(font-size), $baseline-multiple: false)
+{
+	font-size: rem($font-size);
+	@if not $baseline-multiple
+	{
+		line-height: (((floor($font-size / (_(grid baseline-height) * 0.5)) + 1) * (_(grid baseline-height) * 0.5)) / $font-size);
+	} @else
+	{
+		line-height: (($baseline-multiple * _(grid baseline-height)) / $font-size);
+	}
+}

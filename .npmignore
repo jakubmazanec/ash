@@ -1,3 +1,11 @@
+app/*
+public/*
+assets/*
+
+
+
+### .gitignore ###
+
 *.seed
 *.log
 *.dat

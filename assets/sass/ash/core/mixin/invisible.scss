@@ -1,0 +1,6 @@
+// makes element transparent
+@mixin invisible
+{
+	opacity: 0;
+	visibility: hidden;
+}

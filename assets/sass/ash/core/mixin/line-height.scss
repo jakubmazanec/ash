@@ -1,0 +1,22 @@
+@import '../function/strip-units';
+@import '../function/_';
+@import '../function/b';
+@import '../function/rem';
+
+// Sets the line-height to the $value
+// if $exact is false, $value is treated as baseline height multiple, and line-height is in rem
+// if $exact is true, line-height is in rem;
+// if $exact is number, line-height is unitless with the value of $exact serving as baseline height instead of default aseline height
+@mixin line-height($value: 0, $exact: false)
+{
+	@if type-of($exact) == number
+	{
+		line-height: ((strip-units($value) * _(grid baseline-height)) / strip-units($exact));  
+	} @else if $exact == true
+	{
+		line-height: rem($value);
+	} @else 
+	{
+		line-height: b($value);
+	}
+}

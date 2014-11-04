@@ -1,0 +1,7 @@
+@import '_';
+
+// Return value from the durations list
+@function duration($value)
+{
+	@return _(join(durations, $value, space));
+}

@@ -1,0 +1,24 @@
+@mixin for-blind 
+{
+	border: 0; 
+	clip: rect(0, 0, 0, 0); 
+	height: 0 !important; 
+	margin: -1px; 
+	overflow: hidden; 
+	padding: 0; 
+	position: absolute !important; 
+	width: 0 !important;
+	opacity: 0;
+	
+	// extends the .forBlind to allow the element to be focusable when navigated to via the keyboard
+	&.is-focusable:active,
+	&.is-focusable:focus 
+	{ 
+		clip: auto; 
+		height: auto; 
+		margin: 0; 
+		overflow: visible; 
+		position: static; 
+		width: auto; 
+	}	
+}

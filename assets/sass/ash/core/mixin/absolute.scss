@@ -1,0 +1,10 @@
+@import 'position';
+
+@mixin absolute($values, $z: false)
+{
+	@include position(absolute, $values);
+	@if $z
+	{
+		z-index: $z;
+	}
+}

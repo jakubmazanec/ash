@@ -1,0 +1,7 @@
+@import '_';
+
+// Return value from the typographic scale
+@function size($value: 1)
+{
+	@return _(join(typographic-scale, $value, space));
+}

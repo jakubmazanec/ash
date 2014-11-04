@@ -1,0 +1,8 @@
+@import 'strip-units';
+@import 'style';
+
+// Converts value to rem, based on defined font-size
+@function rem($value)
+{
+	@return ((strip-units($value) / style(font-size)) * 1rem);
+}

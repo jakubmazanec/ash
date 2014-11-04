@@ -1,0 +1,145 @@
+@import 'grid';
+@import '../constants/colors';
+@import '../constants/durations';
+@import '../constants/typographic-scale';
+
+@include add-style(
+(
+	color: color(text shade 1),
+	background-color: color(background tint 4),
+	font-size: size(6),
+	line-height: _(grid baseline-height) / size(6),
+	font-weight: normal,
+	font-family: ('Brandon Text', Futura, 'Gill Sans', Calibri, 'Dejavu Sans', 'Lucida Sans', sans-serif),
+));
+
+@include add-style(
+(
+	selection:
+	(
+		color: color(background tint 4),
+		background-color: color(secondary-1 base)
+	),
+
+	heading:
+	(
+		color: color(text base),
+		font-family: ('Brandon Grotesque', Futura, 'Gill Sans', Calibri, 'Dejavu Sans', Arial, sans-serif),
+		story-title:
+		(
+			font-size: size(15),
+			font-weight: 700
+		),
+		story-level-1:
+		(
+			font-size: size(13),
+			font-weight: 700
+		),
+		story-level-2:
+		(
+			font-size: size(10),
+			font-weight: 700
+		),
+		story-level-3:
+		(
+			font-size: size(6),
+			font-weight: 700
+		),
+		story-level-4:
+		(
+			font-size: size(5),
+			font-weight: 700
+		),
+		section-title:
+		(
+			font-size: size(13),
+			font-weight: 700
+		),
+		section-level-1:
+		(
+			font-size: size(5),
+			font-weight: 700
+		),
+		section-level-2:
+		(
+			font-size: size(4),
+			font-weight: 700
+		),
+		section-level-3:
+		(
+			font-size: size(3),
+			font-weight: 700
+		),
+		section-level-4:
+		(
+			font-size: size(2),
+			font-weight: 700
+		)
+	),
+
+	link:
+	(
+		default:
+		(
+			color: color(text base),
+			background-color: transparent,
+			font-weight: 600,
+			underline-width: rem(2),
+			underline-color: color(secondary-1 base),
+			underline-position: 1.1em,
+			transition: (color duration(fastest) ease-in, background-color duration(fastest) ease-in, border-color duration(fastest) ease-in)
+		),
+		visited:
+		(
+			color: color(text base),
+			background-color: transparent,
+			underline-color: color(secondary-1 base),
+		),
+		focus:
+		(
+			color: color(secondary-1 base),
+			background-color: transparent,
+			underline-color: color(secondary-1 base),
+			outline: 0 none
+		),
+		hover:
+		(
+			color: color(secondary-1 base),
+			background-color: transparent,
+			underline-color: color(secondary-1 base),
+		)
+	),
+
+	heading-link:
+	(
+		default:
+		(
+			color: color(text base),
+			background-color: transparent,
+			font-weight: inherit,
+			underline-width: 0,
+			underline-color: transparent,
+			underline-position: 1.2em,
+			transition: (color duration(fastest) ease-in, background-color duration(fastest) ease-in, border-color duration(fastest) ease-in)
+		),
+		visited:
+		(
+			color: color(text base),
+			background-color: transparent,
+			underline-color: transparent
+		),
+		focus:
+		(
+			color: color(secondary-1 base),
+			background-color: transparent,
+			underline-color: transparent,
+			outline: 0 none
+		),
+		hover:
+		(
+			color: color(secondary-1 base),
+			background-color: transparent,
+			underline-color: transparent
+		)
+	)
+));

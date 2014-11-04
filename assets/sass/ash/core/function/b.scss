@@ -1,0 +1,9 @@
+@import 'strip-units';
+@import 'style';
+@import '_';
+
+// Converts value to multiple of defined baseline height in rem, based on defined font-size
+@function b($value: 1)
+{
+	@return ((strip-units($value) * _(grid baseline-height)) / style(font-size)) * 1rem;
+}
