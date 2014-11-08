@@ -10,13 +10,11 @@
   "license": "MIT",
   "repository": "jakubmazanec/ash",
   "main": "src/index.js",
-  "dependencies":
-  {
+  "dependencies": {
     "null": "jakubmazanec/_",
     "bluebird": "^2.3.10"
   },
-  "devDependencies":
-  {
+  "devDependencies": {
     "6to5-browserify": "^1.0.0",
     "browserify": "^5.11.1",
     "gulp": "^3.8.7",

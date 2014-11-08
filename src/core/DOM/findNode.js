@@ -1,1 +1,31 @@
-'use strict';var parseVirtualDOMIndex = require('../virtualDOM/parseVirtualDOMIndex');var misc = require('../constants/misc');var INDEX_ATTRIBUTE = misc.INDEX_ATTRIBUTE;function findNode(tree, index){	var parsedIndex = parseVirtualDOMIndex(index);	var node = tree;	var i;	if (!tree)	{		throw new Error(tree + ' cannot be falsy.');	}		/*if (parsedIndex.length == 1)	{		if (node[INDEX_ATTRIBUTE] == index)		{			return node;		} else		{			return false;		}	} else	{		for (i = 1; i < parsedIndex.length - 1; i++)		{			if (!node)			{				return false;			}			node = node.childNodes[parsedIndex[i]];		}	}		for (i = 0; i < node.childNodes.length; i++)	{		if (node.childNodes[i][INDEX_ATTRIBUTE] == index)		{			return node.childNodes[i];		}	}*/	if (parsedIndex.length == 1)	{		return node;	} else if (parsedIndex.length)	{		for (i = 1; i < parsedIndex.length; i++)		{			if (!node)			{				return false;			}			node = node.childNodes[parsedIndex[i]];		}		return node;	}	return false;}module.exports = findNode;
+'use strict';
+
+var parseAshNodeIndex = require('./parseAshNodeIndex');
+
+function findNode(nodeTree, nodeIndex) {
+	var parsedNodeIndex = parseAshNodeIndex(nodeIndex);
+	var node = nodeTree;
+	var i;
+
+	if (!nodeTree) {
+		throw new Error(nodeTree + ' cannot be falsy.');
+	}
+
+	if (parsedNodeIndex.length == 1) {
+		return node;
+	} else if (parsedNodeIndex.length) {
+		for (i = 1; i < parsedNodeIndex.length; i++) {
+			if (!node) {
+				return false;
+			}
+
+			node = node.childNodes[parsedNodeIndex[i]];
+		}
+
+		return node;
+	}
+
+	return false;
+}
+
+module.exports = findNode;

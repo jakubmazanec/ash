@@ -7,8 +7,9 @@ var server = require('tiny-lr')();
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var nodemon = require('gulp-nodemon');
-var esnext = require('gulp-esnext');
-var streamify = require('gulp-streamify');
+//var esnext = require('gulp-esnext');
+var es6 = require("6to5-browserify");
+//var streamify = require('gulp-streamify');
 
 var esnextOptions = 
 {
@@ -23,6 +24,7 @@ var esnextOptions =
 	'rest': false,
 	'spread': false,
 	'templates': false,
+	'regexpu': false
 };
 
 
@@ -42,10 +44,16 @@ gulp.task('server', function ()
 gulp.task('scripts', function ()
 {
 	return browserify('./app/app.js')
+		.transform(es6.configure({
+			//whitelist: ['classes'],
+			sourceMap: false,
+		}))		
 		.bundle()
+		//.on('error', util.log)
 		.pipe(source('app.js'))
-		.pipe(streamify(esnext(esnextOptions)))
+		//.pipe(streamify(esnext(esnextOptions)))
 		.pipe(gulp.dest('./public/js'))
+		//.pipe(gulp.dest('./test'))
 		.pipe(livereload(server));
 });
 
