@@ -14,9 +14,9 @@ var PATCH_INSERT = constants.PATCH_INSERT;
 var PATCH_REMOVE = constants.PATCH_REMOVE;
 var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
 
-function walkDiffVirtualDOMs(oldVirtualNode, newVirtualNode, patches)
-{
+function walk(oldAshNode, newAshNode/*, patches*/) {
 	// compare nodes
+	var patches = arguments[2] || [];
 	var differentProperties = false;
 	var propertiesToChange = {};
 	var propertiesToRemove = [];
@@ -24,40 +24,33 @@ function walkDiffVirtualDOMs(oldVirtualNode, newVirtualNode, patches)
 	var newSubproperty;
 	var oldProperty;
 	var oldSubproperty;
+	
 
 	// which propertie are different or new
-	for (newProperty in newVirtualNode.properties)
-	{
-		if (newVirtualNode.properties.hasOwnProperty(newProperty) && newVirtualNode.properties[newProperty] !== oldVirtualNode.properties[newProperty])
-		{
-			if (typeof newVirtualNode.properties[newProperty] === 'object' && oldVirtualNode.properties[newProperty] && typeof oldVirtualNode.properties[newProperty] == 'object')
-			{
+	for (newProperty in newAshNode.properties) {
+		if (newAshNode.properties.hasOwnProperty(newProperty) && newAshNode.properties[newProperty] !== oldAshNode.properties[newProperty]) {
+			if (typeof newAshNode.properties[newProperty] === 'object' && oldAshNode.properties[newProperty] && typeof oldAshNode.properties[newProperty] == 'object') {
 				// which propertie are different or new
-				for (newSubproperty in newVirtualNode.properties[newProperty])
-				{
-					if (newVirtualNode.properties[newProperty].hasOwnProperty(newSubproperty) && newVirtualNode.properties[newProperty][newSubproperty] !== oldVirtualNode.properties[newProperty][newSubproperty])
-					{
+				for (newSubproperty in newAshNode.properties[newProperty]) {
+					if (newAshNode.properties[newProperty].hasOwnProperty(newSubproperty) && newAshNode.properties[newProperty][newSubproperty] !== oldAshNode.properties[newProperty][newSubproperty]) {
 						propertiesToChange[newProperty] = propertiesToChange[newProperty] || {};
-						propertiesToChange[newProperty][newSubproperty] = newVirtualNode.properties[newProperty][newSubproperty];
+						propertiesToChange[newProperty][newSubproperty] = newAshNode.properties[newProperty][newSubproperty];
 
 						differentProperties = true;
 					}
 				}
 
 				// which properties are to be removed
-				for (oldSubproperty in oldVirtualNode.properties[newProperty])
-				{
-					if (oldVirtualNode.properties[newProperty].hasOwnProperty(oldSubproperty) && typeof newVirtualNode.properties[newProperty][oldSubproperty] === 'undefined')
-					{
+				for (oldSubproperty in oldAshNode.properties[newProperty]) {
+					if (oldAshNode.properties[newProperty].hasOwnProperty(oldSubproperty) && typeof newAshNode.properties[newProperty][oldSubproperty] === 'undefined') {
 						propertiesToRemove.push(newProperty + '.' + oldSubproperty);
 
 						differentProperties = true;
 					}
 				}
 
-			} else
-			{
-				propertiesToChange[newProperty] = newVirtualNode.properties[newProperty];
+			} else {
+				propertiesToChange[newProperty] = newAshNode.properties[newProperty];
 
 				differentProperties = true;
 			}
@@ -65,61 +58,52 @@ function walkDiffVirtualDOMs(oldVirtualNode, newVirtualNode, patches)
 	}
 
 	// which properties are to be removed
-	for (oldProperty in oldVirtualNode.properties)
-	{
-		if (oldVirtualNode.properties.hasOwnProperty(oldProperty) && typeof newVirtualNode.properties[oldProperty] === 'undefined')
-		{
+	for (oldProperty in oldAshNode.properties) {
+		if (oldAshNode.properties.hasOwnProperty(oldProperty) && typeof newAshNode.properties[oldProperty] === 'undefined') {
 			differentProperties = true;
 			propertiesToRemove.push(oldProperty);
 		}
 	}
 
-	if (oldVirtualNode.type !== newVirtualNode.type || oldVirtualNode.tagName !== newVirtualNode.tagName)
-	{
-		patches.push(
-		{
+	if (oldAshNode.type !== newAshNode.type || oldAshNode.tagName !== newAshNode.tagName) {
+		patches.push({
 			type: PATCH_ASH_NODE,
-			index: oldVirtualNode.index,
-			stage: oldVirtualNode.stage,
-			node: newVirtualNode
+			index: oldAshNode.index,
+			stage: oldAshNode.stage,
+			node: newAshNode
 		});
 
 		// whole node must be replaced; no sense in finding other differences
 		return patches;
 	}
 
-	if (oldVirtualNode.text !== newVirtualNode.text)
-	{
-		patches.push(
-		{
+	if (oldAshNode.text !== newAshNode.text) {
+		patches.push({
 			type: PATCH_ASH_TEXT_NODE,
-			index: oldVirtualNode.index,
-			text: newVirtualNode.text
+			index: oldAshNode.index,
+			text: newAshNode.text
 		});
 	}
 	
-	if (differentProperties)
-	{
-		patches.push(
-		{
+	if (differentProperties) {
+		patches.push({
 			type: PATCH_PROPERTIES,
-			index: oldVirtualNode.index,
-			stage: oldVirtualNode.stage,
+			index: oldAshNode.index,
+			stage: oldAshNode.stage,
 			propertiesToChange: propertiesToChange,
 			propertiesToRemove: propertiesToRemove
 		});
 	}
 
 	// now let's check the children...
-	patches = diffChildren(oldVirtualNode.children, newVirtualNode.children, patches);
+	patches = diffChildren(oldAshNode.children, newAshNode.children, patches);
 
 	return patches;
 }
 
 function diffChildren(oldChildren, newChildren, patches)
 {
-	if ((!oldChildren || !oldChildren.length) && (!newChildren || !newChildren.length))
-	{
+	if ((!oldChildren || !oldChildren.length) && (!newChildren || !newChildren.length)) {
 		return patches;
 	}
 
@@ -131,35 +115,28 @@ function diffChildren(oldChildren, newChildren, patches)
 	var __key = 'Key: ' + __keyCount;
 	var i;
 
-	for (i = 0; i < __length; i++)
-	{
-		if (oldChildren[i] && oldChildren[i].key)
-		{
+	for (i = 0; i < __length; i++) {
+		if (oldChildren[i] && oldChildren[i].key) {
 			oldChildren[i].tempKey = oldChildren[i].key;
 		}
 
-		if (newChildren[i] && newChildren[i].key)
-		{
+		if (newChildren[i] && newChildren[i].key) {
 			newChildren[i].tempKey = newChildren[i].key;
 		}
 
-		while (oldChildren[__a] && oldChildren[__a].key)
-		{
+		while (oldChildren[__a] && oldChildren[__a].key) {
 			__a++;
 		}
 
-		while (newChildren[__b] && newChildren[__b].key)
-		{
+		while (newChildren[__b] && newChildren[__b].key) {
 			__b++;
 		}
 
-		if (oldChildren[__a])
-		{
+		if (oldChildren[__a]) {
 			oldChildren[__a].tempKey = __key;
 		}
 
-		if (newChildren[__b])
-		{
+		if (newChildren[__b]) {
 			newChildren[__b].tempKey = __key;
 		}
 
@@ -176,14 +153,11 @@ function diffChildren(oldChildren, newChildren, patches)
 	var __index;
 
 	// first iterate over old children
-	for (i = 0; i < oldChildren.length; i++)
-	{
+	for (i = 0; i < oldChildren.length; i++) {
 		__found = false;
 
-		for (j = 0; j < newChildren.length; j++)
-		{
-			if (oldChildren[i].tempKey === newChildren[j].tempKey)
-			{
+		for (j = 0; j < newChildren.length; j++) {
+			if (oldChildren[i].tempKey === newChildren[j].tempKey) {
 				__found = true;
 
 				break;
@@ -191,13 +165,11 @@ function diffChildren(oldChildren, newChildren, patches)
 		}
 
 		// node with matching key was found?
-		if (__found)
-		{
+		if (__found) {
 			// is order same?
 			if (i != j)
 			{
-				patches.push(
-				{
+				patches.push({
 					type: PATCH_ORDER,
 					newIndex: newChildren[j].index,
 					index: oldChildren[i].index,
@@ -207,12 +179,10 @@ function diffChildren(oldChildren, newChildren, patches)
 			}
 
 			// now walk inside those children...
-			walkDiffVirtualDOMs(oldChildren[i], newChildren[j], patches);
-		} else
-		{
+			walk(oldChildren[i], newChildren[j], patches);
+		} else {
 			// node is to be removed...
-			patches.push(
-			{
+			patches.push({
 				type: PATCH_REMOVE,
 				index: oldChildren[i].index,
 				stage: oldChildren[i].stage,
@@ -221,25 +191,20 @@ function diffChildren(oldChildren, newChildren, patches)
 	}
 
 	// now iterate over new children; let's see, if there are any new...
-	for (j = 0; j < newChildren.length; j++)
-	{
+	for (j = 0; j < newChildren.length; j++) {
 		__found = false;
 
-		for (i = 0; i < oldChildren.length; i++)
-		{
-			if (oldChildren[i].tempKey === newChildren[j].tempKey)
-			{
+		for (i = 0; i < oldChildren.length; i++) {
+			if (oldChildren[i].tempKey === newChildren[j].tempKey) {
 				__found = true;
 				break;
 			}
 		}
 
 		// new child was not found
-		if (!__found)
-		{
+		if (!__found) {
 			// create patch for insert
-			patches.push(
-			{
+			patches.push({
 				type: PATCH_INSERT,
 				index: newChildren[j].index,
 				node: newChildren[j]
@@ -255,9 +220,8 @@ function diffChildren(oldChildren, newChildren, patches)
 }
 
 // differences between trees
-function diffAshDOM(oldVirtualDOM, newVirtualDOM)
-{
-	return walkDiffVirtualDOMs(oldVirtualDOM, newVirtualDOM, []);
+function diffAshNodeTree(oldAshNodeTree, newAshNodeTree) {
+	return walk(oldAshNodeTree, newAshNodeTree);
 }
 
-module.exports = diffAshDOM;
+module.exports = diffAshNodeTree;

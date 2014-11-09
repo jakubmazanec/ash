@@ -88,9 +88,9 @@ class Timer extends ash.Component {
 		//console.log('Timer onBeforeMount');
 	}
 
-	shouldUpdate () {
-		//return false;
-	}
+	/*shouldUpdate () {
+		return false;
+	}*/
 
 	render() {
 		return ash.e('div', null, [		
@@ -111,7 +111,7 @@ class Timer extends ash.Component {
 
 var timer = window.timer = ash.createFactory(Timer);
 
-Renderer.registerComponent(timer(), $('.page-content')[0]);
+Renderer.addComponent(timer(), $('.page-content')[0]);
 
 
 

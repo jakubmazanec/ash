@@ -6,56 +6,56 @@ var constants = require('../internal/constants');
 
 var LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
 
-function walkMountComponents(descriptor)
+function walk(ashElement)
 {
 	var i;
 
-	if (isAshNodeAshElement(descriptor))
+	if (isAshNodeAshElement(ashElement))
 	{
-		for (i = 0; i < descriptor.children.length; i++)
+		for (i = 0; i < ashElement.children.length; i++)
 		{
-			if (descriptor.children[i])
+			if (ashElement.children[i])
 			{
 				// walk the child
-				walkMountComponents(descriptor.children[i]);
+				walk(ashElement.children[i]);
 			}
 		}
-	} else if (isComponentAshElement(descriptor))
+	} else if (isComponentAshElement(ashElement))
 	{
-		if (descriptor.instance && descriptor.instance.__lifecycle == LIFECYCLE_MOUNTING)
+		if (ashElement.instance && ashElement.instance.__lifecycle == LIFECYCLE_MOUNTING)
 		{
-			descriptor.instance.mount();
+			ashElement.instance.mount();
 		}
 
 		// walk the child
-		if (descriptor.children[0])
+		if (ashElement.children[0])
 		{
-			walkMountComponents(descriptor.children[0]);
+			walk(ashElement.children[0]);
 		}
 	}
 }
 
-function mountComponents(rootDescriptor)
+function mountComponents(componentAshElement)
 {
 	// type check
-	if (!isComponentAshElement(rootDescriptor))
+	if (!isComponentAshElement(componentAshElement))
 	{
-		throw new Error(rootDescriptor + ' must be a Component type AshElement object.');
+		throw new Error(componentAshElement + ' must be a Component type AshElement object.');
 	}
 
-	if (rootDescriptor.instance && rootDescriptor.instance.__lifecycle == LIFECYCLE_MOUNTING)
+	if (componentAshElement.instance && componentAshElement.instance.__lifecycle == LIFECYCLE_MOUNTING)
 	{
-		rootDescriptor.instance.mount();
+		componentAshElement.instance.mount();
 	}
 
-	if (rootDescriptor.children[0])
+	if (componentAshElement.children[0])
 	{
 		// walk the child
-		walkMountComponents(rootDescriptor.children[0]);
+		walk(componentAshElement.children[0]);
 	}
 
-	// return resulting descriptor tree 
-	return rootDescriptor;
+	// return resulting componentAshElement tree 
+	return componentAshElement;
 }
 
 module.exports = mountComponents;

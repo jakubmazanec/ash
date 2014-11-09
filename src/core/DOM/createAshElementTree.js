@@ -9,125 +9,130 @@ var constants = require('../internal/constants');
 var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
 var LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
 
-function createAshElementTree(rootDescriptor, stage, startingId, startingLevel)
+function walk(ashElement, index, owner, lastLevel)
 {
-	function walk(descriptor, index, owner, lastLevel)
-	{
-		var i;
-
-		// type check
-		if (!isComponentAshElement(owner))
-		{
-			throw new Error(owner + ' must be a Component type AshElement Object');
-		}
-
-		if (isAshNodeAshElement(descriptor))
-		{
-			// instantiate descriptor
-			descriptor.instantiate();
-
-			// set up ordering properties
-			descriptor.level = lastLevel + LEVEL_SEPARATOR + index;
-			descriptor.order = index;
-
-			// set up owner & stage
-			descriptor.owner = owner;
-			descriptor.stage = stage;
-
-			for (i = 0; i < descriptor.children.length; i++)
-			{
-				if (descriptor.children[i])
-				{
-					// set up parent
-					descriptor.children[i].parent = descriptor;
-
-					// walk the child
-					walk(descriptor.children[i], i, owner, descriptor.level);
-				}
-			}
-		} else if (isComponentAshElement(descriptor))
-		{
-			// instantiate descriptor
-			descriptor.instantiate();
-
-			// set up ordering properties
-			descriptor.level = lastLevel + LEVEL_SEPARATOR + index;
-			descriptor.order = index;
-
-			// set up owner
-			descriptor.owner = owner;
-			descriptor.stage = stage;
-
-			// create child by rendering component
-			descriptor.instance.onBeforeMount();
-			descriptor.instance.__setLifecycle(LIFECYCLE_MOUNTING);
-			descriptor.children[0] = descriptor.instance.__getRender();
-			
-			if (descriptor.children[0])
-			{
-				// set up parent
-				descriptor.children[0].parent = descriptor;
-
-				// walk the child
-				walk(descriptor.children[0], 0, descriptor, descriptor.level);
-			}
-		}
-	}
+	var i;
 
 	// type check
-	if (!isAshElement(rootDescriptor))
+	if (!isComponentAshElement(owner))
 	{
-		throw new Error(rootDescriptor + ' must be a AshElement object.');
+		throw new Error(owner + ' must be a Component type AshElement Object');
+	}
+
+	if (isAshNodeAshElement(ashElement))
+	{
+		// instantiate ashElement
+		ashElement.instantiate();
+
+		// set up ordering properties
+		ashElement.level = lastLevel + LEVEL_SEPARATOR + index;
+		ashElement.order = index;
+
+		// set up owner & stage
+		ashElement.owner = owner;
+		ashElement.stage = owner.stage;
+
+		for (i = 0; i < ashElement.children.length; i++)
+		{
+			if (ashElement.children[i])
+			{
+				// set up parent
+				ashElement.children[i].parent = ashElement;
+
+				// walk the child
+				walk(ashElement.children[i], i, owner, ashElement.level);
+			}
+		}
+	} else if (isComponentAshElement(ashElement))
+	{
+		// instantiate ashElement
+		ashElement.instantiate();
+
+		// set up ordering properties
+		ashElement.level = lastLevel + LEVEL_SEPARATOR + index;
+		ashElement.order = index;
+
+		// set up owner
+		ashElement.owner = owner;
+		ashElement.stage = owner.stage;
+
+		// create child by rendering component
+		ashElement.instance.onBeforeMount();
+		ashElement.instance.__setLifecycle(LIFECYCLE_MOUNTING);
+		ashElement.children[0] = ashElement.instance.__getRender();
+		
+		if (ashElement.children[0])
+		{
+			// set up parent
+			ashElement.children[0].parent = ashElement;
+
+			// walk the child
+			walk(ashElement.children[0], 0, ashElement, ashElement.level);
+		}
+	}
+}
+
+function createAshElementTree(rootAshElement, stage, startingLevel)
+{
+	// type check
+	if (!isAshElement(rootAshElement))
+	{
+		throw new Error(rootAshElement + ' must be a AshElement object.');
+	}
+
+	if (!stage)
+	{
+		throw new Error(stage + ' must be an object.');
 	}
 
 	startingLevel = _.isString(startingLevel) ? startingLevel : '0';
 
-	var descriptorTree = rootDescriptor;
+	var ashElementTree = rootAshElement;
 	var i;
 
-	descriptorTree.stage = stage;
+	ashElementTree.stage = stage;
+	ashElementTree.isRoot = true;
 
-	if (isComponentAshElement(descriptorTree))
+	if (isComponentAshElement(ashElementTree))
 	{
 		// instantiate descriptor
-		descriptorTree.instantiate();
+		ashElementTree.instantiate();
 
 		// set up ordering properties
-		descriptorTree.level = startingLevel;
-		descriptorTree.order = typeof descriptorTree.order === 'undefined' ? 0 : descriptorTree.order;
+		ashElementTree.level = startingLevel;
+		ashElementTree.order = typeof ashElementTree.order === 'undefined' ? 0 : ashElementTree.order;
 
 		// create child by rendering component
-		descriptorTree.instance.onBeforeMount();
-		descriptorTree.children[0] = descriptorTree.instance.__getRender();
-		descriptorTree.instance.__setLifecycle(LIFECYCLE_MOUNTING);
+		ashElementTree.instance.onBeforeMount();
+		ashElementTree.children[0] = ashElementTree.instance.__getRender();
+		ashElementTree.instance.__setLifecycle(LIFECYCLE_MOUNTING);
 
 		// set up a parent
-		descriptorTree.children[0].parent = descriptorTree;
-
+		ashElementTree.children[0].parent = ashElementTree;
 
 		// walk the child
-		walk(descriptorTree.children[0], 0, descriptorTree, descriptorTree.level);
+		walk(ashElementTree.children[0], 0, ashElementTree, ashElementTree.level);
 	} else
 	{
 		// instantiate descriptor
-		descriptorTree.instantiate();
+		ashElementTree.instantiate();
 
 		// set up ordering properties
-		descriptorTree.level = startingLevel;
-		descriptorTree.order = typeof descriptorTree.order === 'undefined' ? 0 : descriptorTree.order;
+		ashElementTree.level = startingLevel;
+		ashElementTree.order = typeof ashElementTree.order === 'undefined' ? 0 : ashElementTree.order;
 
-		for (i = 0; i < descriptorTree.children.length; i++)
+		for (i = 0; i < ashElementTree.children.length; i++)
 		{
 			// set up a parent
-			descriptorTree.children[i].parent = descriptorTree;
+			ashElementTree.children[i].parent = ashElementTree;
 
 			// walk the child
-			walk(descriptorTree.children[i], i, descriptorTree.owner, descriptorTree.level);
+			walk(ashElementTree.children[i], i, ashElementTree.owner, ashElementTree.level);
 		}
 	}
 
 	// return resulting descriptor tree 
-	return descriptorTree;
+	return ashElementTree;
 }
 
 module.exports = createAshElementTree;

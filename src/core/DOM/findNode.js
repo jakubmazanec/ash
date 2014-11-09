@@ -3,7 +3,7 @@
 var parseAshNodeIndex = require('./parseAshNodeIndex');
 
 function findNode(nodeTree, nodeIndex) {
-	var parsedNodeIndex = parseAshNodeIndex(nodeIndex);
+	var parsedAshNodeIndex = parseAshNodeIndex(nodeIndex);
 	var node = nodeTree;
 	var i;
 
@@ -11,15 +11,15 @@ function findNode(nodeTree, nodeIndex) {
 		throw new Error(nodeTree + ' cannot be falsy.');
 	}
 
-	if (parsedNodeIndex.length == 1) {
+	if (parsedAshNodeIndex.length == 1) {
 		return node;
-	} else if (parsedNodeIndex.length) {
-		for (i = 1; i < parsedNodeIndex.length; i++) {
+	} else if (parsedAshNodeIndex.length) {
+		for (i = 1; i < parsedAshNodeIndex.length; i++) {
 			if (!node) {
 				return false;
 			}
 
-			node = node.childNodes[parsedNodeIndex[i]];
+			node = node.childNodes[parsedAshNodeIndex[i]];
 		}
 
 		return node;

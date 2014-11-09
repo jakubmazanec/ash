@@ -7,7 +7,6 @@ var constants = require('../internal/constants');
 var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
 
 var createFactory = function (Component) {
-	console.log(Component);
 	var ComponentElementFactory = AshElement.bind(null, COMPONENT_ASH_ELEMENT, Component);
 
 	ComponentElementFactory.spec = Component;
