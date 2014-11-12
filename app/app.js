@@ -115,6 +115,39 @@ Renderer.addComponent(timer(), $('.page-content')[0]);
 
 
 
+class BarAction extends ash.Action {
+	onTrigger(value)
+	{
+		return value * 2;
+	}
+}
+
+
+
+
+var fooObservable = window.fooObservable = new ash.Observable();
+var barAction = window.barAction = new BarAction();
+
+fooObservable.name = 'fooObservable';
+barAction.name = 'barAction';
+
+function report()
+{
+	console.log('reporting argument 1: ', arguments[0], ' and 2: ', arguments[1]);
+	console.log('this is ', this);
+}
+
+function reportAll()
+{
+	console.log('reporting all arguments: ', arguments);
+	console.log('this is ', this);
+}
+
+fooObservable.observe(barAction, '*', report);
+
+barAction.trigger(42, 47);
+
+
 
 
 

@@ -1,10 +1,10 @@
 'use strict';
 var types = [
-  require('./setImmediate/nextTick'),
-  require('./setImmediate/mutation.js'),
-  require('./setImmediate/messageChannel'),
-  require('./setImmediate/stateChange'),
-  require('./setImmediate/timeout')
+  require('./immediate/nextTick'),
+  require('./immediate/mutation.js'),
+  require('./immediate/messageChannel'),
+  require('./immediate/stateChange'),
+  require('./immediate/timeout')
 ];
 var draining;
 var queue = [];

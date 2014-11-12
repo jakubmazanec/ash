@@ -216,6 +216,52 @@ Renderer.addComponent(timer(), $('.page-content')[0]);
 
 
 
+var BarAction = function(ash) {
+  var BarAction = function BarAction() {
+    ash.Action.apply(this, arguments);
+  };
+
+  _extends(BarAction, ash.Action);
+
+  Object.defineProperties(BarAction.prototype, {
+    onTrigger: {
+      writable: true,
+
+      value: function(value) {
+          return value * 2;
+      }
+    }
+  });
+
+  return BarAction;
+}(ash);
+
+
+
+
+var fooObservable = window.fooObservable = new ash.Observable();
+var barAction = window.barAction = new BarAction();
+
+fooObservable.name = 'fooObservable';
+barAction.name = 'barAction';
+
+function report()
+{
+    console.log('reporting argument 1: ', arguments[0], ' and 2: ', arguments[1]);
+    console.log('this is ', this);
+}
+
+function reportAll()
+{
+    console.log('reporting all arguments: ', arguments);
+    console.log('this is ', this);
+}
+
+fooObservable.observe(barAction, '*', report);
+
+barAction.trigger(42, 47);
+
+
 
 
 
@@ -261,12 +307,12 @@ router.start();*/
 // Renderer.registerComponent(todoApp, $('.page-content')[0]);
 
 
-},{"./ash":2,"_":101,"jquery":264}],2:[function(require,module,exports){
+},{"./ash":2,"_":101,"jquery":265}],2:[function(require,module,exports){
 "use strict";
 var ash = require('../src/index');
 
 module.exports = ash;
-},{"../src/index":291}],3:[function(require,module,exports){
+},{"../src/index":300}],3:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -14095,6 +14141,71 @@ function uuid()
 //return __uuid4;
 module.exports = e7;
 },{}],264:[function(require,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+
+process.nextTick = (function () {
+    var canSetImmediate = typeof window !== 'undefined'
+    && window.setImmediate;
+    var canPost = typeof window !== 'undefined'
+    && window.postMessage && window.addEventListener
+    ;
+
+    if (canSetImmediate) {
+        return function (f) { return window.setImmediate(f) };
+    }
+
+    if (canPost) {
+        var queue = [];
+        window.addEventListener('message', function (ev) {
+            var source = ev.source;
+            if ((source === window || source === null) && ev.data === 'process-tick') {
+                ev.stopPropagation();
+                if (queue.length > 0) {
+                    var fn = queue.shift();
+                    fn();
+                }
+            }
+        }, true);
+
+        return function nextTick(fn) {
+            queue.push(fn);
+            window.postMessage('process-tick', '*');
+        };
+    }
+
+    return function nextTick(fn) {
+        setTimeout(fn, 0);
+    };
+})();
+
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+}
+
+// TODO(shtylman)
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+
+},{}],265:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.1
  * http://jquery.com/
@@ -23286,7 +23397,7 @@ return jQuery;
 
 }));
 
-},{}],265:[function(require,module,exports){
+},{}],266:[function(require,module,exports){
 'use strict';
 
 var _ = require('_');
@@ -23425,7 +23536,7 @@ function createAshElementTree(rootAshElement, stage, startingLevel)
 }
 
 module.exports = createAshElementTree;
-},{"../internal/constants":283,"../internal/isAshElement":286,"../internal/isAshNodeAshElement":288,"../internal/isComponentAshElement":290,"_":101}],266:[function(require,module,exports){
+},{"../internal/constants":286,"../internal/isAshElement":289,"../internal/isAshNodeAshElement":291,"../internal/isComponentAshElement":293,"_":101}],267:[function(require,module,exports){
 'use strict';
 
 var isComponentAshElement = require('../internal/isComponentAshElement');
@@ -23522,7 +23633,7 @@ function createAshDOM(componentAshElement)
 }
 
 module.exports = createAshDOM;
-},{"../internal/constants":283,"../internal/isAshNode":287,"../internal/isAshNodeAshElement":288,"../internal/isAshTextNode":289,"../internal/isComponentAshElement":290}],267:[function(require,module,exports){
+},{"../internal/constants":286,"../internal/isAshNode":290,"../internal/isAshNodeAshElement":291,"../internal/isAshTextNode":292,"../internal/isComponentAshElement":293}],268:[function(require,module,exports){
 'use strict';
 
 var isAshNode = require('../internal/isAshNode');
@@ -23588,7 +23699,7 @@ function createNodeTree(ashNodeTree)
 }
 
 module.exports = createNodeTree;
-},{"../internal/constants":283,"../internal/isAshNode":287,"../internal/isAshTextNode":289,"./setNodeProperties":273}],268:[function(require,module,exports){
+},{"../internal/constants":286,"../internal/isAshNode":290,"../internal/isAshTextNode":292,"./setNodeProperties":274}],269:[function(require,module,exports){
 'use strict';
 
 var _ = require('_');
@@ -23816,7 +23927,7 @@ function diffAshNodeTree(oldAshNodeTree, newAshNodeTree) {
 }
 
 module.exports = diffAshNodeTree;
-},{"../internal/constants":283,"./parseAshNodeIndex":271,"_":101}],269:[function(require,module,exports){
+},{"../internal/constants":286,"./parseAshNodeIndex":272,"_":101}],270:[function(require,module,exports){
 'use strict';
 
 var parseAshNodeIndex = require('./parseAshNodeIndex');
@@ -23848,7 +23959,7 @@ function findNode(nodeTree, nodeIndex) {
 }
 
 module.exports = findNode;
-},{"./parseAshNodeIndex":271}],270:[function(require,module,exports){
+},{"./parseAshNodeIndex":272}],271:[function(require,module,exports){
 'use strict';
 
 var isComponentAshElement = require('../internal/isComponentAshElement');
@@ -23910,7 +24021,7 @@ function mountComponents(componentAshElement)
 }
 
 module.exports = mountComponents;
-},{"../internal/constants":283,"../internal/isAshNodeAshElement":288,"../internal/isComponentAshElement":290}],271:[function(require,module,exports){
+},{"../internal/constants":286,"../internal/isAshNodeAshElement":291,"../internal/isComponentAshElement":293}],272:[function(require,module,exports){
 'use strict';
 
 var _ = require('_');
@@ -23923,7 +24034,7 @@ function parseAshNodeIndex(value)
 }
 
 module.exports = parseAshNodeIndex;
-},{"_":101}],272:[function(require,module,exports){
+},{"_":101}],273:[function(require,module,exports){
 'use strict';
 
 var _ = require('_');
@@ -24165,7 +24276,7 @@ function patchNodeTree(domTree, patches) {
 }
 
 module.exports = patchNodeTree;
-},{"../class/DOMEvents":277,"../dom/findNode":279,"../dom/removeNodeProperties":281,"../dom/setNodeProperties":282,"../internal/constants":283,"./createNodeTree":267,"./parseAshNodeIndex":271,"_":101}],273:[function(require,module,exports){
+},{"../class/DOMEvents":279,"../dom/findNode":282,"../dom/removeNodeProperties":284,"../dom/setNodeProperties":285,"../internal/constants":286,"./createNodeTree":268,"./parseAshNodeIndex":272,"_":101}],274:[function(require,module,exports){
 'use strict';
 
 var _ = require('_');
@@ -24211,7 +24322,125 @@ function setNodeProperties(node, properties)
 }
 
 module.exports = setNodeProperties;
-},{"../class/DOMEvents":277,"_":101,"jquery":264}],274:[function(require,module,exports){
+},{"../class/DOMEvents":279,"_":101,"jquery":265}],275:[function(require,module,exports){
+"use strict";
+
+var _extends = function(child, parent) {
+  child.prototype = Object.create(parent.prototype, {
+    constructor: {
+      value: child,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+
+  child.__proto__ = parent;
+};
+
+'use strict';
+
+var _ = require('_');
+var Observable = require('./Observable');
+
+var Action = function(Observable) {
+  var Action = function Action() {
+    Observable.apply(this, arguments);
+  };
+
+  _extends(Action, Observable);
+
+  Object.defineProperties(Action.prototype, {
+    trigger: {
+      writable: true,
+
+      value: function() {
+          var action = this;
+  
+          if (typeof action.onTrigger === 'function') {
+              Observable.prototype.trigger.call(
+                this,
+                '*',
+                action.onTrigger.apply(action, arguments),
+                {noEventArgument: true}
+              );
+          } else {
+              if (arguments.length == 5) {
+                  Observable.prototype.trigger.call(
+                    this,
+                    '*',
+                    arguments[0],
+                    arguments[1],
+                    arguments[2],
+                    arguments[3],
+                    arguments[4],
+                    {noEventArgument: true}
+                  );
+              } else if (arguments.length == 4) {
+                  Observable.prototype.trigger.call(
+                    this,
+                    '*',
+                    arguments[0],
+                    arguments[1],
+                    arguments[2],
+                    arguments[3],
+                    {noEventArgument: true}
+                  );
+              } else if (arguments.length == 3) {
+                  Observable.prototype.trigger.call(
+                    this,
+                    '*',
+                    arguments[0],
+                    arguments[1],
+                    arguments[2],
+                    {noEventArgument: true}
+                  );
+              } else if (arguments.length == 2) {
+                  Observable.prototype.trigger.call(this, '*', arguments[0], arguments[1], {noEventArgument: true});
+              } else if (arguments.length) {
+                  Observable.prototype.trigger.call(this, '*', arguments[0], {noEventArgument: true});
+              } else {
+                  Observable.prototype.trigger.call(this, '*', {noEventArgument: true});
+              }
+          }
+  
+          return action;
+      }
+    }
+  });
+
+  return Action;
+}(Observable);
+
+/*var Action = Construct.extend(
+{
+    constructor: function (action)
+    {
+        if (_.isFunction(action))
+        {
+            this.action = action;
+        }
+    },
+
+    trigger: function ()
+    {
+        var result;
+
+        if (this.action)
+        {
+            return events.trigger.call(this, this.action.apply(this, arguments));
+        } else 
+        {
+            return events.trigger.apply(this, arguments);	
+        }
+    }
+},
+{
+    extendable: false
+});*/
+
+module.exports = Action;
+},{"./Observable":280,"_":101}],276:[function(require,module,exports){
 'use strict';
 
 var constants = require('../internal/constants');
@@ -24319,7 +24548,7 @@ var AshElement = function() {
 }();
 
 module.exports = AshElement;
-},{"../internal/constants":283}],275:[function(require,module,exports){
+},{"../internal/constants":286}],277:[function(require,module,exports){
 'use strict';
 
 var _ = require('_');
@@ -24360,7 +24589,7 @@ var AshNode = function() {
 }();
 
 module.exports = AshNode;
-},{"../internal/constants":283,"./AshElement":274,"_":101}],276:[function(require,module,exports){
+},{"../internal/constants":286,"./AshElement":276,"_":101}],278:[function(require,module,exports){
 'use strict';
 
 var _ = require('_');
@@ -24584,7 +24813,7 @@ var Component = function() {
 }();
 
 module.exports = Component;
-},{"../DOM/findNode":269,"../internal/constants":283,"_":101}],277:[function(require,module,exports){
+},{"../DOM/findNode":270,"../internal/constants":286,"_":101}],279:[function(require,module,exports){
 "use strict";
 'use strict!';
 
@@ -24775,7 +25004,183 @@ var DOMEvents = function() {
 }();
 
 module.exports = DOMEvents;
-},{"../DOM/parseAshNodeIndex":271,"../internal/constants":283,"_":101,"jquery":264}],278:[function(require,module,exports){
+},{"../DOM/parseAshNodeIndex":272,"../internal/constants":286,"_":101,"jquery":265}],280:[function(require,module,exports){
+(function (global){
+"use strict";
+'use strict!';
+
+var _ = require('_');
+var immediate = require('../polyfill/immediate');
+
+// Regular expressions used to split event name strings
+// one or more space
+var REGEX_TOPIC = /\s+/;
+// dot , or forward slash
+var REGEX_CATEGORY = /\.|\//;
+
+var store = global.store = {};
+
+var Observable = function() {
+  var Observable = function Observable() {
+      if (!(this instanceof Observable))
+      {
+          return new Observable();
+      }
+
+      return this;
+	};
+
+  Object.defineProperties(Observable.prototype, {
+    observe: {
+      writable: true,
+
+      value: function() {
+          var observable = this;
+          var object = arguments[0];
+          var events = arguments[1];
+          var callback = arguments[2];
+          var context = arguments[3];
+          var i;
+  
+          if (!_.isObject(object)) {
+              throw new Error(object + ' must be an object.');
+          }
+  
+          // events string is missing, we will use '*', and juggle the remaining arguments
+          if (_.isFunction(events)) {
+              context = callback;
+              callback = events;
+              events = '*';
+          }
+  
+          if (!_.isFunction(callback)) {
+              throw new Error(callback + ' must be a function.');
+          }
+  
+          if (typeof context !== 'undefined' && !_.isObject(context)) {
+              throw new Error(context + ' must be an object.');
+          }
+  
+          events = _.isString(events) ? events.trim().split(REGEX_TOPIC) : ['*'];
+  
+          for (i = 0; i < events.length; i++) {
+              if (!store[events[i]]) {
+                  store[events[i]] = {
+                      name: events[i],
+                      categories: events[i].split(REGEX_CATEGORY),
+                      observables: []
+                  };
+              }
+  
+              store[events[i]].observables.push({				
+                  observable: observable,
+                  observed: object,
+                  callback: callback,
+                  context: context || null
+              });
+          }
+  
+          return observable;
+      }
+    },
+
+    unobserve: {
+      writable: true,
+
+      value: function() {
+          var observable = this;
+          var object = arguments[0];
+          var events = arguments[1];
+          var callback = arguments[2];
+          var context = arguments[3];
+          var i, j, key;
+  
+          // events string is missing, we will use '*', and juggle the remaining arguments
+          if (_.isFunction(events)) {
+              context = callback;
+              callback = events;
+              events = '*';
+          }
+  
+          events = _.isString(events) ? events.trim().split(REGEX_TOPIC) : ['*'];
+  
+          for (i = 0; i < events.length; i++) {
+              for (key in store) {
+                  if (store.hasOwnProperty(key) && (store[key] == events[i] || events[i] == '*')) {
+                      for (j = 0; j < store[key].observables.length; j++) {					
+                          // we can remove only this observable
+                          if (store[key].observables[j].observable == observable) {
+                              if ((!object || store[key].observables[j].observed == object) && (!callback || store[key].observables[j].callback == callback) && (!context || store[key].observables[j].context == context)) {
+                                  // remove observable from the store
+                                  store[key].observables.splice(j, 1);
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+  
+          return observable;
+      }
+    },
+
+    trigger: {
+      writable: true,
+
+      value: function() {
+          var observable = this;
+          var events = _.isString(arguments[0]) ? arguments[0].trim().split(REGEX_TOPIC) : ['*'];
+          var data = [];
+          var async = arguments.length > 1 && _.isPlainObject(arguments[arguments.length - 1]) && arguments[arguments.length - 1].async ? true : false;
+          var noEventArgument = arguments.length > 1 && _.isPlainObject(arguments[arguments.length - 1]) && arguments[arguments.length - 1].noEventArgument ? true : false;
+          var categories;
+          var i, j, k;
+  
+          for (i = 1; i < (async || noEventArgument ? arguments.length - 1 : arguments.length); i++)
+          {
+              data.push(arguments[i]);
+          }
+  
+          function trigger()
+          {
+              for (i = 0; i < events.length; i++) {
+                  categories = events[i].split(REGEX_CATEGORY);
+  
+                  for (j in store) {
+                      if (store.hasOwnProperty(j) && (_.isMatching(store[j].categories, categories) || store[j].name == '*' || events[i] == '*')) {
+                          for (k = 0; k < store[j].observables.length; k++) {
+                              if (observable == store[j].observables[k].observed) {
+                                  if (!noEventArgument) {
+                                      data = [{
+                                          type: events[i]
+                                      }].concat(data);
+                                  }
+  
+                                  store[j].observables[k].callback.apply(store[j].observables[k].context || store[j].observables[k].observable, data);
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+  
+          if (async) {
+              setImmediate(trigger);
+          } else {
+              trigger();
+          }
+  
+          return observable;
+      }
+    }
+  });
+
+  return Observable;
+}();
+
+module.exports = Observable;
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"../polyfill/immediate":294,"_":101}],281:[function(require,module,exports){
 'use strict';
 
 var _ = require('_');
@@ -25302,11 +25707,11 @@ function updateComponentAshElement(componentAshElement) {
 }*/
 
 module.exports = Renderer;
-},{"../DOM/createAshElementTree":265,"../DOM/createAshNodeTree":266,"../DOM/createNodeTree":267,"../DOM/diffAshNodeTree":268,"../DOM/mountComponents":270,"../DOM/patchNodeTree":272,"../internal/constants":283,"../internal/isAshNodeAshElement":288,"../internal/isComponentAshElement":290,"_":101,"jquery":264}],279:[function(require,module,exports){
-module.exports=require(269)
-},{"./parseAshNodeIndex":280,"d:\\projects\\ash\\src\\core\\DOM\\findNode.js":269}],280:[function(require,module,exports){
-module.exports=require(271)
-},{"_":101,"d:\\projects\\ash\\src\\core\\DOM\\parseAshNodeIndex.js":271}],281:[function(require,module,exports){
+},{"../DOM/createAshElementTree":266,"../DOM/createAshNodeTree":267,"../DOM/createNodeTree":268,"../DOM/diffAshNodeTree":269,"../DOM/mountComponents":271,"../DOM/patchNodeTree":273,"../internal/constants":286,"../internal/isAshNodeAshElement":291,"../internal/isComponentAshElement":293,"_":101,"jquery":265}],282:[function(require,module,exports){
+module.exports=require(270)
+},{"./parseAshNodeIndex":283,"d:\\projects\\ash\\src\\core\\DOM\\findNode.js":270}],283:[function(require,module,exports){
+module.exports=require(272)
+},{"_":101,"d:\\projects\\ash\\src\\core\\DOM\\parseAshNodeIndex.js":272}],284:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -25349,9 +25754,9 @@ function removeNodeProperties(node, properties)
 }
 
 module.exports = removeNodeProperties;
-},{"../class/DOMEvents":277,"jquery":264}],282:[function(require,module,exports){
-module.exports=require(273)
-},{"../class/DOMEvents":277,"_":101,"d:\\projects\\ash\\src\\core\\DOM\\setNodeProperties.js":273,"jquery":264}],283:[function(require,module,exports){
+},{"../class/DOMEvents":279,"jquery":265}],285:[function(require,module,exports){
+module.exports=require(274)
+},{"../class/DOMEvents":279,"_":101,"d:\\projects\\ash\\src\\core\\DOM\\setNodeProperties.js":274,"jquery":265}],286:[function(require,module,exports){
 'use strict';
 
 var constants = {
@@ -25385,7 +25790,7 @@ var constants = {
 };
 
 module.exports = constants;
-},{}],284:[function(require,module,exports){
+},{}],287:[function(require,module,exports){
 'use strict';
 
 var AshNode = require('../class/AshNode');
@@ -25434,7 +25839,7 @@ var createElement = function (tagName/*, props, children*/) {
 };
 
 module.exports = createElement;
-},{"../class/AshElement":274,"../class/AshNode":275,"../internal/constants":283,"../internal/isAshElement":286}],285:[function(require,module,exports){
+},{"../class/AshElement":276,"../class/AshNode":277,"../internal/constants":286,"../internal/isAshElement":289}],288:[function(require,module,exports){
 'use strict';
 
 var AshElement = require('../class/AshElement');
@@ -25452,7 +25857,7 @@ var createFactory = function (Component) {
 };
 
 module.exports = createFactory;
-},{"../class/AshElement":274,"../internal/constants":283}],286:[function(require,module,exports){
+},{"../class/AshElement":276,"../internal/constants":286}],289:[function(require,module,exports){
 'use strict';
 
 var constants = require('./constants');
@@ -25466,7 +25871,7 @@ function isAshElement(value)
 }
 
 module.exports = isAshElement;
-},{"./constants":283}],287:[function(require,module,exports){
+},{"./constants":286}],290:[function(require,module,exports){
 'use strict';
 
 var constants = require('./constants');
@@ -25479,7 +25884,7 @@ function isAshNode(value)
 }
 
 module.exports = isAshNode;
-},{"./constants":283}],288:[function(require,module,exports){
+},{"./constants":286}],291:[function(require,module,exports){
 'use strict';
 
 var constants = require('./constants');
@@ -25492,7 +25897,7 @@ function isAshNodeAshElement(value)
 }
 
 module.exports = isAshNodeAshElement;
-},{"./constants":283}],289:[function(require,module,exports){
+},{"./constants":286}],292:[function(require,module,exports){
 'use strict';
 
 var constants = require('./constants');
@@ -25505,7 +25910,7 @@ function isAshTextNode(value)
 }
 
 module.exports = isAshTextNode;
-},{"./constants":283}],290:[function(require,module,exports){
+},{"./constants":286}],293:[function(require,module,exports){
 'use strict';
 
 var constants = require('./constants');
@@ -25518,14 +25923,156 @@ function isComponentAshElement(value)
 }
 
 module.exports = isComponentAshElement;
-},{"./constants":283}],291:[function(require,module,exports){
+},{"./constants":286}],294:[function(require,module,exports){
+'use strict';
+var types = [
+  require('./immediate/nextTick'),
+  require('./immediate/mutation.js'),
+  require('./immediate/messageChannel'),
+  require('./immediate/stateChange'),
+  require('./immediate/timeout')
+];
+var draining;
+var queue = [];
+//named nextTick for less confusing stack traces
+function nextTick() {
+  draining = true;
+  var i, oldQueue;
+  var len = queue.length;
+  while (len) {
+    oldQueue = queue;
+    queue = [];
+    i = -1;
+    while (++i < len) {
+      oldQueue[i]();
+    }
+    len = queue.length;
+  }
+  draining = false;
+}
+var scheduleDrain;
+var i = -1;
+var len = types.length;
+while (++ i < len) {
+  if (types[i] && types[i].test && types[i].test()) {
+    scheduleDrain = types[i].install(nextTick);
+    break;
+  }
+}
+module.exports = immediate;
+function immediate(task) {
+  if (queue.push(task) === 1 && !draining) {
+    scheduleDrain();
+  }
+}
+},{"./immediate/messageChannel":295,"./immediate/mutation.js":296,"./immediate/nextTick":297,"./immediate/stateChange":298,"./immediate/timeout":299}],295:[function(require,module,exports){
+(function (global){
+'use strict';
+
+exports.test = function () {
+  if (global.setImmediate) {
+    // we can only get here in IE10
+    // which doesn't handel postMessage well
+    return false;
+  }
+  return typeof global.MessageChannel !== 'undefined';
+};
+
+exports.install = function (func) {
+  var channel = new global.MessageChannel();
+  channel.port1.onmessage = func;
+  return function () {
+    channel.port2.postMessage(0);
+  };
+};
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],296:[function(require,module,exports){
+(function (global){
+'use strict';
+//based off rsvp https://github.com/tildeio/rsvp.js
+//license https://github.com/tildeio/rsvp.js/blob/master/LICENSE
+//https://github.com/tildeio/rsvp.js/blob/master/lib/rsvp/asap.js
+
+var Mutation = global.MutationObserver || global.WebKitMutationObserver;
+
+exports.test = function () {
+  return Mutation;
+};
+
+exports.install = function (handle) {
+  var called = 0;
+  var observer = new Mutation(handle);
+  var element = global.document.createTextNode('');
+  observer.observe(element, {
+    characterData: true
+  });
+  return function () {
+    element.data = (called = ++called % 2);
+  };
+};
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],297:[function(require,module,exports){
+(function (process){
+'use strict';
+exports.test = function () {
+  // Don't get fooled by e.g. browserify environments.
+  return process && !process.browser;
+};
+
+exports.install = function (func) {
+  return function () {
+    process.nextTick(func);
+  };
+};
+}).call(this,require('_process'))
+},{"_process":264}],298:[function(require,module,exports){
+(function (global){
+'use strict';
+
+exports.test = function () {
+  return 'document' in global && 'onreadystatechange' in global.document.createElement('script');
+};
+
+exports.install = function (handle) {
+  return function () {
+
+    // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
+    // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
+    var scriptEl = global.document.createElement('script');
+    scriptEl.onreadystatechange = function () {
+      handle();
+
+      scriptEl.onreadystatechange = null;
+      scriptEl.parentNode.removeChild(scriptEl);
+      scriptEl = null;
+    };
+    global.document.documentElement.appendChild(scriptEl);
+
+    return handle;
+  };
+};
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],299:[function(require,module,exports){
+'use strict';
+exports.test = function () {
+  return true;
+};
+
+exports.install = function (t) {
+  return function () {
+    setTimeout(t, 0);
+  };
+};
+},{}],300:[function(require,module,exports){
 'use strict';
 
 var _ = require('_');
 var $ = require('jquery');
 
+var Observable = require('./core/class/Observable');
 var Component = require('./core/class/Component');
 var Renderer = require('./core/class/Renderer');
+var Action = require('./core/class/Action');
 var createElement = require('./core/internal/createElement');
 var createFactory = require('./core/internal/createFactory');
 
@@ -25534,12 +26081,14 @@ var ash = {};
 var VERSION = '0.1.0';
 
 _.assign(ash, {
+    'Observable': Observable,
     'Component': Component,
     'Renderer': Renderer,
+    'Action': Action,
 
     'e': createElement,
     'createFactory': createFactory
 });
 
 module.exports = ash;
-},{"./core/class/Component":276,"./core/class/Renderer":278,"./core/internal/createElement":284,"./core/internal/createFactory":285,"_":101,"jquery":264}]},{},[1]);
+},{"./core/class/Action":275,"./core/class/Component":278,"./core/class/Observable":280,"./core/class/Renderer":281,"./core/internal/createElement":287,"./core/internal/createFactory":288,"_":101,"jquery":265}]},{},[1]);
