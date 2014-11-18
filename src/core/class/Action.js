@@ -3,57 +3,34 @@
 var _ = require('_');
 var Observable = require('./Observable');
 
+var triggerOptions = {
+	noEventArgument: true
+}
+
 class Action extends Observable {
 	trigger(/*data*/) {
 		var action = this;
 
 		if (typeof action.onTrigger === 'function') {
-			super('*', action.onTrigger.apply(action, arguments), {noEventArgument: true});
+			super('*', action.onTrigger.apply(action, arguments), triggerOptions);
 		} else {
 			if (arguments.length == 5) {
-				super('*', arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], {noEventArgument: true});
+				super('*', arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], triggerOptions);
 			} else if (arguments.length == 4) {
-				super('*', arguments[0], arguments[1], arguments[2], arguments[3], {noEventArgument: true});
+				super('*', arguments[0], arguments[1], arguments[2], arguments[3], triggerOptions);
 			} else if (arguments.length == 3) {
-				super('*', arguments[0], arguments[1], arguments[2], {noEventArgument: true});
+				super('*', arguments[0], arguments[1], arguments[2], triggerOptions);
 			} else if (arguments.length == 2) {
-				super('*', arguments[0], arguments[1], {noEventArgument: true});
+				super('*', arguments[0], arguments[1], triggerOptions);
 			} else if (arguments.length) {
-				super('*', arguments[0], {noEventArgument: true});
+				super('*', arguments[0], triggerOptions);
 			} else {
-				super('*', {noEventArgument: true});
+				super('*', triggerOptions);
 			}
 		}
 
 		return action;
 	}
 }
-
-/*var Action = Construct.extend(
-{
-	constructor: function (action)
-	{
-		if (_.isFunction(action))
-		{
-			this.action = action;
-		}
-	},
-
-	trigger: function ()
-	{
-		var result;
-
-		if (this.action)
-		{
-			return events.trigger.call(this, this.action.apply(this, arguments));
-		} else 
-		{
-			return events.trigger.apply(this, arguments);	
-		}
-	}
-},
-{
-	extendable: false
-});*/
 
 module.exports = Action;

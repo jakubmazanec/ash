@@ -38,8 +38,6 @@ var createElement = function (tagName/*, props, children*/) {
 				throw new Error(children[i] + ' must be a AshElement object.');
 			}
 		}
-	} else {
-		throw new Error(children + ' must be an array or a string.');
 	}
 
 	return new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, tagName, props, children);

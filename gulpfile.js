@@ -45,7 +45,8 @@ gulp.task('scripts', function ()
 {
 	return browserify('./app/app.js')
 		.transform(es6.configure({
-			//whitelist: ['classes'],
+			whitelist: ['classes', 'letScoping'], // TODO - without letScoping classes are defined with let
+			//blacklist: ['arrayComprehension', 'arrowFunctions', 'computedPropertyNames', 'constants', 'defaultParameters', 'destructuring', 'forOf', 'generatorComprehension', 'generators', /*'letScoping',*/ 'modules', 'propertyNameShorthand', 'react', 'restParameters', 'spread', 'templateLiterals', 'unicodeRegex', 'useStrict'],
 			sourceMap: false,
 		}))		
 		.bundle()
@@ -99,6 +100,6 @@ gulp.task('default', ['scripts', 'styles', 'fonts'], function ()
 		gulp.watch('./assets/sass/**/*.scss', ['styles']);
 
 		// Watch .js files
-		gulp.watch('./app/**/*.js', ['scripts']);
+		gulp.watch(['./app/**/*.js', './src/**/*.js'], ['scripts']);
 	});
 });

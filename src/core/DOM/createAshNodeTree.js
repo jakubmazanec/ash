@@ -59,7 +59,7 @@ function walk(ashNodeTree, ashElement, index, parentIndex) {
 	}
 }
 
-function createAshDOM(componentAshElement)
+function createAshNodeTree(componentAshElement)
 {
 	// type check
 	if (!isComponentAshElement(componentAshElement))
@@ -93,4 +93,4 @@ function createAshDOM(componentAshElement)
 	return ashNodeTree;
 }
 
-module.exports = createAshDOM;
+module.exports = createAshNodeTree;

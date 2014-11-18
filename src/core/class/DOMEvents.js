@@ -62,6 +62,16 @@ class DOMEvents {
 		return this;	
 	}
 
+	addEvents(node, events) {
+		_.forOwn(events, function (callback, eventName) {
+			if (_.isFunction(callback)) {
+				this.addEvent(node, eventName, callback);
+			}
+		}, this);
+
+		return this;
+	}
+
 	removeEvent(node, eventName) {
 		var i;
 

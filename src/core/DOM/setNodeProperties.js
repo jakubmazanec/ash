@@ -1,7 +1,6 @@
 'use strict';
 
 var _ = require('_');
-var $ = require('jquery');
 var DOMEvents = require('../class/DOMEvents');
 
 var domEvents = new DOMEvents();
@@ -12,13 +11,12 @@ function setNodeProperties(node, properties)
 		if (key == 'style' && _.isObject(value)) {
 			$(node).css(value);
 		} else if (key == 'events' && _.isObject(value)) {
-			_.forOwn(value, function (callback, eventName, object) {
+			domEvents.addEvents(node, value);
+			/*_.forOwn(value, function (callback, eventName, object) {
 				if (_.isFunction(callback)) {
-					//console.log(node['__ash:index__']);
-					//$(node).off(eventName).on(eventName, callback);
 					domEvents.addEvent(node, eventName, callback);
 				}
-			});
+			});*/
 		} else if (key == 'className' || key == 'class') {
 			node.className = value;
 		}	else if (!_.isObject(value)) {

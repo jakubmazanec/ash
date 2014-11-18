@@ -28,7 +28,7 @@ function walk(oldAshNode, newAshNode/*, patches*/) {
 
 	// which propertie are different or new
 	for (newProperty in newAshNode.properties) {
-		if (newAshNode.properties.hasOwnProperty(newProperty) && newAshNode.properties[newProperty] !== oldAshNode.properties[newProperty]) {
+		if (newAshNode.properties.hasOwnProperty(newProperty) && oldAshNode.properties && newAshNode.properties[newProperty] !== oldAshNode.properties[newProperty]) {
 			if (typeof newAshNode.properties[newProperty] === 'object' && oldAshNode.properties[newProperty] && typeof oldAshNode.properties[newProperty] == 'object') {
 				// which propertie are different or new
 				for (newSubproperty in newAshNode.properties[newProperty]) {
@@ -59,7 +59,7 @@ function walk(oldAshNode, newAshNode/*, patches*/) {
 
 	// which properties are to be removed
 	for (oldProperty in oldAshNode.properties) {
-		if (oldAshNode.properties.hasOwnProperty(oldProperty) && typeof newAshNode.properties[oldProperty] === 'undefined') {
+		if (oldAshNode.properties.hasOwnProperty(oldProperty) && newAshNode.properties && typeof newAshNode.properties[oldProperty] === 'undefined') {
 			differentProperties = true;
 			propertiesToRemove.push(oldProperty);
 		}

@@ -104,16 +104,16 @@ class Observable {
 		return observable;
 	}
 
-	trigger(/*events, data, options.async|options.noEventArgument*/) {
+	trigger(/*events, data, options.useAsync|options.noEventArgument*/) {
 		var observable = this;
 		var events = _.isString(arguments[0]) ? arguments[0].trim().split(REGEX_TOPIC) : ['*'];
 		var data = [];
-		var async = arguments.length > 1 && _.isPlainObject(arguments[arguments.length - 1]) && arguments[arguments.length - 1].async ? true : false;
+		var useAsync = arguments.length > 1 && _.isPlainObject(arguments[arguments.length - 1]) && arguments[arguments.length - 1].async ? true : false;
 		var noEventArgument = arguments.length > 1 && _.isPlainObject(arguments[arguments.length - 1]) && arguments[arguments.length - 1].noEventArgument ? true : false;
 		var categories;
 		var i, j, k;
 
-		for (i = 1; i < (async || noEventArgument ? arguments.length - 1 : arguments.length); i++)
+		for (i = 1; i < (useAsync || noEventArgument ? arguments.length - 1 : arguments.length); i++)
 		{
 			data.push(arguments[i]);
 		}
@@ -141,7 +141,7 @@ class Observable {
 			}
 		}
 
-		if (async) {
+		if (useAsync) {
 			setImmediate(trigger);
 		} else {
 			trigger();

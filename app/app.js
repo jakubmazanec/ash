@@ -111,9 +111,49 @@ class Timer extends ash.Component {
 
 var timer = window.timer = ash.createFactory(Timer);
 
+//Renderer.addComponent(timer(), $('.page-content')[0]);
+
+
+class FooComponent extends ash.Component {
+	render() {
+		return ash.e('div', {
+			style: {
+				'border-top': '1px solid red',
+				'font-size': '24px'
+			},
+			'checked': true,
+			'value': 42,
+			'data-foo': '<This is Foo!>'
+		}, [
+			ash.e('b', null, 'This is Foo!')
+		]);
+	}
+}
+
+var fooComponent = ash.createFactory(FooComponent);
+
+var html;
+html = Renderer.componentToString(fooComponent());
+html = Renderer.componentToString(timer());
+
+console.log(html);
+
+
+
+$('.page-content').html(html);
+
 Renderer.addComponent(timer(), $('.page-content')[0]);
 
 
+
+
+
+
+
+
+/**
+ * observables & actions test
+ *
 
 class BarAction extends ash.Action {
 	onTrigger(value)
@@ -145,7 +185,7 @@ function reportAll()
 
 fooObservable.observe(barAction, '*', report);
 
-barAction.trigger(42, 47);
+barAction.trigger(42, 47);*/
 
 
 
