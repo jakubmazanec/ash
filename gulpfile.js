@@ -7,54 +7,49 @@ var server = require('tiny-lr')();
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var nodemon = require('gulp-nodemon');
-//var esnext = require('gulp-esnext');
-var es6 = require("6to5-browserify");
-//var streamify = require('gulp-streamify');
+var gulpES6 = require('gulp-6to5');
 
-var esnextOptions = 
-{
-	'arrowFunction': false,
-	'class': true,
-	'computedPropertyKeys': false,
-	'defaultParams': false,
-	'destructuring': false,
-	'generator': false,
-	'objectConcise': false,
-	'objectShorthand': false,
-	'rest': false,
-	'spread': false,
-	'templates': false,
-	'regexpu': false
-};
+var nodeServer;
 
 
 // server app
 gulp.task('server', function ()
 {
+	console.log(__dirname);
 	nodemon(
 	{
-		script: './app/server.js',
+		script: './bin/app/server.js',
 		nodeArgs: ['--harmony'],
-		watch: ['app/server/*.js', 'server.js']
+		watch: ['bin/app/**/*.js'],
+		delay: 10
 	});
 });
 
+gulp.task('es6-app', function () {
+	return gulp.src('./app/**/*.js')
+		.pipe(gulpES6({
+			whitelist: ['classes', 'letScoping'],
+			sourceMap: false
+		}))
+		.pipe(gulp.dest('bin/app'));;
+});
 
-// build javascript
-gulp.task('scripts', function ()
+gulp.task('es6-src', function () {
+	return gulp.src('./src/**/*.js')
+		.pipe(gulpES6({
+			whitelist: ['classes', 'letScoping'],
+			sourceMap: false
+		}))
+		.pipe(gulp.dest('bin/src'));
+});
+
+gulp.task('scripts', ['es6-app', 'es6-src'], function ()
 {
-	return browserify('./app/app.js')
-		.transform(es6.configure({
-			whitelist: ['classes', 'letScoping'], // TODO - without letScoping classes are defined with let
-			//blacklist: ['arrayComprehension', 'arrowFunctions', 'computedPropertyNames', 'constants', 'defaultParameters', 'destructuring', 'forOf', 'generatorComprehension', 'generators', /*'letScoping',*/ 'modules', 'propertyNameShorthand', 'react', 'restParameters', 'spread', 'templateLiterals', 'unicodeRegex', 'useStrict'],
-			sourceMap: false,
-		}))		
+	return browserify('./bin/app/app.js')
 		.bundle()
 		//.on('error', util.log)
 		.pipe(source('app.js'))
-		//.pipe(streamify(esnext(esnextOptions)))
 		.pipe(gulp.dest('./public/js'))
-		//.pipe(gulp.dest('./test'))
 		.pipe(livereload(server));
 });
 
@@ -101,5 +96,6 @@ gulp.task('default', ['scripts', 'styles', 'fonts'], function ()
 
 		// Watch .js files
 		gulp.watch(['./app/**/*.js', './src/**/*.js'], ['scripts']);
+
 	});
 });

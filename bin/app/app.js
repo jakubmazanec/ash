@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 
-var $ = window.$ = require('jquery');
-var _ = window._ = require('_');
-var ash = window.ash = require('./ash');
+var $ = window.$ = require("jquery");
+var _ = window._ = require("_");
+var ash = window.ash = require("./ash");
 
-var Display = require('./components/Display');
-var Timer = require('./components/Timer');
+var Display = require("./components/Display");
+var Timer = require("./components/Timer");
 
 
 Renderer = window.Renderer = new ash.Renderer();
@@ -47,7 +47,7 @@ var html;
 
 //$('.page-content').html(html);
 
-Renderer.addComponent(Timer(), $('.page')[0]);
+Renderer.addComponent(Timer(), $(".page")[0]);
 
 
 
@@ -136,4 +136,3 @@ router.start();*/
 // TodoStore.todos['todo-1'].complete = true;
 
 // Renderer.registerComponent(todoApp, $('.page-content')[0]);
-

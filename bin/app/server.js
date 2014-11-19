@@ -1,20 +1,20 @@
-var koa = require('koa');
-var ash = require('./ash');
+var koa = require("koa");
+var ash = require("./ash");
 
 //var Promise = require('bluebird');
 
 //var MongoDB = require('mongodb');
-var fs = require('fs');
-var compress = require('koa-compress');
-var logger = require('koa-logger');
-var serve = require('koa-static');
-var route = require('koa-route');
-var path = require('path');
+var fs = require("fs");
+var compress = require("koa-compress");
+var logger = require("koa-logger");
+var serve = require("koa-static");
+var route = require("koa-route");
+var path = require("path");
 
 var app = koa();
 
-var Display = require('./components/Display');
-var Timer = require('./components/Timer');
+var Display = require("./components/Display");
+var Timer = require("./components/Timer");
 
 var Renderer = new ash.Renderer();
 
@@ -66,23 +66,23 @@ console.log(MongoDB.MongoClient);*/
 
 app.use(logger());
 
-app.use(route.get('/', index));
+app.use(route.get("/", index));
 //app.use(route.get('/about', about));
 
-function *index() {
- this.body = fs.readFileSync(path.join(__dirname, '../../assets/index.html'), 'utf8').replace('%CONTENT%', componentHtml);
+function* index() {
+  this.body = fs.readFileSync(path.join(__dirname, "../../assets/index.html"), "utf8").replace("%CONTENT%", componentHtml);
 }
 
-function *about() {
- this.body = "<h2>My name is Adam and I like JavaScript</h2>";
+function* about() {
+  this.body = "<h2>My name is Adam and I like JavaScript</h2>";
 }
 
 // serve static files
-app.use(serve(path.join(__dirname, '../../public')));
+app.use(serve(path.join(__dirname, "../../public")));
 
 // Compress
 app.use(compress());
 
 app.listen(8008);
 
-console.log('Listening on port 8008...');
+console.log("Listening on port 8008...");

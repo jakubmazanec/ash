@@ -1,198 +1,54 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var _classProps = function (child, staticProps, instanceProps) {
-  if (staticProps) Object.defineProperties(child, staticProps);
-  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
-
-var _extends = function (child, parent) {
-  child.prototype = Object.create(parent.prototype, {
-    constructor: {
-      value: child,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-  child.__proto__ = parent;
-};
-
 "use strict";
 
 var $ = window.$ = require("jquery");
 var _ = window._ = require("_");
 var ash = window.ash = require("./ash");
 
+var Display = require("./components/Display");
+var Timer = require("./components/Timer");
+
 
 Renderer = window.Renderer = new ash.Renderer();
 
 
 
-var Display = (function (ash) {
-  var Display = function Display() {
-    ash.Component.apply(this, arguments);
-  };
-
-  _extends(Display, ash.Component);
-
-  _classProps(Display, null, {
-    getInitialState: {
-      writable: true,
-      value: function () {
-        return { displayClicks: 0 };
-      }
-    },
-    autobind: {
-      writable: true,
-      value: function () {
-        return ["tick"];
-      }
-    },
-    render: {
-      writable: true,
-      value: function () {
-        var message = "Timer Clicks = " + this.props.timerClicks + " -- Display Click = " + this.state.displayClicks;
-
-        return ash.e("div", null, [message, ash.e("button", {
-          style: {
-            color: this.state.displayClicks % 2 === 0 ? "red" : "blue"
-          },
-          events: {
-            click: this.tick
-          }
-        }, "+")]);
-      }
-    },
-    tick: {
-      writable: true,
-      value: function () {
-        //console.log(this.name + ' tick!');
-        this.setState({ displayClicks: this.state.displayClicks + 1 });
-      }
-    },
-    onBeforeReceiveProps: {
-      writable: true,
-      value: function () {}
-    },
-    onMount: {
-      writable: true,
-      value: function () {}
-    },
-    onUnmount: {
-      writable: true,
-      value: function () {}
-    }
-  });
-
-  return Display;
-})(ash);
-
-var display = window.display = ash.createFactory(Display);
-
-var Timer = (function (ash) {
-  var Timer = function Timer() {
-    ash.Component.apply(this, arguments);
-  };
-
-  _extends(Timer, ash.Component);
-
-  _classProps(Timer, null, {
-    getInitialState: {
-      writable: true,
-      value: function () {
-        return { timerClicks: 0 };
-      }
-    },
-    autobind: {
-      writable: true,
-      value: function () {
-        return ["tick"];
-      }
-    },
-    tick: {
-      writable: true,
-      value: function () {
-        console.log("timer tick!");
-        this.setState({ timerClicks: this.state.timerClicks + 1 });
-      }
-    },
-    onMount: {
-      writable: true,
-      value: function () {}
-    },
-    onUnmount: {
-      writable: true,
-      value: function () {}
-    },
-    onBeforeMount: {
-      writable: true,
-      value: function () {}
-    },
-    render: {
-      writable: true,
 
 
-      /*shouldUpdate () {
-      	return false;
-      }*/
 
-      value: function () {
-        return ash.e("div", null, [display({ timerClicks: this.state.timerClicks }), ash.e("button", {
-          style: {
-            color: this.state.timerClicks % 2 === 0 ? "red" : "blue"
-          },
-          events: {
-            click: this.tick
-          }
-        }, "+")]);
-      }
-    }
-  });
 
-  return Timer;
-})(ash);
+//Renderer.addComponent(timer(), $('.page-content')[0]);
 
-var timer = window.timer = ash.createFactory(Timer);
 
-var FooComponent = (function (ash) {
-  var FooComponent = function FooComponent() {
-    ash.Component.apply(this, arguments);
-  };
+/*class FooComponent extends ash.Component {
+	render() {
+		return ash.e('div', {
+			style: {
+				'border-top': '1px solid red',
+				'font-size': '24px'
+			},
+			'checked': true,
+			'value': 42,
+			'data-foo': '<This is Foo!>'
+		}, [
+			ash.e('b', null, 'This is Foo!')
+		]);
+	}
+}
 
-  _extends(FooComponent, ash.Component);
-
-  _classProps(FooComponent, null, {
-    render: {
-      writable: true,
-      value: function () {
-        return ash.e("div", {
-          style: {
-            "border-top": "1px solid red",
-            "font-size": "24px"
-          },
-          checked: true,
-          value: 42,
-          "data-foo": "<This is Foo!>"
-        }, [ash.e("b", null, "This is Foo!")]);
-      }
-    }
-  });
-
-  return FooComponent;
-})(ash);
-
-var fooComponent = ash.createFactory(FooComponent);
+var fooComponent = ash.createFactory(FooComponent);*/
 
 var html;
-html = Renderer.componentToString(fooComponent());
-html = Renderer.componentToString(timer());
+//html = Renderer.componentToString(fooComponent());
+//html = Renderer.componentToString(Timer());
 
-console.log(html);
+//console.log(html);
 
 
 
-$(".page-content").html(html);
+//$('.page-content').html(html);
 
-Renderer.addComponent(timer(), $(".page-content")[0]);
+Renderer.addComponent(Timer(), $(".page")[0]);
 
 
 
@@ -281,11 +137,2835 @@ router.start();*/
 // TodoStore.todos['todo-1'].complete = true;
 
 // Renderer.registerComponent(todoApp, $('.page-content')[0]);
-},{"./ash":2,"_":101,"jquery":265}],2:[function(require,module,exports){
+},{"./ash":2,"./components/Display":3,"./components/Timer":4,"_":140,"jquery":304}],2:[function(require,module,exports){
 var ash = require("../src/index");
 
 module.exports = ash;
-},{"../src/index":302}],3:[function(require,module,exports){
+},{"../src/index":41}],3:[function(require,module,exports){
+var _classProps = function (child, staticProps, instanceProps) {
+  if (staticProps) Object.defineProperties(child, staticProps);
+  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+};
+
+var _extends = function (child, parent) {
+  child.prototype = Object.create(parent.prototype, {
+    constructor: {
+      value: child,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+  child.__proto__ = parent;
+};
+
+"use strict";
+
+var ash = require("../ash");
+
+var Display = (function (ash) {
+  var Display = function Display() {
+    ash.Component.apply(this, arguments);
+  };
+
+  _extends(Display, ash.Component);
+
+  _classProps(Display, null, {
+    getInitialState: {
+      writable: true,
+      value: function () {
+        return { displayClicks: 0 };
+      }
+    },
+    autobind: {
+      writable: true,
+      value: function () {
+        return ["tick"];
+      }
+    },
+    render: {
+      writable: true,
+      value: function () {
+        var message = "Timer Clicks = " + this.props.timerClicks + " -- Display Click = " + this.state.displayClicks;
+
+        return ash.e("div", null, [message, ash.e("button", {
+          style: {
+            color: this.state.displayClicks % 2 === 0 ? "red" : "blue"
+          },
+          events: {
+            click: this.tick
+          }
+        }, "+")]);
+      }
+    },
+    tick: {
+      writable: true,
+      value: function () {
+        //console.log(this.name + ' tick!');
+        this.setState({ displayClicks: this.state.displayClicks + 1 });
+      }
+    },
+    onBeforeReceiveProps: {
+      writable: true,
+      value: function () {}
+    },
+    onMount: {
+      writable: true,
+      value: function () {}
+    },
+    onUnmount: {
+      writable: true,
+      value: function () {}
+    }
+  });
+
+  return Display;
+})(ash);
+
+module.exports = ash.createFactory(Display);
+},{"../ash":2}],4:[function(require,module,exports){
+var _classProps = function (child, staticProps, instanceProps) {
+  if (staticProps) Object.defineProperties(child, staticProps);
+  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+};
+
+var _extends = function (child, parent) {
+  child.prototype = Object.create(parent.prototype, {
+    constructor: {
+      value: child,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+  child.__proto__ = parent;
+};
+
+"use strict";
+
+var ash = require("../ash");
+var Display = require("./Display");
+
+var Timer = (function (ash) {
+  var Timer = function Timer() {
+    ash.Component.apply(this, arguments);
+  };
+
+  _extends(Timer, ash.Component);
+
+  _classProps(Timer, null, {
+    getInitialState: {
+      writable: true,
+      value: function () {
+        return { timerClicks: 0 };
+      }
+    },
+    autobind: {
+      writable: true,
+      value: function () {
+        return ["tick"];
+      }
+    },
+    tick: {
+      writable: true,
+      value: function () {
+        console.log("timer tick!");
+        this.setState({ timerClicks: this.state.timerClicks + 1 });
+      }
+    },
+    onMount: {
+      writable: true,
+      value: function () {}
+    },
+    onUnmount: {
+      writable: true,
+      value: function () {}
+    },
+    onBeforeMount: {
+      writable: true,
+      value: function () {}
+    },
+    render: {
+      writable: true,
+
+
+      /*shouldUpdate () {
+      	return false;
+      }*/
+
+      value: function () {
+        return ash.e("div", null, [Display({ timerClicks: this.state.timerClicks }), ash.e("button", {
+          style: {
+            color: this.state.timerClicks % 2 === 0 ? "red" : "blue"
+          },
+          events: {
+            click: this.tick
+          }
+        }, "+")]);
+      }
+    }
+  });
+
+  return Timer;
+})(ash);
+
+module.exports = ash.createFactory(Timer);
+},{"../ash":2,"./Display":3}],5:[function(require,module,exports){
+"use strict";
+
+var _ = require("_");
+var isAshElement = require("../internal/isAshElement");
+var isComponentAshElement = require("../internal/isComponentAshElement");
+var isAshNodeAshElement = require("../internal/isAshNodeAshElement");
+var constants = require("../internal/constants");
+
+var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
+var LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
+
+function walk(ashElement, index, owner, lastLevel) {
+  var i;
+
+  // type check
+  if (!isComponentAshElement(owner)) {
+    throw new Error(owner + " must be a Component type AshElement Object");
+  }
+
+  if (isAshNodeAshElement(ashElement)) {
+    // instantiate ashElement
+    ashElement.instantiate();
+
+    // set up ordering properties
+    ashElement.level = lastLevel + LEVEL_SEPARATOR + index;
+    ashElement.order = index;
+
+    // set up owner & stage
+    ashElement.owner = owner;
+    ashElement.stage = owner.stage;
+
+    for (i = 0; i < ashElement.children.length; i++) {
+      if (ashElement.children[i]) {
+        // set up parent
+        ashElement.children[i].parent = ashElement;
+
+        // walk the child
+        walk(ashElement.children[i], i, owner, ashElement.level);
+      }
+    }
+  } else if (isComponentAshElement(ashElement)) {
+    // instantiate ashElement
+    ashElement.instantiate();
+
+    // set up ordering properties
+    ashElement.level = lastLevel + LEVEL_SEPARATOR + index;
+    ashElement.order = index;
+
+    // set up owner
+    ashElement.owner = owner;
+    ashElement.stage = owner.stage;
+
+    // create child by rendering component
+    ashElement.instance.onBeforeMount();
+    ashElement.instance.__setLifecycle(LIFECYCLE_MOUNTING);
+    ashElement.children[0] = ashElement.instance.__getRender();
+
+    if (ashElement.children[0]) {
+      // set up parent
+      ashElement.children[0].parent = ashElement;
+
+      // walk the child
+      walk(ashElement.children[0], 0, ashElement, ashElement.level);
+    }
+  }
+}
+
+function createAshElementTree(rootAshElement, stage, startingLevel) {
+  // type check
+  if (!isAshElement(rootAshElement)) {
+    throw new Error(rootAshElement + " must be a AshElement object.");
+  }
+
+  if (!stage) {
+    throw new Error(stage + " must be an object.");
+  }
+
+  startingLevel = _.isString(startingLevel) ? startingLevel : "0";
+
+  var ashElementTree = rootAshElement;
+  var i;
+
+  ashElementTree.stage = stage;
+  ashElementTree.isRoot = true;
+
+  if (isComponentAshElement(ashElementTree)) {
+    // instantiate descriptor
+    ashElementTree.instantiate();
+
+    // set up ordering properties
+    ashElementTree.level = startingLevel;
+    ashElementTree.order = typeof ashElementTree.order === "undefined" ? 0 : ashElementTree.order;
+
+    // create child by rendering component
+    ashElementTree.instance.onBeforeMount();
+    ashElementTree.children[0] = ashElementTree.instance.__getRender();
+    ashElementTree.instance.__setLifecycle(LIFECYCLE_MOUNTING);
+
+    // set up a parent
+    ashElementTree.children[0].parent = ashElementTree;
+
+    // walk the child
+    walk(ashElementTree.children[0], 0, ashElementTree, ashElementTree.level);
+  } else {
+    // instantiate descriptor
+    ashElementTree.instantiate();
+
+    // set up ordering properties
+    ashElementTree.level = startingLevel;
+    ashElementTree.order = typeof ashElementTree.order === "undefined" ? 0 : ashElementTree.order;
+
+    for (i = 0; i < ashElementTree.children.length; i++) {
+      // set up a parent
+      ashElementTree.children[i].parent = ashElementTree;
+
+      // walk the child
+      walk(ashElementTree.children[i], i, ashElementTree.owner, ashElementTree.level);
+    }
+  }
+
+  // return resulting descriptor tree
+  return ashElementTree;
+}
+
+module.exports = createAshElementTree;
+},{"../internal/constants":27,"../internal/isAshElement":30,"../internal/isAshNodeAshElement":32,"../internal/isComponentAshElement":34,"_":140}],6:[function(require,module,exports){
+"use strict";
+
+var isComponentAshElement = require("../internal/isComponentAshElement");
+var isAshNodeAshElement = require("../internal/isAshNodeAshElement");
+var isAshNode = require("../internal/isAshNode");
+var isAshTextNode = require("../internal/isAshTextNode");
+var constants = require("../internal/constants");
+
+var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
+
+function cloneAshNode(ashNodeAshElement) {
+  var clonedAshNode;
+
+  if (isAshNode(ashNodeAshElement.instance)) {
+    clonedAshNode = {
+      type: ashNodeAshElement.instance.type,
+      index: ashNodeAshElement.instance.index,
+      stage: ashNodeAshElement.stage.id,
+      tagName: ashNodeAshElement.instance.tagName,
+      key: ashNodeAshElement.instance.key,
+      properties: ashNodeAshElement.instance.properties,
+      children: []
+    };
+  } else if (isAshTextNode(ashNodeAshElement.instance)) {
+    clonedAshNode = {
+      type: ashNodeAshElement.instance.type,
+      index: ashNodeAshElement.instance.index,
+      stage: ashNodeAshElement.stage.id,
+      text: ashNodeAshElement.instance.text
+    };
+  } else {
+    throw new Error(ashNodeAshElement + " must have property named \"instance\" containing Ash Node or Ash Text Node object.");
+  }
+
+  return clonedAshNode;
+}
+
+function walk(ashNodeTree, ashElement, index, parentIndex) {
+  var clonedAshNode;
+  var i;
+
+  if (isAshNodeAshElement(ashElement)) {
+    // clone virtual node
+    clonedAshNode = cloneAshNode(ashElement);
+
+    // set up ordering properties
+    ashElement.instance.index = clonedAshNode.index = parentIndex + LEVEL_SEPARATOR + index;
+    ashElement.instance.order = clonedAshNode.order = index;
+
+    // add child
+    ashNodeTree.children.push(clonedAshNode);
+
+    // walk the children
+    for (i = 0; i < ashElement.children.length; i++) {
+      walk(ashNodeTree.children[ashNodeTree.children.length - 1], ashElement.children[i], i, ashNodeTree.children[ashNodeTree.children.length - 1].index);
+    }
+  } else if (ashElement && ashElement.children[0]) {
+    walk(ashNodeTree, ashElement.children[0], index, parentIndex);
+  }
+}
+
+function createAshNodeTree(componentAshElement) {
+  // type check
+  if (!isComponentAshElement(componentAshElement)) {
+    throw new Error(componentAshElement + " must be a Component Descriptor object.");
+  }
+
+  var ashElement = componentAshElement;
+  var ashNodeTree;
+  var i;
+
+  // find first children Virtual Node ashElement
+  while (!isAshNodeAshElement(ashElement)) {
+    ashElement = ashElement.children[0];
+  }
+
+  // set up Virtual DOM
+  ashNodeTree = cloneAshNode(ashElement);
+
+  // set up ordering properties
+  ashElement.instance.index = ashNodeTree.index = "0";
+  ashElement.instance.order = ashNodeTree.order = 0;
+
+  // walk the children
+  for (i = 0; i < ashElement.children.length; i++) {
+    walk(ashNodeTree, ashElement.children[i], i, ashNodeTree.index);
+  }
+
+  return ashNodeTree;
+}
+
+module.exports = createAshNodeTree;
+},{"../internal/constants":27,"../internal/isAshNode":31,"../internal/isAshNodeAshElement":32,"../internal/isAshTextNode":33,"../internal/isComponentAshElement":34}],7:[function(require,module,exports){
+"use strict";
+
+var isAshNode = require("../internal/isAshNode");
+var isAshTextNode = require("../internal/isAshTextNode");
+var setNodeProperties = require("./setNodeProperties");
+var constants = require("../internal/constants");
+
+var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
+var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
+var STAGE_ATTRIBUTE_NAME = constants.STAGE_ATTRIBUTE_NAME;
+
+function walk(ashNodeTree) {
+  var nodeTree;
+  var child;
+  var i;
+
+  if (isAshTextNode(ashNodeTree)) {
+    nodeTree = document.createTextNode(ashNodeTree.text);
+    nodeTree[INDEX_ATTRIBUTE_NAME] = ashNodeTree.index;
+    nodeTree[ORDER_ATTRIBUTE_NAME] = ashNodeTree.order;
+    nodeTree[STAGE_ATTRIBUTE_NAME] = ashNodeTree.stage;
+
+    return nodeTree;
+  }
+
+  // create element
+  if (ashNodeTree.tagName == "svg" || ashNodeTree.tagName == "use") {
+    nodeTree = document.createElementNS("http://www.w3.org/2000/svg", ashNodeTree.tagName);
+  } else {
+    nodeTree = document.createElement(ashNodeTree.tagName);
+  }
+
+  // set properties
+  nodeTree[INDEX_ATTRIBUTE_NAME] = ashNodeTree.index;
+  nodeTree[ORDER_ATTRIBUTE_NAME] = ashNodeTree.order;
+  nodeTree[STAGE_ATTRIBUTE_NAME] = ashNodeTree.stage;
+  setNodeProperties(nodeTree, ashNodeTree.properties);
+  //$(nodeTree).attr('index', nodeTree[INDEX_ATTRIBUTE_NAME]/* + ' - ' + ashNodeTree.key*/);
+  //$(nodeTree).attr('order', nodeTree[ORDER_ATTRIBUTE_NAME]/* + ' - ' + ashNodeTree.key*/);
+  //$(nodeTree).attr('levels', ashNodeTree.levels.join('.'));
+
+  for (i = 0; i < ashNodeTree.children.length; i++) {
+    child = walk(ashNodeTree.children[i]);
+
+    if (child) {
+      nodeTree.appendChild(child);
+    }
+  }
+
+  return nodeTree;
+}
+
+// helper for creating dom nodeTree
+function createNodeTree(ashNodeTree) {
+  return walk(ashNodeTree);
+}
+
+module.exports = createNodeTree;
+},{"../internal/constants":27,"../internal/isAshNode":31,"../internal/isAshTextNode":33,"./setNodeProperties":12}],8:[function(require,module,exports){
+"use strict";
+
+var _ = require("_");
+var constants = require("../internal/constants");
+var parseAshNodeIndex = require("./parseAshNodeIndex");
+
+// constants references
+var PATCH_NONE = constants.PATCH_NONE;
+var PATCH_ASH_NODE = constants.PATCH_ASH_NODE;
+var PATCH_ASH_TEXT_NODE = constants.PATCH_ASH_TEXT_NODE;
+var PATCH_PROPERTIES = constants.PATCH_PROPERTIES;
+var PATCH_ORDER = constants.PATCH_ORDER;
+var PATCH_INSERT = constants.PATCH_INSERT;
+var PATCH_REMOVE = constants.PATCH_REMOVE;
+var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
+
+function walk(oldAshNode, newAshNode /*, patches*/) {
+  // compare nodes
+  var patches = arguments[2] || [];
+  var differentProperties = false;
+  var propertiesToChange = {};
+  var propertiesToRemove = [];
+  var newProperty;
+  var newSubproperty;
+  var oldProperty;
+  var oldSubproperty;
+
+
+  // which propertie are different or new
+  for (newProperty in newAshNode.properties) {
+    if (newAshNode.properties.hasOwnProperty(newProperty) && oldAshNode.properties && newAshNode.properties[newProperty] !== oldAshNode.properties[newProperty]) {
+      if (typeof newAshNode.properties[newProperty] === "object" && oldAshNode.properties[newProperty] && typeof oldAshNode.properties[newProperty] == "object") {
+        // which propertie are different or new
+        for (newSubproperty in newAshNode.properties[newProperty]) {
+          if (newAshNode.properties[newProperty].hasOwnProperty(newSubproperty) && newAshNode.properties[newProperty][newSubproperty] !== oldAshNode.properties[newProperty][newSubproperty]) {
+            propertiesToChange[newProperty] = propertiesToChange[newProperty] || {};
+            propertiesToChange[newProperty][newSubproperty] = newAshNode.properties[newProperty][newSubproperty];
+
+            differentProperties = true;
+          }
+        }
+
+        // which properties are to be removed
+        for (oldSubproperty in oldAshNode.properties[newProperty]) {
+          if (oldAshNode.properties[newProperty].hasOwnProperty(oldSubproperty) && typeof newAshNode.properties[newProperty][oldSubproperty] === "undefined") {
+            propertiesToRemove.push(newProperty + "." + oldSubproperty);
+
+            differentProperties = true;
+          }
+        }
+      } else {
+        propertiesToChange[newProperty] = newAshNode.properties[newProperty];
+
+        differentProperties = true;
+      }
+    }
+  }
+
+  // which properties are to be removed
+  for (oldProperty in oldAshNode.properties) {
+    if (oldAshNode.properties.hasOwnProperty(oldProperty) && newAshNode.properties && typeof newAshNode.properties[oldProperty] === "undefined") {
+      differentProperties = true;
+      propertiesToRemove.push(oldProperty);
+    }
+  }
+
+  if (oldAshNode.type !== newAshNode.type || oldAshNode.tagName !== newAshNode.tagName) {
+    patches.push({
+      type: PATCH_ASH_NODE,
+      index: oldAshNode.index,
+      stage: oldAshNode.stage,
+      node: newAshNode
+    });
+
+    // whole node must be replaced; no sense in finding other differences
+    return patches;
+  }
+
+  if (oldAshNode.text !== newAshNode.text) {
+    patches.push({
+      type: PATCH_ASH_TEXT_NODE,
+      index: oldAshNode.index,
+      text: newAshNode.text
+    });
+  }
+
+  if (differentProperties) {
+    patches.push({
+      type: PATCH_PROPERTIES,
+      index: oldAshNode.index,
+      stage: oldAshNode.stage,
+      propertiesToChange: propertiesToChange,
+      propertiesToRemove: propertiesToRemove
+    });
+  }
+
+  // now let's check the children...
+  patches = diffChildren(oldAshNode.children, newAshNode.children, patches);
+
+  return patches;
+}
+
+function diffChildren(oldChildren, newChildren, patches) {
+  if ((!oldChildren || !oldChildren.length) && (!newChildren || !newChildren.length)) {
+    return patches;
+  }
+
+  // lets fill in keys, if needed; simple first-to-first correspondence
+  var __length = Math.max(oldChildren.length, newChildren.length);
+  var __a = 0;
+  var __b = 0;
+  var __keyCount = 0;
+  var __key = "Key: " + __keyCount;
+  var i;
+
+  for (i = 0; i < __length; i++) {
+    if (oldChildren[i] && oldChildren[i].key) {
+      oldChildren[i].tempKey = oldChildren[i].key;
+    }
+
+    if (newChildren[i] && newChildren[i].key) {
+      newChildren[i].tempKey = newChildren[i].key;
+    }
+
+    while (oldChildren[__a] && oldChildren[__a].key) {
+      __a++;
+    }
+
+    while (newChildren[__b] && newChildren[__b].key) {
+      __b++;
+    }
+
+    if (oldChildren[__a]) {
+      oldChildren[__a].tempKey = __key;
+    }
+
+    if (newChildren[__b]) {
+      newChildren[__b].tempKey = __key;
+    }
+
+    __keyCount++;
+    __key = "Key: " + __keyCount;
+    __a++;
+    __b++;
+  }
+
+  // keys are in; let's compare order of children		
+  var __found;
+  var j;
+  var patch;
+  var __index;
+
+  // first iterate over old children
+  for (i = 0; i < oldChildren.length; i++) {
+    __found = false;
+
+    for (j = 0; j < newChildren.length; j++) {
+      if (oldChildren[i].tempKey === newChildren[j].tempKey) {
+        __found = true;
+
+        break;
+      }
+    }
+
+    // node with matching key was found?
+    if (__found) {
+      // is order same?
+      if (i != j) {
+        patches.push({
+          type: PATCH_ORDER,
+          newIndex: newChildren[j].index,
+          index: oldChildren[i].index,
+          stage: oldChildren[i].stage,
+          order: j
+        });
+      }
+
+      // now walk inside those children...
+      walk(oldChildren[i], newChildren[j], patches);
+    } else {
+      // node is to be removed...
+      patches.push({
+        type: PATCH_REMOVE,
+        index: oldChildren[i].index,
+        stage: oldChildren[i].stage });
+    }
+  }
+
+  // now iterate over new children; let's see, if there are any new...
+  for (j = 0; j < newChildren.length; j++) {
+    __found = false;
+
+    for (i = 0; i < oldChildren.length; i++) {
+      if (oldChildren[i].tempKey === newChildren[j].tempKey) {
+        __found = true;
+        break;
+      }
+    }
+
+    // new child was not found
+    if (!__found) {
+      // create patch for insert
+      patches.push({
+        type: PATCH_INSERT,
+        index: newChildren[j].index,
+        node: newChildren[j]
+      });
+
+      __index = parseAshNodeIndex(newChildren[j].index);
+      __index.pop();
+      patches[patches.length - 1].parentIndex = __index.join(LEVEL_SEPARATOR);
+    }
+  }
+
+  return patches;
+}
+
+// differences between trees
+function diffAshNodeTree(oldAshNodeTree, newAshNodeTree) {
+  return walk(oldAshNodeTree, newAshNodeTree);
+}
+
+module.exports = diffAshNodeTree;
+},{"../internal/constants":27,"./parseAshNodeIndex":10,"_":140}],9:[function(require,module,exports){
+"use strict";
+
+var parseAshNodeIndex = require("./parseAshNodeIndex");
+
+function findNode(nodeTree, nodeIndex) {
+  var parsedAshNodeIndex = parseAshNodeIndex(nodeIndex);
+  var node = nodeTree;
+  var i;
+
+  if (!nodeTree) {
+    throw new Error(nodeTree + " cannot be falsy.");
+  }
+
+  if (parsedAshNodeIndex.length == 1) {
+    return node;
+  } else if (parsedAshNodeIndex.length) {
+    for (i = 1; i < parsedAshNodeIndex.length; i++) {
+      if (!node) {
+        return false;
+      }
+
+      node = node.childNodes[parsedAshNodeIndex[i]];
+    }
+
+    return node;
+  }
+
+  return false;
+}
+
+module.exports = findNode;
+},{"./parseAshNodeIndex":10}],10:[function(require,module,exports){
+"use strict";
+
+var _ = require("_");
+
+var __parseInt = _.unary(parseInt);
+
+function parseAshNodeIndex(value) {
+  return _.map(value.split("."), __parseInt);
+}
+
+module.exports = parseAshNodeIndex;
+},{"_":140}],11:[function(require,module,exports){
+"use strict";
+
+var _ = require("_");
+var constants = require("../internal/constants");
+var parseAshNodeIndex = require("./parseAshNodeIndex");
+var createNodeTree = require("./createNodeTree");
+var setNodeProperties = require("../dom/setNodeProperties");
+var removeNodeProperties = require("../dom/removeNodeProperties");
+var findNode = require("../dom/findNode");
+var DOMEvents = require("../class/DOMEvents");
+
+var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
+var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
+var PATCH_NONE = constants.PATCH_NONE;
+var PATCH_ASH_NODE = constants.PATCH_ASH_NODE;
+var PATCH_ASH_TEXT_NODE = constants.PATCH_ASH_TEXT_NODE;
+var PATCH_PROPERTIES = constants.PATCH_PROPERTIES;
+var PATCH_ORDER = constants.PATCH_ORDER;
+var PATCH_INSERT = constants.PATCH_INSERT;
+var PATCH_REMOVE = constants.PATCH_REMOVE;
+
+var domEvents = new DOMEvents();
+
+// apply patches to dom tree
+function patchNodeTree(domTree, patches) {
+  // type check
+  if (!_.isElement(domTree)) {
+    return false;
+  }
+
+  //var __patches = [];
+  var __patches = patches;
+  var node;
+  var index;
+  var position;
+  var i;
+  var j;
+  var reindexCache = [];
+  var reorderCache = [];
+  var lastLevel;
+
+  function reindexChildNodes(parentNode, order) {
+    var parentLevels = parseAshNodeIndex(parentNode[INDEX_ATTRIBUTE_NAME]);
+    var levelIndex = parentLevels.length - 1;
+
+    function walk(node) {
+      var childLevels;
+      var i;
+
+      for (i = 0; i < node.childNodes.length; i++) {
+        childLevels = parseAshNodeIndex(node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
+        childLevels[levelIndex] = order;
+
+        node.childNodes[i][INDEX_ATTRIBUTE_NAME] = childLevels.join(".");
+        //node.childNodes[i][ORDER_ATTRIBUTE_NAME] = order;
+        //$(node.childNodes[i]).attr('index', node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
+        //$(node.childNodes[i]).attr('order', node.childNodes[i][ORDER_ATTRIBUTE_NAME]);
+
+        if (node.childNodes[i].childNodes && node.childNodes[i].childNodes.length) {
+          walk(node.childNodes[i]);
+        }
+      }
+    }
+
+    walk(parentNode);
+  }
+
+  function flushCache() {
+    var appendChild = function (item) {
+      this.appendChild(item);
+    };
+
+    while (reindexCache.length > 0) {
+      // reindex events
+      domEvents.reindexEvents(reindexCache[0].oldIndex, reindexCache[0].newOrder, reindexCache[0].stage);
+
+      reindexCache[0].node[INDEX_ATTRIBUTE_NAME] = reindexCache[0].newIndex;
+      reindexCache[0].node[ORDER_ATTRIBUTE_NAME] = reindexCache[0].newOrder;
+
+      //$(reindexCache[0].node).attr('index', reindexCache[0].node[INDEX_ATTRIBUTE_NAME]);
+      //$(reindexCache[0].node).attr('order', reindexCache[0].node[ORDER_ATTRIBUTE_NAME]);
+      //$(reindexCache[0].node).attr('levels', virtualDOM.levels.join('.'));
+
+      reindexChildNodes(reindexCache[0].node, reindexCache[0].newOrder);
+
+      // clear the cache
+      reindexCache.shift();
+    }
+
+    reorderCache = _.uniq(reorderCache, "node");
+
+    while (reorderCache.length > 0) {
+      _.sortBy(reorderCache[0].node.childNodes, ORDER_ATTRIBUTE_NAME).forEach(appendChild, reorderCache[0].node);
+
+      reorderCache.shift();
+    }
+  }
+
+  for (i = 0; i < __patches.length; i++) {
+    __patches[i].parsedIndex = parseAshNodeIndex(__patches[i].index);
+  }
+
+  var maxIndex = _(__patches).pluck("parsedIndex").flatten().max();
+
+  var maxDigits = maxIndex === 0 ? 1 : Math.floor(Math.log(Math.abs(Math.floor(maxIndex))) / Math.LN10) + 1;
+
+  __patches = _.sortBy(__patches, function (patch) {
+    var result = "";
+
+    for (var i = 0; i < patch.parsedIndex.length - 1; i++) {
+      result += _.padLeft(patch.parsedIndex[i], maxDigits);
+    }
+
+    if (patch.type == PATCH_ASH_NODE) {
+      result += _.padLeft(9, maxDigits);
+    } else if (patch.type == PATCH_ASH_TEXT_NODE) {
+      result += _.padLeft(8, maxDigits);
+    } else if (patch.type == PATCH_PROPERTIES) {
+      result += _.padLeft(7, maxDigits);
+    } else if (patch.type == PATCH_REMOVE) {
+      result += _.padLeft(6, maxDigits);
+    } else if (patch.type == PATCH_INSERT) {
+      result += _.padLeft(5, maxDigits);
+    } else if (patch.type == PATCH_ORDER) {
+      result += _.padLeft(4, maxDigits);
+    } else {
+      result += _.padLeft(0, maxDigits);
+    }
+
+    result += _.padLeft(patch.parsedIndex[patch.parsedIndex.length - 1], maxDigits);
+
+    return parseInt(result, 10);
+  });
+
+  // now iterate over patches...
+  for (i = __patches.length - 1; i >= 0; i--) {
+    if (!lastLevel) {
+      lastLevel = __patches[i].parsedIndex.length;
+    }
+
+    if (lastLevel < __patches[i].parsedIndex.length) {
+      // patching new level, must flush cache
+      flushCache();
+      lastLevel = __patches[i].parsedIndex.length;
+    }
+
+    if (__patches[i].type == PATCH_ASH_NODE) {
+      // remove old events
+      domEvents.removeEvents(__patches[i].index, __patches[i].stage);
+
+      // replace node
+      node = findNode(domTree, __patches[i].index);
+
+      if (!node) {
+        return false;
+      }
+
+      node.parentNode.replaceChild(createNodeTree(__patches[i].node), node);
+    }
+
+    if (__patches[i].type == PATCH_ASH_TEXT_NODE) {
+      node = findNode(domTree, __patches[i].index);
+
+      if (!node) {
+        return false;
+      }
+
+      node.nodeValue = __patches[i].text;
+    }
+
+    if (__patches[i].type == PATCH_PROPERTIES) {
+      node = findNode(domTree, __patches[i].index);
+
+      if (!node) {
+        return false;
+      }
+
+      setNodeProperties(node, __patches[i].propertiesToChange);
+      removeNodeProperties(node, __patches[i].propertiesToRemove);
+    }
+
+    if (__patches[i].type == PATCH_REMOVE) {
+      // remove old events
+      domEvents.removeEvents(__patches[i].index, __patches[i].stage);
+
+      node = findNode(domTree, __patches[i].index);
+
+      if (!node) {
+        return false;
+      }
+
+      node.parentNode.removeChild(node);
+    }
+
+    if (__patches[i].type == PATCH_INSERT) {
+      node = findNode(domTree, __patches[i].parentIndex);
+
+      if (!node) {
+        return false;
+      }
+
+      node.appendChild(createNodeTree(__patches[i].node));
+
+      reorderCache.push({
+        node: node
+      });
+    }
+
+    if (__patches[i].type == PATCH_ORDER) {
+      if (typeof __patches[i].index !== "undefined") {
+        // moving existing node
+        node = findNode(domTree, __patches[i].index);
+
+        if (!node) {
+          return false;
+        }
+
+        reindexCache.push({
+          node: node,
+          newIndex: __patches[i].newIndex,
+          newOrder: __patches[i].order,
+          oldIndex: __patches[i].index,
+          stage: __patches[i].stage
+        });
+      } else {
+        return false;
+      }
+
+      reorderCache.push({
+        node: node.parentNode
+      });
+    }
+  }
+
+  flushCache();
+
+  return true;
+}
+
+module.exports = patchNodeTree;
+},{"../class/DOMEvents":19,"../dom/findNode":23,"../dom/removeNodeProperties":25,"../dom/setNodeProperties":26,"../internal/constants":27,"./createNodeTree":7,"./parseAshNodeIndex":10,"_":140}],12:[function(require,module,exports){
+"use strict";
+
+var _ = require("_");
+var DOMEvents = require("../class/DOMEvents");
+
+var domEvents = new DOMEvents();
+
+function setNodeProperties(node, properties) {
+  _.forOwn(properties, function (value, key, object) {
+    if (key == "style" && _.isObject(value)) {
+      $(node).css(value);
+    } else if (key == "events" && _.isObject(value)) {
+      domEvents.addEvents(node, value);
+      /*_.forOwn(value, function (callback, eventName, object) {
+      	if (_.isFunction(callback)) {
+      		domEvents.addEvent(node, eventName, callback);
+      	}
+      });*/
+    } else if (key == "className" || key == "class") {
+      node.className = value;
+    } else if (!_.isObject(value)) {
+      // TODO
+      if (key.substring(0, 6) == "xlink:") {
+        node.setAttributeNS("http://www.w3.org/1999/xlink", key.substring(6), value);
+      } else if (key.substring(0, 4) == "xml:") {
+        node.setAttributeNS("http://www.w3.org/2000/svg", key.substring(4), value);
+      } else {
+        if (key == "checked") {
+          node.checked = !!value;
+        } else if (key == "value") {
+          node.value = value;
+        }
+
+        node.setAttribute(key, value);
+      }
+    }
+  });
+
+  return node;
+}
+
+module.exports = setNodeProperties;
+},{"../class/DOMEvents":19,"_":140}],13:[function(require,module,exports){
+"use strict";
+
+var _ = require("_");
+var $ = require("jquery");
+
+var createAshElementTree = require("../DOM/createAshElementTree");
+var isAshNode = require("../internal/isAshNode");
+var isAshTextNode = require("../internal/isAshTextNode");
+var isComponentAshElement = require("../internal/isComponentAshElement");
+var isAshNodeAshElement = require("../internal/isAshNodeAshElement");
+var createAshNodeTree = require("../DOM/createAshNodeTree");
+var createNodeTree = require("../DOM/createNodeTree");
+var diffAshNodeTree = require("../DOM/diffAshNodeTree");
+var patchNodeTree = require("../DOM/patchNodeTree");
+var constants = require("../internal/constants");
+
+var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
+var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
+var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
+
+function escapeAttributeValue(s, preserveCR) {
+  preserveCR = preserveCR ? "&#13;" : "\n";
+  return ("" + s) /* Forces the conversion to string. */
+  .replace(/&/g, "&amp;") /* This MUST be the 1st replacement. */
+  .replace(/'/g, "&apos;") /* The 4 other predefined entities, required. */
+  .replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+  /*
+  You may add other replacements here for HTML only 
+  (but it's not necessary).
+  Or for XML, only if the named entities are defined in its DTD.
+  */
+  .replace(/\r\n/g, preserveCR) /* Must be before the next replacement. */
+  .replace(/[\r\n]/g, preserveCR);
+}
+
+function walkStringifyAshNodeTree(ashNodeTree, index /*, parentIndex*/) {
+  var html = "";
+  var openingTag = "<";
+  var closingTag = "";
+  var content = "";
+  var parentIndex = arguments[2];
+  var i, key1, key2;
+
+  if (isAshNode(ashNodeTree)) {
+    openingTag += ashNodeTree.tagName;
+    closingTag = "</" + ashNodeTree.tagName + ">";
+
+    if (parentIndex) {
+      openingTag += " " + INDEX_ATTRIBUTE_NAME + "=\"" + parentIndex + LEVEL_SEPARATOR + index + "\"";
+      openingTag += " " + ORDER_ATTRIBUTE_NAME + "=\"" + index + "\"";
+      parentIndex = parentIndex + LEVEL_SEPARATOR + index;
+    } else {
+      openingTag += " " + INDEX_ATTRIBUTE_NAME + "=\"" + index + "\"";
+      openingTag += " " + ORDER_ATTRIBUTE_NAME + "=\"" + index + "\"";
+      parentIndex = "" + index;
+    }
+
+    if (ashNodeTree.properties) {
+      for (key1 in ashNodeTree.properties) {
+        if (ashNodeTree.properties.hasOwnProperty(key1) && key1 != "events") {
+          if (key1 == "style") {
+            openingTag += " style=\"";
+
+            // add style definitions
+            for (key2 in ashNodeTree.properties.style) {
+              if (ashNodeTree.properties.style.hasOwnProperty(key2)) {
+                if (typeof ashNodeTree.properties.style[key2] === "string") {
+                  openingTag += key2 + ":" + ashNodeTree.properties.style[key2] + ";";
+                } else {}
+              }
+            }
+
+            openingTag += "\"";
+          } else {
+            if (typeof ashNodeTree.properties[key1] === "string") {
+              openingTag += " " + key1 + "=\"" + escapeAttributeValue(ashNodeTree.properties[key1]) + "\"";
+            } else if (typeof ashNodeTree.properties[key1] === "boolean") {
+              openingTag += " " + key1;
+            } else if (typeof ashNodeTree.properties[key1] === "number") {
+              openingTag += " " + key1 + "=\"" + ashNodeTree.properties[key1] + "\"";
+            }
+          }
+        }
+      }
+    }
+
+    openingTag += ">";
+
+    if (ashNodeTree.children && ashNodeTree.children.length) {
+      for (i = 0; i < ashNodeTree.children.length; i++) {
+        content += walkStringifyAshNodeTree(ashNodeTree.children[i], i, parentIndex);
+      }
+    }
+
+    html = openingTag + content + closingTag;
+  } else {
+    html = ashNodeTree.text;
+  }
+
+  return html;
+}
+
+function stringifyAshNodeTree(ashNodeTree) {
+  return walkStringifyAshNodeTree(ashNodeTree, 0, "");
+}
+
+module.exports = stringifyAshNodeTree;
+},{"../DOM/createAshElementTree":5,"../DOM/createAshNodeTree":6,"../DOM/createNodeTree":7,"../DOM/diffAshNodeTree":8,"../DOM/patchNodeTree":11,"../internal/constants":27,"../internal/isAshNode":31,"../internal/isAshNodeAshElement":32,"../internal/isAshTextNode":33,"../internal/isComponentAshElement":34,"_":140,"jquery":304}],14:[function(require,module,exports){
+"use strict";
+
+var DOMEvents = require("../class/DOMEvents");
+var constants = require("../internal/constants");
+
+var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
+var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
+var STAGE_ATTRIBUTE_NAME = constants.STAGE_ATTRIBUTE_NAME;
+var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
+
+var domEvents = new DOMEvents();
+
+function walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache) {
+  var i;
+
+  //console.log('validating ', nodeTree, ashNodeTree, stage);
+
+  if (nodeTree.tagName && nodeTree.tagName.toLowerCase() != ashNodeTree.tagName) {
+    //console.log('!', nodeTree.tagName.toLowerCase(), ashNodeTree.tagName);
+
+    return false;
+  }
+
+  if ((nodeTree.getAttribute && nodeTree.getAttribute(INDEX_ATTRIBUTE_NAME) != ashNodeTree.index) || (nodeTree.getAttribute && nodeTree.getAttribute(ORDER_ATTRIBUTE_NAME) != ashNodeTree.order)) {
+    //console.log('!', nodeTree.getAttribute(INDEX_ATTRIBUTE_NAME), ashNodeTree.index);
+    //console.log('!', nodeTree.getAttribute(INDEX_ATTRIBUTE_NAME), ashNodeTree.index);
+
+    return false;
+  }
+
+  nodeTree[INDEX_ATTRIBUTE_NAME] = ashNodeTree.index;
+  nodeTree[ORDER_ATTRIBUTE_NAME] = ashNodeTree.order;
+  nodeTree[STAGE_ATTRIBUTE_NAME] = ashNodeTree.stage;
+
+  if (ashNodeTree.properties && ashNodeTree.properties.events && typeof ashNodeTree.properties.events == "object") {
+    eventsCache.push({
+      events: ashNodeTree.properties.events,
+      node: nodeTree
+    });
+  }
+
+  if ((nodeTree.childNodes.length && (!ashNodeTree.children || !ashNodeTree.children.length)) || (!nodeTree.childNodes.length && (ashNodeTree.children && ashNodeTree.children.length)) || (ashNodeTree.children && nodeTree.childNodes.length != ashNodeTree.children.length)) {
+    return false;
+  }
+
+  if (ashNodeTree.children && ashNodeTree.children.length) {
+    for (i = 0; i < ashNodeTree.children.length; i++) {
+      if (!walkValidateNodeTree(nodeTree.childNodes[i], ashNodeTree.children[i], stage, eventsCache)) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+function validateNodeTree(nodeTree, ashNodeTree, stage) {
+  var eventsCache = [];
+  var isValid = walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache);
+  var i;
+
+  //console.log(isValid, eventsCache);
+
+  if (isValid) {
+    for (i = 0; i < eventsCache.length; i++) domEvents.addEvents(eventsCache[i].node, eventsCache[i].events);
+  }
+
+  return isValid;
+}
+
+module.exports = validateNodeTree;
+},{"../class/DOMEvents":19,"../internal/constants":27}],15:[function(require,module,exports){
+var _classProps = function (child, staticProps, instanceProps) {
+  if (staticProps) Object.defineProperties(child, staticProps);
+  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+};
+
+var _extends = function (child, parent) {
+  child.prototype = Object.create(parent.prototype, {
+    constructor: {
+      value: child,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+  child.__proto__ = parent;
+};
+
+"use strict";
+
+var _ = require("_");
+var Observable = require("./Observable");
+
+var triggerOptions = {
+  noEventArgument: true
+};
+
+var Action = (function (Observable) {
+  var Action = function Action() {
+    Observable.apply(this, arguments);
+  };
+
+  _extends(Action, Observable);
+
+  _classProps(Action, null, {
+    trigger: {
+      writable: true,
+      value: function () {
+        var action = this;
+
+        if (typeof action.onTrigger === "function") {
+          Observable.prototype.trigger.call(this, "*", action.onTrigger.apply(action, arguments), triggerOptions);
+        } else {
+          if (arguments.length == 5) {
+            Observable.prototype.trigger.call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], triggerOptions);
+          } else if (arguments.length == 4) {
+            Observable.prototype.trigger.call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], triggerOptions);
+          } else if (arguments.length == 3) {
+            Observable.prototype.trigger.call(this, "*", arguments[0], arguments[1], arguments[2], triggerOptions);
+          } else if (arguments.length == 2) {
+            Observable.prototype.trigger.call(this, "*", arguments[0], arguments[1], triggerOptions);
+          } else if (arguments.length) {
+            Observable.prototype.trigger.call(this, "*", arguments[0], triggerOptions);
+          } else {
+            Observable.prototype.trigger.call(this, "*", triggerOptions);
+          }
+        }
+
+        return action;
+      }
+    }
+  });
+
+  return Action;
+})(Observable);
+
+module.exports = Action;
+},{"./Observable":20,"_":140}],16:[function(require,module,exports){
+var _classProps = function (child, staticProps, instanceProps) {
+  if (staticProps) Object.defineProperties(child, staticProps);
+  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+};
+
+"use strict";
+
+var constants = require("../internal/constants");
+
+// constants references
+var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
+var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
+
+var AshElement = (function () {
+  var AshElement = function AshElement(type, spec) {
+    if (type != COMPONENT_ASH_ELEMENT && type != ASH_NODE_ASH_ELEMENT) {
+      throw new Error(type + "must be " + COMPONENT_ASH_ELEMENT + " or " + ASH_NODE_ASH_ELEMENT + ".");
+    }
+
+    if (!spec) {
+      throw new Error(spec + "must be specified.");
+    }
+
+    if (!(this instanceof AshElement)) {
+      if (arguments.length >= 5) {
+        return new AshElement(type, spec, arguments[2], arguments[3], arguments[4]);
+      } else if (arguments.length >= 4) {
+        return new AshElement(type, spec, arguments[2], arguments[3]);
+      } else if (arguments.length >= 3) {
+        return new AshElement(type, spec, arguments[2]);
+      } else {
+        return new AshElement(type, spec);
+      }
+    }
+
+    if (type == COMPONENT_ASH_ELEMENT) {
+      this.type = type;
+      this.spec = spec;
+
+      if (arguments.length >= 3 && typeof arguments[2] !== "undefined") {
+        this.args = [arguments[2]];
+      } else {
+        this.args = null;
+      }
+
+      this.children = [];
+    } else {
+      this.type = ASH_NODE_ASH_ELEMENT;
+      this.spec = spec;
+
+      if (arguments.length >= 4 && typeof arguments[2] !== "undefined" && typeof arguments[3] !== "undefined") {
+        this.args = [arguments[2], arguments[3]];
+      } else if (arguments.length >= 3 && typeof arguments[2] !== "undefined") {
+        this.args = [arguments[2]];
+      } else {
+        this.args = null;
+      }
+
+      if (arguments.length >= 5 && arguments[4]) {
+        this.children = arguments[4];
+      } else {
+        this.children = [];
+      }
+    }
+
+    this.parent = null;
+    this.owner = null;
+  };
+
+  _classProps(AshElement, null, {
+    instantiate: {
+      writable: true,
+      value: function () {
+        if (this.type == COMPONENT_ASH_ELEMENT) {
+          if (this.args) {
+            this.instance = new this.spec(this.args[0]);
+          } else {
+            this.instance = new this.spec();
+          }
+        } else if (this.type == ASH_NODE_ASH_ELEMENT) {
+          if (this.args) {
+            this.instance = new this.spec(this.args[0], this.args[1]);
+          } else {
+            this.instance = new this.spec();
+          }
+        } else {
+          throw new Error(this + " is not a AshElement object.");
+        }
+
+        this.instance.element = this;
+
+        return this.instance;
+      }
+    }
+  });
+
+  return AshElement;
+})();
+
+module.exports = AshElement;
+},{"../internal/constants":27}],17:[function(require,module,exports){
+"use strict";
+
+var _ = require("_");
+var AshElement = require("./AshElement");
+var constants = require("../internal/constants");
+
+// constants references
+var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
+var ASH_NODE = constants.ASH_NODE;
+var ASH_TEXT_NODE = constants.ASH_TEXT_NODE;
+
+var AshNode = function AshNode(tagName, properties) {
+  if (typeof properties !== "undefined") {
+    this.type = ASH_NODE;
+    this.tagName = tagName.toLowerCase();
+    this.properties = properties || {};
+    this.children = [];
+    this.index = null;
+    this.key = null;
+
+    // find element's key
+    if (this.properties.key) {
+      this.key = this.properties.key;
+      delete this.properties.key;
+    }
+  } else {
+    this.type = ASH_TEXT_NODE;
+    this.text = tagName;
+    this.index = null;
+  }
+};
+
+module.exports = AshNode;
+},{"../internal/constants":27,"./AshElement":16,"_":140}],18:[function(require,module,exports){
+var _classProps = function (child, staticProps, instanceProps) {
+  if (staticProps) Object.defineProperties(child, staticProps);
+  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+};
+
+"use strict";
+
+var _ = require("_");
+
+//var isAshNodeAshElement = require('../internal/isAshNodeAshElement');
+var constants = require("../internal/constants");
+var findNode = require("../DOM/findNode");
+
+var LIFECYCLE_UNMOUNTED = constants.LIFECYCLE_UNMOUNTED;
+var LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
+var LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
+
+var Component = (function () {
+  var Component = function Component(props) {
+    // make sure functions are always bound to this
+    /*_.forIn(this, function (value, key)
+    {
+    	if (_.isFunction(value) && key != 'constructor')
+    	{
+    		this[key] = value.bind(this);
+    	}
+    }, this);*/
+    // autobind functions
+    var keys = this.autobind ? this.autobind() : null;
+    var i;
+
+    if (keys && Array.isArray(keys)) {
+      for (i = 0; i < keys.length; i++) {
+        if (_.isFunction(this[keys[i]]) && keys[i] != "constructor") {
+          this[keys[i]] = this[keys[i]].bind(this);
+        }
+      }
+    }
+
+    this.props = props || {};
+    this.state = this.getInitialState ? this.getInitialState() : {};
+
+    // set state if specified in props
+    if (this.props.state) {
+      _.keys(this.state).forEach(function (key) {
+        this.props.state[key] = this.state[key];
+      }, this);
+
+      delete this.props.state;
+    }
+
+    this.__isDirty = true;
+    this.__lifecycle = LIFECYCLE_UNMOUNTED;
+  };
+
+  _classProps(Component, null, {
+    autobind: {
+      writable: true,
+      value: function () {
+        return null;
+      }
+    },
+    setDirty: {
+      writable: true,
+      value: function (options) {
+        this.__isDirty = true;
+
+        if (!options || (options && options.update !== false)) {
+          if (this.element.stage) {
+            this.element.stage.update();
+          }
+        }
+
+        return this;
+      }
+    },
+    isMounted: {
+      writable: true,
+      value: function () {
+        return this.__lifecycle == LIFECYCLE_MOUNTED;
+      }
+    },
+    isDirty: {
+      writable: true,
+      value: function () {
+        return !!this.__isDirty;
+      }
+    },
+    setState: {
+      writable: true,
+      value: function (state) {
+        if (state && typeof state === "object") {
+          _.assign(this.state, state);
+
+          // set component dirty
+          this.setDirty();
+        }
+
+        return this;
+      }
+    },
+    __getRender: {
+      writable: true,
+      value: function () {
+        this.__isDirty = false;
+        this.__cachedRender = this.render();
+
+        return this.__cachedRender;
+      }
+    },
+    __setLifecycle: {
+      writable: true,
+      value: function (lifecycle) {
+        // value check
+        if (lifecycle != LIFECYCLE_UNMOUNTED && lifecycle != LIFECYCLE_MOUNTING && lifecycle != LIFECYCLE_MOUNTED) {
+          throw new Error(lifecycle + " must be \"Unmounted\", \"Mounting\" or \"Mounted\".");
+        }
+
+        this.__lifecycle = lifecycle;
+
+        return this;
+      }
+    },
+    shouldUpdate: {
+      writable: true,
+      value: function () {
+        return true;
+      }
+    },
+    mount: {
+      writable: true,
+      value: function () {
+        // set lifecycle
+        this.__setLifecycle(LIFECYCLE_MOUNTED);
+
+        // call an event
+        this.onMount();
+
+        return this;
+      }
+    },
+    unmount: {
+      writable: true,
+      value: function () {
+        // set lifecycle
+        this.__setLifecycle(LIFECYCLE_UNMOUNTED);
+
+        // call an event
+        this.onUnmount();
+
+        return this;
+      }
+    },
+    onBeforeMount: {
+      writable: true,
+      value: function () {}
+    },
+    onMount: {
+      writable: true,
+      value: function () {}
+    },
+    onUnmount: {
+      writable: true,
+      value: function () {}
+    },
+    onBeforeReceiveProps: {
+      writable: true,
+      value: function () {}
+    },
+    render: {
+      writable: true,
+      value: function () {
+        return null;
+      }
+    },
+    getDOMNode: {
+      writable: true,
+      value: function () {
+        if (this.isMounted() && isAshNodeAshElement(this.__cachedRender)) {
+          return findNode(this.element.stage.getRootDOMNode(), this.__cachedRender.instance.index);
+        }
+
+        return null;
+      }
+    }
+  });
+
+  return Component;
+})();
+
+module.exports = Component;
+},{"../DOM/findNode":9,"../internal/constants":27,"_":140}],19:[function(require,module,exports){
+var _classProps = function (child, staticProps, instanceProps) {
+  if (staticProps) Object.defineProperties(child, staticProps);
+  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+};
+
+"use strict!";
+
+var _ = require("_");
+var $ = require("jquery");
+var constants = require("../internal/constants");
+var parseAshNodeIndex = require("../DOM/parseAshNodeIndex");
+
+var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
+var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
+var STAGE_ATTRIBUTE_NAME = constants.STAGE_ATTRIBUTE_NAME;
+var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
+
+var domEvents;
+
+// list of topics
+var topics = {};
+
+var DOMEvents = (function () {
+  var DOMEvents = function DOMEvents() {
+    if (domEvents) {
+      return domEvents;
+    }
+
+    if (!(this instanceof DOMEvents)) {
+      return new DOMEvents();
+    }
+
+    domEvents = this;
+
+    return domEvents;
+  };
+
+  _classProps(DOMEvents, null, {
+    addEvent: {
+      writable: true,
+      value: function (node, eventName, callback) {
+        var i;
+
+        if (!topics[eventName]) {
+          topics[eventName] = [];
+
+          $(document).on(eventName, this.callback.bind(this, eventName));
+        }
+
+        for (i = 0; i < topics[eventName].length; i++) {
+          if (topics[eventName][i].stage == node[STAGE_ATTRIBUTE_NAME] && topics[eventName][i].index == node[INDEX_ATTRIBUTE_NAME]) {
+            topics[eventName][i].callback = callback;
+
+            return this;
+          }
+        }
+
+        topics[eventName].push({
+          index: node[INDEX_ATTRIBUTE_NAME],
+          stage: node[STAGE_ATTRIBUTE_NAME],
+          callback: callback
+        });
+
+        return this;
+      }
+    },
+    addEvents: {
+      writable: true,
+      value: function (node, events) {
+        _.forOwn(events, function (callback, eventName) {
+          if (_.isFunction(callback)) {
+            this.addEvent(node, eventName, callback);
+          }
+        }, this);
+
+        return this;
+      }
+    },
+    removeEvent: {
+      writable: true,
+      value: function (node, eventName) {
+        var i;
+
+        if (eventName && topics[eventName]) {
+          for (i = 0; i < topics[eventName].length; i++) {
+            if (topics[eventName][i].stage == node[STAGE_ATTRIBUTE_NAME] && topics[eventName][i].index == node[INDEX_ATTRIBUTE_NAME]) {
+              topics[eventName].splice(i, 1);
+
+              return this;
+            }
+          }
+        } else if (!eventName) {
+          _.forOwn(topics, function (value, key, object) {
+            var i;
+
+            for (i = 0; i < topics[key].length; i++) {
+              if (topics[key][i].stage == node[STAGE_ATTRIBUTE_NAME] && topics[key][i].index == node[INDEX_ATTRIBUTE_NAME]) {
+                topics[key].splice(i, 1);
+
+                return this;
+              }
+            }
+          }, this);
+        }
+
+        return this;
+      }
+    },
+    removeEvents: {
+      writable: true,
+
+
+      // removes all events, that has indx same or matching via _.isMatching
+      // removeEvents('0.1') removes events '0.1', '0.1.0', '0.1.1', etc.
+      // if eventName is specified, only events with that name are removed
+      value: function (index, stage) {
+        //console.log('remove events!');
+        _.forOwn(topics, function (value, key, object) {
+          var i;
+
+          /*if ((eventName && eventName == key) || !eventName)
+          {*/
+          for (i = 0; i < value.length; i++) {
+            if (stage == value[i].stage && _.isMatching(index.split(LEVEL_SEPARATOR), value[i].index.split(LEVEL_SEPARATOR), true)) {
+              value.splice(i, 1);
+              i--;
+            }
+          }
+          /*}*/
+        }, this);
+      }
+    },
+    reindexEvents: {
+      writable: true,
+      value: function (oldIndex, newOrder, stage) {
+        _.forOwn(topics, function (value, key, object) {
+          var i;
+          var levels;
+          var index;
+
+          for (i = 0; i < value.length; i++) {
+            if (stage == value[i].stage && _.isMatching(oldIndex.split(LEVEL_SEPARATOR), value[i].index.split(LEVEL_SEPARATOR), true)) {
+              levels = parseAshNodeIndex(value[i].index);
+              levels[parseAshNodeIndex(oldIndex).length - 1] = newOrder;
+              value[i].index = levels.join(LEVEL_SEPARATOR);
+            }
+          }
+        }, this);
+      }
+    },
+    callback: {
+      writable: true,
+      value: function (eventName, event) {
+        var index = event.target[INDEX_ATTRIBUTE_NAME];
+        var levels;
+        var i;
+
+        if (index) {
+          levels = parseAshNodeIndex(index);
+
+          while (levels.length) {
+            for (i = 0; i < topics[eventName].length; i++) {
+              if (topics[eventName][i].index == index && topics[eventName][i].stage == event.target[STAGE_ATTRIBUTE_NAME]) {
+                topics[eventName][i].callback(event);
+              }
+            }
+
+            levels.pop();
+            index = levels.join(LEVEL_SEPARATOR);
+          }
+        }
+      }
+    }
+  });
+
+  return DOMEvents;
+})();
+
+module.exports = DOMEvents;
+},{"../DOM/parseAshNodeIndex":10,"../internal/constants":27,"_":140,"jquery":304}],20:[function(require,module,exports){
+(function (global){
+var _classProps = function (child, staticProps, instanceProps) {
+  if (staticProps) Object.defineProperties(child, staticProps);
+  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+};
+
+"use strict!";
+
+var _ = require("_");
+var immediate = require("../polyfill/immediate");
+
+// Regular expressions used to split event name strings
+var REGEX_TOPIC = /\s+/; // one or more space
+var REGEX_CATEGORY = /\.|\//; // dot , or forward slash
+
+var store = global.store = {};
+
+var Observable = (function () {
+  var Observable = function Observable() {
+    if (!(this instanceof Observable)) {
+      return new Observable();
+    }
+
+    return this;
+  };
+
+  _classProps(Observable, null, {
+    observe: {
+      writable: true,
+      value: function () {
+        var observable = this;
+        var object = arguments[0];
+        var events = arguments[1];
+        var callback = arguments[2];
+        var context = arguments[3];
+        var i;
+
+        if (!_.isObject(object)) {
+          throw new Error(object + " must be an object.");
+        }
+
+        // events string is missing, we will use '*', and juggle the remaining arguments
+        if (_.isFunction(events)) {
+          context = callback;
+          callback = events;
+          events = "*";
+        }
+
+        if (!_.isFunction(callback)) {
+          throw new Error(callback + " must be a function.");
+        }
+
+        if (typeof context !== "undefined" && !_.isObject(context)) {
+          throw new Error(context + " must be an object.");
+        }
+
+        events = _.isString(events) ? events.trim().split(REGEX_TOPIC) : ["*"];
+
+        for (i = 0; i < events.length; i++) {
+          if (!store[events[i]]) {
+            store[events[i]] = {
+              name: events[i],
+              categories: events[i].split(REGEX_CATEGORY),
+              observables: []
+            };
+          }
+
+          store[events[i]].observables.push({
+            observable: observable,
+            observed: object,
+            callback: callback,
+            context: context || null
+          });
+        }
+
+        return observable;
+      }
+    },
+    unobserve: {
+      writable: true,
+      value: function () {
+        var observable = this;
+        var object = arguments[0];
+        var events = arguments[1];
+        var callback = arguments[2];
+        var context = arguments[3];
+        var i, j, key;
+
+        // events string is missing, we will use '*', and juggle the remaining arguments
+        if (_.isFunction(events)) {
+          context = callback;
+          callback = events;
+          events = "*";
+        }
+
+        events = _.isString(events) ? events.trim().split(REGEX_TOPIC) : ["*"];
+
+        for (i = 0; i < events.length; i++) {
+          for (key in store) {
+            if (store.hasOwnProperty(key) && (store[key] == events[i] || events[i] == "*")) {
+              for (j = 0; j < store[key].observables.length; j++) {
+                // we can remove only this observable
+                if (store[key].observables[j].observable == observable) {
+                  if ((!object || store[key].observables[j].observed == object) && (!callback || store[key].observables[j].callback == callback) && (!context || store[key].observables[j].context == context)) {
+                    // remove observable from the store
+                    store[key].observables.splice(j, 1);
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        return observable;
+      }
+    },
+    trigger: {
+      writable: true,
+      value: function () {
+        var observable = this;
+        var events = _.isString(arguments[0]) ? arguments[0].trim().split(REGEX_TOPIC) : ["*"];
+        var data = [];
+        var useAsync = arguments.length > 1 && _.isPlainObject(arguments[arguments.length - 1]) && arguments[arguments.length - 1].async ? true : false;
+        var noEventArgument = arguments.length > 1 && _.isPlainObject(arguments[arguments.length - 1]) && arguments[arguments.length - 1].noEventArgument ? true : false;
+        var categories;
+        var i, j, k;
+
+        for (i = 1; i < (useAsync || noEventArgument ? arguments.length - 1 : arguments.length); i++) {
+          data.push(arguments[i]);
+        }
+
+        function trigger() {
+          for (i = 0; i < events.length; i++) {
+            categories = events[i].split(REGEX_CATEGORY);
+
+            for (j in store) {
+              if (store.hasOwnProperty(j) && (_.isMatching(store[j].categories, categories) || store[j].name == "*" || events[i] == "*")) {
+                for (k = 0; k < store[j].observables.length; k++) {
+                  if (observable == store[j].observables[k].observed) {
+                    if (!noEventArgument) {
+                      data = [{
+                        type: events[i]
+                      }].concat(data);
+                    }
+
+                    store[j].observables[k].callback.apply(store[j].observables[k].context || store[j].observables[k].observable, data);
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        if (useAsync) {
+          setImmediate(trigger);
+        } else {
+          trigger();
+        }
+
+        return observable;
+      }
+    }
+  });
+
+  return Observable;
+})();
+
+module.exports = Observable;
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"../polyfill/immediate":35,"_":140}],21:[function(require,module,exports){
+var _classProps = function (child, staticProps, instanceProps) {
+  if (staticProps) Object.defineProperties(child, staticProps);
+  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+};
+
+"use strict";
+
+var _ = require("_");
+var $ = require("jquery");
+
+var createAshElementTree = require("../DOM/createAshElementTree");
+var isAshNode = require("../internal/isAshNode");
+var isAshTextNode = require("../internal/isAshTextNode");
+var isComponentAshElement = require("../internal/isComponentAshElement");
+var isAshNodeAshElement = require("../internal/isAshNodeAshElement");
+var createAshNodeTree = require("../DOM/createAshNodeTree");
+var createNodeTree = require("../DOM/createNodeTree");
+var diffAshNodeTree = require("../DOM/diffAshNodeTree");
+var patchNodeTree = require("../DOM/patchNodeTree");
+var stringifyAshNodeTree = require("../DOM/stringifyAshNodeTree");
+var validateNodeTree = require("../DOM/validateNodeTree");
+var constants = require("../internal/constants");
+
+var LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
+var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
+var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
+var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
+var ASH_NODE = constants.ASH_NODE;
+var ASH_TEXT_NODE = constants.ASH_TEXT_NODE;
+
+var stageId = 0;
+var renderer;
+
+var Renderer = (function () {
+  var Renderer = function Renderer() {
+    if (renderer) {
+      return renderer;
+    }
+
+    if (!(this instanceof Renderer)) {
+      return new Renderer();
+    }
+
+    // save singleton
+    renderer = this;
+
+    renderer.stages = [];
+
+    // render loop is always bound to renderer
+    renderer.render = renderer.render.bind(renderer);
+
+    return renderer;
+  };
+
+  _classProps(Renderer, null, {
+    addComponent: {
+      writable: true,
+      value: function (componentAshElement, node) {
+        var renderer = this;
+        var stage;
+
+        // type check
+        if (!isComponentAshElement(componentAshElement)) {
+          throw new Error(componentAshElement + " must be a Componenet Descriptor.");
+        }
+
+        if (!_.isElement(node)) {
+          throw new Error(node + " must be a DOM Element.");
+        }
+
+        stage = {
+          id: stageId,
+          isRendering: false,
+          isDirty: true,
+
+          node: node,
+          ashNodeTree: null,
+
+          getRootDOMNode: renderer.getRootDOMNode.bind(renderer, stageId),
+          update: renderer.update.bind(renderer, stageId)
+        };
+
+        // create Ash Element tree for the Component Ash Element
+        stage.ashElementTree = createAshElementTree(componentAshElement, stage);
+
+        // push the stages
+        renderer.stages.push(stage);
+        stageId++;
+
+        // render
+        this.render();
+
+        return renderer;
+      }
+    },
+    componentToString: {
+      writable: true,
+      value: function (componentAshElement) {
+        var renderer = this;
+        var stage;
+        var html;
+
+        // type check
+        if (!isComponentAshElement(componentAshElement)) {
+          throw new Error(componentAshElement + " must be a Componenet Descriptor.");
+        }
+
+        stage = {
+          isRendering: false,
+          isDirty: true,
+
+          node: null,
+          ashNodeTree: null
+        };
+
+        // create Ash Element tree for the Component Ash Element
+        stage.ashElementTree = createAshElementTree(componentAshElement, stage);
+
+        // create Virtual DOM
+        stage.ashNodeTree = createAshNodeTree(stage.ashElementTree);
+
+        return stringifyAshNodeTree(stage.ashNodeTree);
+      }
+    },
+    getRootDOMNode: {
+      writable: true,
+      value: function (stageId) {
+        var i;
+
+        for (i = 0; i < this.stages[stageId].node.childNodes.length; i++) {
+          if (typeof this.stages[stageId].node.childNodes[i][INDEX_ATTRIBUTE_NAME] !== "undefined") {
+            return this.stages[stageId].node.childNodes[i];
+          }
+        }
+
+        return null;
+      }
+    },
+    update: {
+      writable: true,
+      value: function (stageId) {
+        var renderer = this;
+        var stage = renderer.stages[stageId];
+
+        // find descriptors that should be updated
+        findDirtyComponent(stage.ashElementTree);
+
+        // set stage to dirty, so Renderer can rerender the DOM
+        stage.isDirty = true;
+        renderer.render();
+
+        return renderer;
+      }
+    },
+    render: {
+      writable: true,
+      value: function () {
+        var renderer = this;
+        var newAshNodeTree;
+        var patches;
+        var rerender;
+        var i;
+        var j;
+        var stage;
+        var validNodeTree;
+
+        for (i = 0; i < renderer.stages.length; i++) {
+          stage = renderer.stages[i];
+
+          if (stage.isDirty && !stage.isRendering) {
+            stage.isRendering = true;
+
+            if (!renderer.stages[i].ashNodeTree) {
+              validNodeTree = false;
+
+              // remove child nodes which are not element nodes
+              for (j = 0; j < stage.node.childNodes.length; j++) {
+                if (stage.node.childNodes[j].nodeType != 1) {
+                  stage.node.removeChild(stage.node.childNodes[j]);
+                  j--;
+                }
+              }
+
+              // create Virtual DOM
+              stage.ashNodeTree = createAshNodeTree(stage.ashElementTree);
+
+              // there are some element nodes?
+              if (stage.node.childNodes.length) {
+                validNodeTree = validateNodeTree(stage.node.childNodes[0], stage.ashNodeTree, stage);
+              }
+
+              // render to the Real DOM, if needed
+              if (!validNodeTree) {
+                console.log("existing html is invalid!");
+                $(stage.node).empty();
+                stage.node.appendChild(createNodeTree(stage.ashNodeTree));
+              }
+
+              // mount components
+              mountComponents(renderer.stages[i].ashElementTree);
+            } else {
+              newAshNodeTree = createAshNodeTree(stage.ashElementTree);
+              patches = diffAshNodeTree(stage.ashNodeTree, newAshNodeTree);
+              stage.ashNodeTree = newAshNodeTree;
+
+              requestAnimationFrame(function () {
+                rerender = !patchNodeTree(stage.getRootDOMNode(), patches);
+
+                if (rerender) {
+                  throw new Error("Patching the DOM was unsuccesful!");
+                }
+              });
+
+              // mount components
+              mountComponents(stage.ashElementTree);
+            }
+
+            stage.isDirty = false;
+            stage.isRendering = false;
+          }
+        }
+
+        return renderer;
+      }
+    }
+  });
+
+  return Renderer;
+})();
+
+
+
+
+
+function findDirtyComponent(ashElement) {
+  if (ashElement.type == ASH_NODE_ASH_ELEMENT) {
+    var i;
+
+    for (i = 0; i < ashElement.children.length; i++) {
+      // walk the child
+      findDirtyComponent(ashElement.children[i]);
+    }
+  } else if (ashElement.type == COMPONENT_ASH_ELEMENT) {
+    if (ashElement.instance.isDirty() && ashElement.instance.shouldUpdate(null)) {
+      // descriptor is dirty, let's update
+      updateComponentAshElement(ashElement);
+    } else {
+      // walk the child
+      findDirtyComponent(ashElement.children[0]);
+    }
+  }
+}
+
+function walkUpdateComponentAshElement(oldAshElement, newAshElement) {
+  var i;
+
+  if (newAshElement.type == COMPONENT_ASH_ELEMENT) {
+    if (oldAshElement === null) {
+      // old is null, new is component
+
+      // newAshElement must be added as a child...							
+      if (newAshElement.parent.type == ASH_NODE_ASH_ELEMENT) {
+        // now, the component descriptor's tree is not complete
+        createAshElementTree(newAshElement, stage, newAshElement.owner.id, newAshElement.level);
+
+        // replace the old
+        newAshElement.parent.children[newAshElement.order] = newAshElement;
+      } else if (newAshElement.parent.type == COMPONENT_ASH_ELEMENT) {
+        // now, the component descriptor's tree is not complete
+        createAshElementTree(newAshElement, stage, newAshElement.id, newAshElement.level);
+
+        // replace the old
+        newAshElement.parent.children[0] = newAshElement;
+      } else {
+        throw new Error(newAshElement.parent + " must be a AshElement object.");
+      }
+    } else if (oldAshElement.type == COMPONENT_ASH_ELEMENT && newAshElement.spec == oldAshElement.spec) {
+      // old is component, new is same component
+
+      if (oldAshElement.instance.shouldUpdate(newAshElement.args[0])) {
+        // copy the new to the old...
+        oldAshElement.args = newAshElement.args;
+        oldAshElement.instance.onBeforeReceiveProps(newAshElement.args[0]);
+        oldAshElement.instance.props = newAshElement.args[0];
+
+        // create child for the new descriptor
+        newAshElement.children[0] = oldAshElement.instance.__getRender();
+
+        // adding children to the queue
+        if (newAshElement.children[0] && oldAshElement.children[0]) {
+          newAshElement.children[0].owner = oldAshElement;
+          newAshElement.children[0].parent = oldAshElement;
+          newAshElement.children[0].order = 0;
+
+          walkUpdateComponentAshElement(oldAshElement.children[0], newAshElement.children[0]);
+        } else if (newAshElement.children[0] && !oldAshElement.children[0]) {
+          newAshElement.children[0].owner = oldAshElement;
+          newAshElement.children[0].parent = oldAshElement;
+          newAshElement.children[0].order = 0;
+
+          walkUpdateComponentAshElement(null, newAshElement.children[0]);
+        }
+
+        // deleting old surplus children
+        if (!newAshElement.children[0] && oldAshElement.children[0]) {
+          if (oldAshElement.children[0].type == COMPONENT_ASH_ELEMENT) {
+            oldAshElement.children[0].instance.unmount();
+          }
+
+          oldAshElement.children.pop();
+        }
+      }
+    } else if (oldAshElement.type == COMPONENT_ASH_ELEMENT) {
+      // old is component, new is different component
+
+      if (oldAshElement.parent.type == ASH_NODE_ASH_ELEMENT) {
+        // now, the component descriptor's tree is not complete
+        newAshElement.owner = oldAshElement.owner;
+        newAshElement.parent = oldAshElement.parent;
+        newAshElement.order = oldAshElement.order;
+        createAshElementTree(newAshElement, stage, oldAshElement.owner.id, oldAshElement.level);
+
+        // replace the old
+        oldAshElement.instance.unmount();
+        oldAshElement.parent.children[oldAshElement.order] = newAshElement;
+      } else if (oldAshElement.parent.type == COMPONENT_ASH_ELEMENT) {
+        // now, the component descriptor's tree is not complete
+        newAshElement.owner = oldAshElement.owner;
+        newAshElement.parent = oldAshElement.parent;
+        newAshElement.order = oldAshElement.order;
+        createAshElementTree(newAshElement, stage, oldAshElement.id, oldAshElement.level);
+
+        // replace the old
+        oldAshElement.instance.unmount();
+        oldAshElement.parent.children[0] = newAshElement;
+      } else {
+        throw new Error(oldAshElement.parent + " must be a AshElement object.");
+      }
+    } else {
+      // old is virtual node, new is component
+
+      if (oldAshElement.parent.type == ASH_NODE_ASH_ELEMENT) {
+        // now, the component descriptor's tree is not complete
+        newAshElement.owner = oldAshElement.owner;
+        newAshElement.parent = oldAshElement.parent;
+        newAshElement.order = oldAshElement.order;
+        createAshElementTree(newAshElement, stage, oldAshElement.owner.id, oldAshElement.level);
+
+        // replace the old
+        oldAshElement.parent.children[oldAshElement.order] = newAshElement;
+      } else if (oldAshElement.parent.type == COMPONENT_ASH_ELEMENT) {
+        // now, the component descriptor's tree is not complete
+        newAshElement.owner = oldAshElement.owner;
+        newAshElement.parent = oldAshElement.parent;
+        newAshElement.order = oldAshElement.order;
+        createAshElementTree(newAshElement, stage, oldAshElement.id, oldAshElement.level);
+
+        // replace the old
+        oldAshElement.parent.children[0] = newAshElement;
+      } else {
+        throw new Error(oldAshElement.parent + " must be a AshElement object.");
+      }
+    }
+  } else {
+    if (oldAshElement === null) {
+      // old is null, new is virtual node
+
+      // newAshElement must be added as a child...							
+      if (newAshElement.parent.type == COMPONENT_ASH_ELEMENT) {
+        // now, the component descriptor's tree is not complete
+        createAshElementTree(newAshElement, stage, newAshElement.id, newAshElement.level);
+
+        // replace the old
+        newAshElement.parent.children[0] = newAshElement;
+      } else if (newAshElement.parent.type == ASH_NODE_ASH_ELEMENT) {
+        // now, the component descriptor's tree is not complete
+        createAshElementTree(newAshElement, stage, newAshElement.owner.id, newAshElement.level);
+
+        // replace the old
+        newAshElement.parent.children[newAshElement.order] = newAshElement;
+      } else {
+        throw new Error(oldAshElement.parent + " must be a AshElement object.");
+      }
+    } else if (newAshElement.type == oldAshElement.type) {
+      // old is virtual node, new is virtual node
+
+      oldAshElement.args = newAshElement.args;
+      oldAshElement.instantiate();
+
+      // adding children to the queue
+      for (i = 0; i < newAshElement.children.length; i++) {
+        if (newAshElement.children[i] && oldAshElement.children[i]) {
+          newAshElement.children[i].owner = oldAshElement.owner;
+          newAshElement.children[i].parent = oldAshElement;
+          newAshElement.children[i].order = i;
+
+          walkUpdateComponentAshElement(oldAshElement.children[i], newAshElement.children[i]);
+        } else if (newAshElement.children[i] && !oldAshElement.children[i]) {
+          newAshElement.children[i].owner = oldAshElement.owner;
+          newAshElement.children[i].parent = oldAshElement;
+          newAshElement.children[i].order = i;
+
+          walkUpdateComponentAshElement(null, newAshElement.children[i]);
+        }
+      }
+
+      // deleting old surplus children
+      while (oldAshElement.children.length > newAshElement.children.length) {
+        if (oldAshElement.children[oldAshElement.children.length - 1].type == COMPONENT_ASH_ELEMENT) {
+          oldAshElement.children[oldAshElement.children.length - 1].instance.unmount();
+        }
+
+        oldAshElement.children.pop();
+      }
+    } else {
+      // old is component, new is virtual node
+
+      if (oldAshElement.parent.type == COMPONENT_ASH_ELEMENT) {
+        // now, the component descriptor's tree is not complete
+        newAshElement.owner = oldAshElement.owner;
+        newAshElement.parent = oldAshElement.parent;
+        newAshElement.order = oldAshElement.order;
+        createAshElementTree(newAshElement, stage, oldAshElement.id, oldAshElement.level);
+
+        // replace the old
+        oldAshElement.instance.unmount();
+        oldAshElement.parent.children[0] = newAshElement;
+      } else if (oldAshElement.parent.type == ASH_NODE_ASH_ELEMENT) {
+        // now, the component descriptor's tree is not complete
+        newAshElement.owner = oldAshElement.owner;
+        newAshElement.parent = oldAshElement.parent;
+        newAshElement.order = oldAshElement.order;
+        createAshElementTree(newAshElement, stage, oldAshElement.owner.id, oldAshElement.level);
+
+        // replace the old
+        oldAshElement.instance.unmount();
+        oldAshElement.parent.children[oldAshElement.order] = newAshElement;
+      } else {
+        throw new Error(oldAshElement.parent + " must be a AshElement object.");
+      }
+    }
+  }
+}
+
+function updateComponentAshElement(componentAshElement) {
+  // type check
+  if (componentAshElement.type != COMPONENT_ASH_ELEMENT) {
+    throw new Error(componentAshElement + " must be a Component type AshElement object.");
+  }
+
+  if (componentAshElement.instance.shouldUpdate()) {
+    var render;
+
+    render = componentAshElement.instance.__getRender();
+    render.owner = componentAshElement;
+    render.parent = componentAshElement;
+    render.order = 0;
+
+    walkUpdateComponentAshElement(componentAshElement.children[0], render);
+  }
+}
+
+function walkMountComponents(ashElement) {
+  var i;
+
+  if (isAshNodeAshElement(ashElement)) {
+    for (i = 0; i < ashElement.children.length; i++) {
+      if (ashElement.children[i]) {
+        // walk the child
+        walkMountComponents(ashElement.children[i]);
+      }
+    }
+  } else if (isComponentAshElement(ashElement)) {
+    if (ashElement.instance && ashElement.instance.__lifecycle == LIFECYCLE_MOUNTING) {
+      ashElement.instance.mount();
+    }
+
+    // walk the child
+    if (ashElement.children[0]) {
+      walkMountComponents(ashElement.children[0]);
+    }
+  }
+}
+
+function mountComponents(componentAshElement) {
+  // type check
+  if (!isComponentAshElement(componentAshElement)) {
+    throw new Error(componentAshElement + " must be a Component type AshElement object.");
+  }
+
+  if (componentAshElement.instance && componentAshElement.instance.__lifecycle == LIFECYCLE_MOUNTING) {
+    componentAshElement.instance.mount();
+  }
+
+  if (componentAshElement.children[0]) {
+    // walk the child
+    walkMountComponents(componentAshElement.children[0]);
+  }
+
+  // return resulting componentAshElement tree
+  return componentAshElement;
+}
+
+module.exports = Renderer;
+},{"../DOM/createAshElementTree":5,"../DOM/createAshNodeTree":6,"../DOM/createNodeTree":7,"../DOM/diffAshNodeTree":8,"../DOM/patchNodeTree":11,"../DOM/stringifyAshNodeTree":13,"../DOM/validateNodeTree":14,"../internal/constants":27,"../internal/isAshNode":31,"../internal/isAshNodeAshElement":32,"../internal/isAshTextNode":33,"../internal/isComponentAshElement":34,"_":140,"jquery":304}],22:[function(require,module,exports){
+var _extends = function (child, parent) {
+  child.prototype = Object.create(parent.prototype, {
+    constructor: {
+      value: child,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+  child.__proto__ = parent;
+};
+
+"use strict";
+
+var _ = require("_");
+var Observable = require("./Observable");
+
+var Store = (function (Observable) {
+  var Store = function Store() {};
+
+  _extends(Store, Observable);
+
+  return Store;
+})(Observable);
+
+module.exports = Store;
+},{"./Observable":20,"_":140}],23:[function(require,module,exports){
+module.exports=require(9)
+},{"./parseAshNodeIndex":24,"d:\\projects\\ash\\bin\\src\\core\\DOM\\findNode.js":9}],24:[function(require,module,exports){
+module.exports=require(10)
+},{"_":140,"d:\\projects\\ash\\bin\\src\\core\\DOM\\parseAshNodeIndex.js":10}],25:[function(require,module,exports){
+"use strict";
+
+var $ = require("jquery");
+var DOMEvents = require("../class/DOMEvents");
+
+var domEvents = new DOMEvents();
+
+function removeNodeProperties(node, properties) {
+  var prop;
+  var i;
+
+  for (i = 0; i < properties.length; i++) {
+    prop = properties[i].split(".");
+    if (prop.length == 1) {
+      if (prop[0] == "style") {
+        $(node).removeAttr("style");
+      } else if (prop[0] == "events") {} else if (prop[0] == "className" || prop[0] == "class") {
+        node.className = "";
+      } else {
+        if (prop[0].substring(0, 6) == "xlink:") {
+          node.removeAttributeNS("http://www.w3.org/1999/xlink", prop[0].substring(6));
+        } else if (prop[0].substring(0, 4) == "xml:") {
+          node.removeAttributeNS("http://www.w3.org/2000/svg", prop[0].substring(4));
+        } else {
+          node.removeAttribute(prop[0]);
+        }
+      }
+    } else if (prop.length == 2) {
+      if (prop[0] == "style") {
+        $(node).css(prop[1], "");
+      } else if (prop[0] == "events") {
+        domEvents.removeEvent(node, prop[1]);
+      } else {}
+    }
+  }
+}
+
+module.exports = removeNodeProperties;
+},{"../class/DOMEvents":19,"jquery":304}],26:[function(require,module,exports){
+module.exports=require(12)
+},{"../class/DOMEvents":19,"_":140,"d:\\projects\\ash\\bin\\src\\core\\DOM\\setNodeProperties.js":12}],27:[function(require,module,exports){
+"use strict";
+
+var constants = {
+  // component lifecycle
+  LIFECYCLE_UNMOUNTED: "Unmounted",
+  LIFECYCLE_MOUNTING: "Mounting",
+  LIFECYCLE_MOUNTED: "Mounted",
+
+  // patch types
+  PATCH_NONE: "Patch None",
+  PATCH_ASH_NODE: "Patch Ash Node",
+  PATCH_ASH_TEXT_NODE: "Patch Ash Text Node",
+  PATCH_PROPERTIES: "Patch Properties",
+  PATCH_ORDER: "Patch Order",
+  PATCH_INSERT: "Patch Insert",
+  PATCH_REMOVE: "Patch Remove",
+
+  // descriptor types
+  COMPONENT_ASH_ELEMENT: "Component Ash Element",
+  ASH_NODE_ASH_ELEMENT: "Ash Node Ash Element",
+
+  // virtual node types
+  ASH_NODE: "Ash Node",
+  ASH_TEXT_NODE: "Ash Text Node",
+
+  // misc
+  LEVEL_SEPARATOR: ".",
+  INDEX_ATTRIBUTE_NAME: "__ash:index__",
+  ORDER_ATTRIBUTE_NAME: "__ash:order__",
+  STAGE_ATTRIBUTE_NAME: "__ash:stage__"
+};
+
+module.exports = constants;
+},{}],28:[function(require,module,exports){
+"use strict";
+
+var AshNode = require("../class/AshNode");
+var AshElement = require("../class/AshElement");
+var isAshElement = require("../internal/isAshElement");
+var constants = require("../internal/constants");
+
+// constants references
+var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
+var ASH_TEXT_NODE = constants.ASH_TEXT_NODE;
+
+var createElement = function (tagName /*, props, children*/) {
+  var props = arguments[1];
+  var children = arguments[2];
+  var i;
+
+  // type check
+  if (tagName && typeof props === "undefined" && !children) {
+    return new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, tagName, null);
+  }
+
+  if (Array.isArray(props)) {
+    children = props;
+    props = null;
+  } else if (typeof children === "string") {
+    children = [children];
+  }
+
+  // check type of children
+  if (Array.isArray(children)) {
+    for (i = 0; i < children.length; i++) {
+      if (typeof children[i] === "string") {
+        children[i] = new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, children[i]);
+      } else if (!children[i]) {
+        children.splice(i, 1);
+        i--;
+      } else if (!isAshElement(children[i])) {
+        throw new Error(children[i] + " must be a AshElement object.");
+      }
+    }
+  }
+
+  return new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, tagName, props, children);
+};
+
+module.exports = createElement;
+},{"../class/AshElement":16,"../class/AshNode":17,"../internal/constants":27,"../internal/isAshElement":30}],29:[function(require,module,exports){
+"use strict";
+
+var AshElement = require("../class/AshElement");
+var constants = require("../internal/constants");
+
+// constants references
+var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
+
+var createFactory = function (Component) {
+  var ComponentElementFactory = AshElement.bind(null, COMPONENT_ASH_ELEMENT, Component);
+
+  ComponentElementFactory.spec = Component;
+
+  return ComponentElementFactory;
+};
+
+module.exports = createFactory;
+},{"../class/AshElement":16,"../internal/constants":27}],30:[function(require,module,exports){
+"use strict";
+
+var constants = require("./constants");
+
+var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
+var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
+
+function isAshElement(value) {
+  return value && (value.type == COMPONENT_ASH_ELEMENT || value.type == ASH_NODE_ASH_ELEMENT);
+}
+
+module.exports = isAshElement;
+},{"./constants":27}],31:[function(require,module,exports){
+"use strict";
+
+var constants = require("./constants");
+
+var ASH_NODE = constants.ASH_NODE;
+
+function isAshNode(value) {
+  return value && value.type == ASH_NODE;
+}
+
+module.exports = isAshNode;
+},{"./constants":27}],32:[function(require,module,exports){
+"use strict";
+
+var constants = require("./constants");
+
+var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
+
+function isAshNodeAshElement(value) {
+  return value && value.type == ASH_NODE_ASH_ELEMENT;
+}
+
+module.exports = isAshNodeAshElement;
+},{"./constants":27}],33:[function(require,module,exports){
+"use strict";
+
+var constants = require("./constants");
+
+var ASH_TEXT_NODE = constants.ASH_TEXT_NODE;
+
+function isAshTextNode(value) {
+  return value && value.type == ASH_TEXT_NODE;
+}
+
+module.exports = isAshTextNode;
+},{"./constants":27}],34:[function(require,module,exports){
+"use strict";
+
+var constants = require("./constants");
+
+var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
+
+function isComponentAshElement(value) {
+  return value && value.type == COMPONENT_ASH_ELEMENT;
+}
+
+module.exports = isComponentAshElement;
+},{"./constants":27}],35:[function(require,module,exports){
+"use strict";
+var types = [require("./immediate/nextTick"), require("./immediate/mutation.js"), require("./immediate/messageChannel"), require("./immediate/stateChange"), require("./immediate/timeout")];
+var draining;
+var queue = [];
+//named nextTick for less confusing stack traces
+function nextTick() {
+  draining = true;
+  var i, oldQueue;
+  var len = queue.length;
+  while (len) {
+    oldQueue = queue;
+    queue = [];
+    i = -1;
+    while (++i < len) {
+      oldQueue[i]();
+    }
+    len = queue.length;
+  }
+  draining = false;
+}
+var scheduleDrain;
+var i = -1;
+var len = types.length;
+while (++i < len) {
+  if (types[i] && types[i].test && types[i].test()) {
+    scheduleDrain = types[i].install(nextTick);
+    break;
+  }
+}
+module.exports = immediate;
+function immediate(task) {
+  if (queue.push(task) === 1 && !draining) {
+    scheduleDrain();
+  }
+}
+},{"./immediate/messageChannel":36,"./immediate/mutation.js":37,"./immediate/nextTick":38,"./immediate/stateChange":39,"./immediate/timeout":40}],36:[function(require,module,exports){
+(function (global){
+"use strict";
+
+exports.test = function () {
+  if (global.setImmediate) {
+    // we can only get here in IE10
+    // which doesn't handel postMessage well
+    return false;
+  }
+  return typeof global.MessageChannel !== "undefined";
+};
+
+exports.install = function (func) {
+  var channel = new global.MessageChannel();
+  channel.port1.onmessage = func;
+  return function () {
+    channel.port2.postMessage(0);
+  };
+};
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],37:[function(require,module,exports){
+(function (global){
+"use strict";
+//based off rsvp https://github.com/tildeio/rsvp.js
+//license https://github.com/tildeio/rsvp.js/blob/master/LICENSE
+//https://github.com/tildeio/rsvp.js/blob/master/lib/rsvp/asap.js
+
+var Mutation = global.MutationObserver || global.WebKitMutationObserver;
+
+exports.test = function () {
+  return Mutation;
+};
+
+exports.install = function (handle) {
+  var called = 0;
+  var observer = new Mutation(handle);
+  var element = global.document.createTextNode("");
+  observer.observe(element, {
+    characterData: true
+  });
+  return function () {
+    element.data = (called = ++called % 2);
+  };
+};
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],38:[function(require,module,exports){
+(function (process){
+"use strict";
+exports.test = function () {
+  // Don't get fooled by e.g. browserify environments.
+  return process && !process.browser;
+};
+
+exports.install = function (func) {
+  return function () {
+    process.nextTick(func);
+  };
+};
+}).call(this,require('_process'))
+},{"_process":303}],39:[function(require,module,exports){
+(function (global){
+"use strict";
+
+exports.test = function () {
+  return "document" in global && "onreadystatechange" in global.document.createElement("script");
+};
+
+exports.install = function (handle) {
+  return function () {
+    // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
+    // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
+    var scriptEl = global.document.createElement("script");
+    scriptEl.onreadystatechange = function () {
+      handle();
+
+      scriptEl.onreadystatechange = null;
+      scriptEl.parentNode.removeChild(scriptEl);
+      scriptEl = null;
+    };
+    global.document.documentElement.appendChild(scriptEl);
+
+    return handle;
+  };
+};
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],40:[function(require,module,exports){
+"use strict";
+exports.test = function () {
+  return true;
+};
+
+exports.install = function (t) {
+  return function () {
+    setTimeout(t, 0);
+  };
+};
+},{}],41:[function(require,module,exports){
+"use strict";
+
+var _ = require("_");
+var $ = require("jquery");
+
+var Observable = require("./core/class/Observable");
+var Component = require("./core/class/Component");
+var Renderer = require("./core/class/Renderer");
+var Action = require("./core/class/Action");
+var Store = require("./core/class/Store");
+
+var createElement = require("./core/internal/createElement");
+var createFactory = require("./core/internal/createFactory");
+
+var ash = {};
+
+var VERSION = "0.1.0";
+
+_.assign(ash, {
+  Observable: Observable,
+  Component: Component,
+  Renderer: Renderer,
+  Action: Action,
+  Store: Store,
+
+  e: createElement,
+  createFactory: createFactory
+});
+
+module.exports = ash;
+},{"./core/class/Action":15,"./core/class/Component":18,"./core/class/Observable":20,"./core/class/Renderer":21,"./core/class/Store":22,"./core/internal/createElement":28,"./core/internal/createFactory":29,"_":140,"jquery":304}],42:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -338,7 +3018,7 @@ module.exports = {
   'isMatching': require('./array/isMatching')
 };
 
-},{"./array/chunk":4,"./array/compact":5,"./array/difference":6,"./array/drop":7,"./array/dropRight":8,"./array/dropRightWhile":9,"./array/dropWhile":10,"./array/findIndex":11,"./array/findLastIndex":12,"./array/first":13,"./array/flatten":14,"./array/flattenDeep":15,"./array/indexOf":16,"./array/initial":17,"./array/intersection":18,"./array/isMatching":19,"./array/last":20,"./array/lastIndexOf":21,"./array/pull":22,"./array/pullAt":23,"./array/remove":24,"./array/rest":25,"./array/slice":26,"./array/sortedIndex":27,"./array/sortedLastIndex":28,"./array/take":29,"./array/takeRight":30,"./array/takeRightWhile":31,"./array/takeWhile":32,"./array/union":33,"./array/uniq":34,"./array/unzip":35,"./array/without":36,"./array/xor":37,"./array/zip":38,"./array/zipObject":39}],4:[function(require,module,exports){
+},{"./array/chunk":43,"./array/compact":44,"./array/difference":45,"./array/drop":46,"./array/dropRight":47,"./array/dropRightWhile":48,"./array/dropWhile":49,"./array/findIndex":50,"./array/findLastIndex":51,"./array/first":52,"./array/flatten":53,"./array/flattenDeep":54,"./array/indexOf":55,"./array/initial":56,"./array/intersection":57,"./array/isMatching":58,"./array/last":59,"./array/lastIndexOf":60,"./array/pull":61,"./array/pullAt":62,"./array/remove":63,"./array/rest":64,"./array/slice":65,"./array/sortedIndex":66,"./array/sortedLastIndex":67,"./array/take":68,"./array/takeRight":69,"./array/takeRightWhile":70,"./array/takeWhile":71,"./array/union":72,"./array/uniq":73,"./array/unzip":74,"./array/without":75,"./array/xor":76,"./array/zip":77,"./array/zipObject":78}],43:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -386,7 +3066,7 @@ function chunk(array, size) {
 
 module.exports = chunk;
 
-},{"./slice":26}],5:[function(require,module,exports){
+},{"./slice":65}],44:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -427,7 +3107,7 @@ function compact(array) {
 
 module.exports = compact;
 
-},{}],6:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -475,7 +3155,7 @@ function difference() {
 
 module.exports = difference;
 
-},{"../internal/baseDifference":113,"../internal/baseFlatten":118,"../lang/isArguments":176,"../lang/isArray":177}],7:[function(require,module,exports){
+},{"../internal/baseDifference":152,"../internal/baseFlatten":157,"../lang/isArguments":215,"../lang/isArray":216}],46:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -518,7 +3198,7 @@ function drop(array, n, guard) {
 
 module.exports = drop;
 
-},{"./slice":26}],8:[function(require,module,exports){
+},{"./slice":65}],47:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -563,7 +3243,7 @@ function dropRight(array, n, guard) {
 
 module.exports = dropRight;
 
-},{"./slice":26}],9:[function(require,module,exports){
+},{"./slice":65}],48:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -626,7 +3306,7 @@ function dropRightWhile(array, predicate, thisArg) {
 
 module.exports = dropRightWhile;
 
-},{"../internal/baseCallback":108,"./slice":26}],10:[function(require,module,exports){
+},{"../internal/baseCallback":147,"./slice":65}],49:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -689,7 +3369,7 @@ function dropWhile(array, predicate, thisArg) {
 
 module.exports = dropWhile;
 
-},{"../internal/baseCallback":108,"./slice":26}],11:[function(require,module,exports){
+},{"../internal/baseCallback":147,"./slice":65}],50:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -756,7 +3436,7 @@ function findIndex(array, predicate, thisArg) {
 
 module.exports = findIndex;
 
-},{"../internal/baseCallback":108}],12:[function(require,module,exports){
+},{"../internal/baseCallback":147}],51:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -822,7 +3502,7 @@ function findLastIndex(array, predicate, thisArg) {
 
 module.exports = findLastIndex;
 
-},{"../internal/baseCallback":108}],13:[function(require,module,exports){
+},{"../internal/baseCallback":147}],52:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -855,7 +3535,7 @@ function first(array) {
 
 module.exports = first;
 
-},{}],14:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -901,7 +3581,7 @@ function flatten(array, isDeep, guard) {
 
 module.exports = flatten;
 
-},{"../internal/baseFlatten":118}],15:[function(require,module,exports){
+},{"../internal/baseFlatten":157}],54:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -932,7 +3612,7 @@ function flattenDeep(array) {
 
 module.exports = flattenDeep;
 
-},{"../internal/baseFlatten":118}],16:[function(require,module,exports){
+},{"../internal/baseFlatten":157}],55:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -992,7 +3672,7 @@ function indexOf(array, value, fromIndex) {
 
 module.exports = indexOf;
 
-},{"../internal/baseIndexOf":125,"./sortedIndex":27}],17:[function(require,module,exports){
+},{"../internal/baseIndexOf":164,"./sortedIndex":66}],56:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -1023,7 +3703,7 @@ function initial(array) {
 
 module.exports = initial;
 
-},{"./slice":26}],18:[function(require,module,exports){
+},{"./slice":65}],57:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -1101,7 +3781,7 @@ function intersection() {
 
 module.exports = intersection;
 
-},{"../internal/baseIndexOf":125,"../internal/cacheIndexOf":137,"../internal/createCache":146,"../lang/isArguments":176,"../lang/isArray":177}],19:[function(require,module,exports){
+},{"../internal/baseIndexOf":164,"../internal/cacheIndexOf":176,"../internal/createCache":185,"../lang/isArguments":215,"../lang/isArray":216}],58:[function(require,module,exports){
 
 'use strict';
 
@@ -1179,7 +3859,7 @@ function isMatching(chain1, chain2, options)
 } // isMatching
 
 module.exports = isMatching;
-},{"../lang/isArray":177}],20:[function(require,module,exports){
+},{"../lang/isArray":216}],59:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -1209,7 +3889,7 @@ function last(array) {
 
 module.exports = last;
 
-},{}],21:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -1271,7 +3951,7 @@ function lastIndexOf(array, value, fromIndex) {
 
 module.exports = lastIndexOf;
 
-},{"./sortedLastIndex":28}],22:[function(require,module,exports){
+},{"./sortedLastIndex":67}],61:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -1330,7 +4010,7 @@ function pull() {
 
 module.exports = pull;
 
-},{"../internal/baseIndexOf":125}],23:[function(require,module,exports){
+},{"../internal/baseIndexOf":164}],62:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -1404,7 +4084,7 @@ function pullAt(array) {
 
 module.exports = pullAt;
 
-},{"../internal/baseAt":107,"../internal/baseCompareAscending":110,"../internal/baseFlatten":118}],24:[function(require,module,exports){
+},{"../internal/baseAt":146,"../internal/baseCompareAscending":149,"../internal/baseFlatten":157}],63:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -1474,7 +4154,7 @@ function remove(array, predicate, thisArg) {
 
 module.exports = remove;
 
-},{"../internal/baseCallback":108}],25:[function(require,module,exports){
+},{"../internal/baseCallback":147}],64:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -1505,7 +4185,7 @@ function rest(array) {
 
 module.exports = rest;
 
-},{"./slice":26}],26:[function(require,module,exports){
+},{"./slice":65}],65:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -1556,7 +4236,7 @@ function slice(array, start, end) {
 
 module.exports = slice;
 
-},{"../internal/baseSlice":132}],27:[function(require,module,exports){
+},{"../internal/baseSlice":171}],66:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -1621,7 +4301,7 @@ function sortedIndex(array, value, iteratee, thisArg) {
 
 module.exports = sortedIndex;
 
-},{"../internal/baseCallback":108,"../internal/baseSortedIndex":133,"../utility/identity":250}],28:[function(require,module,exports){
+},{"../internal/baseCallback":147,"../internal/baseSortedIndex":172,"../utility/identity":289}],67:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -1662,7 +4342,7 @@ function sortedLastIndex(array, value, iteratee, thisArg) {
 
 module.exports = sortedLastIndex;
 
-},{"../internal/baseCallback":108,"../internal/baseSortedIndex":133,"../utility/identity":250}],29:[function(require,module,exports){
+},{"../internal/baseCallback":147,"../internal/baseSortedIndex":172,"../utility/identity":289}],68:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -1705,7 +4385,7 @@ function take(array, n, guard) {
 
 module.exports = take;
 
-},{"./slice":26}],30:[function(require,module,exports){
+},{"./slice":65}],69:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -1750,7 +4430,7 @@ function takeRight(array, n, guard) {
 
 module.exports = takeRight;
 
-},{"./slice":26}],31:[function(require,module,exports){
+},{"./slice":65}],70:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -1813,7 +4493,7 @@ function takeRightWhile(array, predicate, thisArg) {
 
 module.exports = takeRightWhile;
 
-},{"../internal/baseCallback":108,"./slice":26}],32:[function(require,module,exports){
+},{"../internal/baseCallback":147,"./slice":65}],71:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -1876,7 +4556,7 @@ function takeWhile(array, predicate, thisArg) {
 
 module.exports = takeWhile;
 
-},{"../internal/baseCallback":108,"./slice":26}],33:[function(require,module,exports){
+},{"../internal/baseCallback":147,"./slice":65}],72:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -1912,7 +4592,7 @@ function union() {
 
 module.exports = union;
 
-},{"../internal/baseFlatten":118,"../internal/baseUniq":134}],34:[function(require,module,exports){
+},{"../internal/baseFlatten":157,"../internal/baseUniq":173}],73:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -2027,7 +4707,7 @@ function uniq(array, isSorted, iteratee, thisArg) {
 
 module.exports = uniq;
 
-},{"../internal/baseCallback":108,"../internal/baseIndexOf":125,"../internal/baseUniq":134}],35:[function(require,module,exports){
+},{"../internal/baseCallback":147,"../internal/baseIndexOf":164,"../internal/baseUniq":173}],74:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -2071,7 +4751,7 @@ function unzip(array) {
 
 module.exports = unzip;
 
-},{"../collection/max":63,"../collection/pluck":66,"../lang/isObject":193}],36:[function(require,module,exports){
+},{"../collection/max":102,"../collection/pluck":105,"../lang/isObject":232}],75:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -2108,7 +4788,7 @@ function without(array) {
 
 module.exports = without;
 
-},{"../internal/baseDifference":113,"./slice":26}],37:[function(require,module,exports){
+},{"../internal/baseDifference":152,"./slice":65}],76:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -2157,7 +4837,7 @@ function xor() {
 
 module.exports = xor;
 
-},{"../internal/baseDifference":113,"../internal/baseUniq":134,"../lang/isArguments":176,"../lang/isArray":177}],38:[function(require,module,exports){
+},{"../internal/baseDifference":152,"../internal/baseUniq":173,"../lang/isArguments":215,"../lang/isArray":216}],77:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -2195,7 +4875,7 @@ function zip() {
 
 module.exports = zip;
 
-},{"./unzip":35}],39:[function(require,module,exports){
+},{"./unzip":74}],78:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -2244,7 +4924,7 @@ function zipObject(props, vals) {
 
 module.exports = zipObject;
 
-},{"../lang/isArray":177}],40:[function(require,module,exports){
+},{"../lang/isArray":216}],79:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -2265,7 +4945,7 @@ module.exports = {
   'wrapperValueOf': require('./chain/wrapperValueOf')
 };
 
-},{"./chain/chain":41,"./chain/lodash":42,"./chain/tap":43,"./chain/wrapperChain":44,"./chain/wrapperToString":45,"./chain/wrapperValueOf":46}],41:[function(require,module,exports){
+},{"./chain/chain":80,"./chain/lodash":81,"./chain/tap":82,"./chain/wrapperChain":83,"./chain/wrapperToString":84,"./chain/wrapperValueOf":85}],80:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -2308,7 +4988,7 @@ function chain(value) {
 
 module.exports = chain;
 
-},{"./lodash":42}],42:[function(require,module,exports){
+},{"./lodash":81}],81:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -2411,7 +5091,7 @@ lodashWrapper.prototype = lodash.prototype;
 
 module.exports = lodash;
 
-},{"../internal/lodashWrapper":160,"../lang/isArray":177}],43:[function(require,module,exports){
+},{"../internal/lodashWrapper":199,"../lang/isArray":216}],82:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -2449,7 +5129,7 @@ function tap(value, interceptor, thisArg) {
 
 module.exports = tap;
 
-},{}],44:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -2491,7 +5171,7 @@ function wrapperChain() {
 
 module.exports = wrapperChain;
 
-},{}],45:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -2519,7 +5199,7 @@ function wrapperToString() {
 
 module.exports = wrapperToString;
 
-},{}],46:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -2548,7 +5228,7 @@ function wrapperValueOf() {
 
 module.exports = wrapperValueOf;
 
-},{}],47:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -2601,7 +5281,7 @@ module.exports = {
   'clear': require('./collection/clear')
 };
 
-},{"./collection/at":48,"./collection/clear":49,"./collection/contains":50,"./collection/countBy":51,"./collection/every":52,"./collection/filter":53,"./collection/find":54,"./collection/findLast":55,"./collection/findWhere":56,"./collection/forEach":57,"./collection/forEachRight":58,"./collection/groupBy":59,"./collection/indexBy":60,"./collection/invoke":61,"./collection/map":62,"./collection/max":63,"./collection/min":64,"./collection/partition":65,"./collection/pluck":66,"./collection/reduce":67,"./collection/reduceRight":68,"./collection/reject":69,"./collection/sample":70,"./collection/shuffle":71,"./collection/size":72,"./collection/some":73,"./collection/sortBy":74,"./collection/toArray":75,"./collection/where":76}],48:[function(require,module,exports){
+},{"./collection/at":87,"./collection/clear":88,"./collection/contains":89,"./collection/countBy":90,"./collection/every":91,"./collection/filter":92,"./collection/find":93,"./collection/findLast":94,"./collection/findWhere":95,"./collection/forEach":96,"./collection/forEachRight":97,"./collection/groupBy":98,"./collection/indexBy":99,"./collection/invoke":100,"./collection/map":101,"./collection/max":102,"./collection/min":103,"./collection/partition":104,"./collection/pluck":105,"./collection/reduce":106,"./collection/reduceRight":107,"./collection/reject":108,"./collection/sample":109,"./collection/shuffle":110,"./collection/size":111,"./collection/some":112,"./collection/sortBy":113,"./collection/toArray":114,"./collection/where":115}],87:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -2652,7 +5332,7 @@ function at(collection) {
 
 module.exports = at;
 
-},{"../internal/baseAt":107,"../internal/baseFlatten":118,"../internal/toIterable":169}],49:[function(require,module,exports){
+},{"../internal/baseAt":146,"../internal/baseFlatten":157,"../internal/toIterable":208}],88:[function(require,module,exports){
 
 'use strict';
 
@@ -2692,7 +5372,7 @@ function clear(collection)
 } // clear
 
 module.exports = clear;
-},{"../lang/isArray":177,"../lang/isObject":193,"../lang/isString":196,"../object/forOwn":210}],50:[function(require,module,exports){
+},{"../lang/isArray":216,"../lang/isObject":232,"../lang/isString":235,"../object/forOwn":249}],89:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -2766,7 +5446,7 @@ function contains(collection, target, fromIndex) {
 
 module.exports = contains;
 
-},{"../internal/baseIndexOf":125,"../lang/isArray":177,"../lang/isString":196,"../object/values":223}],51:[function(require,module,exports){
+},{"../internal/baseIndexOf":164,"../lang/isArray":216,"../lang/isString":235,"../object/values":262}],90:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -2823,7 +5503,7 @@ var countBy = createAggregator(function(result, value, key) {
 
 module.exports = countBy;
 
-},{"../internal/createAggregator":143}],52:[function(require,module,exports){
+},{"../internal/createAggregator":182}],91:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -2908,7 +5588,7 @@ function every(collection, predicate, thisArg) {
 
 module.exports = every;
 
-},{"../internal/arrayEvery":103,"../internal/baseCallback":108,"../internal/baseEach":114,"../lang/isArray":177}],53:[function(require,module,exports){
+},{"../internal/arrayEvery":142,"../internal/baseCallback":147,"../internal/baseEach":153,"../lang/isArray":216}],92:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -2971,7 +5651,7 @@ function filter(collection, predicate, thisArg) {
 
 module.exports = filter;
 
-},{"../internal/arrayFilter":104,"../internal/baseCallback":108,"../internal/baseFilter":116,"../lang/isArray":177}],54:[function(require,module,exports){
+},{"../internal/arrayFilter":143,"../internal/baseCallback":147,"../internal/baseFilter":155,"../lang/isArray":216}],93:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -3040,7 +5720,7 @@ function find(collection, predicate, thisArg) {
 
 module.exports = find;
 
-},{"../array/findIndex":11,"../internal/baseCallback":108,"../internal/baseEach":114,"../internal/baseFind":117,"../lang/isArray":177}],55:[function(require,module,exports){
+},{"../array/findIndex":50,"../internal/baseCallback":147,"../internal/baseEach":153,"../internal/baseFind":156,"../lang/isArray":216}],94:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -3078,7 +5758,7 @@ function findLast(collection, predicate, thisArg) {
 
 module.exports = findLast;
 
-},{"../internal/baseCallback":108,"../internal/baseEachRight":115,"../internal/baseFind":117}],56:[function(require,module,exports){
+},{"../internal/baseCallback":147,"../internal/baseEachRight":154,"../internal/baseFind":156}],95:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -3120,7 +5800,7 @@ function findWhere(collection, source) {
 
 module.exports = findWhere;
 
-},{"../utility/matches":251,"./find":54}],57:[function(require,module,exports){
+},{"../utility/matches":290,"./find":93}],96:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -3168,7 +5848,7 @@ function forEach(collection, iteratee, thisArg) {
 
 module.exports = forEach;
 
-},{"../internal/arrayEach":102,"../internal/baseCallback":108,"../internal/baseEach":114,"../lang/isArray":177}],58:[function(require,module,exports){
+},{"../internal/arrayEach":141,"../internal/baseCallback":147,"../internal/baseEach":153,"../lang/isArray":216}],97:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -3226,7 +5906,7 @@ function forEachRight(collection, iteratee, thisArg) {
 
 module.exports = forEachRight;
 
-},{"../internal/baseCallback":108,"../internal/baseEachRight":115,"../lang/isArray":177}],59:[function(require,module,exports){
+},{"../internal/baseCallback":147,"../internal/baseEachRight":154,"../lang/isArray":216}],98:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -3288,7 +5968,7 @@ var groupBy = createAggregator(function(result, value, key) {
 
 module.exports = groupBy;
 
-},{"../internal/createAggregator":143}],60:[function(require,module,exports){
+},{"../internal/createAggregator":182}],99:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -3344,7 +6024,7 @@ var indexBy = createAggregator(function(result, value, key) {
 
 module.exports = indexBy;
 
-},{"../internal/createAggregator":143}],61:[function(require,module,exports){
+},{"../internal/createAggregator":182}],100:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -3418,7 +6098,7 @@ function invoke(collection, methodName) {
 
 module.exports = invoke;
 
-},{"../array/slice":26,"../internal/baseEach":114}],62:[function(require,module,exports){
+},{"../array/slice":65,"../internal/baseEach":153}],101:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -3480,7 +6160,7 @@ function map(collection, iteratee, thisArg) {
 
 module.exports = map;
 
-},{"../internal/arrayMap":105,"../internal/baseCallback":108,"../internal/baseMap":127,"../lang/isArray":177}],63:[function(require,module,exports){
+},{"../internal/arrayMap":144,"../internal/baseCallback":147,"../internal/baseMap":166,"../lang/isArray":216}],102:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -3581,7 +6261,7 @@ function max(collection, iteratee, thisArg) {
 
 module.exports = max;
 
-},{"../internal/baseCallback":108,"../internal/baseEach":114,"../internal/charAtCallback":138,"../internal/toIterable":169,"../lang/isArray":177,"../lang/isString":196}],64:[function(require,module,exports){
+},{"../internal/baseCallback":147,"../internal/baseEach":153,"../internal/charAtCallback":177,"../internal/toIterable":208,"../lang/isArray":216,"../lang/isString":235}],103:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -3682,7 +6362,7 @@ function min(collection, iteratee, thisArg) {
 
 module.exports = min;
 
-},{"../internal/baseCallback":108,"../internal/baseEach":114,"../internal/charAtCallback":138,"../internal/toIterable":169,"../lang/isArray":177,"../lang/isString":196}],65:[function(require,module,exports){
+},{"../internal/baseCallback":147,"../internal/baseEach":153,"../internal/charAtCallback":177,"../internal/toIterable":208,"../lang/isArray":216,"../lang/isString":235}],104:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -3743,7 +6423,7 @@ var partition = createAggregator(function(result, value, key) {
 
 module.exports = partition;
 
-},{"../internal/createAggregator":143}],66:[function(require,module,exports){
+},{"../internal/createAggregator":182}],105:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -3780,7 +6460,7 @@ function pluck(collection, key) {
 
 module.exports = pluck;
 
-},{"../utility/property":257,"./map":62}],67:[function(require,module,exports){
+},{"../utility/property":296,"./map":101}],106:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -3854,7 +6534,7 @@ function reduce(collection, iteratee, accumulator, thisArg) {
 
 module.exports = reduce;
 
-},{"../internal/baseCallback":108,"../internal/baseEach":114,"../internal/baseReduce":130,"../lang/isArray":177}],68:[function(require,module,exports){
+},{"../internal/baseCallback":147,"../internal/baseEach":153,"../internal/baseReduce":169,"../lang/isArray":216}],107:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -3918,7 +6598,7 @@ function reduceRight(collection, iteratee, accumulator, thisArg) {
 
 module.exports = reduceRight;
 
-},{"../internal/baseCallback":108,"../internal/baseEachRight":115,"../internal/baseReduce":130,"../lang/isArray":177}],69:[function(require,module,exports){
+},{"../internal/baseCallback":147,"../internal/baseEachRight":154,"../internal/baseReduce":169,"../lang/isArray":216}],108:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -3981,7 +6661,7 @@ function reject(collection, predicate, thisArg) {
 
 module.exports = reject;
 
-},{"../internal/arrayFilter":104,"../internal/baseCallback":108,"../internal/baseFilter":116,"../lang/isArray":177}],70:[function(require,module,exports){
+},{"../internal/arrayFilter":143,"../internal/baseCallback":147,"../internal/baseFilter":155,"../lang/isArray":216}],109:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -4028,7 +6708,7 @@ function sample(collection, n, guard) {
 
 module.exports = sample;
 
-},{"../internal/baseRandom":129,"../internal/toIterable":169,"./shuffle":71}],71:[function(require,module,exports){
+},{"../internal/baseRandom":168,"../internal/toIterable":208,"./shuffle":110}],110:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -4074,7 +6754,7 @@ function shuffle(collection) {
 
 module.exports = shuffle;
 
-},{"../internal/baseRandom":129,"../internal/toIterable":169}],72:[function(require,module,exports){
+},{"../internal/baseRandom":168,"../internal/toIterable":208}],111:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -4121,7 +6801,7 @@ function size(collection) {
 
 module.exports = size;
 
-},{"../object/keys":215}],73:[function(require,module,exports){
+},{"../object/keys":254}],112:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -4228,7 +6908,7 @@ function some(collection, predicate, thisArg) {
 
 module.exports = some;
 
-},{"../internal/baseCallback":108,"../internal/baseEach":114,"../lang/isArray":177}],74:[function(require,module,exports){
+},{"../internal/baseCallback":147,"../internal/baseEach":153,"../lang/isArray":216}],113:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -4377,7 +7057,7 @@ function sortBy(collection, iteratee, thisArg) {
 
 module.exports = sortBy;
 
-},{"../internal/baseCallback":108,"../internal/baseCompareAscending":110,"../internal/baseEach":114,"../lang/isArray":177}],75:[function(require,module,exports){
+},{"../internal/baseCallback":147,"../internal/baseCompareAscending":149,"../internal/baseEach":153,"../lang/isArray":216}],114:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -4419,7 +7099,7 @@ function toArray(collection) {
 
 module.exports = toArray;
 
-},{"../internal/baseSlice":132,"../object/values":223}],76:[function(require,module,exports){
+},{"../internal/baseSlice":171,"../object/values":262}],115:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -4464,7 +7144,7 @@ function where(collection, source) {
 
 module.exports = where;
 
-},{"../utility/matches":251,"./filter":53}],77:[function(require,module,exports){
+},{"../utility/matches":290,"./filter":92}],116:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -4502,7 +7182,7 @@ module.exports = {
   'quaternary': require('./function/quaternary')
 };
 
-},{"./function/after":78,"./function/before":79,"./function/binary":80,"./function/bind":81,"./function/bindAll":82,"./function/bindKey":83,"./function/curry":84,"./function/curryRight":85,"./function/debounce":86,"./function/defer":87,"./function/delay":88,"./function/flow":89,"./function/flowRight":90,"./function/memoize":91,"./function/negate":92,"./function/once":93,"./function/partial":94,"./function/partialRight":95,"./function/quaternary":96,"./function/ternary":97,"./function/throttle":98,"./function/unary":99,"./function/wrap":100}],78:[function(require,module,exports){
+},{"./function/after":117,"./function/before":118,"./function/binary":119,"./function/bind":120,"./function/bindAll":121,"./function/bindKey":122,"./function/curry":123,"./function/curryRight":124,"./function/debounce":125,"./function/defer":126,"./function/delay":127,"./function/flow":128,"./function/flowRight":129,"./function/memoize":130,"./function/negate":131,"./function/once":132,"./function/partial":133,"./function/partialRight":134,"./function/quaternary":135,"./function/ternary":136,"./function/throttle":137,"./function/unary":138,"./function/wrap":139}],117:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -4564,7 +7244,7 @@ function after(n, func) {
 module.exports = after;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../lang/isFunction":186}],79:[function(require,module,exports){
+},{"../lang/isFunction":225}],118:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -4616,7 +7296,7 @@ function before(n, func) {
 
 module.exports = before;
 
-},{"../lang/isFunction":186}],80:[function(require,module,exports){
+},{"../lang/isFunction":225}],119:[function(require,module,exports){
 'use strict';
 
 /**
@@ -4649,7 +7329,7 @@ function binary (func)
 }
 
 module.exports = binary;
-},{}],81:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -4707,7 +7387,7 @@ bind.placeholder = {};
 
 module.exports = bind;
 
-},{"../array/slice":26,"../internal/basePartial":128,"../internal/createWrapper":152,"../internal/replaceHolders":167}],82:[function(require,module,exports){
+},{"../array/slice":65,"../internal/basePartial":167,"../internal/createWrapper":191,"../internal/replaceHolders":206}],121:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -4779,7 +7459,7 @@ function bindAll(object) {
 
 module.exports = bindAll;
 
-},{"../internal/baseFlatten":118,"../internal/createWrapper":152,"../object/functions":212}],83:[function(require,module,exports){
+},{"../internal/baseFlatten":157,"../internal/createWrapper":191,"../object/functions":251}],122:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -4847,7 +7527,7 @@ bindKey.placeholder = {};
 
 module.exports = bindKey;
 
-},{"../array/slice":26,"../internal/createWrapper":152,"../internal/replaceHolders":167}],84:[function(require,module,exports){
+},{"../array/slice":65,"../internal/createWrapper":191,"../internal/replaceHolders":206}],123:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -4902,7 +7582,7 @@ curry.placeholder = {};
 
 module.exports = curry;
 
-},{"../internal/baseCurry":112}],85:[function(require,module,exports){
+},{"../internal/baseCurry":151}],124:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -4954,7 +7634,7 @@ curryRight.placeholder = {};
 
 module.exports = curryRight;
 
-},{"../internal/baseCurry":112}],86:[function(require,module,exports){
+},{"../internal/baseCurry":151}],125:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -5151,7 +7831,7 @@ function debounce(func, wait, options) {
 
 module.exports = debounce;
 
-},{"../lang/isFunction":186,"../lang/isObject":193,"../utility/now":255}],87:[function(require,module,exports){
+},{"../lang/isFunction":225,"../lang/isObject":232,"../utility/now":294}],126:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -5191,7 +7871,7 @@ function defer(func) {
 
 module.exports = defer;
 
-},{"../array/slice":26,"../lang/isFunction":186}],88:[function(require,module,exports){
+},{"../array/slice":65,"../lang/isFunction":225}],127:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -5232,7 +7912,7 @@ function delay(func, wait) {
 
 module.exports = delay;
 
-},{"../array/slice":26,"../lang/isFunction":186}],89:[function(require,module,exports){
+},{"../array/slice":65,"../lang/isFunction":225}],128:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -5294,7 +7974,7 @@ function flow() {
 
 module.exports = flow;
 
-},{"../internal/arrayEvery":103,"../lang/isFunction":186}],90:[function(require,module,exports){
+},{"../internal/arrayEvery":142,"../lang/isFunction":225}],129:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -5356,7 +8036,7 @@ function flowRight() {
 
 module.exports = flowRight;
 
-},{"../internal/arrayEvery":103,"../lang/isFunction":186}],91:[function(require,module,exports){
+},{"../internal/arrayEvery":142,"../lang/isFunction":225}],130:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -5431,7 +8111,7 @@ function memoize(func, resolver) {
 
 module.exports = memoize;
 
-},{"../lang/isFunction":186}],92:[function(require,module,exports){
+},{"../lang/isFunction":225}],131:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -5475,7 +8155,7 @@ function negate(predicate) {
 
 module.exports = negate;
 
-},{"../lang/isFunction":186}],93:[function(require,module,exports){
+},{"../lang/isFunction":225}],132:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -5509,7 +8189,7 @@ var once = partial(before, 2);
 
 module.exports = once;
 
-},{"./before":79,"./partial":94}],94:[function(require,module,exports){
+},{"./before":118,"./partial":133}],133:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -5558,7 +8238,7 @@ partial.placeholder = {};
 
 module.exports = partial;
 
-},{"../array/slice":26,"../internal/basePartial":128,"../internal/replaceHolders":167}],95:[function(require,module,exports){
+},{"../array/slice":65,"../internal/basePartial":167,"../internal/replaceHolders":206}],134:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -5617,7 +8297,7 @@ partialRight.placeholder = {};
 
 module.exports = partialRight;
 
-},{"../array/slice":26,"../internal/basePartial":128,"../internal/replaceHolders":167}],96:[function(require,module,exports){
+},{"../array/slice":65,"../internal/basePartial":167,"../internal/replaceHolders":206}],135:[function(require,module,exports){
 'use strict';
 
 /**
@@ -5662,7 +8342,7 @@ function quaternary(func)
 }
 
 module.exports = quaternary;
-},{}],97:[function(require,module,exports){
+},{}],136:[function(require,module,exports){
 'use strict';
 
 /**
@@ -5701,7 +8381,7 @@ function ternary (func)
 }
 
 module.exports = ternary;
-},{}],98:[function(require,module,exports){
+},{}],137:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -5783,7 +8463,7 @@ function throttle(func, wait, options) {
 
 module.exports = throttle;
 
-},{"../lang/isFunction":186,"../lang/isObject":193,"./debounce":86}],99:[function(require,module,exports){
+},{"../lang/isFunction":225,"../lang/isObject":232,"./debounce":125}],138:[function(require,module,exports){
 'use strict';
 
 /**
@@ -5810,7 +8490,7 @@ function unary(func)
 }
 
 module.exports = unary;
-},{}],100:[function(require,module,exports){
+},{}],139:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -5851,7 +8531,7 @@ function wrap(value, wrapper) {
 
 module.exports = wrap;
 
-},{"../internal/basePartial":128}],101:[function(require,module,exports){
+},{"../internal/basePartial":167}],140:[function(require,module,exports){
 /**
  * @license
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -6167,7 +8847,7 @@ arrayEach(['concat', 'splice'], function(methodName) {
 
 module.exports = lodash;
 
-},{"./array":3,"./chain":40,"./chain/lodash":42,"./collection":47,"./function":77,"./internal/arrayEach":102,"./internal/baseAssign":106,"./internal/baseForOwn":121,"./internal/baseFunctions":124,"./internal/lodashWrapper":160,"./lang":173,"./lang/isObject":193,"./number":198,"./object":202,"./object/keys":215,"./string":225,"./support":245,"./utility":246,"./utility/mixin":252}],102:[function(require,module,exports){
+},{"./array":42,"./chain":79,"./chain/lodash":81,"./collection":86,"./function":116,"./internal/arrayEach":141,"./internal/baseAssign":145,"./internal/baseForOwn":160,"./internal/baseFunctions":163,"./internal/lodashWrapper":199,"./lang":212,"./lang/isObject":232,"./number":237,"./object":241,"./object/keys":254,"./string":264,"./support":284,"./utility":285,"./utility/mixin":291}],141:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -6200,7 +8880,7 @@ function arrayEach(array, iteratee) {
 
 module.exports = arrayEach;
 
-},{}],103:[function(require,module,exports){
+},{}],142:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -6234,7 +8914,7 @@ function arrayEvery(array, predicate) {
 
 module.exports = arrayEvery;
 
-},{}],104:[function(require,module,exports){
+},{}],143:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -6270,7 +8950,7 @@ function arrayFilter(array, predicate) {
 
 module.exports = arrayFilter;
 
-},{}],105:[function(require,module,exports){
+},{}],144:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -6302,7 +8982,7 @@ function arrayMap(array, iteratee) {
 
 module.exports = arrayMap;
 
-},{}],106:[function(require,module,exports){
+},{}],145:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -6339,7 +9019,7 @@ function baseAssign(object, source, customizer) {
 
 module.exports = baseAssign;
 
-},{"../object/keys":215}],107:[function(require,module,exports){
+},{"../object/keys":254}],146:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -6371,7 +9051,7 @@ function baseAt(collection, props) {
 
 module.exports = baseAt;
 
-},{}],108:[function(require,module,exports){
+},{}],147:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -6466,7 +9146,7 @@ function baseCallback(func, thisArg, argCount) {
 
 module.exports = baseCallback;
 
-},{"../lang/isNative":188,"../support":245,"../utility/identity":250,"../utility/matches":251,"../utility/property":257,"./baseSetData":131,"./getData":154}],109:[function(require,module,exports){
+},{"../lang/isNative":227,"../support":284,"../utility/identity":289,"../utility/matches":290,"../utility/property":296,"./baseSetData":170,"./getData":193}],148:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -6547,7 +9227,7 @@ function baseClone(value, isDeep, customizer, stackA, stackB) {
 
 module.exports = baseClone;
 
-},{"../lang/isArray":177,"../lang/isObject":193,"./arrayEach":102,"./baseForOwn":121,"./initArrayClone":155,"./initObjectClone":156}],110:[function(require,module,exports){
+},{"../lang/isArray":216,"../lang/isObject":232,"./arrayEach":141,"./baseForOwn":160,"./initArrayClone":194,"./initObjectClone":195}],149:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -6580,7 +9260,7 @@ function baseCompareAscending(value, other) {
 
 module.exports = baseCompareAscending;
 
-},{}],111:[function(require,module,exports){
+},{}],150:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -6625,7 +9305,7 @@ if (!nativeCreate) {
 module.exports = baseCreate;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../lang/isNative":188,"../lang/isObject":193}],112:[function(require,module,exports){
+},{"../lang/isNative":227,"../lang/isObject":232}],151:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -6658,7 +9338,7 @@ function baseCurry(func, bitmask, arity) {
 
 module.exports = baseCurry;
 
-},{"./createWrapper":152}],113:[function(require,module,exports){
+},{"./createWrapper":191}],152:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -6719,7 +9399,7 @@ function baseDifference(array, values) {
 
 module.exports = baseDifference;
 
-},{"./baseIndexOf":125,"./cacheIndexOf":137,"./createCache":146}],114:[function(require,module,exports){
+},{"./baseIndexOf":164,"./cacheIndexOf":176,"./createCache":185}],153:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -6765,7 +9445,7 @@ function baseEach(collection, iteratee) {
 
 module.exports = baseEach;
 
-},{"./baseForOwn":121,"./toIterable":169}],115:[function(require,module,exports){
+},{"./baseForOwn":160,"./toIterable":208}],154:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -6809,7 +9489,7 @@ function baseEachRight(collection, iteratee) {
 
 module.exports = baseEachRight;
 
-},{"./baseForOwnRight":122,"./toIterable":169}],116:[function(require,module,exports){
+},{"./baseForOwnRight":161,"./toIterable":208}],155:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -6842,7 +9522,7 @@ function baseFilter(collection, predicate) {
 
 module.exports = baseFilter;
 
-},{"./baseEach":114}],117:[function(require,module,exports){
+},{"./baseEach":153}],156:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -6879,7 +9559,7 @@ function baseFind(collection, predicate, eachFunc, retKey) {
 
 module.exports = baseFind;
 
-},{}],118:[function(require,module,exports){
+},{}],157:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -6933,7 +9613,7 @@ function baseFlatten(array, isDeep, isStrict, fromIndex) {
 
 module.exports = baseFlatten;
 
-},{"../lang/isArguments":176,"../lang/isArray":177}],119:[function(require,module,exports){
+},{"../lang/isArguments":215,"../lang/isArray":216}],158:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -6971,7 +9651,7 @@ function baseFor(object, iteratee, keysFunc) {
 
 module.exports = baseFor;
 
-},{}],120:[function(require,module,exports){
+},{}],159:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -6998,7 +9678,7 @@ function baseForIn(object, iteratee) {
 
 module.exports = baseForIn;
 
-},{"../object/keysIn":216,"./baseFor":119}],121:[function(require,module,exports){
+},{"../object/keysIn":255,"./baseFor":158}],160:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7025,7 +9705,7 @@ function baseForOwn(object, iteratee) {
 
 module.exports = baseForOwn;
 
-},{"../object/keys":215,"./baseFor":119}],122:[function(require,module,exports){
+},{"../object/keys":254,"./baseFor":158}],161:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7052,7 +9732,7 @@ function baseForOwnRight(object, iteratee) {
 
 module.exports = baseForOwnRight;
 
-},{"../object/keys":215,"./baseForRight":123}],123:[function(require,module,exports){
+},{"../object/keys":254,"./baseForRight":162}],162:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7087,7 +9767,7 @@ function baseForRight(object, iteratee, keysFunc) {
 
 module.exports = baseForRight;
 
-},{}],124:[function(require,module,exports){
+},{}],163:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7124,7 +9804,7 @@ function baseFunctions(object, props) {
 
 module.exports = baseFunctions;
 
-},{"../lang/isFunction":186}],125:[function(require,module,exports){
+},{"../lang/isFunction":225}],164:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7159,7 +9839,7 @@ function baseIndexOf(array, value, fromIndex) {
 
 module.exports = baseIndexOf;
 
-},{}],126:[function(require,module,exports){
+},{}],165:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7417,7 +10097,7 @@ function baseIsEqual(value, other, customizer, isWhere, stackA, stackB) {
 
 module.exports = baseIsEqual;
 
-},{"../lang/isFunction":186,"../object/keys":215}],127:[function(require,module,exports){
+},{"../lang/isFunction":225,"../object/keys":254}],166:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7448,7 +10128,7 @@ function baseMap(collection, iteratee) {
 
 module.exports = baseMap;
 
-},{"./baseEach":114}],128:[function(require,module,exports){
+},{"./baseEach":153}],167:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7492,7 +10172,7 @@ function basePartial(func, bitmask, args, holders, thisArg) {
 
 module.exports = basePartial;
 
-},{"./createWrapper":152,"./getData":154}],129:[function(require,module,exports){
+},{"./createWrapper":191,"./getData":193}],168:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7523,7 +10203,7 @@ function baseRandom(min, max) {
 
 module.exports = baseRandom;
 
-},{}],130:[function(require,module,exports){
+},{}],169:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7558,7 +10238,7 @@ function baseReduce(collection, iteratee, accumulator, initFromCollection, eachF
 
 module.exports = baseReduce;
 
-},{}],131:[function(require,module,exports){
+},{}],170:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7585,7 +10265,7 @@ var baseSetData = !metaMap ? identity : function(func, data) {
 
 module.exports = baseSetData;
 
-},{"../utility/identity":250,"./metaMap":161}],132:[function(require,module,exports){
+},{"../utility/identity":289,"./metaMap":200}],171:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7616,7 +10296,7 @@ function baseSlice(array) {
 
 module.exports = baseSlice;
 
-},{}],133:[function(require,module,exports){
+},{}],172:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7668,7 +10348,7 @@ function baseSortedIndex(array, value, iteratee, retHighest) {
 
 module.exports = baseSortedIndex;
 
-},{"../lang/isFunction":186}],134:[function(require,module,exports){
+},{"../lang/isFunction":225}],173:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7734,7 +10414,7 @@ function baseUniq(array, iteratee) {
 
 module.exports = baseUniq;
 
-},{"./baseIndexOf":125,"./cacheIndexOf":137,"./createCache":146}],135:[function(require,module,exports){
+},{"./baseIndexOf":164,"./cacheIndexOf":176,"./createCache":185}],174:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7768,7 +10448,7 @@ function baseValues(object, keysFunc) {
 
 module.exports = baseValues;
 
-},{}],136:[function(require,module,exports){
+},{}],175:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -7835,7 +10515,7 @@ if (!bufferSlice) {
 module.exports = bufferClone;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../lang/isNative":188,"../utility/identity":250}],137:[function(require,module,exports){
+},{"../lang/isNative":227,"../utility/identity":289}],176:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7860,7 +10540,7 @@ function cacheIndexOf(cache, value) {
 
 module.exports = cacheIndexOf;
 
-},{}],138:[function(require,module,exports){
+},{}],177:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7884,7 +10564,7 @@ function charAtCallback(string) {
 
 module.exports = charAtCallback;
 
-},{}],139:[function(require,module,exports){
+},{}],178:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7913,7 +10593,7 @@ function charsLeftIndex(string, chars) {
 
 module.exports = charsLeftIndex;
 
-},{}],140:[function(require,module,exports){
+},{}],179:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7941,7 +10621,7 @@ function charsRightIndex(string, chars) {
 
 module.exports = charsRightIndex;
 
-},{}],141:[function(require,module,exports){
+},{}],180:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7986,7 +10666,7 @@ function composeArgs(partialArgs, partialHolders, args) {
 
 module.exports = composeArgs;
 
-},{}],142:[function(require,module,exports){
+},{}],181:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8033,7 +10713,7 @@ function composeArgsRight(partialRightArgs, partialRightHolders, args) {
 
 module.exports = composeArgsRight;
 
-},{}],143:[function(require,module,exports){
+},{}],182:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8082,7 +10762,7 @@ function createAggregator(setter, initializer) {
 
 module.exports = createAggregator;
 
-},{"../lang/isArray":177,"./baseCallback":108,"./baseEach":114}],144:[function(require,module,exports){
+},{"../lang/isArray":216,"./baseCallback":147,"./baseEach":153}],183:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8130,7 +10810,7 @@ function createAssigner(assigner) {
 
 module.exports = createAssigner;
 
-},{"./baseCallback":108}],145:[function(require,module,exports){
+},{"./baseCallback":147}],184:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8161,7 +10841,7 @@ function createBindWrapper(func, thisArg) {
 
 module.exports = createBindWrapper;
 
-},{"./createCtorWrapper":148}],146:[function(require,module,exports){
+},{"./createCtorWrapper":187}],185:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -8197,7 +10877,7 @@ var createCache = Set && function(array) {
 module.exports = createCache;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../lang/isNative":188}],147:[function(require,module,exports){
+},{"../lang/isNative":227}],186:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8238,7 +10918,7 @@ function createCompounder(callback) {
 
 module.exports = createCompounder;
 
-},{"./deburrLetter":153}],148:[function(require,module,exports){
+},{"./deburrLetter":192}],187:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8271,7 +10951,7 @@ function createCtorWrapper(Ctor) {
 
 module.exports = createCtorWrapper;
 
-},{"../lang/isObject":193,"./baseCreate":111}],149:[function(require,module,exports){
+},{"../lang/isObject":232,"./baseCreate":150}],188:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8371,7 +11051,7 @@ function createHybridWrapper(func, bitmask, arity, thisArg, partialArgs, partial
 
 module.exports = createHybridWrapper;
 
-},{"./composeArgs":141,"./composeArgsRight":142,"./createCtorWrapper":148,"./replaceHolders":167,"./setData":168}],150:[function(require,module,exports){
+},{"./composeArgs":180,"./composeArgsRight":181,"./createCtorWrapper":187,"./replaceHolders":206,"./setData":207}],189:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -8415,7 +11095,7 @@ function createPad(string, length, chars) {
 module.exports = createPad;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../string/repeat":235}],151:[function(require,module,exports){
+},{"../string/repeat":274}],190:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8467,7 +11147,7 @@ function createPartialWrapper(func, bitmask, partialArgs, thisArg) {
 
 module.exports = createPartialWrapper;
 
-},{"./createCtorWrapper":148}],152:[function(require,module,exports){
+},{"./createCtorWrapper":187}],191:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8594,7 +11274,7 @@ function createWrapper(func, bitmask, arity, thisArg, partialArgs, partialHolder
 
 module.exports = createWrapper;
 
-},{"../lang/isFunction":186,"./baseSetData":131,"./baseSlice":132,"./composeArgs":141,"./composeArgsRight":142,"./createBindWrapper":145,"./createHybridWrapper":149,"./createPartialWrapper":151,"./getData":154,"./replaceHolders":167,"./setData":168}],153:[function(require,module,exports){
+},{"../lang/isFunction":225,"./baseSetData":170,"./baseSlice":171,"./composeArgs":180,"./composeArgsRight":181,"./createBindWrapper":184,"./createHybridWrapper":188,"./createPartialWrapper":190,"./getData":193,"./replaceHolders":206,"./setData":207}],192:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8643,7 +11323,7 @@ function deburrLetter(letter) {
 
 module.exports = deburrLetter;
 
-},{}],154:[function(require,module,exports){
+},{}],193:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8668,7 +11348,7 @@ var getData = !metaMap ? noop : function(func) {
 
 module.exports = getData;
 
-},{"../utility/noop":254,"./metaMap":161}],155:[function(require,module,exports){
+},{"../utility/noop":293,"./metaMap":200}],194:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8712,7 +11392,7 @@ function initArrayClone(array, isDeep) {
 
 module.exports = initArrayClone;
 
-},{}],156:[function(require,module,exports){
+},{}],195:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8829,7 +11509,7 @@ function initObjectClone(object, isDeep) {
 
 module.exports = initObjectClone;
 
-},{"../lang/isFunction":186,"./baseAssign":106,"./bufferClone":136}],157:[function(require,module,exports){
+},{"../lang/isFunction":225,"./baseAssign":145,"./bufferClone":175}],196:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8900,7 +11580,7 @@ function isArrayLike(value) {
 
 module.exports = isArrayLike;
 
-},{}],158:[function(require,module,exports){
+},{}],197:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8925,7 +11605,7 @@ function isStrictComparable(value) {
 
 module.exports = isStrictComparable;
 
-},{"../lang/isObject":193}],159:[function(require,module,exports){
+},{"../lang/isObject":232}],198:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8950,7 +11630,7 @@ function isWhitespace(charCode) {
 
 module.exports = isWhitespace;
 
-},{}],160:[function(require,module,exports){
+},{}],199:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8975,7 +11655,7 @@ function lodashWrapper(value, chainAll) {
 
 module.exports = lodashWrapper;
 
-},{}],161:[function(require,module,exports){
+},{}],200:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -8996,7 +11676,7 @@ var metaMap = WeakMap && new WeakMap;
 module.exports = metaMap;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../lang/isNative":188}],162:[function(require,module,exports){
+},{"../lang/isNative":227}],201:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9031,7 +11711,7 @@ function pickByArray(object, props) {
 
 module.exports = pickByArray;
 
-},{}],163:[function(require,module,exports){
+},{}],202:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9064,7 +11744,7 @@ function pickByCallback(object, predicate) {
 
 module.exports = pickByCallback;
 
-},{"./baseForIn":120}],164:[function(require,module,exports){
+},{"./baseForIn":159}],203:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9079,7 +11759,7 @@ var reEscape = /<%-([\s\S]+?)%>/g;
 
 module.exports = reEscape;
 
-},{}],165:[function(require,module,exports){
+},{}],204:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9094,7 +11774,7 @@ var reEvaluate = /<%([\s\S]+?)%>/g;
 
 module.exports = reEvaluate;
 
-},{}],166:[function(require,module,exports){
+},{}],205:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9109,7 +11789,7 @@ var reInterpolate = /<%=([\s\S]+?)%>/g;
 
 module.exports = reInterpolate;
 
-},{}],167:[function(require,module,exports){
+},{}],206:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9148,7 +11828,7 @@ function replaceHolders(array, placeholder) {
 
 module.exports = replaceHolders;
 
-},{}],168:[function(require,module,exports){
+},{}],207:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9198,7 +11878,7 @@ var setData = (function() {
 
 module.exports = setData;
 
-},{"../utility/now":255,"./baseSetData":131}],169:[function(require,module,exports){
+},{"../utility/now":294,"./baseSetData":170}],208:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9238,7 +11918,7 @@ function toIterable(value) {
 
 module.exports = toIterable;
 
-},{"../object/values":223,"./toObject":170}],170:[function(require,module,exports){
+},{"../object/values":262,"./toObject":209}],209:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9262,7 +11942,7 @@ function toObject(value) {
 
 module.exports = toObject;
 
-},{"../lang/isObject":193}],171:[function(require,module,exports){
+},{"../lang/isObject":232}],210:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9291,7 +11971,7 @@ function trimmedLeftIndex(string) {
 
 module.exports = trimmedLeftIndex;
 
-},{"./isWhitespace":159}],172:[function(require,module,exports){
+},{"./isWhitespace":198}],211:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9319,7 +11999,7 @@ function trimmedRightIndex(string) {
 
 module.exports = trimmedRightIndex;
 
-},{"./isWhitespace":159}],173:[function(require,module,exports){
+},{"./isWhitespace":198}],212:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9356,7 +12036,7 @@ module.exports = {
   'isUndefined': require('./lang/isUndefined')
 };
 
-},{"./lang/clone":174,"./lang/cloneDeep":175,"./lang/isArguments":176,"./lang/isArray":177,"./lang/isBoolean":178,"./lang/isDate":179,"./lang/isElement":180,"./lang/isEmpty":181,"./lang/isEqual":182,"./lang/isError":183,"./lang/isFinite":184,"./lang/isFiniteLike":185,"./lang/isFunction":186,"./lang/isNaN":187,"./lang/isNative":188,"./lang/isNode":189,"./lang/isNull":190,"./lang/isNumber":191,"./lang/isNumberLike":192,"./lang/isObject":193,"./lang/isPlainObject":194,"./lang/isRegExp":195,"./lang/isString":196,"./lang/isUndefined":197}],174:[function(require,module,exports){
+},{"./lang/clone":213,"./lang/cloneDeep":214,"./lang/isArguments":215,"./lang/isArray":216,"./lang/isBoolean":217,"./lang/isDate":218,"./lang/isElement":219,"./lang/isEmpty":220,"./lang/isEqual":221,"./lang/isError":222,"./lang/isFinite":223,"./lang/isFiniteLike":224,"./lang/isFunction":225,"./lang/isNaN":226,"./lang/isNative":227,"./lang/isNode":228,"./lang/isNull":229,"./lang/isNumber":230,"./lang/isNumberLike":231,"./lang/isObject":232,"./lang/isPlainObject":233,"./lang/isRegExp":234,"./lang/isString":235,"./lang/isUndefined":236}],213:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9434,7 +12114,7 @@ function clone(value, isDeep, customizer, thisArg) {
 
 module.exports = clone;
 
-},{"../internal/baseCallback":108,"../internal/baseClone":109}],175:[function(require,module,exports){
+},{"../internal/baseCallback":147,"../internal/baseClone":148}],214:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9495,7 +12175,7 @@ function cloneDeep(value, customizer, thisArg) {
 
 module.exports = cloneDeep;
 
-},{"../internal/baseCallback":108,"../internal/baseClone":109}],176:[function(require,module,exports){
+},{"../internal/baseCallback":147,"../internal/baseClone":148}],215:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9545,7 +12225,7 @@ function isArguments(value) {
 
 module.exports = isArguments;
 
-},{}],177:[function(require,module,exports){
+},{}],216:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9591,7 +12271,7 @@ var isArray = nativeIsArray || function(value) {
 
 module.exports = isArray;
 
-},{"./isNative":188}],178:[function(require,module,exports){
+},{"./isNative":227}],217:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9633,7 +12313,7 @@ function isBoolean(value) {
 
 module.exports = isBoolean;
 
-},{}],179:[function(require,module,exports){
+},{}],218:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9674,7 +12354,7 @@ function isDate(value) {
 
 module.exports = isDate;
 
-},{}],180:[function(require,module,exports){
+},{}],219:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9722,7 +12402,7 @@ if (!support.dom) {
 
 module.exports = isElement;
 
-},{"../support":245,"./isPlainObject":194}],181:[function(require,module,exports){
+},{"../support":284,"./isPlainObject":233}],220:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9786,7 +12466,7 @@ function isEmpty(value) {
 
 module.exports = isEmpty;
 
-},{"../object/keys":215,"./isArguments":176,"./isArray":177,"./isFunction":186,"./isString":196}],182:[function(require,module,exports){
+},{"../object/keys":254,"./isArguments":215,"./isArray":216,"./isFunction":225,"./isString":235}],221:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9847,7 +12527,7 @@ function isEqual(value, other, customizer, thisArg) {
 
 module.exports = isEqual;
 
-},{"../internal/baseCallback":108,"../internal/baseIsEqual":126,"../internal/isStrictComparable":158}],183:[function(require,module,exports){
+},{"../internal/baseCallback":147,"../internal/baseIsEqual":165,"../internal/isStrictComparable":197}],222:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9889,7 +12569,7 @@ function isError(value) {
 
 module.exports = isError;
 
-},{}],184:[function(require,module,exports){
+},{}],223:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -9941,7 +12621,7 @@ var isFinite = nativeNumIsFinite || function(value) {
 module.exports = isFinite;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./isNative":188}],185:[function(require,module,exports){
+},{"./isNative":227}],224:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -9984,7 +12664,7 @@ function isFinite(value)
 
 module.exports = isFinite;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],186:[function(require,module,exports){
+},{}],225:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10018,7 +12698,7 @@ function isFunction(value) {
 
 module.exports = isFunction;
 
-},{}],187:[function(require,module,exports){
+},{}],226:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10063,7 +12743,7 @@ function isNaN(value) {
 
 module.exports = isNaN;
 
-},{"./isNumber":191}],188:[function(require,module,exports){
+},{"./isNumber":230}],227:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10118,7 +12798,7 @@ function isNative(value) {
 
 module.exports = isNative;
 
-},{"../string/escapeRegExp":230,"./isFunction":186}],189:[function(require,module,exports){
+},{"../string/escapeRegExp":269,"./isFunction":225}],228:[function(require,module,exports){
 'use strict';
 
 
@@ -10136,7 +12816,7 @@ function isNode(value)
 } // ash.isNode
 
 module.exports = isNode;
-},{}],190:[function(require,module,exports){
+},{}],229:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10168,7 +12848,7 @@ function isNull(value) {
 
 module.exports = isNull;
 
-},{}],191:[function(require,module,exports){
+},{}],230:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10217,7 +12897,7 @@ function isNumber(value) {
 
 module.exports = isNumber;
 
-},{}],192:[function(require,module,exports){
+},{}],231:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -10241,7 +12921,7 @@ function isNumber(value)
 
 module.exports = isNumber;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],193:[function(require,module,exports){
+},{}],232:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10282,7 +12962,7 @@ function isObject(value) {
 
 module.exports = isObject;
 
-},{}],194:[function(require,module,exports){
+},{}],233:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10384,7 +13064,7 @@ var isPlainObject = !getPrototypeOf ? shimIsPlainObject : function(value) {
 
 module.exports = isPlainObject;
 
-},{"../internal/baseForIn":120,"./isFunction":186,"./isNative":188}],195:[function(require,module,exports){
+},{"../internal/baseForIn":159,"./isFunction":225,"./isNative":227}],234:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10425,7 +13105,7 @@ function isRegExp(value) {
 
 module.exports = isRegExp;
 
-},{}],196:[function(require,module,exports){
+},{}],235:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10467,7 +13147,7 @@ function isString(value) {
 
 module.exports = isString;
 
-},{}],197:[function(require,module,exports){
+},{}],236:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10499,7 +13179,7 @@ function isUndefined(value) {
 
 module.exports = isUndefined;
 
-},{}],198:[function(require,module,exports){
+},{}],237:[function(require,module,exports){
 module.exports =
 {
 	'roundToMultiple': require('./number/roundToMultiple'),
@@ -10507,7 +13187,7 @@ module.exports =
 	'limit': require('./number/limit')
 };
 
-},{"./number/limit":199,"./number/roundToMultiple":200,"./number/sameDecimals":201}],199:[function(require,module,exports){
+},{"./number/limit":238,"./number/roundToMultiple":239,"./number/sameDecimals":240}],238:[function(require,module,exports){
 'use strict';
 
 /**
@@ -10519,7 +13199,7 @@ function limit(value, lowerBound, upperBound)
 }
 
 module.exports = limit;
-},{}],200:[function(require,module,exports){
+},{}],239:[function(require,module,exports){
 'use strict';
 
 /**
@@ -10549,7 +13229,7 @@ function roundToMultiple(value, base, round)
 } // roundToMultiple
 
 module.exports = roundToMultiple;
-},{}],201:[function(require,module,exports){
+},{}],240:[function(require,module,exports){
 'use strict';
 
 /**
@@ -10567,7 +13247,7 @@ function sameDecimals(value, number)
 }
 
 module.exports = sameDecimals;
-},{}],202:[function(require,module,exports){
+},{}],241:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10604,7 +13284,7 @@ module.exports = {
   'valuesIn': require('./object/valuesIn')
 };
 
-},{"./object/assign":203,"./object/create":204,"./object/defaults":205,"./object/findKey":206,"./object/findLastKey":207,"./object/forIn":208,"./object/forInRight":209,"./object/forOwn":210,"./object/forOwnRight":211,"./object/functions":212,"./object/has":213,"./object/invert":214,"./object/keys":215,"./object/keysIn":216,"./object/mapValues":217,"./object/merge":218,"./object/omit":219,"./object/pairs":220,"./object/pick":221,"./object/transform":222,"./object/values":223,"./object/valuesIn":224}],203:[function(require,module,exports){
+},{"./object/assign":242,"./object/create":243,"./object/defaults":244,"./object/findKey":245,"./object/findLastKey":246,"./object/forIn":247,"./object/forInRight":248,"./object/forOwn":249,"./object/forOwnRight":250,"./object/functions":251,"./object/has":252,"./object/invert":253,"./object/keys":254,"./object/keysIn":255,"./object/mapValues":256,"./object/merge":257,"./object/omit":258,"./object/pairs":259,"./object/pick":260,"./object/transform":261,"./object/values":262,"./object/valuesIn":263}],242:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10648,7 +13328,7 @@ var assign = createAssigner(baseAssign);
 
 module.exports = assign;
 
-},{"../internal/baseAssign":106,"../internal/createAssigner":144}],204:[function(require,module,exports){
+},{"../internal/baseAssign":145,"../internal/createAssigner":183}],243:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10698,7 +13378,7 @@ function create(prototype, properties) {
 
 module.exports = create;
 
-},{"../internal/baseAssign":106,"../internal/baseCreate":111}],205:[function(require,module,exports){
+},{"../internal/baseAssign":145,"../internal/baseCreate":150}],244:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10754,7 +13434,7 @@ function defaults(object) {
 
 module.exports = defaults;
 
-},{"../internal/baseSlice":132,"./assign":203}],206:[function(require,module,exports){
+},{"../internal/baseSlice":171,"./assign":242}],245:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10815,7 +13495,7 @@ function findKey(object, predicate, thisArg) {
 
 module.exports = findKey;
 
-},{"../internal/baseCallback":108,"../internal/baseFind":117,"../internal/baseForOwn":121}],207:[function(require,module,exports){
+},{"../internal/baseCallback":147,"../internal/baseFind":156,"../internal/baseForOwn":160}],246:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10876,7 +13556,7 @@ function findLastKey(object, predicate, thisArg) {
 
 module.exports = findLastKey;
 
-},{"../internal/baseCallback":108,"../internal/baseFind":117,"../internal/baseForOwnRight":122}],208:[function(require,module,exports){
+},{"../internal/baseCallback":147,"../internal/baseFind":156,"../internal/baseForOwnRight":161}],247:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10925,7 +13605,7 @@ function forIn(object, iteratee, thisArg) {
 
 module.exports = forIn;
 
-},{"../internal/baseCallback":108,"../internal/baseFor":119,"./keysIn":216}],209:[function(require,module,exports){
+},{"../internal/baseCallback":147,"../internal/baseFor":158,"./keysIn":255}],248:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10970,7 +13650,7 @@ function forInRight(object, iteratee, thisArg) {
 
 module.exports = forInRight;
 
-},{"../internal/baseCallback":108,"../internal/baseForRight":123,"./keysIn":216}],210:[function(require,module,exports){
+},{"../internal/baseCallback":147,"../internal/baseForRight":162,"./keysIn":255}],249:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11011,7 +13691,7 @@ function forOwn(object, iteratee, thisArg) {
 
 module.exports = forOwn;
 
-},{"../internal/baseCallback":108,"../internal/baseForOwn":121}],211:[function(require,module,exports){
+},{"../internal/baseCallback":147,"../internal/baseForOwn":160}],250:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11049,7 +13729,7 @@ function forOwnRight(object, iteratee, thisArg) {
 
 module.exports = forOwnRight;
 
-},{"../internal/baseCallback":108,"../internal/baseForRight":123,"./keys":215}],212:[function(require,module,exports){
+},{"../internal/baseCallback":147,"../internal/baseForRight":162,"./keys":254}],251:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11082,7 +13762,7 @@ function functions(object) {
 
 module.exports = functions;
 
-},{"../internal/baseFunctions":124,"./keysIn":216}],213:[function(require,module,exports){
+},{"../internal/baseFunctions":163,"./keysIn":255}],252:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11119,7 +13799,7 @@ function has(object, key) {
 
 module.exports = has;
 
-},{}],214:[function(require,module,exports){
+},{}],253:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11187,7 +13867,7 @@ function invert(object, multiValue) {
 
 module.exports = invert;
 
-},{"./keys":215}],215:[function(require,module,exports){
+},{"./keys":254}],254:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11277,7 +13957,7 @@ var keys = !nativeKeys ? shimKeys : function(object) {
 
 module.exports = keys;
 
-},{"../internal/toObject":170,"../lang/isArguments":176,"../lang/isArray":177,"../lang/isNative":188,"../support":245,"./keysIn":216}],216:[function(require,module,exports){
+},{"../internal/toObject":209,"../lang/isArguments":215,"../lang/isArray":216,"../lang/isNative":227,"../support":284,"./keysIn":255}],255:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11343,7 +14023,7 @@ function keysIn(object) {
 
 module.exports = keysIn;
 
-},{"../internal/toObject":170,"../lang/isArguments":176,"../lang/isArray":177,"../support":245}],217:[function(require,module,exports){
+},{"../internal/toObject":209,"../lang/isArguments":215,"../lang/isArray":216,"../support":284}],256:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11403,7 +14083,7 @@ function mapValues(object, iteratee, thisArg) {
 
 module.exports = mapValues;
 
-},{"../internal/baseCallback":108,"../internal/baseForOwn":121}],218:[function(require,module,exports){
+},{"../internal/baseCallback":147,"../internal/baseForOwn":160}],257:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11538,7 +14218,7 @@ var merge = createAssigner(baseMerge);
 
 module.exports = merge;
 
-},{"../internal/arrayEach":102,"../internal/baseForOwn":121,"../internal/createAssigner":144,"../internal/isArrayLike":157,"../lang/isArray":177,"../lang/isPlainObject":194}],219:[function(require,module,exports){
+},{"../internal/arrayEach":141,"../internal/baseForOwn":160,"../internal/createAssigner":183,"../internal/isArrayLike":196,"../lang/isArray":216,"../lang/isPlainObject":233}],258:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11600,7 +14280,7 @@ function omit(object, predicate, thisArg) {
 
 module.exports = omit;
 
-},{"../internal/arrayMap":105,"../internal/baseCallback":108,"../internal/baseDifference":113,"../internal/baseFlatten":118,"../internal/pickByArray":162,"../internal/pickByCallback":163,"../internal/toObject":170,"./keysIn":216}],220:[function(require,module,exports){
+},{"../internal/arrayMap":144,"../internal/baseCallback":147,"../internal/baseDifference":152,"../internal/baseFlatten":157,"../internal/pickByArray":201,"../internal/pickByCallback":202,"../internal/toObject":209,"./keysIn":255}],259:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11640,7 +14320,7 @@ function pairs(object) {
 
 module.exports = pairs;
 
-},{"./keys":215}],221:[function(require,module,exports){
+},{"./keys":254}],260:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11694,7 +14374,7 @@ function pick(object, predicate, thisArg) {
 
 module.exports = pick;
 
-},{"../internal/baseCallback":108,"../internal/baseFlatten":118,"../internal/pickByArray":162,"../internal/pickByCallback":163,"../internal/toObject":170}],222:[function(require,module,exports){
+},{"../internal/baseCallback":147,"../internal/baseFlatten":157,"../internal/pickByArray":201,"../internal/pickByCallback":202,"../internal/toObject":209}],261:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11766,7 +14446,7 @@ function transform(object, iteratee, accumulator, thisArg) {
 
 module.exports = transform;
 
-},{"../internal/arrayEach":102,"../internal/baseCallback":108,"../internal/baseCreate":111,"../internal/baseForOwn":121,"../internal/isArrayLike":157,"../lang/isObject":193}],223:[function(require,module,exports){
+},{"../internal/arrayEach":141,"../internal/baseCallback":147,"../internal/baseCreate":150,"../internal/baseForOwn":160,"../internal/isArrayLike":196,"../lang/isObject":232}],262:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11804,7 +14484,7 @@ function values(object) {
 
 module.exports = values;
 
-},{"../internal/baseValues":135,"./keys":215}],224:[function(require,module,exports){
+},{"../internal/baseValues":174,"./keys":254}],263:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11843,7 +14523,7 @@ function valuesIn(object) {
 
 module.exports = valuesIn;
 
-},{"../internal/baseValues":135,"./keysIn":216}],225:[function(require,module,exports){
+},{"../internal/baseValues":174,"./keysIn":255}],264:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11875,7 +14555,7 @@ module.exports = {
   'unescape': require('./string/unescape')
 };
 
-},{"./string/camelCase":226,"./string/capitalize":227,"./string/endsWith":228,"./string/escape":229,"./string/escapeRegExp":230,"./string/kebabCase":231,"./string/pad":232,"./string/padLeft":233,"./string/padRight":234,"./string/repeat":235,"./string/snakeCase":236,"./string/startsWith":237,"./string/template":238,"./string/templateSettings":239,"./string/trim":240,"./string/trimLeft":241,"./string/trimRight":242,"./string/trunc":243,"./string/unescape":244}],226:[function(require,module,exports){
+},{"./string/camelCase":265,"./string/capitalize":266,"./string/endsWith":267,"./string/escape":268,"./string/escapeRegExp":269,"./string/kebabCase":270,"./string/pad":271,"./string/padLeft":272,"./string/padRight":273,"./string/repeat":274,"./string/snakeCase":275,"./string/startsWith":276,"./string/template":277,"./string/templateSettings":278,"./string/trim":279,"./string/trimLeft":280,"./string/trimRight":281,"./string/trunc":282,"./string/unescape":283}],265:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11918,7 +14598,7 @@ var camelCase = createCompounder(function(result, word, index) {
 
 module.exports = camelCase;
 
-},{"../internal/createCompounder":147}],227:[function(require,module,exports){
+},{"../internal/createCompounder":186}],266:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11951,7 +14631,7 @@ function capitalize(string) {
 
 module.exports = capitalize;
 
-},{}],228:[function(require,module,exports){
+},{}],267:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11997,7 +14677,7 @@ function endsWith(string, target, position) {
 
 module.exports = endsWith;
 
-},{}],229:[function(require,module,exports){
+},{}],268:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12075,7 +14755,7 @@ function escape(string) {
 
 module.exports = escape;
 
-},{}],230:[function(require,module,exports){
+},{}],269:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12115,7 +14795,7 @@ function escapeRegExp(string) {
 
 module.exports = escapeRegExp;
 
-},{}],231:[function(require,module,exports){
+},{}],270:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12153,7 +14833,7 @@ var kebabCase = createCompounder(function(result, word, index) {
 
 module.exports = kebabCase;
 
-},{"../internal/createCompounder":147}],232:[function(require,module,exports){
+},{"../internal/createCompounder":186}],271:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -12214,7 +14894,7 @@ function pad(string, length, chars) {
 module.exports = pad;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../internal/createPad":150}],233:[function(require,module,exports){
+},{"../internal/createPad":189}],272:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12255,7 +14935,7 @@ function padLeft(string, length, chars) {
 
 module.exports = padLeft;
 
-},{"../internal/createPad":150}],234:[function(require,module,exports){
+},{"../internal/createPad":189}],273:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12296,7 +14976,7 @@ function padRight(string, length, chars) {
 
 module.exports = padRight;
 
-},{"../internal/createPad":150}],235:[function(require,module,exports){
+},{"../internal/createPad":189}],274:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -12358,7 +15038,7 @@ function repeat(string, n) {
 module.exports = repeat;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],236:[function(require,module,exports){
+},{}],275:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12395,7 +15075,7 @@ var snakeCase = createCompounder(function(result, word, index) {
 
 module.exports = snakeCase;
 
-},{"../internal/createCompounder":147}],237:[function(require,module,exports){
+},{"../internal/createCompounder":186}],276:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12438,7 +15118,7 @@ function startsWith(string, target, position) {
 
 module.exports = startsWith;
 
-},{}],238:[function(require,module,exports){
+},{}],277:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12716,7 +15396,7 @@ function template(string, options, otherOptions) {
 
 module.exports = template;
 
-},{"../internal/reInterpolate":166,"../lang/isError":183,"../object/assign":203,"../object/keys":215,"../object/values":223,"../utility/attempt":247,"./escape":229,"./templateSettings":239}],239:[function(require,module,exports){
+},{"../internal/reInterpolate":205,"../lang/isError":222,"../object/assign":242,"../object/keys":254,"../object/values":262,"../utility/attempt":286,"./escape":268,"./templateSettings":278}],278:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12793,7 +15473,7 @@ var templateSettings = {
 
 module.exports = templateSettings;
 
-},{"../internal/reEscape":164,"../internal/reEvaluate":165,"../internal/reInterpolate":166,"./escape":229}],240:[function(require,module,exports){
+},{"../internal/reEscape":203,"../internal/reEvaluate":204,"../internal/reInterpolate":205,"./escape":268}],279:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12838,7 +15518,7 @@ function trim(string, chars) {
 
 module.exports = trim;
 
-},{"../internal/charsLeftIndex":139,"../internal/charsRightIndex":140,"../internal/trimmedLeftIndex":171,"../internal/trimmedRightIndex":172}],241:[function(require,module,exports){
+},{"../internal/charsLeftIndex":178,"../internal/charsRightIndex":179,"../internal/trimmedLeftIndex":210,"../internal/trimmedRightIndex":211}],280:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12881,7 +15561,7 @@ function trimLeft(string, chars) {
 
 module.exports = trimLeft;
 
-},{"../internal/charsLeftIndex":139,"../internal/trimmedLeftIndex":171}],242:[function(require,module,exports){
+},{"../internal/charsLeftIndex":178,"../internal/trimmedLeftIndex":210}],281:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12924,7 +15604,7 @@ function trimRight(string, chars) {
 
 module.exports = trimRight;
 
-},{"../internal/charsRightIndex":140,"../internal/trimmedRightIndex":172}],243:[function(require,module,exports){
+},{"../internal/charsRightIndex":179,"../internal/trimmedRightIndex":211}],282:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13020,7 +15700,7 @@ function trunc(string, options) {
 
 module.exports = trunc;
 
-},{"../lang/isObject":193,"../lang/isRegExp":195}],244:[function(require,module,exports){
+},{"../lang/isObject":232,"../lang/isRegExp":234}],283:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13081,7 +15761,7 @@ function unescape(string) {
 
 module.exports = unescape;
 
-},{}],245:[function(require,module,exports){
+},{}],284:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -13168,7 +15848,7 @@ var support = {};
 module.exports = support;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./lang/isNative":188}],246:[function(require,module,exports){
+},{"./lang/isNative":227}],285:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13199,7 +15879,7 @@ module.exports = {
   'uuid': require('./utility/uuid')
 };
 
-},{"./utility/attempt":247,"./utility/callback":248,"./utility/constant":249,"./utility/identity":250,"./utility/matches":251,"./utility/mixin":252,"./utility/noConflict":253,"./utility/noop":254,"./utility/now":255,"./utility/parseInt":256,"./utility/property":257,"./utility/random":258,"./utility/range":259,"./utility/result":260,"./utility/times":261,"./utility/uniqueId":262,"./utility/uuid":263}],247:[function(require,module,exports){
+},{"./utility/attempt":286,"./utility/callback":287,"./utility/constant":288,"./utility/identity":289,"./utility/matches":290,"./utility/mixin":291,"./utility/noConflict":292,"./utility/noop":293,"./utility/now":294,"./utility/parseInt":295,"./utility/property":296,"./utility/random":297,"./utility/range":298,"./utility/result":299,"./utility/times":300,"./utility/uniqueId":301,"./utility/uuid":302}],286:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13240,7 +15920,7 @@ function attempt(func) {
 
 module.exports = attempt;
 
-},{"../lang/isError":183}],248:[function(require,module,exports){
+},{"../lang/isError":222}],287:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13291,7 +15971,7 @@ function callback(func, thisArg) {
 
 module.exports = callback;
 
-},{"../internal/baseCallback":108}],249:[function(require,module,exports){
+},{"../internal/baseCallback":147}],288:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13324,7 +16004,7 @@ function constant(value) {
 
 module.exports = constant;
 
-},{}],250:[function(require,module,exports){
+},{}],289:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13354,7 +16034,7 @@ function identity(value) {
 
 module.exports = identity;
 
-},{}],251:[function(require,module,exports){
+},{}],290:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13446,7 +16126,7 @@ function matches(source) {
 
 module.exports = matches;
 
-},{"../internal/baseClone":109,"../internal/baseIsEqual":126,"../internal/isStrictComparable":158,"../object/keys":215}],252:[function(require,module,exports){
+},{"../internal/baseClone":148,"../internal/baseIsEqual":165,"../internal/isStrictComparable":197,"../object/keys":254}],291:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13546,7 +16226,7 @@ function mixin(object, source, options) {
 
 module.exports = mixin;
 
-},{"../internal/baseFunctions":124,"../lang/isFunction":186,"../lang/isObject":193,"../object/keys":215}],253:[function(require,module,exports){
+},{"../internal/baseFunctions":163,"../lang/isFunction":225,"../lang/isObject":232,"../object/keys":254}],292:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -13580,7 +16260,7 @@ function noConflict() {
 module.exports = noConflict;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],254:[function(require,module,exports){
+},{}],293:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13608,7 +16288,7 @@ function noop() {
 
 module.exports = noop;
 
-},{}],255:[function(require,module,exports){
+},{}],294:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13640,7 +16320,7 @@ var now = nativeNow || function() {
 
 module.exports = now;
 
-},{"../lang/isNative":188}],256:[function(require,module,exports){
+},{"../lang/isNative":227}],295:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -13709,7 +16389,7 @@ if (nativeParseInt(whitespace + '08') != 8) {
 module.exports = parseInt;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../string/trim":240}],257:[function(require,module,exports){
+},{"../string/trim":279}],296:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13751,7 +16431,7 @@ function property(key) {
 
 module.exports = property;
 
-},{}],258:[function(require,module,exports){
+},{}],297:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13832,7 +16512,7 @@ function random(min, max, floating) {
 
 module.exports = random;
 
-},{"../internal/baseRandom":129}],259:[function(require,module,exports){
+},{"../internal/baseRandom":168}],298:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13911,7 +16591,7 @@ function range(start, end, step) {
 
 module.exports = range;
 
-},{}],260:[function(require,module,exports){
+},{}],299:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13965,7 +16645,7 @@ function result(object, key, defaultValue) {
 
 module.exports = result;
 
-},{"../lang/isFunction":186}],261:[function(require,module,exports){
+},{"../lang/isFunction":225}],300:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -14027,7 +16707,7 @@ function times(n, iteratee, thisArg) {
 module.exports = times;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../internal/baseCallback":108}],262:[function(require,module,exports){
+},{"../internal/baseCallback":147}],301:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -14063,7 +16743,7 @@ function uniqueId(prefix) {
 
 module.exports = uniqueId;
 
-},{}],263:[function(require,module,exports){
+},{}],302:[function(require,module,exports){
 'use strict';
 
 var __cache = [];
@@ -14113,7 +16793,7 @@ function uuid()
 
 //return __uuid4;
 module.exports = e7;
-},{}],264:[function(require,module,exports){
+},{}],303:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -14178,7 +16858,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],265:[function(require,module,exports){
+},{}],304:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.1
  * http://jquery.com/
@@ -23370,2659 +26050,4 @@ return jQuery;
 
 }));
 
-},{}],266:[function(require,module,exports){
-"use strict";
-
-var _ = require("_");
-var isAshElement = require("../internal/isAshElement");
-var isComponentAshElement = require("../internal/isComponentAshElement");
-var isAshNodeAshElement = require("../internal/isAshNodeAshElement");
-var constants = require("../internal/constants");
-
-var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
-var LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
-
-function walk(ashElement, index, owner, lastLevel) {
-  var i;
-
-  // type check
-  if (!isComponentAshElement(owner)) {
-    throw new Error(owner + " must be a Component type AshElement Object");
-  }
-
-  if (isAshNodeAshElement(ashElement)) {
-    // instantiate ashElement
-    ashElement.instantiate();
-
-    // set up ordering properties
-    ashElement.level = lastLevel + LEVEL_SEPARATOR + index;
-    ashElement.order = index;
-
-    // set up owner & stage
-    ashElement.owner = owner;
-    ashElement.stage = owner.stage;
-
-    for (i = 0; i < ashElement.children.length; i++) {
-      if (ashElement.children[i]) {
-        // set up parent
-        ashElement.children[i].parent = ashElement;
-
-        // walk the child
-        walk(ashElement.children[i], i, owner, ashElement.level);
-      }
-    }
-  } else if (isComponentAshElement(ashElement)) {
-    // instantiate ashElement
-    ashElement.instantiate();
-
-    // set up ordering properties
-    ashElement.level = lastLevel + LEVEL_SEPARATOR + index;
-    ashElement.order = index;
-
-    // set up owner
-    ashElement.owner = owner;
-    ashElement.stage = owner.stage;
-
-    // create child by rendering component
-    ashElement.instance.onBeforeMount();
-    ashElement.instance.__setLifecycle(LIFECYCLE_MOUNTING);
-    ashElement.children[0] = ashElement.instance.__getRender();
-
-    if (ashElement.children[0]) {
-      // set up parent
-      ashElement.children[0].parent = ashElement;
-
-      // walk the child
-      walk(ashElement.children[0], 0, ashElement, ashElement.level);
-    }
-  }
-}
-
-function createAshElementTree(rootAshElement, stage, startingLevel) {
-  // type check
-  if (!isAshElement(rootAshElement)) {
-    throw new Error(rootAshElement + " must be a AshElement object.");
-  }
-
-  if (!stage) {
-    throw new Error(stage + " must be an object.");
-  }
-
-  startingLevel = _.isString(startingLevel) ? startingLevel : "0";
-
-  var ashElementTree = rootAshElement;
-  var i;
-
-  ashElementTree.stage = stage;
-  ashElementTree.isRoot = true;
-
-  if (isComponentAshElement(ashElementTree)) {
-    // instantiate descriptor
-    ashElementTree.instantiate();
-
-    // set up ordering properties
-    ashElementTree.level = startingLevel;
-    ashElementTree.order = typeof ashElementTree.order === "undefined" ? 0 : ashElementTree.order;
-
-    // create child by rendering component
-    ashElementTree.instance.onBeforeMount();
-    ashElementTree.children[0] = ashElementTree.instance.__getRender();
-    ashElementTree.instance.__setLifecycle(LIFECYCLE_MOUNTING);
-
-    // set up a parent
-    ashElementTree.children[0].parent = ashElementTree;
-
-    // walk the child
-    walk(ashElementTree.children[0], 0, ashElementTree, ashElementTree.level);
-  } else {
-    // instantiate descriptor
-    ashElementTree.instantiate();
-
-    // set up ordering properties
-    ashElementTree.level = startingLevel;
-    ashElementTree.order = typeof ashElementTree.order === "undefined" ? 0 : ashElementTree.order;
-
-    for (i = 0; i < ashElementTree.children.length; i++) {
-      // set up a parent
-      ashElementTree.children[i].parent = ashElementTree;
-
-      // walk the child
-      walk(ashElementTree.children[i], i, ashElementTree.owner, ashElementTree.level);
-    }
-  }
-
-  // return resulting descriptor tree
-  return ashElementTree;
-}
-
-module.exports = createAshElementTree;
-},{"../internal/constants":288,"../internal/isAshElement":291,"../internal/isAshNodeAshElement":293,"../internal/isComponentAshElement":295,"_":101}],267:[function(require,module,exports){
-"use strict";
-
-var isComponentAshElement = require("../internal/isComponentAshElement");
-var isAshNodeAshElement = require("../internal/isAshNodeAshElement");
-var isAshNode = require("../internal/isAshNode");
-var isAshTextNode = require("../internal/isAshTextNode");
-var constants = require("../internal/constants");
-
-var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
-
-function cloneAshNode(ashNodeAshElement) {
-  var clonedAshNode;
-
-  if (isAshNode(ashNodeAshElement.instance)) {
-    clonedAshNode = {
-      type: ashNodeAshElement.instance.type,
-      index: ashNodeAshElement.instance.index,
-      stage: ashNodeAshElement.stage.id,
-      tagName: ashNodeAshElement.instance.tagName,
-      key: ashNodeAshElement.instance.key,
-      properties: ashNodeAshElement.instance.properties,
-      children: []
-    };
-  } else if (isAshTextNode(ashNodeAshElement.instance)) {
-    clonedAshNode = {
-      type: ashNodeAshElement.instance.type,
-      index: ashNodeAshElement.instance.index,
-      stage: ashNodeAshElement.stage.id,
-      text: ashNodeAshElement.instance.text
-    };
-  } else {
-    throw new Error(ashNodeAshElement + " must have property named \"instance\" containing Ash Node or Ash Text Node object.");
-  }
-
-  return clonedAshNode;
-}
-
-function walk(ashNodeTree, ashElement, index, parentIndex) {
-  var clonedAshNode;
-  var i;
-
-  if (isAshNodeAshElement(ashElement)) {
-    // clone virtual node
-    clonedAshNode = cloneAshNode(ashElement);
-
-    // set up ordering properties
-    ashElement.instance.index = clonedAshNode.index = parentIndex + LEVEL_SEPARATOR + index;
-    ashElement.instance.order = clonedAshNode.order = index;
-
-    // add child
-    ashNodeTree.children.push(clonedAshNode);
-
-    // walk the children
-    for (i = 0; i < ashElement.children.length; i++) {
-      walk(ashNodeTree.children[ashNodeTree.children.length - 1], ashElement.children[i], i, ashNodeTree.children[ashNodeTree.children.length - 1].index);
-    }
-  } else if (ashElement && ashElement.children[0]) {
-    walk(ashNodeTree, ashElement.children[0], index, parentIndex);
-  }
-}
-
-function createAshNodeTree(componentAshElement) {
-  // type check
-  if (!isComponentAshElement(componentAshElement)) {
-    throw new Error(componentAshElement + " must be a Component Descriptor object.");
-  }
-
-  var ashElement = componentAshElement;
-  var ashNodeTree;
-  var i;
-
-  // find first children Virtual Node ashElement
-  while (!isAshNodeAshElement(ashElement)) {
-    ashElement = ashElement.children[0];
-  }
-
-  // set up Virtual DOM
-  ashNodeTree = cloneAshNode(ashElement);
-
-  // set up ordering properties
-  ashElement.instance.index = ashNodeTree.index = "0";
-  ashElement.instance.order = ashNodeTree.order = 0;
-
-  // walk the children
-  for (i = 0; i < ashElement.children.length; i++) {
-    walk(ashNodeTree, ashElement.children[i], i, ashNodeTree.index);
-  }
-
-  return ashNodeTree;
-}
-
-module.exports = createAshNodeTree;
-},{"../internal/constants":288,"../internal/isAshNode":292,"../internal/isAshNodeAshElement":293,"../internal/isAshTextNode":294,"../internal/isComponentAshElement":295}],268:[function(require,module,exports){
-"use strict";
-
-var isAshNode = require("../internal/isAshNode");
-var isAshTextNode = require("../internal/isAshTextNode");
-var setNodeProperties = require("./setNodeProperties");
-var constants = require("../internal/constants");
-
-var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
-var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
-var STAGE_ATTRIBUTE_NAME = constants.STAGE_ATTRIBUTE_NAME;
-
-function walk(ashNodeTree) {
-  var nodeTree;
-  var child;
-  var i;
-
-  if (isAshTextNode(ashNodeTree)) {
-    nodeTree = document.createTextNode(ashNodeTree.text);
-    nodeTree[INDEX_ATTRIBUTE_NAME] = ashNodeTree.index;
-    nodeTree[ORDER_ATTRIBUTE_NAME] = ashNodeTree.order;
-    nodeTree[STAGE_ATTRIBUTE_NAME] = ashNodeTree.stage;
-
-    return nodeTree;
-  }
-
-  // create element
-  if (ashNodeTree.tagName == "svg" || ashNodeTree.tagName == "use") {
-    nodeTree = document.createElementNS("http://www.w3.org/2000/svg", ashNodeTree.tagName);
-  } else {
-    nodeTree = document.createElement(ashNodeTree.tagName);
-  }
-
-  // set properties
-  nodeTree[INDEX_ATTRIBUTE_NAME] = ashNodeTree.index;
-  nodeTree[ORDER_ATTRIBUTE_NAME] = ashNodeTree.order;
-  nodeTree[STAGE_ATTRIBUTE_NAME] = ashNodeTree.stage;
-  setNodeProperties(nodeTree, ashNodeTree.properties);
-  //$(nodeTree).attr('index', nodeTree[INDEX_ATTRIBUTE_NAME]/* + ' - ' + ashNodeTree.key*/);
-  //$(nodeTree).attr('order', nodeTree[ORDER_ATTRIBUTE_NAME]/* + ' - ' + ashNodeTree.key*/);
-  //$(nodeTree).attr('levels', ashNodeTree.levels.join('.'));
-
-  for (i = 0; i < ashNodeTree.children.length; i++) {
-    child = walk(ashNodeTree.children[i]);
-
-    if (child) {
-      nodeTree.appendChild(child);
-    }
-  }
-
-  return nodeTree;
-}
-
-// helper for creating dom nodeTree
-function createNodeTree(ashNodeTree) {
-  return walk(ashNodeTree);
-}
-
-module.exports = createNodeTree;
-},{"../internal/constants":288,"../internal/isAshNode":292,"../internal/isAshTextNode":294,"./setNodeProperties":273}],269:[function(require,module,exports){
-"use strict";
-
-var _ = require("_");
-var constants = require("../internal/constants");
-var parseAshNodeIndex = require("./parseAshNodeIndex");
-
-// constants references
-var PATCH_NONE = constants.PATCH_NONE;
-var PATCH_ASH_NODE = constants.PATCH_ASH_NODE;
-var PATCH_ASH_TEXT_NODE = constants.PATCH_ASH_TEXT_NODE;
-var PATCH_PROPERTIES = constants.PATCH_PROPERTIES;
-var PATCH_ORDER = constants.PATCH_ORDER;
-var PATCH_INSERT = constants.PATCH_INSERT;
-var PATCH_REMOVE = constants.PATCH_REMOVE;
-var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
-
-function walk(oldAshNode, newAshNode /*, patches*/) {
-  // compare nodes
-  var patches = arguments[2] || [];
-  var differentProperties = false;
-  var propertiesToChange = {};
-  var propertiesToRemove = [];
-  var newProperty;
-  var newSubproperty;
-  var oldProperty;
-  var oldSubproperty;
-
-
-  // which propertie are different or new
-  for (newProperty in newAshNode.properties) {
-    if (newAshNode.properties.hasOwnProperty(newProperty) && oldAshNode.properties && newAshNode.properties[newProperty] !== oldAshNode.properties[newProperty]) {
-      if (typeof newAshNode.properties[newProperty] === "object" && oldAshNode.properties[newProperty] && typeof oldAshNode.properties[newProperty] == "object") {
-        // which propertie are different or new
-        for (newSubproperty in newAshNode.properties[newProperty]) {
-          if (newAshNode.properties[newProperty].hasOwnProperty(newSubproperty) && newAshNode.properties[newProperty][newSubproperty] !== oldAshNode.properties[newProperty][newSubproperty]) {
-            propertiesToChange[newProperty] = propertiesToChange[newProperty] || {};
-            propertiesToChange[newProperty][newSubproperty] = newAshNode.properties[newProperty][newSubproperty];
-
-            differentProperties = true;
-          }
-        }
-
-        // which properties are to be removed
-        for (oldSubproperty in oldAshNode.properties[newProperty]) {
-          if (oldAshNode.properties[newProperty].hasOwnProperty(oldSubproperty) && typeof newAshNode.properties[newProperty][oldSubproperty] === "undefined") {
-            propertiesToRemove.push(newProperty + "." + oldSubproperty);
-
-            differentProperties = true;
-          }
-        }
-      } else {
-        propertiesToChange[newProperty] = newAshNode.properties[newProperty];
-
-        differentProperties = true;
-      }
-    }
-  }
-
-  // which properties are to be removed
-  for (oldProperty in oldAshNode.properties) {
-    if (oldAshNode.properties.hasOwnProperty(oldProperty) && newAshNode.properties && typeof newAshNode.properties[oldProperty] === "undefined") {
-      differentProperties = true;
-      propertiesToRemove.push(oldProperty);
-    }
-  }
-
-  if (oldAshNode.type !== newAshNode.type || oldAshNode.tagName !== newAshNode.tagName) {
-    patches.push({
-      type: PATCH_ASH_NODE,
-      index: oldAshNode.index,
-      stage: oldAshNode.stage,
-      node: newAshNode
-    });
-
-    // whole node must be replaced; no sense in finding other differences
-    return patches;
-  }
-
-  if (oldAshNode.text !== newAshNode.text) {
-    patches.push({
-      type: PATCH_ASH_TEXT_NODE,
-      index: oldAshNode.index,
-      text: newAshNode.text
-    });
-  }
-
-  if (differentProperties) {
-    patches.push({
-      type: PATCH_PROPERTIES,
-      index: oldAshNode.index,
-      stage: oldAshNode.stage,
-      propertiesToChange: propertiesToChange,
-      propertiesToRemove: propertiesToRemove
-    });
-  }
-
-  // now let's check the children...
-  patches = diffChildren(oldAshNode.children, newAshNode.children, patches);
-
-  return patches;
-}
-
-function diffChildren(oldChildren, newChildren, patches) {
-  if ((!oldChildren || !oldChildren.length) && (!newChildren || !newChildren.length)) {
-    return patches;
-  }
-
-  // lets fill in keys, if needed; simple first-to-first correspondence
-  var __length = Math.max(oldChildren.length, newChildren.length);
-  var __a = 0;
-  var __b = 0;
-  var __keyCount = 0;
-  var __key = "Key: " + __keyCount;
-  var i;
-
-  for (i = 0; i < __length; i++) {
-    if (oldChildren[i] && oldChildren[i].key) {
-      oldChildren[i].tempKey = oldChildren[i].key;
-    }
-
-    if (newChildren[i] && newChildren[i].key) {
-      newChildren[i].tempKey = newChildren[i].key;
-    }
-
-    while (oldChildren[__a] && oldChildren[__a].key) {
-      __a++;
-    }
-
-    while (newChildren[__b] && newChildren[__b].key) {
-      __b++;
-    }
-
-    if (oldChildren[__a]) {
-      oldChildren[__a].tempKey = __key;
-    }
-
-    if (newChildren[__b]) {
-      newChildren[__b].tempKey = __key;
-    }
-
-    __keyCount++;
-    __key = "Key: " + __keyCount;
-    __a++;
-    __b++;
-  }
-
-  // keys are in; let's compare order of children		
-  var __found;
-  var j;
-  var patch;
-  var __index;
-
-  // first iterate over old children
-  for (i = 0; i < oldChildren.length; i++) {
-    __found = false;
-
-    for (j = 0; j < newChildren.length; j++) {
-      if (oldChildren[i].tempKey === newChildren[j].tempKey) {
-        __found = true;
-
-        break;
-      }
-    }
-
-    // node with matching key was found?
-    if (__found) {
-      // is order same?
-      if (i != j) {
-        patches.push({
-          type: PATCH_ORDER,
-          newIndex: newChildren[j].index,
-          index: oldChildren[i].index,
-          stage: oldChildren[i].stage,
-          order: j
-        });
-      }
-
-      // now walk inside those children...
-      walk(oldChildren[i], newChildren[j], patches);
-    } else {
-      // node is to be removed...
-      patches.push({
-        type: PATCH_REMOVE,
-        index: oldChildren[i].index,
-        stage: oldChildren[i].stage });
-    }
-  }
-
-  // now iterate over new children; let's see, if there are any new...
-  for (j = 0; j < newChildren.length; j++) {
-    __found = false;
-
-    for (i = 0; i < oldChildren.length; i++) {
-      if (oldChildren[i].tempKey === newChildren[j].tempKey) {
-        __found = true;
-        break;
-      }
-    }
-
-    // new child was not found
-    if (!__found) {
-      // create patch for insert
-      patches.push({
-        type: PATCH_INSERT,
-        index: newChildren[j].index,
-        node: newChildren[j]
-      });
-
-      __index = parseAshNodeIndex(newChildren[j].index);
-      __index.pop();
-      patches[patches.length - 1].parentIndex = __index.join(LEVEL_SEPARATOR);
-    }
-  }
-
-  return patches;
-}
-
-// differences between trees
-function diffAshNodeTree(oldAshNodeTree, newAshNodeTree) {
-  return walk(oldAshNodeTree, newAshNodeTree);
-}
-
-module.exports = diffAshNodeTree;
-},{"../internal/constants":288,"./parseAshNodeIndex":271,"_":101}],270:[function(require,module,exports){
-"use strict";
-
-var parseAshNodeIndex = require("./parseAshNodeIndex");
-
-function findNode(nodeTree, nodeIndex) {
-  var parsedAshNodeIndex = parseAshNodeIndex(nodeIndex);
-  var node = nodeTree;
-  var i;
-
-  if (!nodeTree) {
-    throw new Error(nodeTree + " cannot be falsy.");
-  }
-
-  if (parsedAshNodeIndex.length == 1) {
-    return node;
-  } else if (parsedAshNodeIndex.length) {
-    for (i = 1; i < parsedAshNodeIndex.length; i++) {
-      if (!node) {
-        return false;
-      }
-
-      node = node.childNodes[parsedAshNodeIndex[i]];
-    }
-
-    return node;
-  }
-
-  return false;
-}
-
-module.exports = findNode;
-},{"./parseAshNodeIndex":271}],271:[function(require,module,exports){
-"use strict";
-
-var _ = require("_");
-
-var __parseInt = _.unary(parseInt);
-
-function parseAshNodeIndex(value) {
-  return _.map(value.split("."), __parseInt);
-}
-
-module.exports = parseAshNodeIndex;
-},{"_":101}],272:[function(require,module,exports){
-"use strict";
-
-var _ = require("_");
-var constants = require("../internal/constants");
-var parseAshNodeIndex = require("./parseAshNodeIndex");
-var createNodeTree = require("./createNodeTree");
-var setNodeProperties = require("../dom/setNodeProperties");
-var removeNodeProperties = require("../dom/removeNodeProperties");
-var findNode = require("../dom/findNode");
-var DOMEvents = require("../class/DOMEvents");
-
-var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
-var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
-var PATCH_NONE = constants.PATCH_NONE;
-var PATCH_ASH_NODE = constants.PATCH_ASH_NODE;
-var PATCH_ASH_TEXT_NODE = constants.PATCH_ASH_TEXT_NODE;
-var PATCH_PROPERTIES = constants.PATCH_PROPERTIES;
-var PATCH_ORDER = constants.PATCH_ORDER;
-var PATCH_INSERT = constants.PATCH_INSERT;
-var PATCH_REMOVE = constants.PATCH_REMOVE;
-
-var domEvents = new DOMEvents();
-
-// apply patches to dom tree
-function patchNodeTree(domTree, patches) {
-  // type check
-  if (!_.isElement(domTree)) {
-    return false;
-  }
-
-  //var __patches = [];
-  var __patches = patches;
-  var node;
-  var index;
-  var position;
-  var i;
-  var j;
-  var reindexCache = [];
-  var reorderCache = [];
-  var lastLevel;
-
-  function reindexChildNodes(parentNode, order) {
-    var parentLevels = parseAshNodeIndex(parentNode[INDEX_ATTRIBUTE_NAME]);
-    var levelIndex = parentLevels.length - 1;
-
-    function walk(node) {
-      var childLevels;
-      var i;
-
-      for (i = 0; i < node.childNodes.length; i++) {
-        childLevels = parseAshNodeIndex(node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
-        childLevels[levelIndex] = order;
-
-        node.childNodes[i][INDEX_ATTRIBUTE_NAME] = childLevels.join(".");
-        //node.childNodes[i][ORDER_ATTRIBUTE_NAME] = order;
-        //$(node.childNodes[i]).attr('index', node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
-        //$(node.childNodes[i]).attr('order', node.childNodes[i][ORDER_ATTRIBUTE_NAME]);
-
-        if (node.childNodes[i].childNodes && node.childNodes[i].childNodes.length) {
-          walk(node.childNodes[i]);
-        }
-      }
-    }
-
-    walk(parentNode);
-  }
-
-  function flushCache() {
-    var appendChild = function (item) {
-      this.appendChild(item);
-    };
-
-    while (reindexCache.length > 0) {
-      // reindex events
-      domEvents.reindexEvents(reindexCache[0].oldIndex, reindexCache[0].newOrder, reindexCache[0].stage);
-
-      reindexCache[0].node[INDEX_ATTRIBUTE_NAME] = reindexCache[0].newIndex;
-      reindexCache[0].node[ORDER_ATTRIBUTE_NAME] = reindexCache[0].newOrder;
-
-      //$(reindexCache[0].node).attr('index', reindexCache[0].node[INDEX_ATTRIBUTE_NAME]);
-      //$(reindexCache[0].node).attr('order', reindexCache[0].node[ORDER_ATTRIBUTE_NAME]);
-      //$(reindexCache[0].node).attr('levels', virtualDOM.levels.join('.'));
-
-      reindexChildNodes(reindexCache[0].node, reindexCache[0].newOrder);
-
-      // clear the cache
-      reindexCache.shift();
-    }
-
-    reorderCache = _.uniq(reorderCache, "node");
-
-    while (reorderCache.length > 0) {
-      _.sortBy(reorderCache[0].node.childNodes, ORDER_ATTRIBUTE_NAME).forEach(appendChild, reorderCache[0].node);
-
-      reorderCache.shift();
-    }
-  }
-
-  for (i = 0; i < __patches.length; i++) {
-    __patches[i].parsedIndex = parseAshNodeIndex(__patches[i].index);
-  }
-
-  var maxIndex = _(__patches).pluck("parsedIndex").flatten().max();
-
-  var maxDigits = maxIndex === 0 ? 1 : Math.floor(Math.log(Math.abs(Math.floor(maxIndex))) / Math.LN10) + 1;
-
-  __patches = _.sortBy(__patches, function (patch) {
-    var result = "";
-
-    for (var i = 0; i < patch.parsedIndex.length - 1; i++) {
-      result += _.padLeft(patch.parsedIndex[i], maxDigits);
-    }
-
-    if (patch.type == PATCH_ASH_NODE) {
-      result += _.padLeft(9, maxDigits);
-    } else if (patch.type == PATCH_ASH_TEXT_NODE) {
-      result += _.padLeft(8, maxDigits);
-    } else if (patch.type == PATCH_PROPERTIES) {
-      result += _.padLeft(7, maxDigits);
-    } else if (patch.type == PATCH_REMOVE) {
-      result += _.padLeft(6, maxDigits);
-    } else if (patch.type == PATCH_INSERT) {
-      result += _.padLeft(5, maxDigits);
-    } else if (patch.type == PATCH_ORDER) {
-      result += _.padLeft(4, maxDigits);
-    } else {
-      result += _.padLeft(0, maxDigits);
-    }
-
-    result += _.padLeft(patch.parsedIndex[patch.parsedIndex.length - 1], maxDigits);
-
-    return parseInt(result, 10);
-  });
-
-  // now iterate over patches...
-  for (i = __patches.length - 1; i >= 0; i--) {
-    if (!lastLevel) {
-      lastLevel = __patches[i].parsedIndex.length;
-    }
-
-    if (lastLevel < __patches[i].parsedIndex.length) {
-      // patching new level, must flush cache
-      flushCache();
-      lastLevel = __patches[i].parsedIndex.length;
-    }
-
-    if (__patches[i].type == PATCH_ASH_NODE) {
-      // remove old events
-      domEvents.removeEvents(__patches[i].index, __patches[i].stage);
-
-      // replace node
-      node = findNode(domTree, __patches[i].index);
-
-      if (!node) {
-        return false;
-      }
-
-      node.parentNode.replaceChild(createNodeTree(__patches[i].node), node);
-    }
-
-    if (__patches[i].type == PATCH_ASH_TEXT_NODE) {
-      node = findNode(domTree, __patches[i].index);
-
-      if (!node) {
-        return false;
-      }
-
-      node.nodeValue = __patches[i].text;
-    }
-
-    if (__patches[i].type == PATCH_PROPERTIES) {
-      node = findNode(domTree, __patches[i].index);
-
-      if (!node) {
-        return false;
-      }
-
-      setNodeProperties(node, __patches[i].propertiesToChange);
-      removeNodeProperties(node, __patches[i].propertiesToRemove);
-    }
-
-    if (__patches[i].type == PATCH_REMOVE) {
-      // remove old events
-      domEvents.removeEvents(__patches[i].index, __patches[i].stage);
-
-      node = findNode(domTree, __patches[i].index);
-
-      if (!node) {
-        return false;
-      }
-
-      node.parentNode.removeChild(node);
-    }
-
-    if (__patches[i].type == PATCH_INSERT) {
-      node = findNode(domTree, __patches[i].parentIndex);
-
-      if (!node) {
-        return false;
-      }
-
-      node.appendChild(createNodeTree(__patches[i].node));
-
-      reorderCache.push({
-        node: node
-      });
-    }
-
-    if (__patches[i].type == PATCH_ORDER) {
-      if (typeof __patches[i].index !== "undefined") {
-        // moving existing node
-        node = findNode(domTree, __patches[i].index);
-
-        if (!node) {
-          return false;
-        }
-
-        reindexCache.push({
-          node: node,
-          newIndex: __patches[i].newIndex,
-          newOrder: __patches[i].order,
-          oldIndex: __patches[i].index,
-          stage: __patches[i].stage
-        });
-      } else {
-        return false;
-      }
-
-      reorderCache.push({
-        node: node.parentNode
-      });
-    }
-  }
-
-  flushCache();
-
-  return true;
-}
-
-module.exports = patchNodeTree;
-},{"../class/DOMEvents":280,"../dom/findNode":284,"../dom/removeNodeProperties":286,"../dom/setNodeProperties":287,"../internal/constants":288,"./createNodeTree":268,"./parseAshNodeIndex":271,"_":101}],273:[function(require,module,exports){
-"use strict";
-
-var _ = require("_");
-var DOMEvents = require("../class/DOMEvents");
-
-var domEvents = new DOMEvents();
-
-function setNodeProperties(node, properties) {
-  _.forOwn(properties, function (value, key, object) {
-    if (key == "style" && _.isObject(value)) {
-      $(node).css(value);
-    } else if (key == "events" && _.isObject(value)) {
-      domEvents.addEvents(node, value);
-      /*_.forOwn(value, function (callback, eventName, object) {
-      	if (_.isFunction(callback)) {
-      		domEvents.addEvent(node, eventName, callback);
-      	}
-      });*/
-    } else if (key == "className" || key == "class") {
-      node.className = value;
-    } else if (!_.isObject(value)) {
-      // TODO
-      if (key.substring(0, 6) == "xlink:") {
-        node.setAttributeNS("http://www.w3.org/1999/xlink", key.substring(6), value);
-      } else if (key.substring(0, 4) == "xml:") {
-        node.setAttributeNS("http://www.w3.org/2000/svg", key.substring(4), value);
-      } else {
-        if (key == "checked") {
-          node.checked = !!value;
-        } else if (key == "value") {
-          node.value = value;
-        }
-
-        node.setAttribute(key, value);
-      }
-    }
-  });
-
-  return node;
-}
-
-module.exports = setNodeProperties;
-},{"../class/DOMEvents":280,"_":101}],274:[function(require,module,exports){
-"use strict";
-
-var _ = require("_");
-var $ = require("jquery");
-
-var createAshElementTree = require("../DOM/createAshElementTree");
-var isAshNode = require("../internal/isAshNode");
-var isAshTextNode = require("../internal/isAshTextNode");
-var isComponentAshElement = require("../internal/isComponentAshElement");
-var isAshNodeAshElement = require("../internal/isAshNodeAshElement");
-var createAshNodeTree = require("../DOM/createAshNodeTree");
-var createNodeTree = require("../DOM/createNodeTree");
-var diffAshNodeTree = require("../DOM/diffAshNodeTree");
-var patchNodeTree = require("../DOM/patchNodeTree");
-var constants = require("../internal/constants");
-
-var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
-var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
-var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
-
-function escapeAttributeValue(s, preserveCR) {
-  preserveCR = preserveCR ? "&#13;" : "\n";
-  return ("" + s) /* Forces the conversion to string. */
-  .replace(/&/g, "&amp;") /* This MUST be the 1st replacement. */
-  .replace(/'/g, "&apos;") /* The 4 other predefined entities, required. */
-  .replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-  /*
-  You may add other replacements here for HTML only 
-  (but it's not necessary).
-  Or for XML, only if the named entities are defined in its DTD.
-  */
-  .replace(/\r\n/g, preserveCR) /* Must be before the next replacement. */
-  .replace(/[\r\n]/g, preserveCR);
-}
-
-function walkStringifyAshNodeTree(ashNodeTree, index /*, parentIndex*/) {
-  var html = "";
-  var openingTag = "<";
-  var closingTag = "";
-  var content = "";
-  var parentIndex = arguments[2];
-  var i, key1, key2;
-
-  if (isAshNode(ashNodeTree)) {
-    openingTag += ashNodeTree.tagName;
-    closingTag = "</" + ashNodeTree.tagName + ">";
-
-    if (parentIndex) {
-      openingTag += " " + INDEX_ATTRIBUTE_NAME + "=\"" + parentIndex + LEVEL_SEPARATOR + index + "\"";
-      openingTag += " " + ORDER_ATTRIBUTE_NAME + "=\"" + index + "\"";
-      parentIndex = parentIndex + LEVEL_SEPARATOR + index;
-    } else {
-      openingTag += " " + INDEX_ATTRIBUTE_NAME + "=\"" + index + "\"";
-      openingTag += " " + ORDER_ATTRIBUTE_NAME + "=\"" + index + "\"";
-      parentIndex = "" + index;
-    }
-
-    if (ashNodeTree.properties) {
-      for (key1 in ashNodeTree.properties) {
-        if (ashNodeTree.properties.hasOwnProperty(key1) && key1 != "events") {
-          if (key1 == "style") {
-            openingTag += " style=\"";
-
-            // add style definitions
-            for (key2 in ashNodeTree.properties.style) {
-              if (ashNodeTree.properties.style.hasOwnProperty(key2)) {
-                if (typeof ashNodeTree.properties.style[key2] === "string") {
-                  openingTag += key2 + ":" + ashNodeTree.properties.style[key2] + ";";
-                } else {}
-              }
-            }
-
-            openingTag += "\"";
-          } else {
-            if (typeof ashNodeTree.properties[key1] === "string") {
-              openingTag += " " + key1 + "=\"" + escapeAttributeValue(ashNodeTree.properties[key1]) + "\"";
-            } else if (typeof ashNodeTree.properties[key1] === "boolean") {
-              openingTag += " " + key1;
-            } else if (typeof ashNodeTree.properties[key1] === "number") {
-              openingTag += " " + key1 + "=\"" + ashNodeTree.properties[key1] + "\"";
-            }
-          }
-        }
-      }
-    }
-
-    openingTag += ">";
-
-    if (ashNodeTree.children && ashNodeTree.children.length) {
-      for (i = 0; i < ashNodeTree.children.length; i++) {
-        content += walkStringifyAshNodeTree(ashNodeTree.children[i], i, parentIndex);
-      }
-    }
-
-    html = openingTag + content + closingTag;
-  } else {
-    html = ashNodeTree.text;
-  }
-
-  return html;
-}
-
-function stringifyAshNodeTree(ashNodeTree) {
-  return walkStringifyAshNodeTree(ashNodeTree, 0, "");
-}
-
-module.exports = stringifyAshNodeTree;
-},{"../DOM/createAshElementTree":266,"../DOM/createAshNodeTree":267,"../DOM/createNodeTree":268,"../DOM/diffAshNodeTree":269,"../DOM/patchNodeTree":272,"../internal/constants":288,"../internal/isAshNode":292,"../internal/isAshNodeAshElement":293,"../internal/isAshTextNode":294,"../internal/isComponentAshElement":295,"_":101,"jquery":265}],275:[function(require,module,exports){
-"use strict";
-
-var DOMEvents = require("../class/DOMEvents");
-var constants = require("../internal/constants");
-
-var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
-var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
-var STAGE_ATTRIBUTE_NAME = constants.STAGE_ATTRIBUTE_NAME;
-var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
-
-var domEvents = new DOMEvents();
-
-function walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache) {
-  var i;
-
-  //console.log('validating ', nodeTree, ashNodeTree, stage);
-
-  if (nodeTree.tagName && nodeTree.tagName.toLowerCase() != ashNodeTree.tagName) {
-    //console.log('!', nodeTree.tagName.toLowerCase(), ashNodeTree.tagName);
-
-    return false;
-  }
-
-  if ((nodeTree.getAttribute && nodeTree.getAttribute(INDEX_ATTRIBUTE_NAME) != ashNodeTree.index) || (nodeTree.getAttribute && nodeTree.getAttribute(ORDER_ATTRIBUTE_NAME) != ashNodeTree.order)) {
-    //console.log('!', nodeTree.getAttribute(INDEX_ATTRIBUTE_NAME), ashNodeTree.index);
-    //console.log('!', nodeTree.getAttribute(INDEX_ATTRIBUTE_NAME), ashNodeTree.index);
-
-    return false;
-  }
-
-  nodeTree[INDEX_ATTRIBUTE_NAME] = ashNodeTree.index;
-  nodeTree[ORDER_ATTRIBUTE_NAME] = ashNodeTree.order;
-  nodeTree[STAGE_ATTRIBUTE_NAME] = ashNodeTree.stage;
-
-  if (ashNodeTree.properties && ashNodeTree.properties.events && typeof ashNodeTree.properties.events == "object") {
-    eventsCache.push({
-      events: ashNodeTree.properties.events,
-      node: nodeTree
-    });
-  }
-
-  if ((nodeTree.childNodes.length && (!ashNodeTree.children || !ashNodeTree.children.length)) || (!nodeTree.childNodes.length && (ashNodeTree.children && ashNodeTree.children.length)) || (ashNodeTree.children && nodeTree.childNodes.length != ashNodeTree.children.length)) {
-    return false;
-  }
-
-  if (ashNodeTree.children && ashNodeTree.children.length) {
-    for (i = 0; i < ashNodeTree.children.length; i++) {
-      if (!walkValidateNodeTree(nodeTree.childNodes[i], ashNodeTree.children[i], stage, eventsCache)) {
-        return false;
-      }
-    }
-  }
-
-  return true;
-}
-
-function validateNodeTree(nodeTree, ashNodeTree, stage) {
-  var eventsCache = [];
-  var isValid = walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache);
-  var i;
-
-  //console.log(isValid, eventsCache);
-
-  if (isValid) {
-    for (i = 0; i < eventsCache.length; i++) domEvents.addEvents(eventsCache[i].node, eventsCache[i].events);
-  }
-
-  return isValid;
-}
-
-module.exports = validateNodeTree;
-},{"../class/DOMEvents":280,"../internal/constants":288}],276:[function(require,module,exports){
-var _classProps = function (child, staticProps, instanceProps) {
-  if (staticProps) Object.defineProperties(child, staticProps);
-  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
-
-var _extends = function (child, parent) {
-  child.prototype = Object.create(parent.prototype, {
-    constructor: {
-      value: child,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-  child.__proto__ = parent;
-};
-
-"use strict";
-
-var _ = require("_");
-var Observable = require("./Observable");
-
-var triggerOptions = {
-  noEventArgument: true
-};
-
-var Action = (function (Observable) {
-  var Action = function Action() {
-    Observable.apply(this, arguments);
-  };
-
-  _extends(Action, Observable);
-
-  _classProps(Action, null, {
-    trigger: {
-      writable: true,
-      value: function () {
-        var action = this;
-
-        if (typeof action.onTrigger === "function") {
-          Observable.prototype.trigger.call(this, "*", action.onTrigger.apply(action, arguments), triggerOptions);
-        } else {
-          if (arguments.length == 5) {
-            Observable.prototype.trigger.call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], triggerOptions);
-          } else if (arguments.length == 4) {
-            Observable.prototype.trigger.call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], triggerOptions);
-          } else if (arguments.length == 3) {
-            Observable.prototype.trigger.call(this, "*", arguments[0], arguments[1], arguments[2], triggerOptions);
-          } else if (arguments.length == 2) {
-            Observable.prototype.trigger.call(this, "*", arguments[0], arguments[1], triggerOptions);
-          } else if (arguments.length) {
-            Observable.prototype.trigger.call(this, "*", arguments[0], triggerOptions);
-          } else {
-            Observable.prototype.trigger.call(this, "*", triggerOptions);
-          }
-        }
-
-        return action;
-      }
-    }
-  });
-
-  return Action;
-})(Observable);
-
-module.exports = Action;
-},{"./Observable":281,"_":101}],277:[function(require,module,exports){
-var _classProps = function (child, staticProps, instanceProps) {
-  if (staticProps) Object.defineProperties(child, staticProps);
-  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
-
-"use strict";
-
-var constants = require("../internal/constants");
-
-// constants references
-var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
-var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
-
-var AshElement = (function () {
-  var AshElement = function AshElement(type, spec) {
-    if (type != COMPONENT_ASH_ELEMENT && type != ASH_NODE_ASH_ELEMENT) {
-      throw new Error(type + "must be " + COMPONENT_ASH_ELEMENT + " or " + ASH_NODE_ASH_ELEMENT + ".");
-    }
-
-    if (!spec) {
-      throw new Error(spec + "must be specified.");
-    }
-
-    if (!(this instanceof AshElement)) {
-      if (arguments.length >= 5) {
-        return new AshElement(type, spec, arguments[2], arguments[3], arguments[4]);
-      } else if (arguments.length >= 4) {
-        return new AshElement(type, spec, arguments[2], arguments[3]);
-      } else if (arguments.length >= 3) {
-        return new AshElement(type, spec, arguments[2]);
-      } else {
-        return new AshElement(type, spec);
-      }
-    }
-
-    if (type == COMPONENT_ASH_ELEMENT) {
-      this.type = type;
-      this.spec = spec;
-
-      if (arguments.length >= 3 && typeof arguments[2] !== "undefined") {
-        this.args = [arguments[2]];
-      } else {
-        this.args = null;
-      }
-
-      this.children = [];
-    } else {
-      this.type = ASH_NODE_ASH_ELEMENT;
-      this.spec = spec;
-
-      if (arguments.length >= 4 && typeof arguments[2] !== "undefined" && typeof arguments[3] !== "undefined") {
-        this.args = [arguments[2], arguments[3]];
-      } else if (arguments.length >= 3 && typeof arguments[2] !== "undefined") {
-        this.args = [arguments[2]];
-      } else {
-        this.args = null;
-      }
-
-      if (arguments.length >= 5 && arguments[4]) {
-        this.children = arguments[4];
-      } else {
-        this.children = [];
-      }
-    }
-
-    this.parent = null;
-    this.owner = null;
-  };
-
-  _classProps(AshElement, null, {
-    instantiate: {
-      writable: true,
-      value: function () {
-        if (this.type == COMPONENT_ASH_ELEMENT) {
-          if (this.args) {
-            this.instance = new this.spec(this.args[0]);
-          } else {
-            this.instance = new this.spec();
-          }
-        } else if (this.type == ASH_NODE_ASH_ELEMENT) {
-          if (this.args) {
-            this.instance = new this.spec(this.args[0], this.args[1]);
-          } else {
-            this.instance = new this.spec();
-          }
-        } else {
-          throw new Error(this + " is not a AshElement object.");
-        }
-
-        this.instance.element = this;
-
-        return this.instance;
-      }
-    }
-  });
-
-  return AshElement;
-})();
-
-module.exports = AshElement;
-},{"../internal/constants":288}],278:[function(require,module,exports){
-"use strict";
-
-var _ = require("_");
-var AshElement = require("./AshElement");
-var constants = require("../internal/constants");
-
-// constants references
-var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
-var ASH_NODE = constants.ASH_NODE;
-var ASH_TEXT_NODE = constants.ASH_TEXT_NODE;
-
-var AshNode = function AshNode(tagName, properties) {
-  if (typeof properties !== "undefined") {
-    this.type = ASH_NODE;
-    this.tagName = tagName.toLowerCase();
-    this.properties = properties || {};
-    this.children = [];
-    this.index = null;
-    this.key = null;
-
-    // find element's key
-    if (this.properties.key) {
-      this.key = this.properties.key;
-      delete this.properties.key;
-    }
-  } else {
-    this.type = ASH_TEXT_NODE;
-    this.text = tagName;
-    this.index = null;
-  }
-};
-
-module.exports = AshNode;
-},{"../internal/constants":288,"./AshElement":277,"_":101}],279:[function(require,module,exports){
-var _classProps = function (child, staticProps, instanceProps) {
-  if (staticProps) Object.defineProperties(child, staticProps);
-  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
-
-"use strict";
-
-var _ = require("_");
-
-//var isAshNodeAshElement = require('../internal/isAshNodeAshElement');
-var constants = require("../internal/constants");
-var findNode = require("../DOM/findNode");
-
-var LIFECYCLE_UNMOUNTED = constants.LIFECYCLE_UNMOUNTED;
-var LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
-var LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
-
-var Component = (function () {
-  var Component = function Component(props) {
-    // make sure functions are always bound to this
-    /*_.forIn(this, function (value, key)
-    {
-    	if (_.isFunction(value) && key != 'constructor')
-    	{
-    		this[key] = value.bind(this);
-    	}
-    }, this);*/
-    // autobind functions
-    var keys = this.autobind ? this.autobind() : null;
-    var i;
-
-    if (keys && Array.isArray(keys)) {
-      for (i = 0; i < keys.length; i++) {
-        if (_.isFunction(this[keys[i]]) && keys[i] != "constructor") {
-          this[keys[i]] = this[keys[i]].bind(this);
-        }
-      }
-    }
-
-    this.props = props || {};
-    this.state = this.getInitialState ? this.getInitialState() : {};
-
-    // set state if specified in props
-    if (this.props.state) {
-      _.keys(this.state).forEach(function (key) {
-        this.props.state[key] = this.state[key];
-      }, this);
-
-      delete this.props.state;
-    }
-
-    this.__isDirty = true;
-    this.__lifecycle = LIFECYCLE_UNMOUNTED;
-  };
-
-  _classProps(Component, null, {
-    autobind: {
-      writable: true,
-      value: function () {
-        return null;
-      }
-    },
-    setDirty: {
-      writable: true,
-      value: function (options) {
-        this.__isDirty = true;
-
-        if (!options || (options && options.update !== false)) {
-          if (this.element.stage) {
-            this.element.stage.update();
-          }
-        }
-
-        return this;
-      }
-    },
-    isMounted: {
-      writable: true,
-      value: function () {
-        return this.__lifecycle == LIFECYCLE_MOUNTED;
-      }
-    },
-    isDirty: {
-      writable: true,
-      value: function () {
-        return !!this.__isDirty;
-      }
-    },
-    setState: {
-      writable: true,
-      value: function (state) {
-        if (state && typeof state === "object") {
-          _.assign(this.state, state);
-
-          // set component dirty
-          this.setDirty();
-        }
-
-        return this;
-      }
-    },
-    __getRender: {
-      writable: true,
-      value: function () {
-        this.__isDirty = false;
-        this.__cachedRender = this.render();
-
-        return this.__cachedRender;
-      }
-    },
-    __setLifecycle: {
-      writable: true,
-      value: function (lifecycle) {
-        // value check
-        if (lifecycle != LIFECYCLE_UNMOUNTED && lifecycle != LIFECYCLE_MOUNTING && lifecycle != LIFECYCLE_MOUNTED) {
-          throw new Error(lifecycle + " must be \"Unmounted\", \"Mounting\" or \"Mounted\".");
-        }
-
-        this.__lifecycle = lifecycle;
-
-        return this;
-      }
-    },
-    shouldUpdate: {
-      writable: true,
-      value: function () {
-        return true;
-      }
-    },
-    mount: {
-      writable: true,
-      value: function () {
-        // set lifecycle
-        this.__setLifecycle(LIFECYCLE_MOUNTED);
-
-        // call an event
-        this.onMount();
-
-        return this;
-      }
-    },
-    unmount: {
-      writable: true,
-      value: function () {
-        // set lifecycle
-        this.__setLifecycle(LIFECYCLE_UNMOUNTED);
-
-        // call an event
-        this.onUnmount();
-
-        return this;
-      }
-    },
-    onBeforeMount: {
-      writable: true,
-      value: function () {}
-    },
-    onMount: {
-      writable: true,
-      value: function () {}
-    },
-    onUnmount: {
-      writable: true,
-      value: function () {}
-    },
-    onBeforeReceiveProps: {
-      writable: true,
-      value: function () {}
-    },
-    render: {
-      writable: true,
-      value: function () {
-        return null;
-      }
-    },
-    getDOMNode: {
-      writable: true,
-      value: function () {
-        if (this.isMounted() && isAshNodeAshElement(this.__cachedRender)) {
-          return findNode(this.element.stage.getRootDOMNode(), this.__cachedRender.instance.index);
-        }
-
-        return null;
-      }
-    }
-  });
-
-  return Component;
-})();
-
-module.exports = Component;
-},{"../DOM/findNode":270,"../internal/constants":288,"_":101}],280:[function(require,module,exports){
-var _classProps = function (child, staticProps, instanceProps) {
-  if (staticProps) Object.defineProperties(child, staticProps);
-  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
-
-"use strict!";
-
-var _ = require("_");
-var $ = require("jquery");
-var constants = require("../internal/constants");
-var parseAshNodeIndex = require("../DOM/parseAshNodeIndex");
-
-var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
-var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
-var STAGE_ATTRIBUTE_NAME = constants.STAGE_ATTRIBUTE_NAME;
-var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
-
-var domEvents;
-
-// list of topics
-var topics = window.domTopics = {};
-
-var DOMEvents = (function () {
-  var DOMEvents = function DOMEvents() {
-    if (domEvents) {
-      return domEvents;
-    }
-
-    if (!(this instanceof DOMEvents)) {
-      return new DOMEvents();
-    }
-
-    domEvents = this;
-
-    return domEvents;
-  };
-
-  _classProps(DOMEvents, null, {
-    addEvent: {
-      writable: true,
-      value: function (node, eventName, callback) {
-        var i;
-
-        if (!topics[eventName]) {
-          topics[eventName] = [];
-
-          $(document).on(eventName, this.callback.bind(this, eventName));
-        }
-
-        for (i = 0; i < topics[eventName].length; i++) {
-          if (topics[eventName][i].stage == node[STAGE_ATTRIBUTE_NAME] && topics[eventName][i].index == node[INDEX_ATTRIBUTE_NAME]) {
-            topics[eventName][i].callback = callback;
-
-            return this;
-          }
-        }
-
-        topics[eventName].push({
-          index: node[INDEX_ATTRIBUTE_NAME],
-          stage: node[STAGE_ATTRIBUTE_NAME],
-          callback: callback
-        });
-
-        return this;
-      }
-    },
-    addEvents: {
-      writable: true,
-      value: function (node, events) {
-        _.forOwn(events, function (callback, eventName) {
-          if (_.isFunction(callback)) {
-            this.addEvent(node, eventName, callback);
-          }
-        }, this);
-
-        return this;
-      }
-    },
-    removeEvent: {
-      writable: true,
-      value: function (node, eventName) {
-        var i;
-
-        if (eventName && topics[eventName]) {
-          for (i = 0; i < topics[eventName].length; i++) {
-            if (topics[eventName][i].stage == node[STAGE_ATTRIBUTE_NAME] && topics[eventName][i].index == node[INDEX_ATTRIBUTE_NAME]) {
-              topics[eventName].splice(i, 1);
-
-              return this;
-            }
-          }
-        } else if (!eventName) {
-          _.forOwn(topics, function (value, key, object) {
-            var i;
-
-            for (i = 0; i < topics[key].length; i++) {
-              if (topics[key][i].stage == node[STAGE_ATTRIBUTE_NAME] && topics[key][i].index == node[INDEX_ATTRIBUTE_NAME]) {
-                topics[key].splice(i, 1);
-
-                return this;
-              }
-            }
-          }, this);
-        }
-
-        return this;
-      }
-    },
-    removeEvents: {
-      writable: true,
-
-
-      // removes all events, that has indx same or matching via _.isMatching
-      // removeEvents('0.1') removes events '0.1', '0.1.0', '0.1.1', etc.
-      // if eventName is specified, only events with that name are removed
-      value: function (index, stage) {
-        //console.log('remove events!');
-        _.forOwn(topics, function (value, key, object) {
-          var i;
-
-          /*if ((eventName && eventName == key) || !eventName)
-          {*/
-          for (i = 0; i < value.length; i++) {
-            if (stage == value[i].stage && _.isMatching(index.split(LEVEL_SEPARATOR), value[i].index.split(LEVEL_SEPARATOR), true)) {
-              value.splice(i, 1);
-              i--;
-            }
-          }
-          /*}*/
-        }, this);
-      }
-    },
-    reindexEvents: {
-      writable: true,
-      value: function (oldIndex, newOrder, stage) {
-        _.forOwn(topics, function (value, key, object) {
-          var i;
-          var levels;
-          var index;
-
-          for (i = 0; i < value.length; i++) {
-            if (stage == value[i].stage && _.isMatching(oldIndex.split(LEVEL_SEPARATOR), value[i].index.split(LEVEL_SEPARATOR), true)) {
-              levels = parseAshNodeIndex(value[i].index);
-              levels[parseAshNodeIndex(oldIndex).length - 1] = newOrder;
-              value[i].index = levels.join(LEVEL_SEPARATOR);
-            }
-          }
-        }, this);
-      }
-    },
-    callback: {
-      writable: true,
-      value: function (eventName, event) {
-        var index = event.target[INDEX_ATTRIBUTE_NAME];
-        var levels;
-        var i;
-
-        if (index) {
-          levels = parseAshNodeIndex(index);
-
-          while (levels.length) {
-            for (i = 0; i < topics[eventName].length; i++) {
-              if (topics[eventName][i].index == index && topics[eventName][i].stage == event.target[STAGE_ATTRIBUTE_NAME]) {
-                topics[eventName][i].callback(event);
-              }
-            }
-
-            levels.pop();
-            index = levels.join(LEVEL_SEPARATOR);
-          }
-        }
-      }
-    }
-  });
-
-  return DOMEvents;
-})();
-
-module.exports = DOMEvents;
-},{"../DOM/parseAshNodeIndex":271,"../internal/constants":288,"_":101,"jquery":265}],281:[function(require,module,exports){
-(function (global){
-var _classProps = function (child, staticProps, instanceProps) {
-  if (staticProps) Object.defineProperties(child, staticProps);
-  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
-
-"use strict!";
-
-var _ = require("_");
-var immediate = require("../polyfill/immediate");
-
-// Regular expressions used to split event name strings
-var REGEX_TOPIC = /\s+/; // one or more space
-var REGEX_CATEGORY = /\.|\//; // dot , or forward slash
-
-var store = global.store = {};
-
-var Observable = (function () {
-  var Observable = function Observable() {
-    if (!(this instanceof Observable)) {
-      return new Observable();
-    }
-
-    return this;
-  };
-
-  _classProps(Observable, null, {
-    observe: {
-      writable: true,
-      value: function () {
-        var observable = this;
-        var object = arguments[0];
-        var events = arguments[1];
-        var callback = arguments[2];
-        var context = arguments[3];
-        var i;
-
-        if (!_.isObject(object)) {
-          throw new Error(object + " must be an object.");
-        }
-
-        // events string is missing, we will use '*', and juggle the remaining arguments
-        if (_.isFunction(events)) {
-          context = callback;
-          callback = events;
-          events = "*";
-        }
-
-        if (!_.isFunction(callback)) {
-          throw new Error(callback + " must be a function.");
-        }
-
-        if (typeof context !== "undefined" && !_.isObject(context)) {
-          throw new Error(context + " must be an object.");
-        }
-
-        events = _.isString(events) ? events.trim().split(REGEX_TOPIC) : ["*"];
-
-        for (i = 0; i < events.length; i++) {
-          if (!store[events[i]]) {
-            store[events[i]] = {
-              name: events[i],
-              categories: events[i].split(REGEX_CATEGORY),
-              observables: []
-            };
-          }
-
-          store[events[i]].observables.push({
-            observable: observable,
-            observed: object,
-            callback: callback,
-            context: context || null
-          });
-        }
-
-        return observable;
-      }
-    },
-    unobserve: {
-      writable: true,
-      value: function () {
-        var observable = this;
-        var object = arguments[0];
-        var events = arguments[1];
-        var callback = arguments[2];
-        var context = arguments[3];
-        var i, j, key;
-
-        // events string is missing, we will use '*', and juggle the remaining arguments
-        if (_.isFunction(events)) {
-          context = callback;
-          callback = events;
-          events = "*";
-        }
-
-        events = _.isString(events) ? events.trim().split(REGEX_TOPIC) : ["*"];
-
-        for (i = 0; i < events.length; i++) {
-          for (key in store) {
-            if (store.hasOwnProperty(key) && (store[key] == events[i] || events[i] == "*")) {
-              for (j = 0; j < store[key].observables.length; j++) {
-                // we can remove only this observable
-                if (store[key].observables[j].observable == observable) {
-                  if ((!object || store[key].observables[j].observed == object) && (!callback || store[key].observables[j].callback == callback) && (!context || store[key].observables[j].context == context)) {
-                    // remove observable from the store
-                    store[key].observables.splice(j, 1);
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        return observable;
-      }
-    },
-    trigger: {
-      writable: true,
-      value: function () {
-        var observable = this;
-        var events = _.isString(arguments[0]) ? arguments[0].trim().split(REGEX_TOPIC) : ["*"];
-        var data = [];
-        var useAsync = arguments.length > 1 && _.isPlainObject(arguments[arguments.length - 1]) && arguments[arguments.length - 1].async ? true : false;
-        var noEventArgument = arguments.length > 1 && _.isPlainObject(arguments[arguments.length - 1]) && arguments[arguments.length - 1].noEventArgument ? true : false;
-        var categories;
-        var i, j, k;
-
-        for (i = 1; i < (useAsync || noEventArgument ? arguments.length - 1 : arguments.length); i++) {
-          data.push(arguments[i]);
-        }
-
-        function trigger() {
-          for (i = 0; i < events.length; i++) {
-            categories = events[i].split(REGEX_CATEGORY);
-
-            for (j in store) {
-              if (store.hasOwnProperty(j) && (_.isMatching(store[j].categories, categories) || store[j].name == "*" || events[i] == "*")) {
-                for (k = 0; k < store[j].observables.length; k++) {
-                  if (observable == store[j].observables[k].observed) {
-                    if (!noEventArgument) {
-                      data = [{
-                        type: events[i]
-                      }].concat(data);
-                    }
-
-                    store[j].observables[k].callback.apply(store[j].observables[k].context || store[j].observables[k].observable, data);
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        if (useAsync) {
-          setImmediate(trigger);
-        } else {
-          trigger();
-        }
-
-        return observable;
-      }
-    }
-  });
-
-  return Observable;
-})();
-
-module.exports = Observable;
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../polyfill/immediate":296,"_":101}],282:[function(require,module,exports){
-var _classProps = function (child, staticProps, instanceProps) {
-  if (staticProps) Object.defineProperties(child, staticProps);
-  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
-
-"use strict";
-
-var _ = require("_");
-var $ = require("jquery");
-
-var createAshElementTree = require("../DOM/createAshElementTree");
-var isAshNode = require("../internal/isAshNode");
-var isAshTextNode = require("../internal/isAshTextNode");
-var isComponentAshElement = require("../internal/isComponentAshElement");
-var isAshNodeAshElement = require("../internal/isAshNodeAshElement");
-var createAshNodeTree = require("../DOM/createAshNodeTree");
-var createNodeTree = require("../DOM/createNodeTree");
-var diffAshNodeTree = require("../DOM/diffAshNodeTree");
-var patchNodeTree = require("../DOM/patchNodeTree");
-var stringifyAshNodeTree = require("../DOM/stringifyAshNodeTree");
-var validateNodeTree = require("../DOM/validateNodeTree");
-var constants = require("../internal/constants");
-
-var LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
-var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
-var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
-var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
-var ASH_NODE = constants.ASH_NODE;
-var ASH_TEXT_NODE = constants.ASH_TEXT_NODE;
-
-var stageId = 0;
-var renderer;
-
-var Renderer = (function () {
-  var Renderer = function Renderer() {
-    if (renderer) {
-      return renderer;
-    }
-
-    if (!(this instanceof Renderer)) {
-      return new Renderer();
-    }
-
-    // save singleton
-    renderer = this;
-
-    renderer.stages = [];
-
-    // render loop is always bound to renderer
-    renderer.render = renderer.render.bind(renderer);
-
-    return renderer;
-  };
-
-  _classProps(Renderer, null, {
-    addComponent: {
-      writable: true,
-      value: function (componentAshElement, node) {
-        var renderer = this;
-        var stage;
-
-        // type check
-        if (!isComponentAshElement(componentAshElement)) {
-          throw new Error(componentAshElement + " must be a Componenet Descriptor.");
-        }
-
-        if (!_.isElement(node)) {
-          throw new Error(node + " must be a DOM Element.");
-        }
-
-        stage = {
-          id: stageId,
-          isRendering: false,
-          isDirty: true,
-
-          node: node,
-          ashNodeTree: null,
-
-          getRootDOMNode: renderer.getRootDOMNode.bind(renderer, stageId),
-          update: renderer.update.bind(renderer, stageId)
-        };
-
-        // create Ash Element tree for the Component Ash Element
-        stage.ashElementTree = createAshElementTree(componentAshElement, stage);
-
-        // push the stages
-        renderer.stages.push(stage);
-        stageId++;
-
-        // render
-        this.render();
-
-        return renderer;
-      }
-    },
-    componentToString: {
-      writable: true,
-      value: function (componentAshElement) {
-        var renderer = this;
-        var stage;
-        var html;
-
-        // type check
-        if (!isComponentAshElement(componentAshElement)) {
-          throw new Error(componentAshElement + " must be a Componenet Descriptor.");
-        }
-
-        stage = {
-          isRendering: false,
-          isDirty: true,
-
-          node: null,
-          ashNodeTree: null
-        };
-
-        // create Ash Element tree for the Component Ash Element
-        stage.ashElementTree = createAshElementTree(componentAshElement, stage);
-
-        // create Virtual DOM
-        stage.ashNodeTree = createAshNodeTree(stage.ashElementTree);
-
-        return stringifyAshNodeTree(stage.ashNodeTree);
-      }
-    },
-    getRootDOMNode: {
-      writable: true,
-      value: function (stageId) {
-        var i;
-
-        for (i = 0; i < this.stages[stageId].node.childNodes.length; i++) {
-          if (typeof this.stages[stageId].node.childNodes[i][INDEX_ATTRIBUTE_NAME] !== "undefined") {
-            return this.stages[stageId].node.childNodes[i];
-          }
-        }
-
-        return null;
-      }
-    },
-    update: {
-      writable: true,
-      value: function (stageId) {
-        var renderer = this;
-        var stage = renderer.stages[stageId];
-
-        // find descriptors that should be updated
-        findDirtyComponent(stage.ashElementTree);
-
-        // set stage to dirty, so Renderer can rerender the DOM
-        stage.isDirty = true;
-        renderer.render();
-
-        return renderer;
-      }
-    },
-    render: {
-      writable: true,
-      value: function () {
-        var renderer = this;
-        var newAshNodeTree;
-        var patches;
-        var rerender;
-        var i;
-        var j;
-        var stage;
-        var validNodeTree;
-
-        for (i = 0; i < renderer.stages.length; i++) {
-          stage = renderer.stages[i];
-
-          if (stage.isDirty && !stage.isRendering) {
-            stage.isRendering = true;
-
-            if (!renderer.stages[i].ashNodeTree) {
-              validNodeTree = false;
-
-              // remove child nodes which are not element nodes
-              for (j = 0; j < stage.node.childNodes.length; j++) {
-                if (stage.node.childNodes[j].nodeType != 1) {
-                  stage.node.removeChild(stage.node.childNodes[j]);
-                  j--;
-                }
-              }
-
-              // create Virtual DOM
-              stage.ashNodeTree = createAshNodeTree(stage.ashElementTree);
-
-              // there are some element nodes?
-              if (stage.node.childNodes.length) {
-                validNodeTree = validateNodeTree(stage.node.childNodes[0], stage.ashNodeTree, stage);
-              }
-
-              // render to the Real DOM, if needed
-              if (!validNodeTree) {
-                console.log("existing html is invalid!");
-                $(stage.node).empty();
-                stage.node.appendChild(createNodeTree(stage.ashNodeTree));
-              }
-
-              // mount components
-              mountComponents(renderer.stages[i].ashElementTree);
-            } else {
-              newAshNodeTree = createAshNodeTree(stage.ashElementTree);
-              patches = diffAshNodeTree(stage.ashNodeTree, newAshNodeTree);
-              stage.ashNodeTree = newAshNodeTree;
-
-              requestAnimationFrame(function () {
-                rerender = !patchNodeTree(stage.getRootDOMNode(), patches);
-
-                if (rerender) {
-                  throw new Error("Patching the DOM was unsuccesful!");
-                }
-              });
-
-              // mount components
-              mountComponents(stage.ashElementTree);
-            }
-
-            stage.isDirty = false;
-            stage.isRendering = false;
-          }
-        }
-
-        return renderer;
-      }
-    }
-  });
-
-  return Renderer;
-})();
-
-
-
-
-
-function findDirtyComponent(ashElement) {
-  if (ashElement.type == ASH_NODE_ASH_ELEMENT) {
-    var i;
-
-    for (i = 0; i < ashElement.children.length; i++) {
-      // walk the child
-      findDirtyComponent(ashElement.children[i]);
-    }
-  } else if (ashElement.type == COMPONENT_ASH_ELEMENT) {
-    if (ashElement.instance.isDirty() && ashElement.instance.shouldUpdate(null)) {
-      // descriptor is dirty, let's update
-      updateComponentAshElement(ashElement);
-    } else {
-      // walk the child
-      findDirtyComponent(ashElement.children[0]);
-    }
-  }
-}
-
-function walkUpdateComponentAshElement(oldAshElement, newAshElement) {
-  var i;
-
-  if (newAshElement.type == COMPONENT_ASH_ELEMENT) {
-    if (oldAshElement === null) {
-      // old is null, new is component
-
-      // newAshElement must be added as a child...							
-      if (newAshElement.parent.type == ASH_NODE_ASH_ELEMENT) {
-        // now, the component descriptor's tree is not complete
-        createAshElementTree(newAshElement, stage, newAshElement.owner.id, newAshElement.level);
-
-        // replace the old
-        newAshElement.parent.children[newAshElement.order] = newAshElement;
-      } else if (newAshElement.parent.type == COMPONENT_ASH_ELEMENT) {
-        // now, the component descriptor's tree is not complete
-        createAshElementTree(newAshElement, stage, newAshElement.id, newAshElement.level);
-
-        // replace the old
-        newAshElement.parent.children[0] = newAshElement;
-      } else {
-        throw new Error(newAshElement.parent + " must be a AshElement object.");
-      }
-    } else if (oldAshElement.type == COMPONENT_ASH_ELEMENT && newAshElement.spec == oldAshElement.spec) {
-      // old is component, new is same component
-
-      if (oldAshElement.instance.shouldUpdate(newAshElement.args[0])) {
-        // copy the new to the old...
-        oldAshElement.args = newAshElement.args;
-        oldAshElement.instance.onBeforeReceiveProps(newAshElement.args[0]);
-        oldAshElement.instance.props = newAshElement.args[0];
-
-        // create child for the new descriptor
-        newAshElement.children[0] = oldAshElement.instance.__getRender();
-
-        // adding children to the queue
-        if (newAshElement.children[0] && oldAshElement.children[0]) {
-          newAshElement.children[0].owner = oldAshElement;
-          newAshElement.children[0].parent = oldAshElement;
-          newAshElement.children[0].order = 0;
-
-          walkUpdateComponentAshElement(oldAshElement.children[0], newAshElement.children[0]);
-        } else if (newAshElement.children[0] && !oldAshElement.children[0]) {
-          newAshElement.children[0].owner = oldAshElement;
-          newAshElement.children[0].parent = oldAshElement;
-          newAshElement.children[0].order = 0;
-
-          walkUpdateComponentAshElement(null, newAshElement.children[0]);
-        }
-
-        // deleting old surplus children
-        if (!newAshElement.children[0] && oldAshElement.children[0]) {
-          if (oldAshElement.children[0].type == COMPONENT_ASH_ELEMENT) {
-            oldAshElement.children[0].instance.unmount();
-          }
-
-          oldAshElement.children.pop();
-        }
-      }
-    } else if (oldAshElement.type == COMPONENT_ASH_ELEMENT) {
-      // old is component, new is different component
-
-      if (oldAshElement.parent.type == ASH_NODE_ASH_ELEMENT) {
-        // now, the component descriptor's tree is not complete
-        newAshElement.owner = oldAshElement.owner;
-        newAshElement.parent = oldAshElement.parent;
-        newAshElement.order = oldAshElement.order;
-        createAshElementTree(newAshElement, stage, oldAshElement.owner.id, oldAshElement.level);
-
-        // replace the old
-        oldAshElement.instance.unmount();
-        oldAshElement.parent.children[oldAshElement.order] = newAshElement;
-      } else if (oldAshElement.parent.type == COMPONENT_ASH_ELEMENT) {
-        // now, the component descriptor's tree is not complete
-        newAshElement.owner = oldAshElement.owner;
-        newAshElement.parent = oldAshElement.parent;
-        newAshElement.order = oldAshElement.order;
-        createAshElementTree(newAshElement, stage, oldAshElement.id, oldAshElement.level);
-
-        // replace the old
-        oldAshElement.instance.unmount();
-        oldAshElement.parent.children[0] = newAshElement;
-      } else {
-        throw new Error(oldAshElement.parent + " must be a AshElement object.");
-      }
-    } else {
-      // old is virtual node, new is component
-
-      if (oldAshElement.parent.type == ASH_NODE_ASH_ELEMENT) {
-        // now, the component descriptor's tree is not complete
-        newAshElement.owner = oldAshElement.owner;
-        newAshElement.parent = oldAshElement.parent;
-        newAshElement.order = oldAshElement.order;
-        createAshElementTree(newAshElement, stage, oldAshElement.owner.id, oldAshElement.level);
-
-        // replace the old
-        oldAshElement.parent.children[oldAshElement.order] = newAshElement;
-      } else if (oldAshElement.parent.type == COMPONENT_ASH_ELEMENT) {
-        // now, the component descriptor's tree is not complete
-        newAshElement.owner = oldAshElement.owner;
-        newAshElement.parent = oldAshElement.parent;
-        newAshElement.order = oldAshElement.order;
-        createAshElementTree(newAshElement, stage, oldAshElement.id, oldAshElement.level);
-
-        // replace the old
-        oldAshElement.parent.children[0] = newAshElement;
-      } else {
-        throw new Error(oldAshElement.parent + " must be a AshElement object.");
-      }
-    }
-  } else {
-    if (oldAshElement === null) {
-      // old is null, new is virtual node
-
-      // newAshElement must be added as a child...							
-      if (newAshElement.parent.type == COMPONENT_ASH_ELEMENT) {
-        // now, the component descriptor's tree is not complete
-        createAshElementTree(newAshElement, stage, newAshElement.id, newAshElement.level);
-
-        // replace the old
-        newAshElement.parent.children[0] = newAshElement;
-      } else if (newAshElement.parent.type == ASH_NODE_ASH_ELEMENT) {
-        // now, the component descriptor's tree is not complete
-        createAshElementTree(newAshElement, stage, newAshElement.owner.id, newAshElement.level);
-
-        // replace the old
-        newAshElement.parent.children[newAshElement.order] = newAshElement;
-      } else {
-        throw new Error(oldAshElement.parent + " must be a AshElement object.");
-      }
-    } else if (newAshElement.type == oldAshElement.type) {
-      // old is virtual node, new is virtual node
-
-      oldAshElement.args = newAshElement.args;
-      oldAshElement.instantiate();
-
-      // adding children to the queue
-      for (i = 0; i < newAshElement.children.length; i++) {
-        if (newAshElement.children[i] && oldAshElement.children[i]) {
-          newAshElement.children[i].owner = oldAshElement.owner;
-          newAshElement.children[i].parent = oldAshElement;
-          newAshElement.children[i].order = i;
-
-          walkUpdateComponentAshElement(oldAshElement.children[i], newAshElement.children[i]);
-        } else if (newAshElement.children[i] && !oldAshElement.children[i]) {
-          newAshElement.children[i].owner = oldAshElement.owner;
-          newAshElement.children[i].parent = oldAshElement;
-          newAshElement.children[i].order = i;
-
-          walkUpdateComponentAshElement(null, newAshElement.children[i]);
-        }
-      }
-
-      // deleting old surplus children
-      while (oldAshElement.children.length > newAshElement.children.length) {
-        if (oldAshElement.children[oldAshElement.children.length - 1].type == COMPONENT_ASH_ELEMENT) {
-          oldAshElement.children[oldAshElement.children.length - 1].instance.unmount();
-        }
-
-        oldAshElement.children.pop();
-      }
-    } else {
-      // old is component, new is virtual node
-
-      if (oldAshElement.parent.type == COMPONENT_ASH_ELEMENT) {
-        // now, the component descriptor's tree is not complete
-        newAshElement.owner = oldAshElement.owner;
-        newAshElement.parent = oldAshElement.parent;
-        newAshElement.order = oldAshElement.order;
-        createAshElementTree(newAshElement, stage, oldAshElement.id, oldAshElement.level);
-
-        // replace the old
-        oldAshElement.instance.unmount();
-        oldAshElement.parent.children[0] = newAshElement;
-      } else if (oldAshElement.parent.type == ASH_NODE_ASH_ELEMENT) {
-        // now, the component descriptor's tree is not complete
-        newAshElement.owner = oldAshElement.owner;
-        newAshElement.parent = oldAshElement.parent;
-        newAshElement.order = oldAshElement.order;
-        createAshElementTree(newAshElement, stage, oldAshElement.owner.id, oldAshElement.level);
-
-        // replace the old
-        oldAshElement.instance.unmount();
-        oldAshElement.parent.children[oldAshElement.order] = newAshElement;
-      } else {
-        throw new Error(oldAshElement.parent + " must be a AshElement object.");
-      }
-    }
-  }
-}
-
-function updateComponentAshElement(componentAshElement) {
-  // type check
-  if (componentAshElement.type != COMPONENT_ASH_ELEMENT) {
-    throw new Error(componentAshElement + " must be a Component type AshElement object.");
-  }
-
-  if (componentAshElement.instance.shouldUpdate()) {
-    var render;
-
-    render = componentAshElement.instance.__getRender();
-    render.owner = componentAshElement;
-    render.parent = componentAshElement;
-    render.order = 0;
-
-    walkUpdateComponentAshElement(componentAshElement.children[0], render);
-  }
-}
-
-function walkMountComponents(ashElement) {
-  var i;
-
-  if (isAshNodeAshElement(ashElement)) {
-    for (i = 0; i < ashElement.children.length; i++) {
-      if (ashElement.children[i]) {
-        // walk the child
-        walkMountComponents(ashElement.children[i]);
-      }
-    }
-  } else if (isComponentAshElement(ashElement)) {
-    if (ashElement.instance && ashElement.instance.__lifecycle == LIFECYCLE_MOUNTING) {
-      ashElement.instance.mount();
-    }
-
-    // walk the child
-    if (ashElement.children[0]) {
-      walkMountComponents(ashElement.children[0]);
-    }
-  }
-}
-
-function mountComponents(componentAshElement) {
-  // type check
-  if (!isComponentAshElement(componentAshElement)) {
-    throw new Error(componentAshElement + " must be a Component type AshElement object.");
-  }
-
-  if (componentAshElement.instance && componentAshElement.instance.__lifecycle == LIFECYCLE_MOUNTING) {
-    componentAshElement.instance.mount();
-  }
-
-  if (componentAshElement.children[0]) {
-    // walk the child
-    walkMountComponents(componentAshElement.children[0]);
-  }
-
-  // return resulting componentAshElement tree
-  return componentAshElement;
-}
-
-module.exports = Renderer;
-},{"../DOM/createAshElementTree":266,"../DOM/createAshNodeTree":267,"../DOM/createNodeTree":268,"../DOM/diffAshNodeTree":269,"../DOM/patchNodeTree":272,"../DOM/stringifyAshNodeTree":274,"../DOM/validateNodeTree":275,"../internal/constants":288,"../internal/isAshNode":292,"../internal/isAshNodeAshElement":293,"../internal/isAshTextNode":294,"../internal/isComponentAshElement":295,"_":101,"jquery":265}],283:[function(require,module,exports){
-var _extends = function (child, parent) {
-  child.prototype = Object.create(parent.prototype, {
-    constructor: {
-      value: child,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-  child.__proto__ = parent;
-};
-
-"use strict";
-
-var _ = require("_");
-var Observable = require("./Observable");
-
-var Store = (function (Observable) {
-  var Store = function Store() {};
-
-  _extends(Store, Observable);
-
-  return Store;
-})(Observable);
-
-module.exports = Store;
-},{"./Observable":281,"_":101}],284:[function(require,module,exports){
-module.exports=require(270)
-},{"./parseAshNodeIndex":285,"d:\\projects\\ash\\src\\core\\DOM\\findNode.js":270}],285:[function(require,module,exports){
-module.exports=require(271)
-},{"_":101,"d:\\projects\\ash\\src\\core\\DOM\\parseAshNodeIndex.js":271}],286:[function(require,module,exports){
-"use strict";
-
-var $ = require("jquery");
-var DOMEvents = require("../class/DOMEvents");
-
-var domEvents = new DOMEvents();
-
-function removeNodeProperties(node, properties) {
-  var prop;
-  var i;
-
-  for (i = 0; i < properties.length; i++) {
-    prop = properties[i].split(".");
-    if (prop.length == 1) {
-      if (prop[0] == "style") {
-        $(node).removeAttr("style");
-      } else if (prop[0] == "events") {} else if (prop[0] == "className" || prop[0] == "class") {
-        node.className = "";
-      } else {
-        if (prop[0].substring(0, 6) == "xlink:") {
-          node.removeAttributeNS("http://www.w3.org/1999/xlink", prop[0].substring(6));
-        } else if (prop[0].substring(0, 4) == "xml:") {
-          node.removeAttributeNS("http://www.w3.org/2000/svg", prop[0].substring(4));
-        } else {
-          node.removeAttribute(prop[0]);
-        }
-      }
-    } else if (prop.length == 2) {
-      if (prop[0] == "style") {
-        $(node).css(prop[1], "");
-      } else if (prop[0] == "events") {
-        domEvents.removeEvent(node, prop[1]);
-      } else {}
-    }
-  }
-}
-
-module.exports = removeNodeProperties;
-},{"../class/DOMEvents":280,"jquery":265}],287:[function(require,module,exports){
-module.exports=require(273)
-},{"../class/DOMEvents":280,"_":101,"d:\\projects\\ash\\src\\core\\DOM\\setNodeProperties.js":273}],288:[function(require,module,exports){
-"use strict";
-
-var constants = {
-  // component lifecycle
-  LIFECYCLE_UNMOUNTED: "Unmounted",
-  LIFECYCLE_MOUNTING: "Mounting",
-  LIFECYCLE_MOUNTED: "Mounted",
-
-  // patch types
-  PATCH_NONE: "Patch None",
-  PATCH_ASH_NODE: "Patch Ash Node",
-  PATCH_ASH_TEXT_NODE: "Patch Ash Text Node",
-  PATCH_PROPERTIES: "Patch Properties",
-  PATCH_ORDER: "Patch Order",
-  PATCH_INSERT: "Patch Insert",
-  PATCH_REMOVE: "Patch Remove",
-
-  // descriptor types
-  COMPONENT_ASH_ELEMENT: "Component Ash Element",
-  ASH_NODE_ASH_ELEMENT: "Ash Node Ash Element",
-
-  // virtual node types
-  ASH_NODE: "Ash Node",
-  ASH_TEXT_NODE: "Ash Text Node",
-
-  // misc
-  LEVEL_SEPARATOR: ".",
-  INDEX_ATTRIBUTE_NAME: "__ash:index__",
-  ORDER_ATTRIBUTE_NAME: "__ash:order__",
-  STAGE_ATTRIBUTE_NAME: "__ash:stage__"
-};
-
-module.exports = constants;
-},{}],289:[function(require,module,exports){
-"use strict";
-
-var AshNode = require("../class/AshNode");
-var AshElement = require("../class/AshElement");
-var isAshElement = require("../internal/isAshElement");
-var constants = require("../internal/constants");
-
-// constants references
-var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
-var ASH_TEXT_NODE = constants.ASH_TEXT_NODE;
-
-var createElement = function (tagName /*, props, children*/) {
-  var props = arguments[1];
-  var children = arguments[2];
-  var i;
-
-  // type check
-  if (tagName && typeof props === "undefined" && !children) {
-    return new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, tagName, null);
-  }
-
-  if (Array.isArray(props)) {
-    children = props;
-    props = null;
-  } else if (typeof children === "string") {
-    children = [children];
-  }
-
-  // check type of children
-  if (Array.isArray(children)) {
-    for (i = 0; i < children.length; i++) {
-      if (typeof children[i] === "string") {
-        children[i] = new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, children[i]);
-      } else if (!children[i]) {
-        children.splice(i, 1);
-        i--;
-      } else if (!isAshElement(children[i])) {
-        throw new Error(children[i] + " must be a AshElement object.");
-      }
-    }
-  }
-
-  return new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, tagName, props, children);
-};
-
-module.exports = createElement;
-},{"../class/AshElement":277,"../class/AshNode":278,"../internal/constants":288,"../internal/isAshElement":291}],290:[function(require,module,exports){
-"use strict";
-
-var AshElement = require("../class/AshElement");
-var constants = require("../internal/constants");
-
-// constants references
-var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
-
-var createFactory = function (Component) {
-  var ComponentElementFactory = AshElement.bind(null, COMPONENT_ASH_ELEMENT, Component);
-
-  ComponentElementFactory.spec = Component;
-
-  return ComponentElementFactory;
-};
-
-module.exports = createFactory;
-},{"../class/AshElement":277,"../internal/constants":288}],291:[function(require,module,exports){
-"use strict";
-
-var constants = require("./constants");
-
-var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
-var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
-
-function isAshElement(value) {
-  return value && (value.type == COMPONENT_ASH_ELEMENT || value.type == ASH_NODE_ASH_ELEMENT);
-}
-
-module.exports = isAshElement;
-},{"./constants":288}],292:[function(require,module,exports){
-"use strict";
-
-var constants = require("./constants");
-
-var ASH_NODE = constants.ASH_NODE;
-
-function isAshNode(value) {
-  return value && value.type == ASH_NODE;
-}
-
-module.exports = isAshNode;
-},{"./constants":288}],293:[function(require,module,exports){
-"use strict";
-
-var constants = require("./constants");
-
-var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
-
-function isAshNodeAshElement(value) {
-  return value && value.type == ASH_NODE_ASH_ELEMENT;
-}
-
-module.exports = isAshNodeAshElement;
-},{"./constants":288}],294:[function(require,module,exports){
-"use strict";
-
-var constants = require("./constants");
-
-var ASH_TEXT_NODE = constants.ASH_TEXT_NODE;
-
-function isAshTextNode(value) {
-  return value && value.type == ASH_TEXT_NODE;
-}
-
-module.exports = isAshTextNode;
-},{"./constants":288}],295:[function(require,module,exports){
-"use strict";
-
-var constants = require("./constants");
-
-var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
-
-function isComponentAshElement(value) {
-  return value && value.type == COMPONENT_ASH_ELEMENT;
-}
-
-module.exports = isComponentAshElement;
-},{"./constants":288}],296:[function(require,module,exports){
-"use strict";
-var types = [require("./immediate/nextTick"), require("./immediate/mutation.js"), require("./immediate/messageChannel"), require("./immediate/stateChange"), require("./immediate/timeout")];
-var draining;
-var queue = [];
-//named nextTick for less confusing stack traces
-function nextTick() {
-  draining = true;
-  var i, oldQueue;
-  var len = queue.length;
-  while (len) {
-    oldQueue = queue;
-    queue = [];
-    i = -1;
-    while (++i < len) {
-      oldQueue[i]();
-    }
-    len = queue.length;
-  }
-  draining = false;
-}
-var scheduleDrain;
-var i = -1;
-var len = types.length;
-while (++i < len) {
-  if (types[i] && types[i].test && types[i].test()) {
-    scheduleDrain = types[i].install(nextTick);
-    break;
-  }
-}
-module.exports = immediate;
-function immediate(task) {
-  if (queue.push(task) === 1 && !draining) {
-    scheduleDrain();
-  }
-}
-},{"./immediate/messageChannel":297,"./immediate/mutation.js":298,"./immediate/nextTick":299,"./immediate/stateChange":300,"./immediate/timeout":301}],297:[function(require,module,exports){
-(function (global){
-"use strict";
-
-exports.test = function () {
-  if (global.setImmediate) {
-    // we can only get here in IE10
-    // which doesn't handel postMessage well
-    return false;
-  }
-  return typeof global.MessageChannel !== "undefined";
-};
-
-exports.install = function (func) {
-  var channel = new global.MessageChannel();
-  channel.port1.onmessage = func;
-  return function () {
-    channel.port2.postMessage(0);
-  };
-};
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],298:[function(require,module,exports){
-(function (global){
-"use strict";
-//based off rsvp https://github.com/tildeio/rsvp.js
-//license https://github.com/tildeio/rsvp.js/blob/master/LICENSE
-//https://github.com/tildeio/rsvp.js/blob/master/lib/rsvp/asap.js
-
-var Mutation = global.MutationObserver || global.WebKitMutationObserver;
-
-exports.test = function () {
-  return Mutation;
-};
-
-exports.install = function (handle) {
-  var called = 0;
-  var observer = new Mutation(handle);
-  var element = global.document.createTextNode("");
-  observer.observe(element, {
-    characterData: true
-  });
-  return function () {
-    element.data = (called = ++called % 2);
-  };
-};
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],299:[function(require,module,exports){
-(function (process){
-"use strict";
-exports.test = function () {
-  // Don't get fooled by e.g. browserify environments.
-  return process && !process.browser;
-};
-
-exports.install = function (func) {
-  return function () {
-    process.nextTick(func);
-  };
-};
-}).call(this,require('_process'))
-},{"_process":264}],300:[function(require,module,exports){
-(function (global){
-"use strict";
-
-exports.test = function () {
-  return "document" in global && "onreadystatechange" in global.document.createElement("script");
-};
-
-exports.install = function (handle) {
-  return function () {
-    // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
-    // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
-    var scriptEl = global.document.createElement("script");
-    scriptEl.onreadystatechange = function () {
-      handle();
-
-      scriptEl.onreadystatechange = null;
-      scriptEl.parentNode.removeChild(scriptEl);
-      scriptEl = null;
-    };
-    global.document.documentElement.appendChild(scriptEl);
-
-    return handle;
-  };
-};
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],301:[function(require,module,exports){
-"use strict";
-exports.test = function () {
-  return true;
-};
-
-exports.install = function (t) {
-  return function () {
-    setTimeout(t, 0);
-  };
-};
-},{}],302:[function(require,module,exports){
-"use strict";
-
-var _ = require("_");
-var $ = require("jquery");
-
-var Observable = require("./core/class/Observable");
-var Component = require("./core/class/Component");
-var Renderer = require("./core/class/Renderer");
-var Action = require("./core/class/Action");
-var Store = require("./core/class/Store");
-
-var createElement = require("./core/internal/createElement");
-var createFactory = require("./core/internal/createFactory");
-
-var ash = {};
-
-var VERSION = "0.1.0";
-
-_.assign(ash, {
-  Observable: Observable,
-  Component: Component,
-  Renderer: Renderer,
-  Action: Action,
-  Store: Store,
-
-  e: createElement,
-  createFactory: createFactory
-});
-
-module.exports = ash;
-},{"./core/class/Action":276,"./core/class/Component":279,"./core/class/Observable":281,"./core/class/Renderer":282,"./core/class/Store":283,"./core/internal/createElement":289,"./core/internal/createFactory":290,"_":101,"jquery":265}]},{},[1]);
+},{}]},{},[1]);

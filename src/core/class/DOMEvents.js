@@ -13,7 +13,7 @@ var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
 var domEvents;
 
 // list of topics
-var	topics = window.domTopics = {};
+var	topics = {};
 
 class DOMEvents {
 	constructor() {
