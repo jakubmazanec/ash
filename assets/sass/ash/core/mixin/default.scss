@@ -1,0 +1,23 @@
+@mixin default($link: true, $visited: true) {
+	@if $link and $visited {
+		@content;
+
+		&:link, &:visited {
+			@content;
+		}
+	} @else if not $link and $visited {
+		@content;
+
+		&:visited {
+			@content;
+		}
+	} @else if $link and not $visited {
+		@content;
+
+		&:link {
+			@content;
+		}
+	} @else if not $link and not $visited {
+		@content;
+	}
+}

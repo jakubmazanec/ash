@@ -1,0 +1,5 @@
+@mixin visited() {
+	&:visited {
+		@content;
+	}
+}

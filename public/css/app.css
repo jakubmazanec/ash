@@ -8,11 +8,6 @@
 /** durations */
 /** typographic scale */
 @font-face {
-  font-family: "Font Awesome";
-  font-weight: 400;
-  font-style: normal;
-  src: url("../fonts/fontawesome.svg#fontawesomeregular") format("svg"), url("../fonts/fontawesome.woff") format("woff"); }
-@font-face {
   font-family: "Brandon Text";
   font-weight: 700;
   font-style: normal;
@@ -115,6 +110,338 @@
 /**
  * grid
  */
+/* @include add-style((
+	same as default, but with no borders in default state
+	ash-invisible-button:
+	(
+		default:
+		(
+			transition: $ash-ui__transition-color,
+			color: color(text, base),
+			background-color: transparent,
+			border: 2 solid transparent,
+			border-radius: rem($ash-grid__baseline-height / 8),
+			font-size: size(6),
+			font-weight: 600,
+			icon:
+			(
+				color: color(text, base)
+			)
+		),
+		selected:
+		(
+			color: color(text, base),
+			background-color: transparent,
+			border: 2 solid color(primary-1, base),
+			icon:
+			(
+				color: color(text, base)
+			)
+		),
+		focus:
+		(
+			color: color(secondary-1, base),
+			background-color: transparent,
+			border: 2 solid color(secondary-1, base),
+			icon:
+			(
+				color: color(secondary-1, base)
+			)
+		),
+		hover:
+		(
+			color: color(secondary-1, base),
+			background-color: transparent,
+			border: 2 solid color(secondary-1, base),
+			icon:
+			(
+				color: color(secondary-1, base)
+			)
+		),
+		selected-focus:
+		(
+			color: color(primary-1, base),
+			background-color: transparent,
+			border: 2 solid color(primary-1, base),
+			icon:
+			(
+				color: color(primary-1, base)
+			)
+		),
+		selected-hover:
+		(
+			color: color(primary-1, base),
+			background-color: transparent,
+			border: 2 solid color(primary-1, base),
+			icon:
+			(
+				color: color(primary-1, base)
+			)
+		),
+		disabled:
+		(
+			color: color(background, base),
+			background-color: transparent,
+			border: 2 solid transparent,
+			icon:
+			(
+				color: color(background, base)
+			)
+		),
+		disabled-selected:
+		(
+			color: color(background, base),
+			background-color: transparent,
+			border: 2 solid transparent,
+			icon:
+			(
+				color: color(background, base)
+			)
+		)
+	)
+));
+
+@include add-style(
+(
+	button with no text - icon only
+	ash-icon-button:
+	(
+		default:
+		(
+			transition: $ash-ui__transition-color,
+			color: color(background, tint, 1),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(background, tint, 1),
+			border-radius: rem($ash-grid__baseline-height / 8),
+			font-size: size(6),
+			font-weight: 600,
+			icon:
+			(
+				color: color(background, tint, 1)
+			)
+		),
+		selected:
+		(
+			color: color(text, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(primary-1, base),
+			icon:
+			(
+				color: color(background, tint, 1)
+			)
+		),
+		focus:
+		(
+			color: color(secondary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(secondary-1, base),
+			icon:
+			(
+				color: color(secondary-1, tint, 1)
+			)
+		),
+		hover:
+		(
+			color: color(secondary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(secondary-1, base),
+			icon:
+			(
+				color: color(secondary-1, tint, 1)
+			)
+		),
+		selected-focus:
+		(
+			color: color(primary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(primary-1, base),
+			icon:
+			(
+				color: color(primary-1, tint, 1)
+			)
+		),
+		selected-hover:
+		(
+			color: color(primary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(primary-1, base),
+			icon:
+			(
+				color: color(primary-1, tint, 1)
+			)
+		),
+		disabled:
+		(
+			color: color(background, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(background, tint, 3),
+			icon:
+			(
+				color: color(background, tint, 1)
+			)
+		),
+		disabled-selected:
+		(
+			color: color(background, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(background, tint, 3),
+			icon:
+			(
+				color: color(background, tint, 1)
+			)
+		)
+	)
+));
+
+@include add-style(
+(
+	button with no text - icon only
+	ash-icon-invisible-button:
+	(
+		default:
+		(
+			transition: $ash-ui__transition-color,
+			color: color(background, tint, 1),
+			background-color: color(background, tint, 4),
+			border: 2 solid transparent,
+			border-radius: rem($ash-grid__baseline-height / 8),
+			font-size: size(6),
+			font-weight: 600,
+			icon:
+			(
+				color: color(background, tint, 1)
+			)
+		),
+		selected:
+		(
+			color: color(text, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(primary-1, base),
+			icon:
+			(
+				color: color(background, tint, 1)
+			)
+		),
+		focus:
+		(
+			color: color(secondary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(secondary-1, base),
+			icon:
+			(
+				color: color(secondary-1, tint, 1)
+			)
+		),
+		hover:
+		(
+			color: color(secondary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(secondary-1, base),
+			icon:
+			(
+				color: color(secondary-1, tint, 1)
+			)
+		),
+		selected-focus:
+		(
+			color: color(primary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(primary-1, base),
+			icon:
+			(
+				color: color(primary-1, tint, 1)
+			)
+		),
+		selected-hover:
+		(
+			color: color(primary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(primary-1, base),
+			icon:
+			(
+				color: color(primary-1, tint, 1)
+			)
+		),
+		disabled:
+		(
+			color: color(background, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid transparent,
+			icon:
+			(
+				color: color(background, tint, 1)
+			)
+		),
+		disabled-selected:
+		(
+			color: color(background, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid transparent,
+			icon:
+			(
+				color: color(background, tint, 1)
+			)
+		)
+	)
+));
+
+@include add-style(
+(
+	ash-primary-button: style(ash-base-button),
+
+	ash-secondary-button:
+	(
+		default:
+		(
+			color: color(text, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(background, base),
+			border-radius: rem($ash-grid__baseline-height / 8),
+		),
+		selected:
+		(
+			color: color(text, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(primary-1, base),
+		),
+		focus:
+		(
+			color: color(secondary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(secondary-1, base), 
+		),
+		hover:
+		(
+			color: color(secondary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(secondary-1, base),
+		),
+		selected-focus:
+		(
+			color: color(primary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(primary-1, base),
+		),
+		selected-hover:
+		(
+			color: color(primary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(primary-1, base),
+		),
+		disabled:
+		(
+			color: color(background, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(background, tint, 4)
+		),
+		disabled-selected:
+		(
+			color: color(background, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(background, tint, 4)
+		)
+	)
+)); */
 /*! normalize.css v3.0.1 | MIT License | git.io/normalize */
 /**
  * 1. Set default font family to sans-serif.
@@ -472,8 +799,8 @@ th {
  * Page
  */
 html {
-  color: #2d0c3d;
-  background-color: #ffffff;
+  color: #282623;
+  background-color: #fff;
   font-size: 20px;
   font-family: "Brandon Text", Futura, "Gill Sans", Calibri, "Dejavu Sans", "Lucida Sans", sans-serif; }
 
@@ -489,10 +816,10 @@ body {
 
 body:before {
   display: none !important;
-  content: '{"colors": {"1": {"base": "#3d1152", "shade": {"1": "#2d0c3d", "2": "#1e0829", "3": "#0f0414", "4": "black"}, "tint": {"1": "#634074", "2": "#8a7097", "3": "#b19fb9", "4": "#d8cfdc"}}, "2": {"base": "#d8d8d8", "shade": {"1": "#c2c2c2", "2": "#adadad", "3": "#979797", "4": "#828282"}, "tint": {"1": "#e0e0e0", "2": "#e8e8e8", "3": "#efefef", "4": "#ffffff"}}, "3": {"base": "#009abf", "shade": {"1": "#00738f", "2": "#004d5f", "3": "#00262f", "4": "black"}, "tint": {"1": "#19a4c5", "2": "#3fb3cf", "3": "#7fccdf", "4": "#bfe5ef"}}, "4": {"base": "#f8bf00", "shade": {"1": "#ba8f00", "2": "#7c5f00", "3": "#3e2f00", "4": "black"}, "tint": {"1": "#f8c519", "2": "#f9cf3f", "3": "#fbdf7f", "4": "#fdefbf"}}, "5": {"base": "#00c4b4", "shade": {"1": "#009387", "2": "#00625a", "3": "#00312d", "4": "black"}, "tint": {"1": "#19c9bb", "2": "#3fd2c6", "3": "#7fe1d9", "4": "#bff0ec"}}, "6": {"base": "#435cc8", "shade": {"1": "#324596", "2": "#212e64", "3": "#101732", "4": "black"}, "tint": {"1": "#556ccd", "2": "#7284d5", "3": "#a1ade3", "4": "#d0d6f1"}}, "7": {"base": "#91d5ad", "shade": {"1": "#6c9f81", "2": "#486a56", "3": "#24352b", "4": "black"}, "tint": {"1": "#9cd9b5", "2": "#acdfc1", "3": "#c8ead6", "4": "#e3f4ea"}}, "8": {"base": "#ffbf3d", "shade": {"1": "#bf8f2d", "2": "#7f5f1e", "3": "#3f2f0f", "4": "black"}, "tint": {"1": "#ffc550", "2": "#ffcf6d", "3": "#ffdf9e", "4": "#ffefce"}}, "9": {"base": "#633511", "shade": {"1": "#4a270c", "2": "#311a08", "3": "#180d04", "4": "black"}, "tint": {"1": "#724928", "2": "#8a674c", "3": "#b19a88", "4": "#d8ccc3"}}, "10": {"base": "#e7d780", "shade": {"1": "#ada160", "2": "#736b40", "3": "#393520", "4": "black"}, "tint": {"1": "#e9db8c", "2": "#ede19f", "3": "#f3ebbf", "4": "#f9f5df"}}, "11": {"base": "#cb003d", "shade": {"1": "#98002d", "2": "#65001e", "3": "#32000f", "4": "black"}, "tint": {"1": "#d01950", "2": "#d83f6d", "3": "#e57f9e", "4": "#f2bfce"}}, "12": {"base": "#876479", "shade": {"1": "#654b5a", "2": "#43323c", "3": "#21191e", "4": "black"}, "tint": {"1": "#937386", "2": "#a58a9a", "3": "#c3b1bc", "4": "#e1d8dd"}}, "13": {"base": "#ff8fa0", "shade": {"1": "#bf6b78", "2": "#7f4750", "3": "#3f2328", "4": "black"}, "tint": {"1": "#ff9aa9", "2": "#ffabb7", "3": "#ffc7cf", "4": "#ffe3e7"}}, "14": {"base": "#e1261c", "shade": {"1": "#a81c15", "2": "#70130e", "3": "#380907", "4": "black"}, "tint": {"1": "#e43b32", "2": "#e85c54", "3": "#f0928d", "4": "#f7c8c6"}}, "15": {"base": "#ff5c36", "shade": {"1": "#bf4528", "2": "#7f2e1b", "3": "#3f170d", "4": "black"}, "tint": {"1": "#ff6c4a", "2": "#ff8468", "3": "#ffad9a", "4": "#ffd6cc"}}, "16": {"base": "#ea6953", "shade": {"1": "#af4e3e", "2": "#753429", "3": "#3a1a14", "4": "black"}, "tint": {"1": "#ec7864", "2": "#ef8e7e", "3": "#f4b4a9", "4": "#f9d9d4"}}, "17": {"base": "#e9b88b", "shade": {"1": "#ae8a68", "2": "#745c45", "3": "#3a2e22", "4": "black"}, "tint": {"1": "#ebbf96", "2": "#eec9a8", "3": "#f4dbc5", "4": "#f9ede2"}}, "yl-gn": {"sequence-3": {"1": "#f7fcb9", "2": "#addd8e", "3": "#31a354"}, "sequence-4": {"1": "#ffffcc", "2": "#c2e699", "3": "#78c679", "4": "#238443"}, "sequence-5": {"1": "#ffffcc", "2": "#c2e699", "3": "#78c679", "4": "#31a354", "5": "#006837"}, "sequence-6": {"1": "#ffffcc", "2": "#d9f0a3", "3": "#addd8e", "4": "#78c679", "5": "#31a354", "6": "#006837"}, "sequence-7": {"1": "#ffffcc", "2": "#d9f0a3", "3": "#addd8e", "4": "#78c679", "5": "#41ab5d", "6": "#238443", "7": "#005a32"}, "sequence-8": {"1": "#ffffe5", "2": "#f7fcb9", "3": "#d9f0a3", "4": "#addd8e", "5": "#78c679", "6": "#41ab5d", "7": "#238443", "8": "#005a32"}, "sequence-9": {"1": "#ffffe5", "2": "#f7fcb9", "3": "#d9f0a3", "4": "#addd8e", "5": "#78c679", "6": "#41ab5d", "7": "#238443", "8": "#006837", "9": "#004529"}}, "text": {"base": "#3d1152", "shade": {"1": "#2d0c3d", "2": "#1e0829", "3": "#0f0414", "4": "black"}, "tint": {"1": "#634074", "2": "#8a7097", "3": "#b19fb9", "4": "#d8cfdc"}}, "background": {"base": "#d8d8d8", "shade": {"1": "#c2c2c2", "2": "#adadad", "3": "#979797", "4": "#828282"}, "tint": {"1": "#e0e0e0", "2": "#e8e8e8", "3": "#efefef", "4": "#ffffff"}}, "primary-1": {"base": "#009abf", "shade": {"1": "#00738f", "2": "#004d5f", "3": "#00262f", "4": "black"}, "tint": {"1": "#19a4c5", "2": "#3fb3cf", "3": "#7fccdf", "4": "#bfe5ef"}}, "primary-2": {"base": "#00c4b4", "shade": {"1": "#009387", "2": "#00625a", "3": "#00312d", "4": "black"}, "tint": {"1": "#19c9bb", "2": "#3fd2c6", "3": "#7fe1d9", "4": "#bff0ec"}}, "primary-3": {"base": "#435cc8", "shade": {"1": "#324596", "2": "#212e64", "3": "#101732", "4": "black"}, "tint": {"1": "#556ccd", "2": "#7284d5", "3": "#a1ade3", "4": "#d0d6f1"}}, "primary-4": {"base": "#91d5ad", "shade": {"1": "#6c9f81", "2": "#486a56", "3": "#24352b", "4": "black"}, "tint": {"1": "#9cd9b5", "2": "#acdfc1", "3": "#c8ead6", "4": "#e3f4ea"}}, "secondary-1": {"base": "#f8bf00", "shade": {"1": "#ba8f00", "2": "#7c5f00", "3": "#3e2f00", "4": "black"}, "tint": {"1": "#f8c519", "2": "#f9cf3f", "3": "#fbdf7f", "4": "#fdefbf"}}, "secondary-2": {"base": "#ffbf3d", "shade": {"1": "#bf8f2d", "2": "#7f5f1e", "3": "#3f2f0f", "4": "black"}, "tint": {"1": "#ffc550", "2": "#ffcf6d", "3": "#ffdf9e", "4": "#ffefce"}}, "secondary-3": {"base": "#633511", "shade": {"1": "#4a270c", "2": "#311a08", "3": "#180d04", "4": "black"}, "tint": {"1": "#724928", "2": "#8a674c", "3": "#b19a88", "4": "#d8ccc3"}}, "secondary-4": {"base": "#e7d780", "shade": {"1": "#ada160", "2": "#736b40", "3": "#393520", "4": "black"}, "tint": {"1": "#e9db8c", "2": "#ede19f", "3": "#f3ebbf", "4": "#f9f5df"}}, "tertiary-1": {"base": "#cb003d", "shade": {"1": "#98002d", "2": "#65001e", "3": "#32000f", "4": "black"}, "tint": {"1": "#d01950", "2": "#d83f6d", "3": "#e57f9e", "4": "#f2bfce"}}, "tertiary-2": {"base": "#876479", "shade": {"1": "#654b5a", "2": "#43323c", "3": "#21191e", "4": "black"}, "tint": {"1": "#937386", "2": "#a58a9a", "3": "#c3b1bc", "4": "#e1d8dd"}}, "tertiary-3": {"base": "#ff8fa0", "shade": {"1": "#bf6b78", "2": "#7f4750", "3": "#3f2328", "4": "black"}, "tint": {"1": "#ff9aa9", "2": "#ffabb7", "3": "#ffc7cf", "4": "#ffe3e7"}}, "quaternary-1": {"base": "#e1261c", "shade": {"1": "#a81c15", "2": "#70130e", "3": "#380907", "4": "black"}, "tint": {"1": "#e43b32", "2": "#e85c54", "3": "#f0928d", "4": "#f7c8c6"}}, "quaternary-2": {"base": "#ff5c36", "shade": {"1": "#bf4528", "2": "#7f2e1b", "3": "#3f170d", "4": "black"}, "tint": {"1": "#ff6c4a", "2": "#ff8468", "3": "#ffad9a", "4": "#ffd6cc"}}, "quaternary-3": {"base": "#ea6953", "shade": {"1": "#af4e3e", "2": "#753429", "3": "#3a1a14", "4": "black"}, "tint": {"1": "#ec7864", "2": "#ef8e7e", "3": "#f4b4a9", "4": "#f9d9d4"}}, "quaternary-4": {"base": "#e9b88b", "shade": {"1": "#ae8a68", "2": "#745c45", "3": "#3a2e22", "4": "black"}, "tint": {"1": "#ebbf96", "2": "#eec9a8", "3": "#f4dbc5", "4": "#f9ede2"}}}, "durations": {"fastest": "0.15s", "faster": "0.2s", "fast": "0.4s", "normal": "0.6s", "slow": "0.8s", "slower": "1.2s", "slowest": "1.6s", "shortest": "2s", "shorter": "3s", "short": "4s", "long": "6s", "longer": "8s", "longest": "10s", "1": "0.15s", "2": "0.2s", "3": "0.4s", "4": "0.6s", "5": "0.8s", "6": "1.2s", "7": "1.6s", "8": "2s", "9": "2.5s", "10": "3s", "11": "3.5s", "12": "4s", "13": "6s", "14": "8s", "15": "10s", "16": "12s", "17": "14s", "18": "16s", "19": "18s", "20": "20s"}, "typographic-scale": {"1": 10, "2": 12, "3": 14, "4": 16, "5": 18, "6": 20, "7": 22, "8": 24, "9": 28, "10": 32, "11": 36, "12": 40, "13": 48, "14": 60, "15": 72, "16": 84, "17": 96, "18": 108, "19": 120, "20": 132}, "grid": {"baseline-height": 28, "columns": 12, "baseline-to-gutter-ratio": 2, "breakpoints": {"base": [["1px", "100px"], ["101px", "200px"], ["201px", "300px"], ["301px", "400px"], ["401px", "500px"], ["501px", "600px"], ["601px", "700px"], ["701px", "800px"], ["801px", "900px"], ["901px", "1000px"], ["1001px", "1100px"], ["1101px", "1200px"], ["1201px", "1300px"], ["1301px", "1400px"], ["1401px", "1500px"], ["1501px", "1600px"], ["1601px", "1700px"], ["1701px", "1800px"], ["1801px", "1900px"], ["1901px", "2000px"], ["2001px", "9999px"]], "devices": [["1px", "320px"], ["321px", "480px"], ["481px", "640px"], ["641px", "768px"], ["769px", "800px"], ["801px", "853px"], ["854px", "1024px"], ["1025px", "1280px"], ["1281px", "1366px"], ["1367px", "1440px"], ["1441px", "1600px"], ["1601px", "1920px"], ["1921px", "2560px"], ["2561px", "9999px"]]}, "gutter-width": 56}, "styles": {"color": "#2d0c3d", "background-color": "#ffffff", "font-size": 20, "line-height": 1.4, "font-weight": "normal", "font-family": ["Brandon Text", "Futura", "Gill Sans", "Calibri", "Dejavu Sans", "Lucida Sans", "sans-serif"], "selection": {"color": "#ffffff", "background-color": "#f8bf00"}, "heading": {"color": "#3d1152", "font-family": ["Brandon Grotesque", "Futura", "Gill Sans", "Calibri", "Dejavu Sans", "Arial", "sans-serif"], "story-title": {"font-size": 72, "font-weight": 700}, "story-level-1": {"font-size": 48, "font-weight": 700}, "story-level-2": {"font-size": 32, "font-weight": 700}, "story-level-3": {"font-size": 20, "font-weight": 700}, "story-level-4": {"font-size": 18, "font-weight": 700}, "section-title": {"font-size": 48, "font-weight": 700}, "section-level-1": {"font-size": 18, "font-weight": 700}, "section-level-2": {"font-size": 16, "font-weight": 700}, "section-level-3": {"font-size": 14, "font-weight": 700}, "section-level-4": {"font-size": 12, "font-weight": 700}}, "link": {"default": {"color": "#3d1152", "background-color": "transparent", "font-weight": 600, "underline-width": "0.1rem", "underline-color": "#f8bf00", "underline-position": "1.1em", "transition": [["color", "0.15s", "ease-in"], ["background-color", "0.15s", "ease-in"], ["border-color", "0.15s", "ease-in"]]}, "visited": {"color": "#3d1152", "background-color": "transparent", "underline-color": "#f8bf00"}, "focus": {"color": "#f8bf00", "background-color": "transparent", "underline-color": "#f8bf00", "outline": [0, "none"]}, "hover": {"color": "#f8bf00", "background-color": "transparent", "underline-color": "#f8bf00"}}, "heading-link": {"default": {"color": "#3d1152", "background-color": "transparent", "font-weight": "inherit", "underline-width": 0, "underline-color": "transparent", "underline-position": "1.2em", "transition": [["color", "0.15s", "ease-in"], ["background-color", "0.15s", "ease-in"], ["border-color", "0.15s", "ease-in"]]}, "visited": {"color": "#3d1152", "background-color": "transparent", "underline-color": "transparent"}, "focus": {"color": "#f8bf00", "background-color": "transparent", "underline-color": "transparent", "outline": [0, "none"]}, "hover": {"color": "#f8bf00", "background-color": "transparent", "underline-color": "transparent"}}}}'; }
+  content: '{"colors": {"1": {"base": "#ffb81d", "shade": {"1": "#cc9317", "2": "#996e11", "3": "#66490b", "4": "#322405"}, "tint": {"1": "#ffbf33", "2": "#ffc64a", "3": "#ffcd60", "4": "#ffd477"}}, "2": {"base": "#60d1e0", "shade": {"1": "#4ca7b3", "2": "#397d86", "3": "#265359", "4": "#13292c"}, "tint": {"1": "#6fd5e3", "2": "#7fdae6", "3": "#8fdee9", "4": "#9fe3ec", "5": "#bfecf2", "6": "#dff5f8"}}, "3": {"base": "#185a7d", "shade": {"1": "#134864", "2": "#0e364b", "3": "#092432", "4": "#041118"}, "tint": {"1": "#2f6a8a", "2": "#467b97", "3": "#5d8ba4", "4": "#749cb1"}}, "4": {"base": "#3f2b56", "shade": {"1": "#322244", "2": "#251933", "3": "#191122", "4": "#0c0811"}, "tint": {"1": "#524066", "2": "#655577", "3": "#786a88", "4": "#8b7f99"}}, "5": {"base": "#3d3935", "shade": {"1": "#282623", "2": "#141312", "3": "#000"}, "tint": {"1": "#63605d", "2": "#8a8885", "3": "#b1afae", "4": "#c4c3c2", "5": "#d8d7d6", "6": "#e1e1e0", "7": "#ebebea", "8": "#f5f5f4", "9": "#fff"}}, "text": "#282623", "background": "#fff", "primary-1": {"base": "#ffb81d", "shade": {"1": "#cc9317", "2": "#996e11", "3": "#66490b", "4": "#322405"}, "tint": {"1": "#ffbf33", "2": "#ffc64a", "3": "#ffcd60", "4": "#ffd477"}}, "secondary-1": {"base": "#60d1e0", "shade": {"1": "#4ca7b3", "2": "#397d86", "3": "#265359", "4": "#13292c"}, "tint": {"1": "#6fd5e3", "2": "#7fdae6", "3": "#8fdee9", "4": "#9fe3ec", "5": "#bfecf2", "6": "#dff5f8"}}, "secondary-2": {"base": "#185a7d", "shade": {"1": "#134864", "2": "#0e364b", "3": "#092432", "4": "#041118"}, "tint": {"1": "#2f6a8a", "2": "#467b97", "3": "#5d8ba4", "4": "#749cb1"}}, "secondary-3": {"base": "#3f2b56", "shade": {"1": "#322244", "2": "#251933", "3": "#191122", "4": "#0c0811"}, "tint": {"1": "#524066", "2": "#655577", "3": "#786a88", "4": "#8b7f99"}}, "neutral": {"base": "#3d3935", "shade": {"1": "#282623", "2": "#141312", "3": "#000"}, "tint": {"1": "#63605d", "2": "#8a8885", "3": "#b1afae", "4": "#c4c3c2", "5": "#d8d7d6", "6": "#e1e1e0", "7": "#ebebea", "8": "#f5f5f4", "9": "#fff"}}}, "durations": {"fastest": "0.1s", "faster": "0.2s", "fast": "0.4s", "normal": "0.6s", "slow": "0.8s", "slower": "1.2s", "slowest": "1.6s", "shortest": "2s", "shorter": "3s", "short": "4s", "long": "6s", "longer": "8s", "longest": "10s", "1": "0.15s", "2": "0.2s", "3": "0.4s", "4": "0.6s", "5": "0.8s", "6": "1.2s", "7": "1.6s", "8": "2s", "9": "2.5s", "10": "3s", "11": "3.5s", "12": "4s", "13": "6s", "14": "8s", "15": "10s", "16": "12s", "17": "14s", "18": "16s", "19": "18s", "20": "20s"}, "typographic-scale": {"1": 10, "2": 12, "3": 14, "4": 16, "5": 18, "6": 20, "7": 22, "8": 24, "9": 28, "10": 32, "11": 36, "12": 40, "13": 48, "14": 60, "15": 72, "16": 84, "17": 96, "18": 108, "19": 120, "20": 132}, "grid": {"baseline-height": 28, "columns": 12, "baseline-to-gutter-ratio": 2, "breakpoints": {"base": [["1px", "100px"], ["101px", "200px"], ["201px", "300px"], ["301px", "400px"], ["401px", "500px"], ["501px", "600px"], ["601px", "700px"], ["701px", "800px"], ["801px", "900px"], ["901px", "1000px"], ["1001px", "1100px"], ["1101px", "1200px"], ["1201px", "1300px"], ["1301px", "1400px"], ["1401px", "1500px"], ["1501px", "1600px"], ["1601px", "1700px"], ["1701px", "1800px"], ["1801px", "1900px"], ["1901px", "2000px"], ["2001px", "9999px"]], "devices": [["1px", "320px"], ["321px", "480px"], ["481px", "640px"], ["641px", "768px"], ["769px", "800px"], ["801px", "853px"], ["854px", "1024px"], ["1025px", "1280px"], ["1281px", "1366px"], ["1367px", "1440px"], ["1441px", "1600px"], ["1601px", "1920px"], ["1921px", "2560px"], ["2561px", "9999px"]]}, "gutter-width": 56}, "styles": {"color": "#282623", "background-color": "#fff", "font-size": 20, "line-height": 1.4, "font-weight": "normal", "font-family": ["Brandon Text", "Futura", "Gill Sans", "Calibri", "Dejavu Sans", "Lucida Sans", "sans-serif"], "selection": {"color": "#fff", "background-color": "#185a7d"}, "heading": {"color": "#282623", "font-family": ["Brandon Grotesque", "Futura", "Gill Sans", "Calibri", "Dejavu Sans", "Arial", "sans-serif"], "story-title": {"font-size": 72, "font-weight": 700}, "story-level-1": {"font-size": 48, "font-weight": 700}, "story-level-2": {"font-size": 32, "font-weight": 700}, "story-level-3": {"font-size": 20, "font-weight": 700}, "story-level-4": {"font-size": 18, "font-weight": 700}, "section-title": {"font-size": 48, "font-weight": 700}, "section-level-1": {"font-size": 20, "font-weight": 700}, "section-level-2": {"font-size": 18, "font-weight": 700}, "section-level-3": {"font-size": 16, "font-weight": 700}, "section-level-4": {"font-size": 14, "font-weight": 700}}, "link": {"default": {"color": "#282623", "background-color": "transparent", "font-weight": 600, "underline-width": "0.1rem", "underline-color": "#60d1e0", "underline-position": "1.1em", "transition": [["color", "0.1s", "ease-in"], ["background-color", "0.1s", "ease-in"], ["border-color", "0.1s", "ease-in"]]}, "visited": {"color": "#282623", "background-color": "transparent", "underline-color": "#60d1e0"}, "focused": {"color": "#60d1e0", "background-color": "transparent", "underline-color": "#60d1e0", "outline": [0, "none"]}, "hovered": {"color": "#60d1e0", "background-color": "transparent", "underline-color": "#60d1e0"}}, "heading-link": {"default": {"color": "#282623", "background-color": "transparent", "font-weight": "inherit", "underline-width": 0, "underline-color": "transparent", "underline-position": "1.2em", "transition": [["color", "0.1s", "ease-in"], ["background-color", "0.1s", "ease-in"], ["border-color", "0.1s", "ease-in"]]}, "visited": {"color": "#282623", "background-color": "transparent", "underline-color": "transparent"}, "focused": {"color": "#60d1e0", "background-color": "transparent", "underline-color": "transparent", "outline": [0, "none"]}, "hovered": {"color": "#60d1e0", "background-color": "transparent", "underline-color": "transparent"}}}}'; }
 
 head {
-  font-family: '{"colors": {"1": {"base": "#3d1152", "shade": {"1": "#2d0c3d", "2": "#1e0829", "3": "#0f0414", "4": "black"}, "tint": {"1": "#634074", "2": "#8a7097", "3": "#b19fb9", "4": "#d8cfdc"}}, "2": {"base": "#d8d8d8", "shade": {"1": "#c2c2c2", "2": "#adadad", "3": "#979797", "4": "#828282"}, "tint": {"1": "#e0e0e0", "2": "#e8e8e8", "3": "#efefef", "4": "#ffffff"}}, "3": {"base": "#009abf", "shade": {"1": "#00738f", "2": "#004d5f", "3": "#00262f", "4": "black"}, "tint": {"1": "#19a4c5", "2": "#3fb3cf", "3": "#7fccdf", "4": "#bfe5ef"}}, "4": {"base": "#f8bf00", "shade": {"1": "#ba8f00", "2": "#7c5f00", "3": "#3e2f00", "4": "black"}, "tint": {"1": "#f8c519", "2": "#f9cf3f", "3": "#fbdf7f", "4": "#fdefbf"}}, "5": {"base": "#00c4b4", "shade": {"1": "#009387", "2": "#00625a", "3": "#00312d", "4": "black"}, "tint": {"1": "#19c9bb", "2": "#3fd2c6", "3": "#7fe1d9", "4": "#bff0ec"}}, "6": {"base": "#435cc8", "shade": {"1": "#324596", "2": "#212e64", "3": "#101732", "4": "black"}, "tint": {"1": "#556ccd", "2": "#7284d5", "3": "#a1ade3", "4": "#d0d6f1"}}, "7": {"base": "#91d5ad", "shade": {"1": "#6c9f81", "2": "#486a56", "3": "#24352b", "4": "black"}, "tint": {"1": "#9cd9b5", "2": "#acdfc1", "3": "#c8ead6", "4": "#e3f4ea"}}, "8": {"base": "#ffbf3d", "shade": {"1": "#bf8f2d", "2": "#7f5f1e", "3": "#3f2f0f", "4": "black"}, "tint": {"1": "#ffc550", "2": "#ffcf6d", "3": "#ffdf9e", "4": "#ffefce"}}, "9": {"base": "#633511", "shade": {"1": "#4a270c", "2": "#311a08", "3": "#180d04", "4": "black"}, "tint": {"1": "#724928", "2": "#8a674c", "3": "#b19a88", "4": "#d8ccc3"}}, "10": {"base": "#e7d780", "shade": {"1": "#ada160", "2": "#736b40", "3": "#393520", "4": "black"}, "tint": {"1": "#e9db8c", "2": "#ede19f", "3": "#f3ebbf", "4": "#f9f5df"}}, "11": {"base": "#cb003d", "shade": {"1": "#98002d", "2": "#65001e", "3": "#32000f", "4": "black"}, "tint": {"1": "#d01950", "2": "#d83f6d", "3": "#e57f9e", "4": "#f2bfce"}}, "12": {"base": "#876479", "shade": {"1": "#654b5a", "2": "#43323c", "3": "#21191e", "4": "black"}, "tint": {"1": "#937386", "2": "#a58a9a", "3": "#c3b1bc", "4": "#e1d8dd"}}, "13": {"base": "#ff8fa0", "shade": {"1": "#bf6b78", "2": "#7f4750", "3": "#3f2328", "4": "black"}, "tint": {"1": "#ff9aa9", "2": "#ffabb7", "3": "#ffc7cf", "4": "#ffe3e7"}}, "14": {"base": "#e1261c", "shade": {"1": "#a81c15", "2": "#70130e", "3": "#380907", "4": "black"}, "tint": {"1": "#e43b32", "2": "#e85c54", "3": "#f0928d", "4": "#f7c8c6"}}, "15": {"base": "#ff5c36", "shade": {"1": "#bf4528", "2": "#7f2e1b", "3": "#3f170d", "4": "black"}, "tint": {"1": "#ff6c4a", "2": "#ff8468", "3": "#ffad9a", "4": "#ffd6cc"}}, "16": {"base": "#ea6953", "shade": {"1": "#af4e3e", "2": "#753429", "3": "#3a1a14", "4": "black"}, "tint": {"1": "#ec7864", "2": "#ef8e7e", "3": "#f4b4a9", "4": "#f9d9d4"}}, "17": {"base": "#e9b88b", "shade": {"1": "#ae8a68", "2": "#745c45", "3": "#3a2e22", "4": "black"}, "tint": {"1": "#ebbf96", "2": "#eec9a8", "3": "#f4dbc5", "4": "#f9ede2"}}, "yl-gn": {"sequence-3": {"1": "#f7fcb9", "2": "#addd8e", "3": "#31a354"}, "sequence-4": {"1": "#ffffcc", "2": "#c2e699", "3": "#78c679", "4": "#238443"}, "sequence-5": {"1": "#ffffcc", "2": "#c2e699", "3": "#78c679", "4": "#31a354", "5": "#006837"}, "sequence-6": {"1": "#ffffcc", "2": "#d9f0a3", "3": "#addd8e", "4": "#78c679", "5": "#31a354", "6": "#006837"}, "sequence-7": {"1": "#ffffcc", "2": "#d9f0a3", "3": "#addd8e", "4": "#78c679", "5": "#41ab5d", "6": "#238443", "7": "#005a32"}, "sequence-8": {"1": "#ffffe5", "2": "#f7fcb9", "3": "#d9f0a3", "4": "#addd8e", "5": "#78c679", "6": "#41ab5d", "7": "#238443", "8": "#005a32"}, "sequence-9": {"1": "#ffffe5", "2": "#f7fcb9", "3": "#d9f0a3", "4": "#addd8e", "5": "#78c679", "6": "#41ab5d", "7": "#238443", "8": "#006837", "9": "#004529"}}, "text": {"base": "#3d1152", "shade": {"1": "#2d0c3d", "2": "#1e0829", "3": "#0f0414", "4": "black"}, "tint": {"1": "#634074", "2": "#8a7097", "3": "#b19fb9", "4": "#d8cfdc"}}, "background": {"base": "#d8d8d8", "shade": {"1": "#c2c2c2", "2": "#adadad", "3": "#979797", "4": "#828282"}, "tint": {"1": "#e0e0e0", "2": "#e8e8e8", "3": "#efefef", "4": "#ffffff"}}, "primary-1": {"base": "#009abf", "shade": {"1": "#00738f", "2": "#004d5f", "3": "#00262f", "4": "black"}, "tint": {"1": "#19a4c5", "2": "#3fb3cf", "3": "#7fccdf", "4": "#bfe5ef"}}, "primary-2": {"base": "#00c4b4", "shade": {"1": "#009387", "2": "#00625a", "3": "#00312d", "4": "black"}, "tint": {"1": "#19c9bb", "2": "#3fd2c6", "3": "#7fe1d9", "4": "#bff0ec"}}, "primary-3": {"base": "#435cc8", "shade": {"1": "#324596", "2": "#212e64", "3": "#101732", "4": "black"}, "tint": {"1": "#556ccd", "2": "#7284d5", "3": "#a1ade3", "4": "#d0d6f1"}}, "primary-4": {"base": "#91d5ad", "shade": {"1": "#6c9f81", "2": "#486a56", "3": "#24352b", "4": "black"}, "tint": {"1": "#9cd9b5", "2": "#acdfc1", "3": "#c8ead6", "4": "#e3f4ea"}}, "secondary-1": {"base": "#f8bf00", "shade": {"1": "#ba8f00", "2": "#7c5f00", "3": "#3e2f00", "4": "black"}, "tint": {"1": "#f8c519", "2": "#f9cf3f", "3": "#fbdf7f", "4": "#fdefbf"}}, "secondary-2": {"base": "#ffbf3d", "shade": {"1": "#bf8f2d", "2": "#7f5f1e", "3": "#3f2f0f", "4": "black"}, "tint": {"1": "#ffc550", "2": "#ffcf6d", "3": "#ffdf9e", "4": "#ffefce"}}, "secondary-3": {"base": "#633511", "shade": {"1": "#4a270c", "2": "#311a08", "3": "#180d04", "4": "black"}, "tint": {"1": "#724928", "2": "#8a674c", "3": "#b19a88", "4": "#d8ccc3"}}, "secondary-4": {"base": "#e7d780", "shade": {"1": "#ada160", "2": "#736b40", "3": "#393520", "4": "black"}, "tint": {"1": "#e9db8c", "2": "#ede19f", "3": "#f3ebbf", "4": "#f9f5df"}}, "tertiary-1": {"base": "#cb003d", "shade": {"1": "#98002d", "2": "#65001e", "3": "#32000f", "4": "black"}, "tint": {"1": "#d01950", "2": "#d83f6d", "3": "#e57f9e", "4": "#f2bfce"}}, "tertiary-2": {"base": "#876479", "shade": {"1": "#654b5a", "2": "#43323c", "3": "#21191e", "4": "black"}, "tint": {"1": "#937386", "2": "#a58a9a", "3": "#c3b1bc", "4": "#e1d8dd"}}, "tertiary-3": {"base": "#ff8fa0", "shade": {"1": "#bf6b78", "2": "#7f4750", "3": "#3f2328", "4": "black"}, "tint": {"1": "#ff9aa9", "2": "#ffabb7", "3": "#ffc7cf", "4": "#ffe3e7"}}, "quaternary-1": {"base": "#e1261c", "shade": {"1": "#a81c15", "2": "#70130e", "3": "#380907", "4": "black"}, "tint": {"1": "#e43b32", "2": "#e85c54", "3": "#f0928d", "4": "#f7c8c6"}}, "quaternary-2": {"base": "#ff5c36", "shade": {"1": "#bf4528", "2": "#7f2e1b", "3": "#3f170d", "4": "black"}, "tint": {"1": "#ff6c4a", "2": "#ff8468", "3": "#ffad9a", "4": "#ffd6cc"}}, "quaternary-3": {"base": "#ea6953", "shade": {"1": "#af4e3e", "2": "#753429", "3": "#3a1a14", "4": "black"}, "tint": {"1": "#ec7864", "2": "#ef8e7e", "3": "#f4b4a9", "4": "#f9d9d4"}}, "quaternary-4": {"base": "#e9b88b", "shade": {"1": "#ae8a68", "2": "#745c45", "3": "#3a2e22", "4": "black"}, "tint": {"1": "#ebbf96", "2": "#eec9a8", "3": "#f4dbc5", "4": "#f9ede2"}}}, "durations": {"fastest": "0.15s", "faster": "0.2s", "fast": "0.4s", "normal": "0.6s", "slow": "0.8s", "slower": "1.2s", "slowest": "1.6s", "shortest": "2s", "shorter": "3s", "short": "4s", "long": "6s", "longer": "8s", "longest": "10s", "1": "0.15s", "2": "0.2s", "3": "0.4s", "4": "0.6s", "5": "0.8s", "6": "1.2s", "7": "1.6s", "8": "2s", "9": "2.5s", "10": "3s", "11": "3.5s", "12": "4s", "13": "6s", "14": "8s", "15": "10s", "16": "12s", "17": "14s", "18": "16s", "19": "18s", "20": "20s"}, "typographic-scale": {"1": 10, "2": 12, "3": 14, "4": 16, "5": 18, "6": 20, "7": 22, "8": 24, "9": 28, "10": 32, "11": 36, "12": 40, "13": 48, "14": 60, "15": 72, "16": 84, "17": 96, "18": 108, "19": 120, "20": 132}, "grid": {"baseline-height": 28, "columns": 12, "baseline-to-gutter-ratio": 2, "breakpoints": {"base": [["1px", "100px"], ["101px", "200px"], ["201px", "300px"], ["301px", "400px"], ["401px", "500px"], ["501px", "600px"], ["601px", "700px"], ["701px", "800px"], ["801px", "900px"], ["901px", "1000px"], ["1001px", "1100px"], ["1101px", "1200px"], ["1201px", "1300px"], ["1301px", "1400px"], ["1401px", "1500px"], ["1501px", "1600px"], ["1601px", "1700px"], ["1701px", "1800px"], ["1801px", "1900px"], ["1901px", "2000px"], ["2001px", "9999px"]], "devices": [["1px", "320px"], ["321px", "480px"], ["481px", "640px"], ["641px", "768px"], ["769px", "800px"], ["801px", "853px"], ["854px", "1024px"], ["1025px", "1280px"], ["1281px", "1366px"], ["1367px", "1440px"], ["1441px", "1600px"], ["1601px", "1920px"], ["1921px", "2560px"], ["2561px", "9999px"]]}, "gutter-width": 56}, "styles": {"color": "#2d0c3d", "background-color": "#ffffff", "font-size": 20, "line-height": 1.4, "font-weight": "normal", "font-family": ["Brandon Text", "Futura", "Gill Sans", "Calibri", "Dejavu Sans", "Lucida Sans", "sans-serif"], "selection": {"color": "#ffffff", "background-color": "#f8bf00"}, "heading": {"color": "#3d1152", "font-family": ["Brandon Grotesque", "Futura", "Gill Sans", "Calibri", "Dejavu Sans", "Arial", "sans-serif"], "story-title": {"font-size": 72, "font-weight": 700}, "story-level-1": {"font-size": 48, "font-weight": 700}, "story-level-2": {"font-size": 32, "font-weight": 700}, "story-level-3": {"font-size": 20, "font-weight": 700}, "story-level-4": {"font-size": 18, "font-weight": 700}, "section-title": {"font-size": 48, "font-weight": 700}, "section-level-1": {"font-size": 18, "font-weight": 700}, "section-level-2": {"font-size": 16, "font-weight": 700}, "section-level-3": {"font-size": 14, "font-weight": 700}, "section-level-4": {"font-size": 12, "font-weight": 700}}, "link": {"default": {"color": "#3d1152", "background-color": "transparent", "font-weight": 600, "underline-width": "0.1rem", "underline-color": "#f8bf00", "underline-position": "1.1em", "transition": [["color", "0.15s", "ease-in"], ["background-color", "0.15s", "ease-in"], ["border-color", "0.15s", "ease-in"]]}, "visited": {"color": "#3d1152", "background-color": "transparent", "underline-color": "#f8bf00"}, "focus": {"color": "#f8bf00", "background-color": "transparent", "underline-color": "#f8bf00", "outline": [0, "none"]}, "hover": {"color": "#f8bf00", "background-color": "transparent", "underline-color": "#f8bf00"}}, "heading-link": {"default": {"color": "#3d1152", "background-color": "transparent", "font-weight": "inherit", "underline-width": 0, "underline-color": "transparent", "underline-position": "1.2em", "transition": [["color", "0.15s", "ease-in"], ["background-color", "0.15s", "ease-in"], ["border-color", "0.15s", "ease-in"]]}, "visited": {"color": "#3d1152", "background-color": "transparent", "underline-color": "transparent"}, "focus": {"color": "#f8bf00", "background-color": "transparent", "underline-color": "transparent", "outline": [0, "none"]}, "hover": {"color": "#f8bf00", "background-color": "transparent", "underline-color": "transparent"}}}}'; }
+  font-family: '{"colors": {"1": {"base": "#ffb81d", "shade": {"1": "#cc9317", "2": "#996e11", "3": "#66490b", "4": "#322405"}, "tint": {"1": "#ffbf33", "2": "#ffc64a", "3": "#ffcd60", "4": "#ffd477"}}, "2": {"base": "#60d1e0", "shade": {"1": "#4ca7b3", "2": "#397d86", "3": "#265359", "4": "#13292c"}, "tint": {"1": "#6fd5e3", "2": "#7fdae6", "3": "#8fdee9", "4": "#9fe3ec", "5": "#bfecf2", "6": "#dff5f8"}}, "3": {"base": "#185a7d", "shade": {"1": "#134864", "2": "#0e364b", "3": "#092432", "4": "#041118"}, "tint": {"1": "#2f6a8a", "2": "#467b97", "3": "#5d8ba4", "4": "#749cb1"}}, "4": {"base": "#3f2b56", "shade": {"1": "#322244", "2": "#251933", "3": "#191122", "4": "#0c0811"}, "tint": {"1": "#524066", "2": "#655577", "3": "#786a88", "4": "#8b7f99"}}, "5": {"base": "#3d3935", "shade": {"1": "#282623", "2": "#141312", "3": "#000"}, "tint": {"1": "#63605d", "2": "#8a8885", "3": "#b1afae", "4": "#c4c3c2", "5": "#d8d7d6", "6": "#e1e1e0", "7": "#ebebea", "8": "#f5f5f4", "9": "#fff"}}, "text": "#282623", "background": "#fff", "primary-1": {"base": "#ffb81d", "shade": {"1": "#cc9317", "2": "#996e11", "3": "#66490b", "4": "#322405"}, "tint": {"1": "#ffbf33", "2": "#ffc64a", "3": "#ffcd60", "4": "#ffd477"}}, "secondary-1": {"base": "#60d1e0", "shade": {"1": "#4ca7b3", "2": "#397d86", "3": "#265359", "4": "#13292c"}, "tint": {"1": "#6fd5e3", "2": "#7fdae6", "3": "#8fdee9", "4": "#9fe3ec", "5": "#bfecf2", "6": "#dff5f8"}}, "secondary-2": {"base": "#185a7d", "shade": {"1": "#134864", "2": "#0e364b", "3": "#092432", "4": "#041118"}, "tint": {"1": "#2f6a8a", "2": "#467b97", "3": "#5d8ba4", "4": "#749cb1"}}, "secondary-3": {"base": "#3f2b56", "shade": {"1": "#322244", "2": "#251933", "3": "#191122", "4": "#0c0811"}, "tint": {"1": "#524066", "2": "#655577", "3": "#786a88", "4": "#8b7f99"}}, "neutral": {"base": "#3d3935", "shade": {"1": "#282623", "2": "#141312", "3": "#000"}, "tint": {"1": "#63605d", "2": "#8a8885", "3": "#b1afae", "4": "#c4c3c2", "5": "#d8d7d6", "6": "#e1e1e0", "7": "#ebebea", "8": "#f5f5f4", "9": "#fff"}}}, "durations": {"fastest": "0.1s", "faster": "0.2s", "fast": "0.4s", "normal": "0.6s", "slow": "0.8s", "slower": "1.2s", "slowest": "1.6s", "shortest": "2s", "shorter": "3s", "short": "4s", "long": "6s", "longer": "8s", "longest": "10s", "1": "0.15s", "2": "0.2s", "3": "0.4s", "4": "0.6s", "5": "0.8s", "6": "1.2s", "7": "1.6s", "8": "2s", "9": "2.5s", "10": "3s", "11": "3.5s", "12": "4s", "13": "6s", "14": "8s", "15": "10s", "16": "12s", "17": "14s", "18": "16s", "19": "18s", "20": "20s"}, "typographic-scale": {"1": 10, "2": 12, "3": 14, "4": 16, "5": 18, "6": 20, "7": 22, "8": 24, "9": 28, "10": 32, "11": 36, "12": 40, "13": 48, "14": 60, "15": 72, "16": 84, "17": 96, "18": 108, "19": 120, "20": 132}, "grid": {"baseline-height": 28, "columns": 12, "baseline-to-gutter-ratio": 2, "breakpoints": {"base": [["1px", "100px"], ["101px", "200px"], ["201px", "300px"], ["301px", "400px"], ["401px", "500px"], ["501px", "600px"], ["601px", "700px"], ["701px", "800px"], ["801px", "900px"], ["901px", "1000px"], ["1001px", "1100px"], ["1101px", "1200px"], ["1201px", "1300px"], ["1301px", "1400px"], ["1401px", "1500px"], ["1501px", "1600px"], ["1601px", "1700px"], ["1701px", "1800px"], ["1801px", "1900px"], ["1901px", "2000px"], ["2001px", "9999px"]], "devices": [["1px", "320px"], ["321px", "480px"], ["481px", "640px"], ["641px", "768px"], ["769px", "800px"], ["801px", "853px"], ["854px", "1024px"], ["1025px", "1280px"], ["1281px", "1366px"], ["1367px", "1440px"], ["1441px", "1600px"], ["1601px", "1920px"], ["1921px", "2560px"], ["2561px", "9999px"]]}, "gutter-width": 56}, "styles": {"color": "#282623", "background-color": "#fff", "font-size": 20, "line-height": 1.4, "font-weight": "normal", "font-family": ["Brandon Text", "Futura", "Gill Sans", "Calibri", "Dejavu Sans", "Lucida Sans", "sans-serif"], "selection": {"color": "#fff", "background-color": "#185a7d"}, "heading": {"color": "#282623", "font-family": ["Brandon Grotesque", "Futura", "Gill Sans", "Calibri", "Dejavu Sans", "Arial", "sans-serif"], "story-title": {"font-size": 72, "font-weight": 700}, "story-level-1": {"font-size": 48, "font-weight": 700}, "story-level-2": {"font-size": 32, "font-weight": 700}, "story-level-3": {"font-size": 20, "font-weight": 700}, "story-level-4": {"font-size": 18, "font-weight": 700}, "section-title": {"font-size": 48, "font-weight": 700}, "section-level-1": {"font-size": 20, "font-weight": 700}, "section-level-2": {"font-size": 18, "font-weight": 700}, "section-level-3": {"font-size": 16, "font-weight": 700}, "section-level-4": {"font-size": 14, "font-weight": 700}}, "link": {"default": {"color": "#282623", "background-color": "transparent", "font-weight": 600, "underline-width": "0.1rem", "underline-color": "#60d1e0", "underline-position": "1.1em", "transition": [["color", "0.1s", "ease-in"], ["background-color", "0.1s", "ease-in"], ["border-color", "0.1s", "ease-in"]]}, "visited": {"color": "#282623", "background-color": "transparent", "underline-color": "#60d1e0"}, "focused": {"color": "#60d1e0", "background-color": "transparent", "underline-color": "#60d1e0", "outline": [0, "none"]}, "hovered": {"color": "#60d1e0", "background-color": "transparent", "underline-color": "#60d1e0"}}, "heading-link": {"default": {"color": "#282623", "background-color": "transparent", "font-weight": "inherit", "underline-width": 0, "underline-color": "transparent", "underline-position": "1.2em", "transition": [["color", "0.1s", "ease-in"], ["background-color", "0.1s", "ease-in"], ["border-color", "0.1s", "ease-in"]]}, "visited": {"color": "#282623", "background-color": "transparent", "underline-color": "transparent"}, "focused": {"color": "#60d1e0", "background-color": "transparent", "underline-color": "transparent", "outline": [0, "none"]}, "hovered": {"color": "#60d1e0", "background-color": "transparent", "underline-color": "transparent"}}}}'; }
 
 /**
  * Typography
@@ -512,50 +839,50 @@ p {
   hyphenate-limit-zone: 2em; }
 
 ::-moz-selection {
-  color: #ffffff;
-  background: #f8bf00;
+  color: #fff;
+  background: #185a7d;
   text-shadow: none; }
 
 ::selection {
-  color: #ffffff;
-  background: #f8bf00;
+  color: #fff;
+  background: #185a7d;
   text-shadow: none; }
 
 /** links */
 a {
-  -webkit-transition: color 0.15s ease-in, background-color 0.15s ease-in, border-color 0.15s ease-in;
-          transition: color 0.15s ease-in, background-color 0.15s ease-in, border-color 0.15s ease-in;
-  color: #3d1152;
+  -webkit-transition: color 0.1s ease-in, background-color 0.1s ease-in, border-color 0.1s ease-in;
+          transition: color 0.1s ease-in, background-color 0.1s ease-in, border-color 0.1s ease-in;
+  color: #282623;
   background-color: transparent;
-  background-image: -webkit-linear-gradient(top, transparent 50%, #f8bf00 50%);
-  background-image: linear-gradient(to bottom, transparent 50%, #f8bf00 50%);
+  background-image: -webkit-linear-gradient(top, transparent 50%, #60d1e0 50%);
+  background-image: linear-gradient(to bottom, transparent 50%, #60d1e0 50%);
   background-position: 0 1.1em;
   background-repeat: repeat-x;
   background-size: 0.2rem 0.2rem;
   text-decoration: none;
   font-weight: 600; }
   a:visited {
-    color: #3d1152;
+    color: #282623;
     background-color: transparent;
-    background-image: -webkit-linear-gradient(top, transparent 50%, #f8bf00 50%);
-    background-image: linear-gradient(to bottom, transparent 50%, #f8bf00 50%); }
+    background-image: -webkit-linear-gradient(top, transparent 50%, #60d1e0 50%);
+    background-image: linear-gradient(to bottom, transparent 50%, #60d1e0 50%); }
   a:focus {
-    color: #f8bf00;
+    color: #60d1e0;
     background-color: transparent;
-    background-image: -webkit-linear-gradient(top, transparent 50%, #f8bf00 50%);
-    background-image: linear-gradient(to bottom, transparent 50%, #f8bf00 50%);
+    background-image: -webkit-linear-gradient(top, transparent 50%, #60d1e0 50%);
+    background-image: linear-gradient(to bottom, transparent 50%, #60d1e0 50%);
     outline: 0 none; }
   a:hover, a:active {
-    color: #f8bf00;
+    color: #60d1e0;
     background-color: transparent;
-    background-image: -webkit-linear-gradient(top, transparent 50%, #f8bf00 50%);
-    background-image: linear-gradient(to bottom, transparent 50%, #f8bf00 50%); }
+    background-image: -webkit-linear-gradient(top, transparent 50%, #60d1e0 50%);
+    background-image: linear-gradient(to bottom, transparent 50%, #60d1e0 50%); }
 
 /** headings */
 h1, h2, h3, h4, h5, h6, .ash-heading--story-title, .ash-heading--story-level-1, .ash-heading--story-level-2, .ash-heading--story-level-3, .ash-heading--story-level-4, .ash-heading--section-title, .ash-heading--section-level-1, .ash-heading--section-level-2, .ash-heading--section-level-3, .ash-heading--section-level-4 {
   margin: 0;
   padding: 0;
-  color: #3d1152;
+  color: #282623;
   font-family: "Brandon Grotesque", Futura, "Gill Sans", Calibri, "Dejavu Sans", Arial, sans-serif;
   -webkit-font-feature-settings: 'kern', 'liga';
      -moz-font-feature-settings: 'kern', 'liga';
@@ -565,28 +892,25 @@ h1, h2, h3, h4, h5, h6, .ash-heading--story-title, .ash-heading--story-level-1, 
       -ms-hyphens: none;
           hyphens: none; }
   h1 a, h2 a, h3 a, h4 a, h5 a, h6 a, .ash-heading--story-title a, .ash-heading--story-level-1 a, .ash-heading--story-level-2 a, .ash-heading--story-level-3 a, .ash-heading--story-level-4 a, .ash-heading--section-title a, .ash-heading--section-level-1 a, .ash-heading--section-level-2 a, .ash-heading--section-level-3 a, .ash-heading--section-level-4 a {
-    -webkit-transition: color 0.15s ease-in, background-color 0.15s ease-in, border-color 0.15s ease-in;
-            transition: color 0.15s ease-in, background-color 0.15s ease-in, border-color 0.15s ease-in;
-    color: #3d1152;
+    -webkit-transition: color 0.1s ease-in, background-color 0.1s ease-in, border-color 0.1s ease-in;
+            transition: color 0.1s ease-in, background-color 0.1s ease-in, border-color 0.1s ease-in;
+    color: #282623;
     background-color: transparent;
     background-image: none;
     font-weight: inherit; }
     h1 a:visited, h2 a:visited, h3 a:visited, h4 a:visited, h5 a:visited, h6 a:visited, .ash-heading--story-title a:visited, .ash-heading--story-level-1 a:visited, .ash-heading--story-level-2 a:visited, .ash-heading--story-level-3 a:visited, .ash-heading--story-level-4 a:visited, .ash-heading--section-title a:visited, .ash-heading--section-level-1 a:visited, .ash-heading--section-level-2 a:visited, .ash-heading--section-level-3 a:visited, .ash-heading--section-level-4 a:visited {
-      color: #3d1152;
+      color: #282623;
       background-color: transparent;
       background-image: none; }
     h1 a:focus, h2 a:focus, h3 a:focus, h4 a:focus, h5 a:focus, h6 a:focus, .ash-heading--story-title a:focus, .ash-heading--story-level-1 a:focus, .ash-heading--story-level-2 a:focus, .ash-heading--story-level-3 a:focus, .ash-heading--story-level-4 a:focus, .ash-heading--section-title a:focus, .ash-heading--section-level-1 a:focus, .ash-heading--section-level-2 a:focus, .ash-heading--section-level-3 a:focus, .ash-heading--section-level-4 a:focus {
-      color: #f8bf00;
+      color: #60d1e0;
       background-color: transparent;
       background-image: none;
       outline: 0 none; }
     h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover, .ash-heading--story-title a:hover, .ash-heading--story-level-1 a:hover, .ash-heading--story-level-2 a:hover, .ash-heading--story-level-3 a:hover, .ash-heading--story-level-4 a:hover, .ash-heading--section-title a:hover, .ash-heading--section-level-1 a:hover, .ash-heading--section-level-2 a:hover, .ash-heading--section-level-3 a:hover, .ash-heading--section-level-4 a:hover, h1 a:active, h2 a:active, h3 a:active, h4 a:active, h5 a:active, h6 a:active, .ash-heading--story-title a:active, .ash-heading--story-level-1 a:active, .ash-heading--story-level-2 a:active, .ash-heading--story-level-3 a:active, .ash-heading--story-level-4 a:active, .ash-heading--section-title a:active, .ash-heading--section-level-1 a:active, .ash-heading--section-level-2 a:active, .ash-heading--section-level-3 a:active, .ash-heading--section-level-4 a:active {
-      color: #f8bf00;
+      color: #60d1e0;
       background-color: transparent;
       background-image: none; }
-
-h1, h2, h3, h4, h5, h6 {
-  /* @extend .ash-heading--story-level-1; */ }
 
 .ash-heading--story-title {
   margin: 2.8rem 1.4rem;
@@ -626,7 +950,7 @@ h1, h2, h3, h4, h5, h6 {
     width: 5.6rem;
     height: 0;
     margin-left: -2.8rem;
-    border-bottom: 0.1rem solid #f8bf00; }
+    border-bottom: 0.1rem solid #ffb81d; }
   .ash-heading--story-level-1 b {
     display: block;
     margin-top: 0.7rem;
@@ -686,8 +1010,8 @@ h1, h2, h3, h4, h5, h6 {
 .ash-heading--section-level-1 {
   margin: 2.8rem 1.4rem 0.7rem;
   padding: 1.4rem 0 0;
-  font-size: 0.9rem;
-  line-height: 1.55556;
+  font-size: 1rem;
+  line-height: 1.4;
   font-weight: 700;
   text-align: left;
   text-transform: uppercase;
@@ -701,14 +1025,14 @@ h1, h2, h3, h4, h5, h6 {
     width: 5.6rem;
     height: 0;
     margin-left: -2.8rem;
-    border-bottom: 0.1rem solid #f8bf00;
+    border-bottom: 0.1rem solid #ffb81d;
     left: 0;
     margin-left: 0; }
 .ash-heading--section-level-2 {
   margin: 0 1.4rem 0.7rem;
   padding: 0;
-  font-size: 0.8rem;
-  line-height: 1.75;
+  font-size: 0.9rem;
+  line-height: 1.55556;
   font-weight: 700;
   text-align: left;
   text-transform: uppercase;
@@ -719,8 +1043,8 @@ h1, h2, h3, h4, h5, h6 {
 .ash-heading--section-level-3 {
   margin: 0 1.4rem 0.7rem;
   padding: 0;
-  font-size: 0.7rem;
-  line-height: 2;
+  font-size: 0.8rem;
+  line-height: 1.75;
   font-weight: 700;
   text-align: left;
   text-transform: uppercase;
@@ -731,8 +1055,8 @@ h1, h2, h3, h4, h5, h6 {
 .ash-heading--section-level-4 {
   margin: 0 1.4rem 0.7rem;
   padding: 0;
-  font-size: 0.6rem;
-  line-height: 1.16667;
+  font-size: 0.7rem;
+  line-height: 2;
   font-weight: 700;
   text-align: left;
   text-transform: uppercase;
@@ -761,7 +1085,7 @@ ol {
       right: 100%;
       width: 1.4rem;
       height: 1.4rem;
-      color: #f8bf00;
+      color: #60d1e0;
       font-weight: 600;
       text-align: center;
       counter-increment: ash-list; }
@@ -878,3 +1202,2939 @@ textarea {
   h2,
   h3 {
     page-break-after: avoid; } }
+.ash-button {
+  box-sizing: border-box;
+  position: relative;
+  display: inline-block;
+  z-index: 1;
+  overflow: hidden;
+  height: 2.8rem;
+  padding: 0.7rem 1.05rem;
+  -webkit-transition: color 0.1s ease-in, background-color 0.1s ease-in, border-color 0.1s ease-in, box-shadow 0.1s ease-in, -webkit-transform 0.1s ease-in, opacity 0.1s ease-in, visibility 0.1s ease-in;
+          transition: color 0.1s ease-in, background-color 0.1s ease-in, border-color 0.1s ease-in, box-shadow 0.1s ease-in, transform 0.1s ease-in, opacity 0.1s ease-in, visibility 0.1s ease-in;
+  will-change: color, background-color, border-color, box-shadow, transform, opacity, visibility;
+  white-space: nowrap;
+  -webkit-transform: rotate(0.0001deg) translateY(0);
+      -ms-transform: rotate(0.0001deg) translateY(0);
+          transform: rotate(0.0001deg) translateY(0);
+  color: #265359;
+  background-color: #60d1e0;
+  background-image: none;
+  border: 0 none;
+  border-radius: 0.175rem;
+  outline: 0 none;
+  box-shadow: 0 0.175rem 0 #4ca7b3, 0 0.175rem 0.175rem rgba(61, 57, 53, 0.4); }
+  .ash-button:link, .ash-button:visited {
+    -webkit-transform: rotate(0.0001deg) translateY(0);
+        -ms-transform: rotate(0.0001deg) translateY(0);
+            transform: rotate(0.0001deg) translateY(0);
+    color: #265359;
+    background-color: #60d1e0;
+    background-image: none;
+    border: 0 none;
+    border-radius: 0.175rem;
+    outline: 0 none;
+    box-shadow: 0 0.175rem 0 #4ca7b3, 0 0.175rem 0.175rem rgba(61, 57, 53, 0.4); }
+  .ash-button.is-selected, .ash-button.is-selected {
+    -webkit-transform: rotate(0.0001deg) translateY(0.0875rem);
+        -ms-transform: rotate(0.0001deg) translateY(0.0875rem);
+            transform: rotate(0.0001deg) translateY(0.0875rem);
+    box-shadow: 0 0.0875rem 0 #4ca7b3, 0 0.0875rem 0.0875rem rgba(61, 57, 53, 0.3); }
+  .ash-button.is-focused, .ash-button:focus {
+    color: #265359;
+    background-color: #6fd5e3;
+    background-image: none;
+    outline: 0 none; }
+  .ash-button.is-hovered, .ash-button:hover {
+    -webkit-transform: rotate(0.0001deg) translateY(0.0875rem);
+        -ms-transform: rotate(0.0001deg) translateY(0.0875rem);
+            transform: rotate(0.0001deg) translateY(0.0875rem);
+    color: #265359;
+    background-color: #6fd5e3;
+    background-image: none;
+    box-shadow: 0 0.0875rem 0 #4ca7b3, 0 0.0875rem 0.0875rem rgba(61, 57, 53, 0.3); }
+  .ash-button.is-pressed, .ash-button:active {
+    -webkit-transform: rotate(0.0001deg) translateY(0.175rem);
+        -ms-transform: rotate(0.0001deg) translateY(0.175rem);
+            transform: rotate(0.0001deg) translateY(0.175rem);
+    box-shadow: 0 0 0 #4ca7b3, 0 0.0875rem 0.0875rem rgba(61, 57, 53, 0.1); }
+  .ash-button.is-disabled {
+    cursor: not-allowed;
+    -webkit-transform: rotate(0.0001deg) translateY(0);
+        -ms-transform: rotate(0.0001deg) translateY(0);
+            transform: rotate(0.0001deg) translateY(0);
+    color: #b1afae;
+    background-color: #d8d7d6;
+    box-shadow: 0 0.175rem 0 #b1afae, 0 0.175rem 0.175rem rgba(61, 57, 53, 0.4); }
+  .ash-button.is-selected.is-disabled {
+    -webkit-transform: rotate(0.0001deg) translateY(0.0875rem);
+        -ms-transform: rotate(0.0001deg) translateY(0.0875rem);
+            transform: rotate(0.0001deg) translateY(0.0875rem);
+    box-shadow: 0 0.0875rem 0 #b1afae, 0 0.0875rem 0.0875rem rgba(61, 57, 53, 0.3); }
+  .ash-button.progress-1:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 1%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-2:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 2%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-3:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 3%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-4:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 4%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-5:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 5%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-6:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 6%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-7:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 7.0%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-8:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 8%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-9:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 9%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-10:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 10%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-11:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 11%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-12:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 12%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-13:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 13%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-14:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 14.0%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-15:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 15%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-16:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 16%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-17:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 17%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-18:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 18%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-19:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 19%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-20:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 20%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-21:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 21%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-22:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 22%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-23:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 23%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-24:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 24%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-25:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 25%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-26:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 26%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-27:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 27%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-28:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 28.0%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-29:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 29.0%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-30:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 30%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-31:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 31%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-32:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 32%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-33:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 33%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-34:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 34%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-35:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 35%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-36:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 36%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-37:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 37%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-38:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 38%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-39:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 39%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-40:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 40%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-41:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 41%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-42:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 42%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-43:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 43%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-44:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 44%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-45:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 45%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-46:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 46%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-47:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 47%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-48:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 48%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-49:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 49%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-50:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 50%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-51:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 51%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-52:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 52%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-53:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 53%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-54:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 54%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-55:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 55.0%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-56:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 56.0%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-57:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 57.0%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-58:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 58.0%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-59:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 59%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-60:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 60%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-61:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 61%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-62:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 62%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-63:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 63%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-64:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 64%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-65:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 65%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-66:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 66%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-67:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 67%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-68:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 68%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-69:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 69%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-70:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 70%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-71:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 71%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-72:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 72%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-73:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 73%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-74:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 74%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-75:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 75%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-76:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 76%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-77:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 77%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-78:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 78%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-79:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 79%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-80:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 80%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-81:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 81%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-82:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 82%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-83:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 83%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-84:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 84%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-85:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 85%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-86:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 86%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-87:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 87%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-88:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 88%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-89:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 89%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-90:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 90%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-91:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 91%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-92:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 92%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-93:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 93%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-94:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 94%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-95:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 95%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-96:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 96%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-97:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 97%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-98:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 98%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-99:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 99%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button.progress-100:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(76, 167, 179, 0.5); }
+  .ash-button__badge {
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+    z-index: 1;
+    height: 1.4rem;
+    min-width: 1.4rem;
+    padding: 0 0.35rem;
+    margin: 0 -0.2625rem 0 0.525rem;
+    color: #fff;
+    font-size: 0.8rem;
+    line-height: 1.75;
+    text-align: center;
+    vertical-align: top; }
+    .ash-button__badge:before {
+      content: "";
+      position: absolute;
+      top: 0.1rem;
+      right: 0;
+      bottom: 0.1rem;
+      left: 0;
+      z-index: -1;
+      background-color: #ffb81d;
+      border-radius: 1.4rem; }
+  .ash-button svg {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    margin: 0.2rem 0.7rem 0 -0.15rem;
+    color: #265359;
+    vertical-align: top; }
+
+.ash-button--flat {
+  box-sizing: border-box;
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  height: 2.8rem;
+  padding: 0.6rem 1.05rem;
+  -webkit-transition: color 0.1s ease-in, background-color 0.1s ease-in, border-color 0.1s ease-in, box-shadow 0.1s ease-in, -webkit-transform 0.1s ease-in, opacity 0.1s ease-in, visibility 0.1s ease-in;
+          transition: color 0.1s ease-in, background-color 0.1s ease-in, border-color 0.1s ease-in, box-shadow 0.1s ease-in, transform 0.1s ease-in, opacity 0.1s ease-in, visibility 0.1s ease-in;
+  will-change: color, background-color, border-color, box-shadow, transform, opacity, visibility;
+  white-space: nowrap;
+  -webkit-transform: rotate(0.0001deg) translateY(0.0875rem);
+      -ms-transform: rotate(0.0001deg) translateY(0.0875rem);
+          transform: rotate(0.0001deg) translateY(0.0875rem);
+  color: #265359;
+  background-color: transparent;
+  background-image: none;
+  border: 0.1rem solid #60d1e0;
+  border-radius: 0.175rem;
+  outline: 0 none;
+  box-shadow: 0 0.0875rem 0.0875rem rgba(61, 57, 53, 0.2); }
+  .ash-button--flat:link, .ash-button--flat:visited {
+    -webkit-transform: rotate(0.0001deg) translateY(0.0875rem);
+        -ms-transform: rotate(0.0001deg) translateY(0.0875rem);
+            transform: rotate(0.0001deg) translateY(0.0875rem);
+    color: #265359;
+    background-color: transparent;
+    background-image: none;
+    border: 0.1rem solid #60d1e0;
+    border-radius: 0.175rem;
+    outline: 0 none;
+    box-shadow: 0 0.0875rem 0.0875rem rgba(61, 57, 53, 0.2); }
+  .ash-button--flat.is-selected, .ash-button--flat.is-selected {
+    -webkit-transform: rotate(0.0001deg) translateY(0.0875rem);
+        -ms-transform: rotate(0.0001deg) translateY(0.0875rem);
+            transform: rotate(0.0001deg) translateY(0.0875rem);
+    box-shadow: 0 0.0875rem 0.0875rem rgba(61, 57, 53, 0.2); }
+  .ash-button--flat.is-focused, .ash-button--flat:focus {
+    color: #265359;
+    border-color: #6fd5e3;
+    background-image: none;
+    outline: 0 none; }
+  .ash-button--flat.is-hovered, .ash-button--flat:hover {
+    color: #265359;
+    border-color: #6fd5e3;
+    background-image: none; }
+  .ash-button--flat.is-pressed, .ash-button--flat:active {
+    -webkit-transform: rotate(0.0001deg) translateY(0.175rem);
+        -ms-transform: rotate(0.0001deg) translateY(0.175rem);
+            transform: rotate(0.0001deg) translateY(0.175rem);
+    box-shadow: 0 0.0875rem 0.0875rem rgba(61, 57, 53, 0.1); }
+  .ash-button--flat.is-disabled {
+    cursor: not-allowed;
+    -webkit-transform: rotate(0.0001deg) translateY(0.0875rem);
+        -ms-transform: rotate(0.0001deg) translateY(0.0875rem);
+            transform: rotate(0.0001deg) translateY(0.0875rem);
+    color: #b1afae;
+    border-color: #d8d7d6;
+    box-shadow: 0 0.0875rem 0.0875rem rgba(61, 57, 53, 0.15); }
+  .ash-button--flat.is-selected.is-disabled {
+    -webkit-transform: rotate(0.0001deg) translateY(0.0875rem);
+        -ms-transform: rotate(0.0001deg) translateY(0.0875rem);
+            transform: rotate(0.0001deg) translateY(0.0875rem);
+    box-shadow: 0 0.0875rem 0.0875rem rgba(61, 57, 53, 0.15); }
+  .ash-button--flat.progress-1:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 1%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-2:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 2%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-3:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 3%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-4:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 4%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-5:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 5%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-6:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 6%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-7:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 7.0%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-8:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 8%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-9:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 9%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-10:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 10%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-11:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 11%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-12:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 12%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-13:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 13%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-14:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 14.0%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-15:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 15%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-16:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 16%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-17:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 17%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-18:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 18%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-19:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 19%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-20:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 20%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-21:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 21%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-22:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 22%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-23:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 23%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-24:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 24%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-25:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 25%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-26:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 26%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-27:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 27%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-28:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 28.0%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-29:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 29.0%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-30:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 30%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-31:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 31%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-32:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 32%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-33:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 33%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-34:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 34%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-35:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 35%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-36:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 36%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-37:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 37%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-38:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 38%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-39:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 39%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-40:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 40%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-41:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 41%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-42:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 42%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-43:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 43%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-44:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 44%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-45:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 45%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-46:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 46%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-47:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 47%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-48:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 48%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-49:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 49%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-50:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 50%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-51:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 51%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-52:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 52%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-53:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 53%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-54:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 54%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-55:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 55.0%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-56:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 56.0%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-57:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 57.0%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-58:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 58.0%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-59:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 59%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-60:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 60%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-61:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 61%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-62:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 62%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-63:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 63%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-64:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 64%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-65:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 65%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-66:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 66%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-67:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 67%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-68:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 68%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-69:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 69%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-70:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 70%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-71:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 71%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-72:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 72%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-73:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 73%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-74:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 74%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-75:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 75%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-76:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 76%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-77:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 77%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-78:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 78%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-79:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 79%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-80:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 80%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-81:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 81%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-82:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 82%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-83:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 83%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-84:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 84%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-85:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 85%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-86:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 86%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-87:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 87%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-88:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 88%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-89:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 89%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-90:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 90%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-91:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 91%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-92:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 92%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-93:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 93%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-94:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 94%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-95:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 95%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-96:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 96%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-97:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 97%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-98:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 98%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-99:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 99%;
+    background-color: #60d1e0; }
+  .ash-button--flat.progress-100:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 100%;
+    background-color: #60d1e0; }
+  .ash-button--flat svg {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    margin: 0.2rem 0.7rem 0 -0.15rem;
+    color: #265359;
+    vertical-align: top; }
+
+.ash-button--invisible {
+  box-sizing: border-box;
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  height: 2.8rem;
+  padding: 0.6rem 1.05rem;
+  -webkit-transition: color 0.1s ease-in, background-color 0.1s ease-in, border-color 0.1s ease-in, box-shadow 0.1s ease-in, -webkit-transform 0.1s ease-in, opacity 0.1s ease-in, visibility 0.1s ease-in;
+          transition: color 0.1s ease-in, background-color 0.1s ease-in, border-color 0.1s ease-in, box-shadow 0.1s ease-in, transform 0.1s ease-in, opacity 0.1s ease-in, visibility 0.1s ease-in;
+  will-change: color, background-color, border-color, box-shadow, transform, opacity, visibility;
+  white-space: nowrap;
+  -webkit-transform: rotate(0.0001deg) translateY(0.0875rem);
+      -ms-transform: rotate(0.0001deg) translateY(0.0875rem);
+          transform: rotate(0.0001deg) translateY(0.0875rem);
+  color: #265359;
+  background-color: transparent;
+  background-image: none;
+  border: 0.1rem solid transparent;
+  border-radius: 0.175rem;
+  outline: 0 none;
+  box-shadow: none; }
+  .ash-button--invisible:link, .ash-button--invisible:visited {
+    -webkit-transform: rotate(0.0001deg) translateY(0.0875rem);
+        -ms-transform: rotate(0.0001deg) translateY(0.0875rem);
+            transform: rotate(0.0001deg) translateY(0.0875rem);
+    color: #265359;
+    background-color: transparent;
+    background-image: none;
+    border: 0.1rem solid transparent;
+    border-radius: 0.175rem;
+    outline: 0 none;
+    box-shadow: none; }
+  .ash-button--invisible.is-focused, .ash-button--invisible:focus {
+    color: #265359;
+    border-color: #6fd5e3;
+    background-image: none;
+    outline: 0 none;
+    box-shadow: 0 0.0875rem 0.0875rem rgba(61, 57, 53, 0.2); }
+  .ash-button--invisible.is-hovered, .ash-button--invisible:hover {
+    color: #265359;
+    border-color: #6fd5e3;
+    background-image: none;
+    box-shadow: 0 0.0875rem 0.0875rem rgba(61, 57, 53, 0.2); }
+  .ash-button--invisible.is-pressed, .ash-button--invisible:active {
+    -webkit-transform: rotate(0.0001deg) translateY(0.175rem);
+        -ms-transform: rotate(0.0001deg) translateY(0.175rem);
+            transform: rotate(0.0001deg) translateY(0.175rem);
+    box-shadow: 0 0.0875rem 0.0875rem rgba(61, 57, 53, 0.1); }
+  .ash-button--invisible.is-disabled {
+    cursor: not-allowed;
+    -webkit-transform: rotate(0.0001deg) translateY(0.0875rem);
+        -ms-transform: rotate(0.0001deg) translateY(0.0875rem);
+            transform: rotate(0.0001deg) translateY(0.0875rem);
+    color: #b1afae;
+    border-color: transparent;
+    box-shadow: none; }
+  .ash-button--invisible.progress-1:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 1%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-2:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 2%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-3:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 3%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-4:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 4%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-5:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 5%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-6:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 6%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-7:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 7.0%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-8:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 8%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-9:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 9%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-10:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 10%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-11:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 11%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-12:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 12%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-13:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 13%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-14:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 14.0%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-15:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 15%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-16:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 16%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-17:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 17%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-18:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 18%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-19:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 19%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-20:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 20%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-21:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 21%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-22:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 22%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-23:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 23%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-24:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 24%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-25:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 25%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-26:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 26%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-27:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 27%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-28:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 28.0%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-29:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 29.0%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-30:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 30%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-31:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 31%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-32:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 32%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-33:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 33%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-34:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 34%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-35:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 35%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-36:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 36%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-37:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 37%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-38:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 38%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-39:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 39%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-40:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 40%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-41:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 41%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-42:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 42%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-43:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 43%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-44:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 44%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-45:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 45%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-46:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 46%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-47:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 47%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-48:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 48%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-49:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 49%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-50:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 50%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-51:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 51%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-52:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 52%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-53:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 53%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-54:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 54%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-55:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 55.0%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-56:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 56.0%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-57:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 57.0%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-58:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 58.0%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-59:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 59%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-60:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 60%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-61:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 61%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-62:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 62%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-63:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 63%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-64:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 64%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-65:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 65%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-66:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 66%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-67:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 67%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-68:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 68%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-69:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 69%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-70:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 70%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-71:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 71%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-72:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 72%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-73:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 73%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-74:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 74%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-75:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 75%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-76:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 76%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-77:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 77%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-78:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 78%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-79:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 79%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-80:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 80%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-81:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 81%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-82:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 82%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-83:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 83%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-84:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 84%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-85:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 85%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-86:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 86%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-87:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 87%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-88:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 88%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-89:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 89%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-90:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 90%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-91:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 91%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-92:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 92%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-93:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 93%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-94:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 94%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-95:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 95%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-96:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 96%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-97:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 97%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-98:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 98%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-99:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 99%;
+    background-color: #60d1e0; }
+  .ash-button--invisible.progress-100:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 100%;
+    background-color: #60d1e0; }
+  .ash-button--invisible svg {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    margin: 0.2rem 0.7rem 0 -0.15rem;
+    color: #265359;
+    vertical-align: top; }

@@ -56,25 +56,25 @@ a
 	
 	&:focus
 	{
-		color: style(link focus color);
-		background-color: style(link focus background-color);
+		color: style(link focused color);
+		background-color: style(link focused background-color);
 
 		@if (style(link default underline-width) > 0)
 		{
-			background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, style(link focus underline-color) 50%);
+			background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, style(link focused underline-color) 50%);
 		}
 
-		outline: style(link, focus, outline);
+		outline: style(link focused outline);
 	}
 	
 	&:hover, &:active
 	{
-		color: style(link hover color);
-		background-color: style(link hover background-color);
+		color: style(link hovered color);
+		background-color: style(link hovered background-color);
 
 		@if (style(link default underline-width) > 0)
 		{
-			background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, style(link hover underline-color) 50%);
+			background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, style(link hovered underline-color) 50%);
 		}
 	}
 }
@@ -87,18 +87,18 @@ a
 	margin: 0;
 	padding: 0;
 	
-	color: style(heading, color);
+	color: style(heading color);
 
-	font-family: style(heading, font-family);
+	font-family: style(heading font-family);
 	font-feature-settings: 'kern', 'liga';
 	hyphens: none;
 
 	a
 	{
-		transition: style(heading-link, default, transition);
+		transition: style(heading-link default transition);
 
-		color: style(heading-link, default, color);
-		background-color: style(heading-link, default, background-color);
+		color: style(heading-link default color);
+		background-color: style(heading-link default background-color);
 
 		@if (style(heading-link default underline-width) > 0)
 		{
@@ -111,12 +111,12 @@ a
 			background-image: none;
 		}
 
-		font-weight: style(heading-link, default, font-weight);
+		font-weight: style(heading-link default font-weight);
 
 		&:visited
 		{
-			color: style(heading-link, visited, color);
-			background-color: style(heading-link, visited, background-color);
+			color: style(heading-link visited color);
+			background-color: style(heading-link visited background-color);
 			
 			@if (style(heading-link default underline-width) > 0)
 			{
@@ -129,28 +129,28 @@ a
 
 		&:focus
 		{
-			color: style(heading-link, focus, color);
-			background-color: style(heading-link, focus, background-color);
+			color: style(heading-link focused color);
+			background-color: style(heading-link focused background-color);
 			
 			@if (style(heading-link default underline-width) > 0)
 			{
-				background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, style(heading-link focus underline-color) 50%);
+				background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, style(heading-link focused underline-color) 50%);
 			} @else
 			{
 				background-image: none;
 			}
 			
-			outline: style(heading-link, focus, outline);
+			outline: style(heading-link focused outline);
 		}
 
 		&:hover, &:active
 		{
-			color: style(heading-link, hover, color);
-			background-color: style(heading-link, hover, background-color);
+			color: style(heading-link hovered color);
+			background-color: style(heading-link hovered background-color);
 			
 			@if (style(heading-link default underline-width) > 0)
 			{
-				background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, style(heading-link hover underline-color) 50%);
+				background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, style(heading-link hovered underline-color) 50%);
 			} @else
 			{
 				background-image: none;
@@ -162,7 +162,6 @@ a
 
 h1, h2, h3, h4, h5, h6
 {
-	/* @extend .ash-heading--story-level-1; */
 	@extend %ash-heading;
 }
 
@@ -183,8 +182,8 @@ h1, h2, h3, h4, h5, h6
 			margin: b(2) b(1);
 			padding-top: 0;
 
-			@include font-size(style(heading, story-title, font-size));
-			font-weight: style(heading, story-title, font-weight);
+			@include font-size(style(heading story-title font-size));
+			font-weight: style(heading story-title font-weight);
 			text-align: center;
 
 			@include rule-above(none);
@@ -215,11 +214,11 @@ h1, h2, h3, h4, h5, h6
 			margin: b(4) b(1) b(2);
 			padding-top: b(2);
 
-			@include font-size(style(heading, story-level-1, font-size));
-			font-weight: style(heading, story-level-1, font-weight);
+			@include font-size(style(heading story-level-1 font-size));
+			font-weight: style(heading story-level-1 font-weight);
 			text-align: center;
 
-			@include rule-above(rem(2) solid color(secondary-1, base), 4);
+			@include rule-above(rem(2) solid color(primary-1 base), 4);
 
 			b
 			{
@@ -238,8 +237,8 @@ h1, h2, h3, h4, h5, h6
 			margin: b(2) b(1) b(0.5);
 			padding: 0;
 
-			@include font-size(style(heading, story-level-2, font-size));
-			font-weight: style(heading, story-level-2, font-weight);	
+			@include font-size(style(heading story-level-2 font-size));
+			font-weight: style(heading story-level-2 font-weight);	
 			text-align: left;
 
 			@include rule-above(none);
@@ -252,8 +251,8 @@ h1, h2, h3, h4, h5, h6
 			margin: b(2) b(1) b(0.5);
 			padding: 0;
 
-			@include font-size(style(heading, story-level-3, font-size));
-			font-weight: style(heading, story-level-3, font-weight);
+			@include font-size(style(heading story-level-3 font-size));
+			font-weight: style(heading story-level-3 font-weight);
 			text-align: left;
 			text-transform: uppercase;
 			letter-spacing: 0.05em;	
@@ -268,8 +267,8 @@ h1, h2, h3, h4, h5, h6
 			margin: b(2) b(1) b(0.5);
 			padding: 0;
 
-			@include font-size(style(heading, story-level-4, font-size));
-			font-weight: style(heading, story-level-4, font-weight);
+			@include font-size(style(heading story-level-4 font-size));
+			font-weight: style(heading story-level-4 font-weight);
 			text-align: left;
 			text-transform: uppercase;
 			letter-spacing: 0.05em;
@@ -286,8 +285,8 @@ h1, h2, h3, h4, h5, h6
 			margin: b(2) b(1);
 			padding: 0;
 
-			@include font-size(style(heading, section-title, font-size));
-			font-weight: style(heading, section-title, font-weight);
+			@include font-size(style(heading section-title font-size));
+			font-weight: style(heading section-title font-weight);
 			text-align: center;
 
 			@include rule-above(none);
@@ -309,13 +308,13 @@ h1, h2, h3, h4, h5, h6
 			margin: b(2) b(1) b(0.5);
 			padding: b(1) 0 0;
 
-			@include font-size(style(heading, section-level-1, font-size));
-			font-weight: style(heading, section-level-1, font-weight);
+			@include font-size(style(heading section-level-1 font-size));
+			font-weight: style(heading section-level-1 font-weight);
 			text-align: left;
 			text-transform: uppercase;
 			letter-spacing: 0.05em;
 
-			@include rule-above(rem(2) solid color(secondary-1, base), 4)
+			@include rule-above(rem(2) solid color(primary-1 base), 4)
 			{
 				left: 0;
 				margin-left: 0;
@@ -329,8 +328,8 @@ h1, h2, h3, h4, h5, h6
 			margin: 0 b(1) b(0.5);
 			padding: 0;
 
-			@include font-size(style(heading, section-level-2, font-size));
-			font-weight: style(heading, section-level-2, font-weight);
+			@include font-size(style(heading section-level-2 font-size));
+			font-weight: style(heading section-level-2 font-weight);
 			text-align: left;
 			text-transform: uppercase;
 			letter-spacing: 0.05em;
@@ -345,8 +344,8 @@ h1, h2, h3, h4, h5, h6
 			margin: 0 b(1) b(0.5);
 			padding: 0;
 
-			@include font-size(style(heading, section-level-3, font-size));
-			font-weight: style(heading, section-level-3, font-weight);
+			@include font-size(style(heading section-level-3 font-size));
+			font-weight: style(heading section-level-3 font-weight);
 			text-align: left;
 			text-transform: uppercase;
 			letter-spacing: 0.05em;
@@ -361,8 +360,8 @@ h1, h2, h3, h4, h5, h6
 			margin: 0 b(1) b(0.5);
 			padding: 0;
 
-			@include font-size(style(heading, section-level-4, font-size));
-			font-weight: style(heading, section-level-4, font-weight);
+			@include font-size(style(heading section-level-4 font-size));
+			font-weight: style(heading section-level-4 font-weight);
 			text-align: left;
 			text-transform: uppercase;
 			letter-spacing: 0.05em;

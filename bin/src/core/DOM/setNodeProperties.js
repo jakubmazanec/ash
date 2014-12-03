@@ -1,6 +1,7 @@
 "use strict";
 
 var _ = require("_");
+var $ = require("jquery");
 var DOMEvents = require("../class/DOMEvents");
 
 var domEvents = new DOMEvents();

@@ -1,0 +1,10 @@
+@import '../function/_';
+
+// Sets media query for screen width
+@mixin breakpoint-width($lower-bound, $upper-bound)
+{
+	@media only screen and (min-width: $lower-bound) and (max-width: $upper-bound)
+	{
+		@content;
+	}
+}

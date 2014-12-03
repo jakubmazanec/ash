@@ -2,7 +2,7 @@
 @include _(durations, 
 (
 	// brief duration shortcuts
-	fastest: 0.15s, // for "visual polish" (e.g. link color change)
+	fastest: 0.1s, // for "visual polish" (e.g. link color change)
 	faster: 0.2s, // for general base ui movements (e.g. opacity change, menu sliding out, etc-)
 	fast: 0.4s, // longer ui movements, when interaction isn't always necessary
 	normal: 0.6s,

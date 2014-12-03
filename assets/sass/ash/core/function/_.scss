@@ -173,9 +173,9 @@ $__objects: ();
 				}
 			}
 
-			@if ($output == null)
+			@if (type-of($output) != map)
 			{
-				@error $output 'cannot be null. Keys:' $keys;
+				@error $output ' must be map. Keys:' $keys;
 			}
 		 
 			$output: map-get($output, $__key);

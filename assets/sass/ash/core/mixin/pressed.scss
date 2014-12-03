@@ -1,0 +1,5 @@
+@mixin pressed() {
+	&.is-pressed, &:active {
+		@content;
+	}
+}

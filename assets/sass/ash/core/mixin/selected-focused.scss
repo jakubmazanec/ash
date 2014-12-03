@@ -1,0 +1,5 @@
+@mixin selected-focused() {
+	&.is-selected.is-focused, &.is-selected:focus {
+		@content;
+	}
+}

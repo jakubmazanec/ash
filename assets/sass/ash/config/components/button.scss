@@ -1,0 +1,332 @@
+/* @include add-style((
+	same as default, but with no borders in default state
+	ash-invisible-button:
+	(
+		default:
+		(
+			transition: $ash-ui__transition-color,
+			color: color(text, base),
+			background-color: transparent,
+			border: 2 solid transparent,
+			border-radius: rem($ash-grid__baseline-height / 8),
+			font-size: size(6),
+			font-weight: 600,
+			icon:
+			(
+				color: color(text, base)
+			)
+		),
+		selected:
+		(
+			color: color(text, base),
+			background-color: transparent,
+			border: 2 solid color(primary-1, base),
+			icon:
+			(
+				color: color(text, base)
+			)
+		),
+		focus:
+		(
+			color: color(secondary-1, base),
+			background-color: transparent,
+			border: 2 solid color(secondary-1, base),
+			icon:
+			(
+				color: color(secondary-1, base)
+			)
+		),
+		hover:
+		(
+			color: color(secondary-1, base),
+			background-color: transparent,
+			border: 2 solid color(secondary-1, base),
+			icon:
+			(
+				color: color(secondary-1, base)
+			)
+		),
+		selected-focus:
+		(
+			color: color(primary-1, base),
+			background-color: transparent,
+			border: 2 solid color(primary-1, base),
+			icon:
+			(
+				color: color(primary-1, base)
+			)
+		),
+		selected-hover:
+		(
+			color: color(primary-1, base),
+			background-color: transparent,
+			border: 2 solid color(primary-1, base),
+			icon:
+			(
+				color: color(primary-1, base)
+			)
+		),
+		disabled:
+		(
+			color: color(background, base),
+			background-color: transparent,
+			border: 2 solid transparent,
+			icon:
+			(
+				color: color(background, base)
+			)
+		),
+		disabled-selected:
+		(
+			color: color(background, base),
+			background-color: transparent,
+			border: 2 solid transparent,
+			icon:
+			(
+				color: color(background, base)
+			)
+		)
+	)
+));
+
+@include add-style(
+(
+	button with no text - icon only
+	ash-icon-button:
+	(
+		default:
+		(
+			transition: $ash-ui__transition-color,
+			color: color(background, tint, 1),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(background, tint, 1),
+			border-radius: rem($ash-grid__baseline-height / 8),
+			font-size: size(6),
+			font-weight: 600,
+			icon:
+			(
+				color: color(background, tint, 1)
+			)
+		),
+		selected:
+		(
+			color: color(text, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(primary-1, base),
+			icon:
+			(
+				color: color(background, tint, 1)
+			)
+		),
+		focus:
+		(
+			color: color(secondary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(secondary-1, base),
+			icon:
+			(
+				color: color(secondary-1, tint, 1)
+			)
+		),
+		hover:
+		(
+			color: color(secondary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(secondary-1, base),
+			icon:
+			(
+				color: color(secondary-1, tint, 1)
+			)
+		),
+		selected-focus:
+		(
+			color: color(primary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(primary-1, base),
+			icon:
+			(
+				color: color(primary-1, tint, 1)
+			)
+		),
+		selected-hover:
+		(
+			color: color(primary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(primary-1, base),
+			icon:
+			(
+				color: color(primary-1, tint, 1)
+			)
+		),
+		disabled:
+		(
+			color: color(background, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(background, tint, 3),
+			icon:
+			(
+				color: color(background, tint, 1)
+			)
+		),
+		disabled-selected:
+		(
+			color: color(background, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(background, tint, 3),
+			icon:
+			(
+				color: color(background, tint, 1)
+			)
+		)
+	)
+));
+
+@include add-style(
+(
+	button with no text - icon only
+	ash-icon-invisible-button:
+	(
+		default:
+		(
+			transition: $ash-ui__transition-color,
+			color: color(background, tint, 1),
+			background-color: color(background, tint, 4),
+			border: 2 solid transparent,
+			border-radius: rem($ash-grid__baseline-height / 8),
+			font-size: size(6),
+			font-weight: 600,
+			icon:
+			(
+				color: color(background, tint, 1)
+			)
+		),
+		selected:
+		(
+			color: color(text, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(primary-1, base),
+			icon:
+			(
+				color: color(background, tint, 1)
+			)
+		),
+		focus:
+		(
+			color: color(secondary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(secondary-1, base),
+			icon:
+			(
+				color: color(secondary-1, tint, 1)
+			)
+		),
+		hover:
+		(
+			color: color(secondary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(secondary-1, base),
+			icon:
+			(
+				color: color(secondary-1, tint, 1)
+			)
+		),
+		selected-focus:
+		(
+			color: color(primary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(primary-1, base),
+			icon:
+			(
+				color: color(primary-1, tint, 1)
+			)
+		),
+		selected-hover:
+		(
+			color: color(primary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(primary-1, base),
+			icon:
+			(
+				color: color(primary-1, tint, 1)
+			)
+		),
+		disabled:
+		(
+			color: color(background, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid transparent,
+			icon:
+			(
+				color: color(background, tint, 1)
+			)
+		),
+		disabled-selected:
+		(
+			color: color(background, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid transparent,
+			icon:
+			(
+				color: color(background, tint, 1)
+			)
+		)
+	)
+));
+
+@include add-style(
+(
+	ash-primary-button: style(ash-base-button),
+
+	ash-secondary-button:
+	(
+		default:
+		(
+			color: color(text, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(background, base),
+			border-radius: rem($ash-grid__baseline-height / 8),
+		),
+		selected:
+		(
+			color: color(text, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(primary-1, base),
+		),
+		focus:
+		(
+			color: color(secondary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(secondary-1, base), 
+		),
+		hover:
+		(
+			color: color(secondary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(secondary-1, base),
+		),
+		selected-focus:
+		(
+			color: color(primary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(primary-1, base),
+		),
+		selected-hover:
+		(
+			color: color(primary-1, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(primary-1, base),
+		),
+		disabled:
+		(
+			color: color(background, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(background, tint, 4)
+		),
+		disabled-selected:
+		(
+			color: color(background, base),
+			background-color: color(background, tint, 4),
+			border: 2 solid color(background, tint, 4)
+		)
+	)
+)); */

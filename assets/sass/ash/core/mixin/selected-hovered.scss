@@ -1,0 +1,5 @@
+@mixin selected-hovered() {
+	&.is-selected.is-hovered, &.is-selected:hover {
+		@content;
+	}
+}

@@ -1,0 +1,338 @@
+.ash-button {
+	box-sizing: border-box;
+	position: relative;
+	display: inline-block;
+	z-index: 1;
+	overflow: hidden;
+
+	height: b(2);
+	padding: rem(_(grid baseline-height) * 0.5 - 0) b(0.75);
+
+	transition: color duration(fastest) ease-in, background-color duration(fastest) ease-in, border-color duration(fastest) ease-in, box-shadow duration(fastest) ease-in, transform duration(fastest) ease-in, opacity duration(fastest) ease-in, visibility duration(fastest) ease-in;
+	will-change: color, background-color, border-color, box-shadow, transform, opacity, visibility;
+	//filter: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><filter id="gaussian_blur"><feGaussianBlur in="SourceGraphic" stdDeviation="0" /></filter></defs></svg>#gaussian_blur');
+
+	white-space: nowrap;
+
+	@include default {
+		transform: rotate(0.0001deg) translateY(0);
+
+		color: color(secondary-1 shade 3);
+		background-color: color(secondary-1 base);
+		background-image: none;
+		border: 0 none;
+		border-radius: b(2 / 16);
+		outline: 0 none;
+		box-shadow: 0 b(2 / 16) 0 color(secondary-1 shade 1), 0 b(2 / 16) b(2 / 16) transparentize(color(neutral base), 1 - 0.4);
+	}
+
+	@include selected {
+		transform: rotate(0.0001deg) translateY(b(1 / 16));
+
+		box-shadow: 0 b(1 / 16) 0 color(secondary-1 shade 1), 0 b(1 / 16) b(1 / 16) transparentize(color(neutral base), 1 - 0.3);
+	}
+
+	@include focused {
+		color: color(secondary-1 shade 3);
+		background-color: color(secondary-1 tint 1);
+		background-image: none;
+		outline: 0 none;
+	}
+
+	@include hovered {
+		transform: rotate(0.0001deg) translateY(b(1 / 16));
+		
+		color: color(secondary-1 shade 3);
+		background-color: color(secondary-1 tint 1);
+		background-image: none;
+		box-shadow: 0 b(1 / 16) 0 color(secondary-1 shade 1), 0 b(1 / 16) b(1 / 16) transparentize(color(neutral base), 1 - 0.3);
+	}
+
+	@include pressed {
+		transform: rotate(0.0001deg) translateY(b(2 / 16));
+		
+		box-shadow: 0 0 0 color(secondary-1 shade 1), 0 b(1 / 16) b(1 / 16) transparentize(color(neutral base), 1 - 0.1);
+	}
+
+	@include disabled {
+		cursor: not-allowed;
+		transform: rotate(0.0001deg) translateY(0);
+
+		color: color(neutral tint 3);
+		background-color: color(neutral tint 5);
+		box-shadow: 0 b(2 / 16) 0 color(neutral tint 3), 0 b(2 / 16) b(2 / 16) transparentize(color(neutral base), 1 - 0.4);
+	}
+
+	@include selected-focused {
+
+	}
+
+	@include selected-hovered {
+
+	}
+
+	@include selected-pressed {
+
+	}
+
+	@include selected-disabled {
+		transform: rotate(0.0001deg) translateY(b(1 / 16));
+		
+		box-shadow: 0 b(1 / 16) 0 color(neutral tint 3), 0 b(1 / 16) b(1 / 16) transparentize(color(neutral base), 1 - 0.3);
+	}
+
+	@for $i from 1 through 100 {
+		&.progress-#{$i} {
+			@include before(left 0 top 0) {
+				z-index: -1;
+				height: 100%;
+				width: percent($i / 100);
+
+				background-color: transparentize(color(secondary-1 shade 1), 1 - 0.5);
+			}
+		}
+	}
+
+	&__badge {
+		position: relative;
+		display: inline-block;
+		box-sizing: border-box;
+		z-index: 1;
+
+		height: b(1);
+		min-width: b(1);
+		padding: 0 b(2 / 8);
+		margin: 0 b(-3 / 16) 0 b(0.375);
+
+		color: color(background);
+
+		@include font-size(size(4));
+		text-align: center;
+		vertical-align: top;
+
+		@include before(left 0 top rem(2) right 0 bottom rem(2)) {
+			z-index: -1;
+
+			background-color: color(primary-1 base);
+			border-radius: b(1);
+		}
+	}
+
+	svg {
+		display: inline-block;
+
+		width: rem(_(grid baseline-height) * 1 - 8);
+		height: rem(_(grid baseline-height) * 1 - 8);
+		margin: rem(4) b(0.5) 0 -1 * rem(_(grid baseline-height) * 0.25 - 4);
+
+		color: color(secondary-1 shade 3);
+
+		vertical-align: top;
+	}
+}
+
+
+.ash-button--flat {
+	box-sizing: border-box;
+	position: relative;
+	display: inline-block;
+	overflow: hidden;
+
+	height: b(2);
+	padding: rem(_(grid baseline-height) * 0.5 - 2) b(0.75);
+
+	transition: color 0.1s ease-in, background-color 0.1s ease-in, border-color 0.1s ease-in, box-shadow 0.1s ease-in, transform 0.1s ease-in, opacity 0.1s ease-in, visibility 0.1s ease-in;
+	will-change: color, background-color, border-color, box-shadow, transform, opacity, visibility;
+	//filter: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><filter id="gaussian_blur"><feGaussianBlur in="SourceGraphic" stdDeviation="0" /></filter></defs></svg>#gaussian_blur');
+
+	white-space: nowrap;
+
+	@include default {
+		transform: rotate(0.0001deg) translateY(b(1 / 16));
+
+		color: color(secondary-1 shade 3);
+		background-color: transparent;
+		background-image: none;
+		border: rem(2) solid color(secondary-1 base);
+		border-radius: b(2 / 16);
+		outline: 0 none;
+		box-shadow: 0 b(1 / 16) b(1 / 16) transparentize(color(neutral base), 1 - 0.2);
+	}
+
+	@include selected {
+		transform: rotate(0.0001deg) translateY(b(1 / 16));
+		
+		box-shadow: 0 b(1 / 16) b(1 / 16) transparentize(color(neutral base), 1 - 0.2);
+	}
+
+	@include focused {
+		color: color(secondary-1 shade 3);
+		border-color: color(secondary-1 tint 1);
+		background-image: none;
+		outline: 0 none;
+	}
+
+	@include hovered {
+		color: color(secondary-1 shade 3);
+		border-color: color(secondary-1 tint 1);
+		background-image: none;
+	}
+
+	@include pressed {
+		transform: rotate(0.0001deg) translateY(b(2 / 16));
+		
+		box-shadow: 0 b(1 / 16) b(1 / 16) transparentize(color(neutral base), 1 - 0.1);
+	}
+
+	@include disabled {
+		cursor: not-allowed;
+		transform: rotate(0.0001deg) translateY(b(1 / 16));
+
+		color: color(neutral tint 3);
+		border-color: color(neutral tint 5);
+		box-shadow: 0 b(1 / 16) b(1 / 16) transparentize(color(neutral base), 1 - 0.15);
+	}
+
+	@include selected-focused {
+
+	}
+
+	@include selected-hovered {
+
+	}
+
+	@include selected-pressed {
+
+	}
+
+	@include selected-disabled {
+		transform: rotate(0.0001deg) translateY(b(1 / 16));
+		
+		box-shadow: 0 b(1 / 16) b(1 / 16) transparentize(color(neutral base), 1 - 0.15);
+	}
+
+	@for $i from 1 through 100 {
+		&.progress-#{$i} {
+			@include before(left 0 top 0) {
+				z-index: -1;
+				height: 100%;
+				width: percent($i / 100);
+
+				background-color: transparentize(color(secondary-1 base), 1 - 1);
+			}
+		}
+	}
+
+	svg {
+		display: inline-block;
+
+		width: rem(_(grid baseline-height) * 1 - 8);
+		height: rem(_(grid baseline-height) * 1 - 8);
+		margin: rem(4) b(0.5) 0 -1 * rem(_(grid baseline-height) * 0.25 - 4);
+
+		color: color(secondary-1 shade 3);
+
+		vertical-align: top;
+	}
+}
+
+
+.ash-button--invisible {
+	box-sizing: border-box;
+	position: relative;
+	display: inline-block;
+	overflow: hidden;
+
+	height: b(2);
+	padding: rem(_(grid baseline-height) * 0.5 - 2) b(0.75);
+
+	transition: color 0.1s ease-in, background-color 0.1s ease-in, border-color 0.1s ease-in, box-shadow 0.1s ease-in, transform 0.1s ease-in, opacity 0.1s ease-in, visibility 0.1s ease-in;
+	will-change: color, background-color, border-color, box-shadow, transform, opacity, visibility;
+	//filter: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><filter id="gaussian_blur"><feGaussianBlur in="SourceGraphic" stdDeviation="0" /></filter></defs></svg>#gaussian_blur');
+
+	white-space: nowrap;
+
+	@include default {
+		transform: rotate(0.0001deg) translateY(b(1 / 16));
+
+		color: color(secondary-1 shade 3);
+		background-color: transparent;
+		background-image: none;
+		border: rem(2) solid transparent;
+		border-radius: b(2 / 16);
+		outline: 0 none;
+		box-shadow: none;
+	}
+
+	@include selected {
+	}
+
+	@include focused {
+		color: color(secondary-1 shade 3);
+		border-color: color(secondary-1 tint 1);
+		background-image: none;
+		outline: 0 none;
+		box-shadow: 0 b(1 / 16) b(1 / 16) transparentize(color(neutral base), 1 - 0.2);	
+	}
+
+	@include hovered {
+		color: color(secondary-1 shade 3);
+		border-color: color(secondary-1 tint 1);
+		background-image: none;
+		box-shadow: 0 b(1 / 16) b(1 / 16) transparentize(color(neutral base), 1 - 0.2);
+	}
+
+	@include pressed {
+		transform: rotate(0.0001deg) translateY(b(2 / 16));
+		
+		box-shadow: 0 b(1 / 16) b(1 / 16) transparentize(color(neutral base), 1 - 0.1);
+	}
+
+	@include disabled {
+		cursor: not-allowed;
+		transform: rotate(0.0001deg) translateY(b(1 / 16));
+
+		color: color(neutral tint 3);
+		border-color: transparent;
+		box-shadow: none;
+	}
+
+	@include selected-focused {
+
+	}
+
+	@include selected-hovered {
+
+	}
+
+	@include selected-pressed {
+
+	}
+
+	@include selected-disabled {
+	}
+
+	@for $i from 1 through 100 {
+		&.progress-#{$i} {
+			@include before(left 0 top 0) {
+				z-index: -1;
+				height: 100%;
+				width: percent($i / 100);
+
+				background-color: transparentize(color(secondary-1 base), 1 - 1);
+			}
+		}
+	}
+
+	svg {
+		display: inline-block;
+
+		width: rem(_(grid baseline-height) * 1 - 8);
+		height: rem(_(grid baseline-height) * 1 - 8);
+		margin: rem(4) b(0.5) 0 -1 * rem(_(grid baseline-height) * 0.25 - 4);
+
+		color: color(secondary-1 shade 3);
+
+		vertical-align: top;
+	}
+}

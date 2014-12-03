@@ -1,0 +1,5 @@
+@mixin selected() {
+	&.is-selected, &.is-selected {
+		@content;
+	}
+}

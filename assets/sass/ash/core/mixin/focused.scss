@@ -1,0 +1,5 @@
+@mixin focused() {
+	&.is-focused, &:focus {
+		@content;
+	}
+}

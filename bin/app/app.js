@@ -1,20 +1,41 @@
 "use strict";
 
-var $ = window.$ = require("jquery");
-var _ = window._ = require("_");
-var ash = window.ash = require("./ash");
+var $ = global.$ = require("jquery");
+var _ = global._ = require("_");
+var ash = global.ash = require("./ash");
 
 var Display = require("./components/Display");
 var Timer = require("./components/Timer");
 
 
-Renderer = window.Renderer = new ash.Renderer();
+var Renderer = global.Renderer = new ash.Renderer();
 
 
+$(document).on("click", "a", function (event) {
+  event.preventDefault();
 
+});
 
+var $buttons = $(".ash-button--flat").eq(0);
+var progress = 0;
 
+var makeProgress = function () {
+  console.log(progress);
 
+  progress += Math.random();
+
+  if (progress > 100) progress = 0;
+
+  $buttons.removeClass(function (index, css) {
+    return (css.match(/(^|\s)progress-\S+/g) || []).join(" ");
+  });
+
+  $buttons.addClass("progress-" + Math.floor(progress));
+
+  requestAnimationFrame(makeProgress);
+};
+
+//requestAnimationFrame(makeProgress);
 
 //Renderer.addComponent(timer(), $('.page-content')[0]);
 
@@ -45,9 +66,9 @@ var html;
 
 
 
-//$('.page-content').html(html);
+$(".page").html("<br>");
 
-Renderer.addComponent(Timer(), $(".page")[0]);
+//Renderer.addComponent(new Timer(), $('.page')[0]);
 
 
 
@@ -70,8 +91,8 @@ class BarAction extends ash.Action {
 
 
 
-var fooObservable = window.fooObservable = new ash.Observable();
-var barAction = window.barAction = new BarAction();
+var fooObservable = global.fooObservable = new ash.Observable();
+var barAction = global.barAction = new BarAction();
 
 fooObservable.name = 'fooObservable';
 barAction.name = 'barAction';
@@ -116,7 +137,7 @@ barAction.trigger(42, 47);*/
 /*var TodoStore = require('./todo/TodoStore');
 var TodoApp = require('./todo/components/TodoApp');*/
 
-/*var router = window.router = new ash.Router();
+/*var router = global.router = new ash.Router();
 router.add('*all', 'not found');
 router.on('all', function ()
 {
@@ -125,8 +146,8 @@ router.on('all', function ()
 router.start();*/
 
 
-// window.TodoStore = TodoStore;
-// var todoApp = window.todoApp = new TodoApp();
+// global.TodoStore = TodoStore;
+// var todoApp = global.todoApp = new TodoApp();
 
 // TodoStore.create('foo');
 // TodoStore.create('bar');

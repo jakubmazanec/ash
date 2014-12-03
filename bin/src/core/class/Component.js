@@ -7,7 +7,7 @@ var _classProps = function (child, staticProps, instanceProps) {
 
 var _ = require("_");
 
-//var isAshNodeAshElement = require('../internal/isAshNodeAshElement');
+var isAshNodeAshElement = require("../internal/isAshNodeAshElement");
 var constants = require("../internal/constants");
 var findNode = require("../DOM/findNode");
 

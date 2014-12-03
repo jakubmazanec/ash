@@ -1,21 +1,43 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function (global){
 "use strict";
 
-var $ = window.$ = require("jquery");
-var _ = window._ = require("_");
-var ash = window.ash = require("./ash");
+var $ = global.$ = require("jquery");
+var _ = global._ = require("_");
+var ash = global.ash = require("./ash");
 
 var Display = require("./components/Display");
 var Timer = require("./components/Timer");
 
 
-Renderer = window.Renderer = new ash.Renderer();
+var Renderer = global.Renderer = new ash.Renderer();
 
 
+$(document).on("click", "a", function (event) {
+  event.preventDefault();
 
+});
 
+var $buttons = $(".ash-button--flat").eq(0);
+var progress = 0;
 
+var makeProgress = function () {
+  console.log(progress);
 
+  progress += Math.random();
+
+  if (progress > 100) progress = 0;
+
+  $buttons.removeClass(function (index, css) {
+    return (css.match(/(^|\s)progress-\S+/g) || []).join(" ");
+  });
+
+  $buttons.addClass("progress-" + Math.floor(progress));
+
+  requestAnimationFrame(makeProgress);
+};
+
+//requestAnimationFrame(makeProgress);
 
 //Renderer.addComponent(timer(), $('.page-content')[0]);
 
@@ -46,9 +68,9 @@ var html;
 
 
 
-//$('.page-content').html(html);
+$(".page").html("<br>");
 
-Renderer.addComponent(Timer(), $(".page")[0]);
+//Renderer.addComponent(new Timer(), $('.page')[0]);
 
 
 
@@ -71,8 +93,8 @@ class BarAction extends ash.Action {
 
 
 
-var fooObservable = window.fooObservable = new ash.Observable();
-var barAction = window.barAction = new BarAction();
+var fooObservable = global.fooObservable = new ash.Observable();
+var barAction = global.barAction = new BarAction();
 
 fooObservable.name = 'fooObservable';
 barAction.name = 'barAction';
@@ -117,7 +139,7 @@ barAction.trigger(42, 47);*/
 /*var TodoStore = require('./todo/TodoStore');
 var TodoApp = require('./todo/components/TodoApp');*/
 
-/*var router = window.router = new ash.Router();
+/*var router = global.router = new ash.Router();
 router.add('*all', 'not found');
 router.on('all', function ()
 {
@@ -126,8 +148,8 @@ router.on('all', function ()
 router.start();*/
 
 
-// window.TodoStore = TodoStore;
-// var todoApp = window.todoApp = new TodoApp();
+// global.TodoStore = TodoStore;
+// var todoApp = global.todoApp = new TodoApp();
 
 // TodoStore.create('foo');
 // TodoStore.create('bar');
@@ -137,6 +159,7 @@ router.start();*/
 // TodoStore.todos['todo-1'].complete = true;
 
 // Renderer.registerComponent(todoApp, $('.page-content')[0]);
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./ash":2,"./components/Display":3,"./components/Timer":4,"_":140,"jquery":304}],2:[function(require,module,exports){
 var ash = require("../src/index");
 
@@ -1101,6 +1124,7 @@ module.exports = patchNodeTree;
 "use strict";
 
 var _ = require("_");
+var $ = require("jquery");
 var DOMEvents = require("../class/DOMEvents");
 
 var domEvents = new DOMEvents();
@@ -1140,7 +1164,7 @@ function setNodeProperties(node, properties) {
 }
 
 module.exports = setNodeProperties;
-},{"../class/DOMEvents":19,"_":140}],13:[function(require,module,exports){
+},{"../class/DOMEvents":19,"_":140,"jquery":304}],13:[function(require,module,exports){
 "use strict";
 
 var _ = require("_");
@@ -1532,7 +1556,7 @@ var _classProps = function (child, staticProps, instanceProps) {
 
 var _ = require("_");
 
-//var isAshNodeAshElement = require('../internal/isAshNodeAshElement');
+var isAshNodeAshElement = require("../internal/isAshNodeAshElement");
 var constants = require("../internal/constants");
 var findNode = require("../DOM/findNode");
 
@@ -1714,7 +1738,7 @@ var Component = (function () {
 })();
 
 module.exports = Component;
-},{"../DOM/findNode":9,"../internal/constants":27,"_":140}],19:[function(require,module,exports){
+},{"../DOM/findNode":9,"../internal/constants":27,"../internal/isAshNodeAshElement":32,"_":140}],19:[function(require,module,exports){
 var _classProps = function (child, staticProps, instanceProps) {
   if (staticProps) Object.defineProperties(child, staticProps);
   if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
@@ -2641,7 +2665,7 @@ function removeNodeProperties(node, properties) {
 module.exports = removeNodeProperties;
 },{"../class/DOMEvents":19,"jquery":304}],26:[function(require,module,exports){
 module.exports=require(12)
-},{"../class/DOMEvents":19,"_":140,"d:\\projects\\ash\\bin\\src\\core\\DOM\\setNodeProperties.js":12}],27:[function(require,module,exports){
+},{"../class/DOMEvents":19,"_":140,"d:\\projects\\ash\\bin\\src\\core\\DOM\\setNodeProperties.js":12,"jquery":304}],27:[function(require,module,exports){
 "use strict";
 
 var constants = {

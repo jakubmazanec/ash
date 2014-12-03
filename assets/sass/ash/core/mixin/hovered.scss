@@ -1,0 +1,5 @@
+@mixin hovered() {
+	&.is-hovered, &:hover {
+		@content;
+	}
+}
