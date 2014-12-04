@@ -1,5 +1,5 @@
 {
-  "name": "Ash",
+  "name": "ash",
   "version": "0.1.0",
   "description": "A javascript framework for building applications.",
   "keywords": [
@@ -9,7 +9,7 @@
   "author": "Jakub Mazanec <jakub@mazanec.info>",
   "license": "MIT",
   "repository": "jakubmazanec/ash",
-  "main": "src/index.js",
+  "main": "bin/src/index.js",
   "dependencies": {
     "null": "jakubmazanec/_",
     "bluebird": "^2.3.10"
