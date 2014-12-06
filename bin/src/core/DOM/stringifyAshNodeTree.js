@@ -73,7 +73,12 @@ function walkStringifyAshNodeTree(ashNodeTree, index /*, parentIndex*/) {
             openingTag += "\"";
           } else {
             if (typeof ashNodeTree.properties[key1] === "string") {
-              openingTag += " " + key1 + "=\"" + escapeAttributeValue(ashNodeTree.properties[key1]) + "\"";
+              console.log(key1);
+              if (key1.toLowerCase() == "classname") {
+                openingTag += " class=\"" + escapeAttributeValue(ashNodeTree.properties[key1]) + "\"";
+              } else {
+                openingTag += " " + key1 + "=\"" + escapeAttributeValue(ashNodeTree.properties[key1]) + "\"";
+              }
             } else if (typeof ashNodeTree.properties[key1] === "boolean") {
               openingTag += " " + key1;
             } else if (typeof ashNodeTree.properties[key1] === "number") {

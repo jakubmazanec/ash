@@ -67,7 +67,7 @@ var html;
 
 
 
-$('.page').html('<br>');
+//$('.page').html('<br>');
 
 //Renderer.addComponent(new Timer(), $('.page')[0]);
 

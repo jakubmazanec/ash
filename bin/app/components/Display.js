@@ -45,6 +45,7 @@ var Display = (function (ash) {
         var message = "Timer Clicks = " + this.props.timerClicks + " -- Display Click = " + this.state.displayClicks;
 
         return ash.e("div", null, [message, ash.e("button", {
+          className: "big",
           style: {
             color: this.state.displayClicks % 2 === 0 ? "red" : "blue"
           },

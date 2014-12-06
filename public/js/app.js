@@ -68,7 +68,7 @@ var html;
 
 
 
-$(".page").html("<br>");
+//$('.page').html('<br>');
 
 //Renderer.addComponent(new Timer(), $('.page')[0]);
 
@@ -212,6 +212,7 @@ var Display = (function (ash) {
         var message = "Timer Clicks = " + this.props.timerClicks + " -- Display Click = " + this.state.displayClicks;
 
         return ash.e("div", null, [message, ash.e("button", {
+          className: "big",
           style: {
             color: this.state.displayClicks % 2 === 0 ? "red" : "blue"
           },
@@ -1240,7 +1241,12 @@ function walkStringifyAshNodeTree(ashNodeTree, index /*, parentIndex*/) {
             openingTag += "\"";
           } else {
             if (typeof ashNodeTree.properties[key1] === "string") {
-              openingTag += " " + key1 + "=\"" + escapeAttributeValue(ashNodeTree.properties[key1]) + "\"";
+              console.log(key1);
+              if (key1.toLowerCase() == "classname") {
+                openingTag += " class=\"" + escapeAttributeValue(ashNodeTree.properties[key1]) + "\"";
+              } else {
+                openingTag += " " + key1 + "=\"" + escapeAttributeValue(ashNodeTree.properties[key1]) + "\"";
+              }
             } else if (typeof ashNodeTree.properties[key1] === "boolean") {
               openingTag += " " + key1;
             } else if (typeof ashNodeTree.properties[key1] === "number") {
