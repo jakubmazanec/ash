@@ -6,13 +6,13 @@ var DOMEvents = require('../class/DOMEvents');
 
 var domEvents = new DOMEvents();
 
-function setNodeProperties(node, properties)
+function setNodeProperties(node, properties, inserted)
 {
 	_.forOwn(properties, function (value, key, object) {
 		if (key == 'style' && _.isObject(value)) {
 			$(node).css(value);
 		} else if (key == 'events' && _.isObject(value)) {
-			domEvents.addEvents(node, value);
+			domEvents.addEvents(node, value, inserted);
 			/*_.forOwn(value, function (callback, eventName, object) {
 				if (_.isFunction(callback)) {
 					domEvents.addEvent(node, eventName, callback);
@@ -27,13 +27,21 @@ function setNodeProperties(node, properties)
 			} else if (key.substring(0, 4) == "xml:") {
 				node.setAttributeNS('http://www.w3.org/2000/svg', key.substring(4), value);
 			} else {
-				if (key == 'checked') {
+				if (key == 'checked')
+				{
 					node.checked = !!value;
-				} else if (key == 'value') {
+					if (node.checked) {
+						node.setAttribute('checked', 'checked');
+					} else {
+						node.removeAttribute('checked');
+					}
+				} else if (key == 'value')
+				{
 					node.value = value;
+					node.setAttribute(key, value);
+				} else {
+					node.setAttribute(key, value);
 				}
-
-				node.setAttribute(key, value);
 			}
 		}
 	});

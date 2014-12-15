@@ -31,7 +31,7 @@ gulp.task('es6-app', function () {
 			whitelist: ['classes', 'letScoping'],
 			sourceMap: false
 		}))
-		.pipe(gulp.dest('bin/app'));;
+		.pipe(gulp.dest('bin/app'));
 });
 
 gulp.task('es6-src', function () {

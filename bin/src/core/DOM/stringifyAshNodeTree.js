@@ -3,15 +3,8 @@
 var _ = require("_");
 var $ = require("jquery");
 
-var createAshElementTree = require("../DOM/createAshElementTree");
 var isAshNode = require("../internal/isAshNode");
 var isAshTextNode = require("../internal/isAshTextNode");
-var isComponentAshElement = require("../internal/isComponentAshElement");
-var isAshNodeAshElement = require("../internal/isAshNodeAshElement");
-var createAshNodeTree = require("../DOM/createAshNodeTree");
-var createNodeTree = require("../DOM/createNodeTree");
-var diffAshNodeTree = require("../DOM/diffAshNodeTree");
-var patchNodeTree = require("../DOM/patchNodeTree");
 var constants = require("../internal/constants");
 
 var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;

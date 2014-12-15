@@ -4,9 +4,9 @@ var _ = require("_");
 var constants = require("../internal/constants");
 var parseAshNodeIndex = require("./parseAshNodeIndex");
 var createNodeTree = require("./createNodeTree");
-var setNodeProperties = require("../dom/setNodeProperties");
-var removeNodeProperties = require("../dom/removeNodeProperties");
-var findNode = require("../dom/findNode");
+var setNodeProperties = require("./setNodeProperties");
+var removeNodeProperties = require("./removeNodeProperties");
+var findNode = require("./findNode");
 var DOMEvents = require("../class/DOMEvents");
 
 var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;

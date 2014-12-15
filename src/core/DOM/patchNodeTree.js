@@ -4,9 +4,9 @@ var _ = require('_');
 var constants = require('../internal/constants');
 var parseAshNodeIndex = require('./parseAshNodeIndex');
 var createNodeTree = require('./createNodeTree');
-var setNodeProperties = require('../dom/setNodeProperties');
-var removeNodeProperties = require('../dom/removeNodeProperties');
-var findNode = require('../dom/findNode');
+var setNodeProperties = require('./setNodeProperties');
+var removeNodeProperties = require('./removeNodeProperties');
+var findNode = require('./findNode');
 var DOMEvents = require('../class/DOMEvents');
 
 var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
@@ -72,7 +72,7 @@ function patchNodeTree(domTree, patches) {
 
 		while (reindexCache.length > 0) {
 			// reindex events
-			domEvents.reindexEvents(reindexCache[0].oldIndex, reindexCache[0].newOrder, reindexCache[0].stage);
+			//domEvents.reindexEvents(reindexCache[0].oldIndex, reindexCache[0].newOrder, reindexCache[0].stage);
 
 			reindexCache[0].node[INDEX_ATTRIBUTE_NAME] = reindexCache[0].newIndex;
 			reindexCache[0].node[ORDER_ATTRIBUTE_NAME] = reindexCache[0].newOrder;
@@ -175,7 +175,7 @@ function patchNodeTree(domTree, patches) {
 				return false;
 			}
 
-			setNodeProperties(node, __patches[i].propertiesToChange);
+			setNodeProperties(node, __patches[i].propertiesToChange, false);
 			removeNodeProperties(node, __patches[i].propertiesToRemove);
 		}
 
@@ -209,12 +209,16 @@ function patchNodeTree(domTree, patches) {
 		if (__patches[i].type == PATCH_ORDER){
 			if (typeof __patches[i].index !== 'undefined')
 			{
+				
+
 				// moving existing node
 				node = findNode(domTree, __patches[i].index);
 
 				if (!node) {
 					return false;
 				}
+
+				domEvents.reindexEvents(__patches[i].index, __patches[i].order, __patches[i].stage);
 
 				reindexCache.push({
 					node: node,
@@ -234,6 +238,8 @@ function patchNodeTree(domTree, patches) {
 	}
 
 	flushCache();
+
+	domEvents.markEvents(__patches[0].stage);
 
 	return true;
 }
