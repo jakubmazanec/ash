@@ -66,7 +66,6 @@ function walkStringifyAshNodeTree(ashNodeTree, index /*, parentIndex*/) {
             openingTag += "\"";
           } else {
             if (typeof ashNodeTree.properties[key1] === "string") {
-              console.log(key1);
               if (key1.toLowerCase() == "classname") {
                 openingTag += " class=\"" + escapeAttributeValue(ashNodeTree.properties[key1]) + "\"";
               } else {

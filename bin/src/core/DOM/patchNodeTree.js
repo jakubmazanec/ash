@@ -72,7 +72,7 @@ function patchNodeTree(domTree, patches) {
 
     while (reindexCache.length > 0) {
       // reindex events
-      domEvents.reindexEvents(reindexCache[0].oldIndex, reindexCache[0].newOrder, reindexCache[0].stage);
+      //domEvents.reindexEvents(reindexCache[0].oldIndex, reindexCache[0].newOrder, reindexCache[0].stage);
 
       reindexCache[0].node[INDEX_ATTRIBUTE_NAME] = reindexCache[0].newIndex;
       reindexCache[0].node[ORDER_ATTRIBUTE_NAME] = reindexCache[0].newOrder;
@@ -175,7 +175,7 @@ function patchNodeTree(domTree, patches) {
         return false;
       }
 
-      setNodeProperties(node, __patches[i].propertiesToChange);
+      setNodeProperties(node, __patches[i].propertiesToChange, false);
       removeNodeProperties(node, __patches[i].propertiesToRemove);
     }
 
@@ -215,6 +215,8 @@ function patchNodeTree(domTree, patches) {
           return false;
         }
 
+        domEvents.reindexEvents(__patches[i].index, __patches[i].order, __patches[i].stage);
+
         reindexCache.push({
           node: node,
           newIndex: __patches[i].newIndex,
@@ -233,6 +235,8 @@ function patchNodeTree(domTree, patches) {
   }
 
   flushCache();
+
+  domEvents.markEvents(__patches[0].stage);
 
   return true;
 }

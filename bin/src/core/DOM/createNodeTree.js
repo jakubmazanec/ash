@@ -34,7 +34,7 @@ function walk(ashNodeTree) {
   nodeTree[INDEX_ATTRIBUTE_NAME] = ashNodeTree.index;
   nodeTree[ORDER_ATTRIBUTE_NAME] = ashNodeTree.order;
   nodeTree[STAGE_ATTRIBUTE_NAME] = ashNodeTree.stage;
-  setNodeProperties(nodeTree, ashNodeTree.properties);
+  setNodeProperties(nodeTree, ashNodeTree.properties, true);
   //$(nodeTree).attr('index', nodeTree[INDEX_ATTRIBUTE_NAME]/* + ' - ' + ashNodeTree.key*/);
   //$(nodeTree).attr('order', nodeTree[ORDER_ATTRIBUTE_NAME]/* + ' - ' + ashNodeTree.key*/);
   //$(nodeTree).attr('levels', ashNodeTree.levels.join('.'));

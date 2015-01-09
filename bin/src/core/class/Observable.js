@@ -6,7 +6,7 @@ var _classProps = function (child, staticProps, instanceProps) {
 "use strict!";
 
 var _ = require("_");
-var immediate = require("../polyfill/immediate");
+var setImmediate = require("../polyfill/immediate");
 
 // Regular expressions used to split event name strings
 var REGEX_TOPIC = /\s+/; // one or more space

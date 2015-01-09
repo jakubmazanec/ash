@@ -38,7 +38,7 @@ var DOMEvents = (function () {
   _classProps(DOMEvents, null, {
     addEvent: {
       writable: true,
-      value: function (node, eventName, callback) {
+      value: function (node, eventName, callback, inserted) {
         var i;
 
         if (!topics[eventName]) {
@@ -50,6 +50,7 @@ var DOMEvents = (function () {
         for (i = 0; i < topics[eventName].length; i++) {
           if (topics[eventName][i].stage == node[STAGE_ATTRIBUTE_NAME] && topics[eventName][i].index == node[INDEX_ATTRIBUTE_NAME]) {
             topics[eventName][i].callback = callback;
+            topics[eventName][i].inserted = inserted;
 
             return this;
           }
@@ -58,7 +59,8 @@ var DOMEvents = (function () {
         topics[eventName].push({
           index: node[INDEX_ATTRIBUTE_NAME],
           stage: node[STAGE_ATTRIBUTE_NAME],
-          callback: callback
+          callback: callback,
+          inserted: inserted
         });
 
         return this;
@@ -66,10 +68,10 @@ var DOMEvents = (function () {
     },
     addEvents: {
       writable: true,
-      value: function (node, events) {
+      value: function (node, events, inserted) {
         _.forOwn(events, function (callback, eventName) {
           if (_.isFunction(callback)) {
-            this.addEvent(node, eventName, callback);
+            this.addEvent(node, eventName, callback, inserted);
           }
         }, this);
 
@@ -121,7 +123,7 @@ var DOMEvents = (function () {
           /*if ((eventName && eventName == key) || !eventName)
           {*/
           for (i = 0; i < value.length; i++) {
-            if (stage == value[i].stage && _.isMatching(index.split(LEVEL_SEPARATOR), value[i].index.split(LEVEL_SEPARATOR), true)) {
+            if (stage == value[i].stage && _.isMatching(index.split(LEVEL_SEPARATOR), value[i].index.split(LEVEL_SEPARATOR), true) && !value[i].inserted) {
               value.splice(i, 1);
               i--;
             }
@@ -136,13 +138,27 @@ var DOMEvents = (function () {
         _.forOwn(topics, function (value, key, object) {
           var i;
           var levels;
-          var index;
 
           for (i = 0; i < value.length; i++) {
-            if (stage == value[i].stage && _.isMatching(oldIndex.split(LEVEL_SEPARATOR), value[i].index.split(LEVEL_SEPARATOR), true)) {
+            if (stage == value[i].stage && _.isMatching(oldIndex.split(LEVEL_SEPARATOR), value[i].index.split(LEVEL_SEPARATOR), true) && !value[i].inserted) {
               levels = parseAshNodeIndex(value[i].index);
               levels[parseAshNodeIndex(oldIndex).length - 1] = newOrder;
               value[i].index = levels.join(LEVEL_SEPARATOR);
+            }
+          }
+        }, this);
+      }
+    },
+    markEvents: {
+      writable: true,
+      value: function (stage) {
+        //console.log('marking events...');
+        _.forOwn(topics, function (value, key, object) {
+          var i;
+
+          for (i = 0; i < value.length; i++) {
+            if (stage == value[i].stage) {
+              value[i].inserted = false;
             }
           }
         }, this);
