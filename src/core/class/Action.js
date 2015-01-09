@@ -5,7 +5,7 @@ var Observable = require('./Observable');
 
 var triggerOptions = {
 	noEventArgument: true
-}
+};
 
 class Action extends Observable {
 	trigger(/*data*/) {

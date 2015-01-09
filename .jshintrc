@@ -1,4 +1,11 @@
 {
 	"node": true,
-	"esnext": true
+	"esnext": true,
+	"curly": true,
+	"forin": true,
+	"immed": true,
+	"latedef": true,
+	"quotmark": "single",
+	"unused": true,
+	"validthis": true
 }

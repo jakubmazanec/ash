@@ -1,7 +1,7 @@
 'use strict!';
 
 var _ = require('_');
-var immediate = require('../polyfill/immediate');
+var setImmediate = require('../polyfill/immediate');
 
 // Regular expressions used to split event name strings
 var REGEX_TOPIC = /\s+/; // one or more space
@@ -57,7 +57,7 @@ class Observable {
 				};
 			}
 
-			store[events[i]].observables.push({				
+			store[events[i]].observables.push({
 				observable: observable,
 				observed: object,
 				callback: callback,
@@ -88,7 +88,7 @@ class Observable {
 		for (i = 0; i < events.length; i++) {
 			for (key in store) {
 				if (store.hasOwnProperty(key) && (store[key] == events[i] || events[i] == '*')) {
-					for (j = 0; j < store[key].observables.length; j++) {					
+					for (j = 0; j < store[key].observables.length; j++) {
 						// we can remove only this observable
 						if (store[key].observables[j].observable == observable) {
 							if ((!object || store[key].observables[j].observed == object) && (!callback || store[key].observables[j].callback == callback) && (!context || store[key].observables[j].context == context)) {
