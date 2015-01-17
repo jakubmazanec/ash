@@ -18,7 +18,7 @@ class AshElement {
 
 		if (!spec)
 		{
-			throw new Error(spec + 'must be specified.');	
+			throw new Error(spec + 'must be specified.');
 		}
 
 		if (!(this instanceof AshElement))
@@ -32,7 +32,7 @@ class AshElement {
 			} else
 			{
 				return new AshElement(type, spec);
-			}			
+			}
 		}
 
 		if (type == COMPONENT_ASH_ELEMENT)
@@ -80,7 +80,7 @@ class AshElement {
 				this.instance = new this.spec(this.args[0]);
 			} else {
 				this.instance = new this.spec();
-			}			
+			}
 		} else if (this.type == ASH_NODE_ASH_ELEMENT)
 		{
 			if (this.args) {

@@ -17,6 +17,7 @@ var ash = {};
 var VERSION = "0.1.0";
 
 _.assign(ash, {
+  VERSION: VERSION,
   Observable: Observable,
   Component: Component,
   Renderer: Renderer,
@@ -24,7 +25,6 @@ _.assign(ash, {
   Store: Store,
 
   e: createElement,
-  createFactory: createFactory
-});
+  createFactory: createFactory });
 
 module.exports = ash;

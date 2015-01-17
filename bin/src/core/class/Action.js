@@ -40,7 +40,17 @@ var Action = (function (Observable) {
         if (typeof action.onTrigger === "function") {
           Observable.prototype.trigger.call(this, "*", action.onTrigger.apply(action, arguments), triggerOptions);
         } else {
-          if (arguments.length == 5) {
+          if (arguments.length == 10) {
+            Observable.prototype.trigger.call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], triggerOptions);
+          } else if (arguments.length == 9) {
+            Observable.prototype.trigger.call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], triggerOptions);
+          } else if (arguments.length == 8) {
+            Observable.prototype.trigger.call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], triggerOptions);
+          } else if (arguments.length == 7) {
+            Observable.prototype.trigger.call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], triggerOptions);
+          } else if (arguments.length == 6) {
+            Observable.prototype.trigger.call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], triggerOptions);
+          } else if (arguments.length == 5) {
             Observable.prototype.trigger.call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], triggerOptions);
           } else if (arguments.length == 4) {
             Observable.prototype.trigger.call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], triggerOptions);

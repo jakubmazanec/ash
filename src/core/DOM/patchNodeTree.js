@@ -31,10 +31,7 @@ function patchNodeTree(domTree, patches) {
 	//var __patches = [];
 	var __patches = patches;
 	var node;
-	var index;
-	var position;
 	var i;
-	var j;
 	var reindexCache = [];
 	var reorderCache = [];
 	var lastLevel;
@@ -52,14 +49,14 @@ function patchNodeTree(domTree, patches) {
 				childLevels[levelIndex] = order;
 
 				node.childNodes[i][INDEX_ATTRIBUTE_NAME] = childLevels.join('.');
-				//node.childNodes[i][ORDER_ATTRIBUTE_NAME] = order;
+				node.childNodes[i][ORDER_ATTRIBUTE_NAME] = order;
 				//$(node.childNodes[i]).attr('index', node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
 				//$(node.childNodes[i]).attr('order', node.childNodes[i][ORDER_ATTRIBUTE_NAME]);
 
 				if (node.childNodes[i].childNodes && node.childNodes[i].childNodes.length) {
 					walk(node.childNodes[i]);
 				}
-			} 
+			}
 		}
 
 		walk(parentNode);
@@ -108,26 +105,26 @@ function patchNodeTree(domTree, patches) {
 		var result = '';
 
 		for (var i = 0; i < patch.parsedIndex.length - 1; i++) {
-			result += _.padLeft(patch.parsedIndex[i], maxDigits);
+			result += _.padLeft(patch.parsedIndex[i], maxDigits, '0');
 		}
 
 		if (patch.type == PATCH_ASH_NODE) {
-			result += _.padLeft(9, maxDigits);
+			result += _.padLeft(9, maxDigits, '0');
 		} else if (patch.type == PATCH_ASH_TEXT_NODE) {
-			result += _.padLeft(8, maxDigits);
+			result += _.padLeft(8, maxDigits, '0');
 		} else if (patch.type == PATCH_PROPERTIES) {
-			result += _.padLeft(7, maxDigits);
+			result += _.padLeft(7, maxDigits, '0');
 		} else if (patch.type == PATCH_REMOVE) {
-			result += _.padLeft(6, maxDigits);
+			result += _.padLeft(6, maxDigits, '0');
 		} else if (patch.type == PATCH_INSERT) {
-			result += _.padLeft(5, maxDigits);
+			result += _.padLeft(5, maxDigits, '0');
 		} else if (patch.type == PATCH_ORDER) {
-			result += _.padLeft(4, maxDigits);
+			result += _.padLeft(4, maxDigits, '0');
 		} else {
-			result += _.padLeft(0, maxDigits);
+			result += _.padLeft(0, maxDigits, '0');
 		}
 
-		result += _.padLeft(patch.parsedIndex[patch.parsedIndex.length - 1], maxDigits);
+		result += _.padLeft(patch.parsedIndex[patch.parsedIndex.length - 1], maxDigits, '0');
 
 		return parseInt(result, 10);
 	});
@@ -239,7 +236,9 @@ function patchNodeTree(domTree, patches) {
 
 	flushCache();
 
-	domEvents.markEvents(__patches[0].stage);
+	if (__patches[0]) {
+		domEvents.markEvents(__patches[0].stage);
+	}
 
 	return true;
 }

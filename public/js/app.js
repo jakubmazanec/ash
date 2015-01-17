@@ -937,10 +937,7 @@ function patchNodeTree(domTree, patches) {
   //var __patches = [];
   var __patches = patches;
   var node;
-  var index;
-  var position;
   var i;
-  var j;
   var reindexCache = [];
   var reorderCache = [];
   var lastLevel;
@@ -958,7 +955,7 @@ function patchNodeTree(domTree, patches) {
         childLevels[levelIndex] = order;
 
         node.childNodes[i][INDEX_ATTRIBUTE_NAME] = childLevels.join(".");
-        //node.childNodes[i][ORDER_ATTRIBUTE_NAME] = order;
+        node.childNodes[i][ORDER_ATTRIBUTE_NAME] = order;
         //$(node.childNodes[i]).attr('index', node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
         //$(node.childNodes[i]).attr('order', node.childNodes[i][ORDER_ATTRIBUTE_NAME]);
 
@@ -1014,26 +1011,26 @@ function patchNodeTree(domTree, patches) {
     var result = "";
 
     for (var i = 0; i < patch.parsedIndex.length - 1; i++) {
-      result += _.padLeft(patch.parsedIndex[i], maxDigits);
+      result += _.padLeft(patch.parsedIndex[i], maxDigits, "0");
     }
 
     if (patch.type == PATCH_ASH_NODE) {
-      result += _.padLeft(9, maxDigits);
+      result += _.padLeft(9, maxDigits, "0");
     } else if (patch.type == PATCH_ASH_TEXT_NODE) {
-      result += _.padLeft(8, maxDigits);
+      result += _.padLeft(8, maxDigits, "0");
     } else if (patch.type == PATCH_PROPERTIES) {
-      result += _.padLeft(7, maxDigits);
+      result += _.padLeft(7, maxDigits, "0");
     } else if (patch.type == PATCH_REMOVE) {
-      result += _.padLeft(6, maxDigits);
+      result += _.padLeft(6, maxDigits, "0");
     } else if (patch.type == PATCH_INSERT) {
-      result += _.padLeft(5, maxDigits);
+      result += _.padLeft(5, maxDigits, "0");
     } else if (patch.type == PATCH_ORDER) {
-      result += _.padLeft(4, maxDigits);
+      result += _.padLeft(4, maxDigits, "0");
     } else {
-      result += _.padLeft(0, maxDigits);
+      result += _.padLeft(0, maxDigits, "0");
     }
 
-    result += _.padLeft(patch.parsedIndex[patch.parsedIndex.length - 1], maxDigits);
+    result += _.padLeft(patch.parsedIndex[patch.parsedIndex.length - 1], maxDigits, "0");
 
     return parseInt(result, 10);
   });
@@ -1142,7 +1139,9 @@ function patchNodeTree(domTree, patches) {
 
   flushCache();
 
-  domEvents.markEvents(__patches[0].stage);
+  if (__patches[0]) {
+    domEvents.markEvents(__patches[0].stage);
+  }
 
   return true;
 }
@@ -1457,7 +1456,17 @@ var Action = (function (Observable) {
         if (typeof action.onTrigger === "function") {
           Observable.prototype.trigger.call(this, "*", action.onTrigger.apply(action, arguments), triggerOptions);
         } else {
-          if (arguments.length == 5) {
+          if (arguments.length == 10) {
+            Observable.prototype.trigger.call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], triggerOptions);
+          } else if (arguments.length == 9) {
+            Observable.prototype.trigger.call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], triggerOptions);
+          } else if (arguments.length == 8) {
+            Observable.prototype.trigger.call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], triggerOptions);
+          } else if (arguments.length == 7) {
+            Observable.prototype.trigger.call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], triggerOptions);
+          } else if (arguments.length == 6) {
+            Observable.prototype.trigger.call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], triggerOptions);
+          } else if (arguments.length == 5) {
             Observable.prototype.trigger.call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], triggerOptions);
           } else if (arguments.length == 4) {
             Observable.prototype.trigger.call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], triggerOptions);
@@ -1622,10 +1631,23 @@ var _classProps = function (child, staticProps, instanceProps) {
   if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
 };
 
+var _extends = function (child, parent) {
+  child.prototype = Object.create(parent.prototype, {
+    constructor: {
+      value: child,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+  child.__proto__ = parent;
+};
+
 "use strict";
 
 var _ = require("_");
 
+var Observable = require("./Observable");
 var isAshNodeAshElement = require("../internal/isAshNodeAshElement");
 var constants = require("../internal/constants");
 var findNode = require("../DOM/findNode");
@@ -1634,21 +1656,13 @@ var LIFECYCLE_UNMOUNTED = constants.LIFECYCLE_UNMOUNTED;
 var LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
 var LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
 
-var Component = (function () {
+var Component = (function (Observable) {
   var Component = function Component(props) {
-    // make sure functions are always bound to this
-    /*_.forIn(this, function (value, key)
-    {
-    	if (_.isFunction(value) && key != 'constructor')
-    	{
-    		this[key] = value.bind(this);
-    	}
-    }, this);*/
     // autobind functions
-    var keys = this.autobind ? this.autobind() : null;
+    var keys = this.autobind();
     var i;
 
-    if (keys && Array.isArray(keys)) {
+    if (keys && Array.isArray(keys) && keys.length) {
       for (i = 0; i < keys.length; i++) {
         if (_.isFunction(this[keys[i]]) && keys[i] != "constructor") {
           this[keys[i]] = this[keys[i]].bind(this);
@@ -1671,6 +1685,8 @@ var Component = (function () {
     this.__isDirty = true;
     this.__lifecycle = LIFECYCLE_UNMOUNTED;
   };
+
+  _extends(Component, Observable);
 
   _classProps(Component, null, {
     autobind: {
@@ -1805,10 +1821,10 @@ var Component = (function () {
   });
 
   return Component;
-})();
+})(Observable);
 
 module.exports = Component;
-},{"../DOM/findNode":9,"../internal/constants":24,"../internal/isAshNodeAshElement":29,"_":137}],20:[function(require,module,exports){
+},{"../DOM/findNode":9,"../internal/constants":24,"../internal/isAshNodeAshElement":29,"./Observable":21,"_":137}],20:[function(require,module,exports){
 var _classProps = function (child, staticProps, instanceProps) {
   if (staticProps) Object.defineProperties(child, staticProps);
   if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
@@ -2121,6 +2137,18 @@ var Observable = (function () {
         return observable;
       }
     },
+    on: {
+      writable: true,
+      value: function (events, callback, context) {
+        return this.observe(this, events, callback, context);
+      }
+    },
+    off: {
+      writable: true,
+      value: function (events, callback, context) {
+        return this.unobserve(this, events, callback, context);
+      }
+    },
     trigger: {
       writable: true,
       value: function () {
@@ -2320,7 +2348,7 @@ var Renderer = (function () {
         var stage = renderer.stages[stageId];
 
         // find descriptors that should be updated
-        findDirtyComponent(stage.ashElementTree);
+        findDirtyComponent(stage.ashElementTree, stage);
 
         // set stage to dirty, so Renderer can rerender the DOM
         stage.isDirty = true;
@@ -2409,33 +2437,33 @@ var Renderer = (function () {
 
 
 
-function findDirtyComponent(ashElement) {
+function findDirtyComponent(ashElement, stage) {
   if (ashElement.type == ASH_NODE_ASH_ELEMENT) {
     var i;
 
     for (i = 0; i < ashElement.children.length; i++) {
       // walk the child
-      findDirtyComponent(ashElement.children[i]);
+      findDirtyComponent(ashElement.children[i], stage);
     }
   } else if (ashElement.type == COMPONENT_ASH_ELEMENT) {
     if (ashElement.instance.isDirty() && ashElement.instance.shouldUpdate(null)) {
       // descriptor is dirty, let's update
-      updateComponentAshElement(ashElement);
+      updateComponentAshElement(ashElement, stage);
     } else {
       // walk the child
-      findDirtyComponent(ashElement.children[0]);
+      findDirtyComponent(ashElement.children[0], stage);
     }
   }
 }
 
-function walkUpdateComponentAshElement(oldAshElement, newAshElement) {
+function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
   var i;
 
   if (newAshElement.type == COMPONENT_ASH_ELEMENT) {
     if (oldAshElement === null) {
       // old is null, new is component
 
-      // newAshElement must be added as a child...							
+      // newAshElement must be added as a child...
       if (newAshElement.parent.type == ASH_NODE_ASH_ELEMENT) {
         // now, the component descriptor's tree is not complete
         createAshElementTree(newAshElement, stage, newAshElement.owner.id, newAshElement.level);
@@ -2469,13 +2497,13 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement) {
           newAshElement.children[0].parent = oldAshElement;
           newAshElement.children[0].order = 0;
 
-          walkUpdateComponentAshElement(oldAshElement.children[0], newAshElement.children[0]);
+          walkUpdateComponentAshElement(oldAshElement.children[0], newAshElement.children[0], stage);
         } else if (newAshElement.children[0] && !oldAshElement.children[0]) {
           newAshElement.children[0].owner = oldAshElement;
           newAshElement.children[0].parent = oldAshElement;
           newAshElement.children[0].order = 0;
 
-          walkUpdateComponentAshElement(null, newAshElement.children[0]);
+          walkUpdateComponentAshElement(null, newAshElement.children[0], stage);
         }
 
         // deleting old surplus children
@@ -2542,7 +2570,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement) {
     if (oldAshElement === null) {
       // old is null, new is virtual node
 
-      // newAshElement must be added as a child...							
+      // newAshElement must be added as a child...
       if (newAshElement.parent.type == COMPONENT_ASH_ELEMENT) {
         // now, the component descriptor's tree is not complete
         createAshElementTree(newAshElement, stage, newAshElement.id, newAshElement.level);
@@ -2571,13 +2599,13 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement) {
           newAshElement.children[i].parent = oldAshElement;
           newAshElement.children[i].order = i;
 
-          walkUpdateComponentAshElement(oldAshElement.children[i], newAshElement.children[i]);
+          walkUpdateComponentAshElement(oldAshElement.children[i], newAshElement.children[i], stage);
         } else if (newAshElement.children[i] && !oldAshElement.children[i]) {
           newAshElement.children[i].owner = oldAshElement.owner;
           newAshElement.children[i].parent = oldAshElement;
           newAshElement.children[i].order = i;
 
-          walkUpdateComponentAshElement(null, newAshElement.children[i]);
+          walkUpdateComponentAshElement(null, newAshElement.children[i], stage);
         }
       }
 
@@ -2619,7 +2647,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement) {
   }
 }
 
-function updateComponentAshElement(componentAshElement) {
+function updateComponentAshElement(componentAshElement, stage) {
   // type check
   if (componentAshElement.type != COMPONENT_ASH_ELEMENT) {
     throw new Error(componentAshElement + " must be a Component type AshElement object.");
@@ -2633,7 +2661,7 @@ function updateComponentAshElement(componentAshElement) {
     render.parent = componentAshElement;
     render.order = 0;
 
-    walkUpdateComponentAshElement(componentAshElement.children[0], render);
+    walkUpdateComponentAshElement(componentAshElement.children[0], render, stage);
   }
 }
 
@@ -2784,7 +2812,6 @@ var constants = require("../internal/constants");
 
 // constants references
 var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
-var ASH_TEXT_NODE = constants.ASH_TEXT_NODE;
 
 var createElement = function (tagName /*, props, children*/) {
   var props = arguments[1];
@@ -2799,12 +2826,23 @@ var createElement = function (tagName /*, props, children*/) {
   if (Array.isArray(props)) {
     children = props;
     props = null;
-  } else if (typeof children === "string") {
+  } /* else if (typeof children === 'string') {
     children = [children];
-  }
+    }*/
 
-  // check type of children
-  if (Array.isArray(children)) {
+  if (!Array.isArray(children)) {
+    children = [];
+
+    // children are not in an array, iterate over arguments...
+    for (i = 2; i < arguments.length; i++) {
+      if (typeof arguments[i] === "string") {
+        children.push(new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, arguments[i]));
+      } else if (isAshElement(arguments[i])) {
+        children.push(arguments[i]);
+      }
+    }
+  } else {
+    // check type of children
     for (i = 0; i < children.length; i++) {
       if (typeof children[i] === "string") {
         children[i] = new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, children[i]);
@@ -2812,7 +2850,9 @@ var createElement = function (tagName /*, props, children*/) {
         children.splice(i, 1);
         i--;
       } else if (!isAshElement(children[i])) {
-        throw new Error(children[i] + " must be a AshElement object.");
+        //throw new Error(children[i] + ' must be a AshElement object.');
+        children.splice(i, 1);
+        i--;
       }
     }
   }
@@ -3053,6 +3093,7 @@ var ash = {};
 var VERSION = "0.1.0";
 
 _.assign(ash, {
+  VERSION: VERSION,
   Observable: Observable,
   Component: Component,
   Renderer: Renderer,
@@ -3060,8 +3101,7 @@ _.assign(ash, {
   Store: Store,
 
   e: createElement,
-  createFactory: createFactory
-});
+  createFactory: createFactory });
 
 module.exports = ash;
 },{"./core/class/Action":16,"./core/class/Component":19,"./core/class/Observable":21,"./core/class/Renderer":22,"./core/class/Store":23,"./core/internal/createElement":25,"./core/internal/createFactory":26,"_":137,"jquery":301}],39:[function(require,module,exports){

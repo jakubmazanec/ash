@@ -131,7 +131,7 @@ function createAshElementTree(rootAshElement, stage, startingLevel)
 		}
 	}
 
-	// return resulting descriptor tree 
+	// return resulting descriptor tree
 	return ashElementTree;
 }
 

@@ -3,10 +3,23 @@ var _classProps = function (child, staticProps, instanceProps) {
   if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
 };
 
+var _extends = function (child, parent) {
+  child.prototype = Object.create(parent.prototype, {
+    constructor: {
+      value: child,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+  child.__proto__ = parent;
+};
+
 "use strict";
 
 var _ = require("_");
 
+var Observable = require("./Observable");
 var isAshNodeAshElement = require("../internal/isAshNodeAshElement");
 var constants = require("../internal/constants");
 var findNode = require("../DOM/findNode");
@@ -15,21 +28,13 @@ var LIFECYCLE_UNMOUNTED = constants.LIFECYCLE_UNMOUNTED;
 var LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
 var LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
 
-var Component = (function () {
+var Component = (function (Observable) {
   var Component = function Component(props) {
-    // make sure functions are always bound to this
-    /*_.forIn(this, function (value, key)
-    {
-    	if (_.isFunction(value) && key != 'constructor')
-    	{
-    		this[key] = value.bind(this);
-    	}
-    }, this);*/
     // autobind functions
-    var keys = this.autobind ? this.autobind() : null;
+    var keys = this.autobind();
     var i;
 
-    if (keys && Array.isArray(keys)) {
+    if (keys && Array.isArray(keys) && keys.length) {
       for (i = 0; i < keys.length; i++) {
         if (_.isFunction(this[keys[i]]) && keys[i] != "constructor") {
           this[keys[i]] = this[keys[i]].bind(this);
@@ -52,6 +57,8 @@ var Component = (function () {
     this.__isDirty = true;
     this.__lifecycle = LIFECYCLE_UNMOUNTED;
   };
+
+  _extends(Component, Observable);
 
   _classProps(Component, null, {
     autobind: {
@@ -186,6 +193,6 @@ var Component = (function () {
   });
 
   return Component;
-})();
+})(Observable);
 
 module.exports = Component;

@@ -17,6 +17,7 @@ var ash = {};
 var VERSION = '0.1.0';
 
 _.assign(ash, {
+	'VERSION': VERSION,
 	'Observable': Observable,
 	'Component': Component,
 	'Renderer': Renderer,
@@ -24,7 +25,24 @@ _.assign(ash, {
 	'Store': Store,
 
 	'e': createElement,
-	'createFactory': createFactory
+	'createFactory': createFactory,
+
+/*	ajax: function (options) {
+		return new Promise((resolve, reject) => {
+			$.ajax(_.assign({}, options, {
+				success(data) {
+					resolve(data);
+				},
+				error(jqXHR, textStatus, errorThrown) {
+					if (errorThrown) {
+						reject(new Error(errorThrown));
+					} else {
+						reject(new Error(textStatus));
+					}
+				}
+			}));
+		});
+	}*/
 });
 
 module.exports = ash;

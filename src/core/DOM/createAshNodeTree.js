@@ -19,7 +19,7 @@ function cloneAshNode(ashNodeAshElement) {
 			tagName: ashNodeAshElement.instance.tagName,
 			key: ashNodeAshElement.instance.key,
 			properties: ashNodeAshElement.instance.properties,
-			children: []			
+			children: []
 		};
 	} else if (isAshTextNode(ashNodeAshElement.instance)) {
 		clonedAshNode = {

@@ -113,6 +113,18 @@ var Observable = (function () {
         return observable;
       }
     },
+    on: {
+      writable: true,
+      value: function (events, callback, context) {
+        return this.observe(this, events, callback, context);
+      }
+    },
+    off: {
+      writable: true,
+      value: function (events, callback, context) {
+        return this.unobserve(this, events, callback, context);
+      }
+    },
     trigger: {
       writable: true,
       value: function () {

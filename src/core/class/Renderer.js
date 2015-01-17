@@ -126,10 +126,10 @@ class Renderer {
 
 	update(stageId) {
 		var renderer = this;
-		var stage = renderer.stages[stageId];		
+		var stage = renderer.stages[stageId];
 
 		// find descriptors that should be updated
-		findDirtyComponent(stage.ashElementTree);
+		findDirtyComponent(stage.ashElementTree, stage);
 
 		// set stage to dirty, so Renderer can rerender the DOM
 		stage.isDirty = true;
@@ -188,7 +188,7 @@ class Renderer {
 					patches = diffAshNodeTree(stage.ashNodeTree, newAshNodeTree);
 					stage.ashNodeTree = newAshNodeTree;
 
-					requestAnimationFrame(function () {						
+					requestAnimationFrame(function () {
 						rerender = !patchNodeTree(stage.getRootDOMNode(), patches);
 
 						if (rerender) {
@@ -211,33 +211,33 @@ class Renderer {
 
 
 
-function findDirtyComponent(ashElement) {
+function findDirtyComponent(ashElement, stage) {
 	if (ashElement.type == ASH_NODE_ASH_ELEMENT) {
 		var i;
 
 		for (i = 0; i < ashElement.children.length; i++) {
 			// walk the child
-			findDirtyComponent(ashElement.children[i]);
+			findDirtyComponent(ashElement.children[i], stage);
 		}
 	} else if (ashElement.type == COMPONENT_ASH_ELEMENT) {
 		if (ashElement.instance.isDirty() && ashElement.instance.shouldUpdate(null)) {
 			// descriptor is dirty, let's update
-			updateComponentAshElement(ashElement);
+			updateComponentAshElement(ashElement, stage);
 		} else {
 			// walk the child
-			findDirtyComponent(ashElement.children[0]);
+			findDirtyComponent(ashElement.children[0], stage);
 		}
 	}
 }
 
-function walkUpdateComponentAshElement(oldAshElement, newAshElement) {
+function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 	var i;
 	
 	if (newAshElement.type == COMPONENT_ASH_ELEMENT) {
 		if (oldAshElement === null) {
 			// old is null, new is component
 
-			// newAshElement must be added as a child...							
+			// newAshElement must be added as a child...
 			if (newAshElement.parent.type == ASH_NODE_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
 				createAshElementTree(newAshElement, stage, newAshElement.owner.id, newAshElement.level);
@@ -271,13 +271,13 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement) {
 					newAshElement.children[0].parent = oldAshElement;
 					newAshElement.children[0].order = 0;
 
-					walkUpdateComponentAshElement(oldAshElement.children[0], newAshElement.children[0]);
+					walkUpdateComponentAshElement(oldAshElement.children[0], newAshElement.children[0], stage);
 				} else if (newAshElement.children[0] && !oldAshElement.children[0]) {
 					newAshElement.children[0].owner = oldAshElement;
 					newAshElement.children[0].parent = oldAshElement;
 					newAshElement.children[0].order = 0;
 
-					walkUpdateComponentAshElement(null, newAshElement.children[0]);
+					walkUpdateComponentAshElement(null, newAshElement.children[0], stage);
 				}
 
 				// deleting old surplus children
@@ -346,7 +346,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement) {
 		if (oldAshElement === null) {
 			// old is null, new is virtual node
 
-			// newAshElement must be added as a child...							
+			// newAshElement must be added as a child...
 			if (newAshElement.parent.type == COMPONENT_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
 				createAshElementTree(newAshElement, stage, newAshElement.id, newAshElement.level);
@@ -375,13 +375,13 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement) {
 					newAshElement.children[i].parent = oldAshElement;
 					newAshElement.children[i].order = i;
 
-					walkUpdateComponentAshElement(oldAshElement.children[i], newAshElement.children[i]);
+					walkUpdateComponentAshElement(oldAshElement.children[i], newAshElement.children[i], stage);
 				} else if (newAshElement.children[i] && !oldAshElement.children[i]) {
 					newAshElement.children[i].owner = oldAshElement.owner;
 					newAshElement.children[i].parent = oldAshElement;
 					newAshElement.children[i].order = i;
 
-					walkUpdateComponentAshElement(null, newAshElement.children[i]);
+					walkUpdateComponentAshElement(null, newAshElement.children[i], stage);
 				}
 			}
 
@@ -423,7 +423,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement) {
 	}
 }
 
-function updateComponentAshElement(componentAshElement) {
+function updateComponentAshElement(componentAshElement, stage) {
 	// type check
 	if (componentAshElement.type != COMPONENT_ASH_ELEMENT) {
 		throw new Error(componentAshElement + ' must be a Component type AshElement object.');
@@ -437,7 +437,7 @@ function updateComponentAshElement(componentAshElement) {
 		render.parent = componentAshElement;
 		render.order = 0;
 
-		walkUpdateComponentAshElement(componentAshElement.children[0], render);
+		walkUpdateComponentAshElement(componentAshElement.children[0], render, stage);
 	}
 }
 
@@ -489,7 +489,7 @@ function mountComponents(componentAshElement)
 		walkMountComponents(componentAshElement.children[0]);
 	}
 
-	// return resulting componentAshElement tree 
+	// return resulting componentAshElement tree
 	return componentAshElement;
 }
 

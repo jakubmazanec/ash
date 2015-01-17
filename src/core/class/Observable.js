@@ -104,6 +104,14 @@ class Observable {
 		return observable;
 	}
 
+	on(events, callback, context) {
+		return this.observe(this, events, callback, context);
+	}
+
+	off(events, callback, context) {
+		return this.unobserve(this, events, callback, context);
+	}
+
 	trigger(/*events, data, options.useAsync|options.noEventArgument*/) {
 		var observable = this;
 		var events = _.isString(arguments[0]) ? arguments[0].trim().split(REGEX_TOPIC) : ['*'];

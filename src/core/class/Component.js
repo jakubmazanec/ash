@@ -2,6 +2,7 @@
 
 var _ = require('_');
 
+var Observable = require('./Observable');
 var isAshNodeAshElement = require('../internal/isAshNodeAshElement');
 var constants = require('../internal/constants');
 var findNode = require('../DOM/findNode');
@@ -10,27 +11,19 @@ var LIFECYCLE_UNMOUNTED = constants.LIFECYCLE_UNMOUNTED;
 var LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
 var LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
 
-class Component {
+class Component extends Observable {
 	constructor(props) {
-		// make sure functions are always bound to this
-		/*_.forIn(this, function (value, key)
-		{
-			if (_.isFunction(value) && key != 'constructor')
-			{
-				this[key] = value.bind(this);
-			}
-		}, this);*/
 		// autobind functions
-		var keys = this.autobind ? this.autobind() : null;
+		var keys = this.autobind();
 		var i;
 
-		if (keys && Array.isArray(keys))
+		if (keys && Array.isArray(keys) && keys.length)
 		{
 			for (i = 0; i < keys.length; i++)
 			{
 				if (_.isFunction(this[keys[i]]) && keys[i] != 'constructor')
 				{
-					this[keys[i]] = this[keys[i]].bind(this);	
+					this[keys[i]] = this[keys[i]].bind(this);
 				}
 			}
 		}
@@ -61,7 +54,7 @@ class Component {
 		this.__isDirty = true;
 
 		if (!options || (options && options.update !== false))
-		{			
+		{
 			if (this.element.stage)
 			{
 				this.element.stage.update();
