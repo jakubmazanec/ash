@@ -45,16 +45,18 @@ function patchNodeTree(domTree, patches) {
 			var i;
 
 			for (i = 0; i < node.childNodes.length; i++) {
-				childLevels = parseAshNodeIndex(node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
-				childLevels[levelIndex] = order;
+				if (node.childNodes[i].nodeType == 1) {
+					childLevels = parseAshNodeIndex(node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
+					childLevels[levelIndex] = order;
 
-				node.childNodes[i][INDEX_ATTRIBUTE_NAME] = childLevels.join('.');
-				node.childNodes[i][ORDER_ATTRIBUTE_NAME] = order;
-				//$(node.childNodes[i]).attr('index', node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
-				//$(node.childNodes[i]).attr('order', node.childNodes[i][ORDER_ATTRIBUTE_NAME]);
+					node.childNodes[i][INDEX_ATTRIBUTE_NAME] = childLevels.join('.');
+					node.childNodes[i][ORDER_ATTRIBUTE_NAME] = order;
+					//$(node.childNodes[i]).attr('index', node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
+					//$(node.childNodes[i]).attr('order', node.childNodes[i][ORDER_ATTRIBUTE_NAME]);
 
-				if (node.childNodes[i].childNodes && node.childNodes[i].childNodes.length) {
-					walk(node.childNodes[i]);
+					if (node.childNodes[i].childNodes && node.childNodes[i].childNodes.length) {
+						walk(node.childNodes[i]);
+					}
 				}
 			}
 		}

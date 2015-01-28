@@ -13,6 +13,10 @@ var createElement = function (tagName/*, props, children*/) {
 	var children = arguments[2];
 	var i;
 
+	if (typeof tagName !== 'string' || !tagName.length) {
+		throw new Error(tagName + ' (tagName parameter) must be a nonempty string.');
+	}
+
 	// type check
 	if (tagName && typeof props === 'undefined' && !children) {
 		return new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, tagName, null);

@@ -14,7 +14,7 @@ var LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
 class Component extends Observable {
 	constructor(props) {
 		// autobind functions
-		var keys = this.autobind();
+		/*var keys = this.autobind();
 		var i;
 
 		if (keys && Array.isArray(keys) && keys.length)
@@ -26,7 +26,14 @@ class Component extends Observable {
 					this[keys[i]] = this[keys[i]].bind(this);
 				}
 			}
-		}
+		}*/
+		_.forIn(this, function (value, key)
+		{
+			if (_.isFunction(value) && key != 'constructor')
+			{
+				this[key] = value.bind(this);
+			}
+		}, this);
 
 		this.props = props || {};
 		this.state = this.getInitialState ? this.getInitialState() : {};
