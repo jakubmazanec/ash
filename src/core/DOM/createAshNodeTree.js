@@ -1,12 +1,10 @@
-'use strict';
+import isComponentAshElement from '../internal/isComponentAshElement';
+import isAshNodeAshElement from '../internal/isAshNodeAshElement';
+import isAshNode from '../internal/isAshNode';
+import isAshTextNode from '../internal/isAshTextNode';
+import constants from '../internal/constants';
 
-var isComponentAshElement = require('../internal/isComponentAshElement');
-var isAshNodeAshElement = require('../internal/isAshNodeAshElement');
-var isAshNode = require('../internal/isAshNode');
-var isAshTextNode = require('../internal/isAshTextNode');
-var constants = require('../internal/constants');
-
-var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
+const LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
 
 function cloneAshNode(ashNodeAshElement) {
 	var clonedAshNode;
@@ -93,4 +91,4 @@ function createAshNodeTree(componentAshElement)
 	return ashNodeTree;
 }
 
-module.exports = createAshNodeTree;
+export default createAshNodeTree;

@@ -1,33 +1,36 @@
 "use strict";
 
-var _ = require("_");
-var AshElement = require("./AshElement");
-var constants = require("../internal/constants");
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+var constants = _interopRequire(require("../internal/constants"));
 
 // constants references
-var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
 var ASH_NODE = constants.ASH_NODE;
 var ASH_TEXT_NODE = constants.ASH_TEXT_NODE;
 
 var AshNode = function AshNode(tagName, properties) {
-  if (typeof properties !== "undefined") {
-    this.type = ASH_NODE;
-    this.tagName = tagName.toLowerCase();
-    this.properties = properties || {};
-    this.children = [];
-    this.index = null;
-    this.key = null;
+	_classCallCheck(this, AshNode);
 
-    // find element's key
-    if (this.properties.key) {
-      this.key = this.properties.key;
-      delete this.properties.key;
-    }
-  } else {
-    this.type = ASH_TEXT_NODE;
-    this.text = tagName;
-    this.index = null;
-  }
+	if (typeof properties !== "undefined") {
+		this.type = ASH_NODE;
+		this.tagName = tagName.toLowerCase();
+		this.properties = properties || {};
+		this.children = [];
+		this.index = null;
+		this.key = null;
+
+		// find element's key
+		if (this.properties.key) {
+			this.key = this.properties.key;
+			delete this.properties.key;
+		}
+	} else {
+		this.type = ASH_TEXT_NODE;
+		this.text = tagName;
+		this.index = null;
+	}
 };
 
 module.exports = AshNode;

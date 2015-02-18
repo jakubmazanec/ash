@@ -828,7 +828,6 @@ head {
 p {
   margin: 0;
   -webkit-font-feature-settings: 'kern', 'liga';
-     -moz-font-feature-settings: 'kern', 'liga';
           font-feature-settings: 'kern', 'liga';
   -webkit-hyphens: auto;
      -moz-hyphens: auto;
@@ -885,7 +884,6 @@ h1, h2, h3, h4, h5, h6, .ash-heading--story-title, .ash-heading--story-level-1, 
   color: #282623;
   font-family: "Brandon Grotesque", Futura, "Gill Sans", Calibri, "Dejavu Sans", Arial, sans-serif;
   -webkit-font-feature-settings: 'kern', 'liga';
-     -moz-font-feature-settings: 'kern', 'liga';
           font-feature-settings: 'kern', 'liga';
   -webkit-hyphens: none;
      -moz-hyphens: none;
@@ -916,7 +914,7 @@ h1, h2, h3, h4, h5, h6, .ash-heading--story-title, .ash-heading--story-level-1, 
   margin: 2.8rem 1.4rem;
   padding-top: 0;
   font-size: 3.6rem;
-  line-height: 1.16667;
+  line-height: 1.16666667;
   font-weight: 700;
   text-align: center;
   position: relative; }
@@ -932,13 +930,13 @@ h1, h2, h3, h4, h5, h6, .ash-heading--story-title, .ash-heading--story-level-1, 
     display: block;
     margin-top: 0.7rem;
     font-size: 1.2rem;
-    line-height: 1.16667;
+    line-height: 1.16666667;
     font-weight: 600; }
 .ash-heading--story-level-1 {
   margin: 5.6rem 1.4rem 2.8rem;
   padding-top: 2.8rem;
   font-size: 2.4rem;
-  line-height: 1.16667;
+  line-height: 1.16666667;
   font-weight: 700;
   text-align: center;
   position: relative; }
@@ -983,7 +981,7 @@ h1, h2, h3, h4, h5, h6, .ash-heading--story-title, .ash-heading--story-level-1, 
   margin: 2.8rem 1.4rem 0.7rem;
   padding: 0;
   font-size: 0.9rem;
-  line-height: 1.55556;
+  line-height: 1.55555556;
   font-weight: 700;
   text-align: left;
   text-transform: uppercase;
@@ -995,7 +993,7 @@ h1, h2, h3, h4, h5, h6, .ash-heading--story-title, .ash-heading--story-level-1, 
   margin: 2.8rem 1.4rem;
   padding: 0;
   font-size: 2.4rem;
-  line-height: 1.16667;
+  line-height: 1.16666667;
   font-weight: 700;
   text-align: center;
   position: relative; }
@@ -1032,7 +1030,7 @@ h1, h2, h3, h4, h5, h6, .ash-heading--story-title, .ash-heading--story-level-1, 
   margin: 0 1.4rem 0.7rem;
   padding: 0;
   font-size: 0.9rem;
-  line-height: 1.55556;
+  line-height: 1.55555556;
   font-weight: 700;
   text-align: left;
   text-transform: uppercase;

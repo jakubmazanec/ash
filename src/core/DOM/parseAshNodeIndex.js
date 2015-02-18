@@ -1,12 +1,7 @@
-'use strict';
-
-var _ = require('_');
-
-var __parseInt = _.unary(parseInt);
-
-function parseAshNodeIndex(value)
-{
-	return _.map(value.split('.'), __parseInt);
+function parseAshNodeIndex(index) {
+	return index.split('.').map((value) => {
+		return parseInt(value, 10);
+	});
 }
 
-module.exports = parseAshNodeIndex;
+export default parseAshNodeIndex;

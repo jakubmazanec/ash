@@ -1,18 +1,13 @@
-'use strict';
+import DOMEvents from '../class/DOMEvents';
+import constants from '../internal/constants';
 
-var DOMEvents = require('../class/DOMEvents');
-var constants = require('../internal/constants');
-
-var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
-var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
-var STAGE_ATTRIBUTE_NAME = constants.STAGE_ATTRIBUTE_NAME;
-var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
+const INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
+const ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
+const STAGE_ATTRIBUTE_NAME = constants.STAGE_ATTRIBUTE_NAME;
 
 var domEvents = new DOMEvents();
 
 function walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache) {
-	var i;
-
 	//console.log('validating ', nodeTree, ashNodeTree, stage);
 
 	if (nodeTree.tagName && nodeTree.tagName.toLowerCase() != ashNodeTree.tagName) {
@@ -44,7 +39,7 @@ function walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache) {
 	}
 
 	if (ashNodeTree.children && ashNodeTree.children.length) {
-		for (i = 0; i < ashNodeTree.children.length; i++) {
+		for (let i = 0; i < ashNodeTree.children.length; i++) {
 			if (!walkValidateNodeTree(nodeTree.childNodes[i], ashNodeTree.children[i], stage, eventsCache)) {
 				return false;
 			}
@@ -57,16 +52,23 @@ function walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache) {
 function validateNodeTree(nodeTree, ashNodeTree, stage) {
 	var eventsCache = [];
 	var isValid = walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache);
-	var i;
 
 	//console.log(isValid, eventsCache);
 
 	if (isValid) {
-		for (i = 0; i < eventsCache.length; i++)
-		domEvents.addEvents(eventsCache[i].node, eventsCache[i].events);
+		for (let i = 0; i < eventsCache.length; i++) {
+			domEvents.addEvents(eventsCache[i].node, eventsCache[i].events);
+		}
+		
+	}
+
+	if (isValid) {
+		for (let i = 0; i < eventsCache.length; i++) {
+			domEvents.addEvents(eventsCache[i].node, eventsCache[i].events);
+		}
 	}
 
 	return isValid;
 }
 
-module.exports = validateNodeTree;
+export default validateNodeTree;

@@ -10,17 +10,17 @@ var matchMedia = require("./matchMedia");
  * @returns {number} Returns the viewport width
  */
 var getViewportWidth = function () {
-  if (document.documentElement["clientWidth"] < window["innerWidth"] && matchMedia("(min-width" + ":" + window["innerWidth"] + "px)")) {
-    getViewportWidth = function () {
-      return window["innerWidth"];
-    };
-  } else {
-    getViewportWidth = function () {
-      return document.documentElement["clientWidth"];
-    };
-  } // if
+	if (document.documentElement["clientWidth"] < window["innerWidth"] && matchMedia("(min-width" + ":" + window["innerWidth"] + "px)")) {
+		getViewportWidth = function () {
+			return window["innerWidth"];
+		};
+	} else {
+		getViewportWidth = function () {
+			return document.documentElement["clientWidth"];
+		};
+	} // if
 
-  return getViewportWidth();
+	return getViewportWidth();
 };
 
 module.exports = getViewportWidth;

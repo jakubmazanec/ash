@@ -1,22 +1,17 @@
-'use strict';
+import isAshTextNode from '../internal/isAshTextNode';
+import setNodeProperties from './setNodeProperties';
+import constants from '../internal/constants';
 
-var isAshNode = require('../internal/isAshNode');
-var isAshTextNode = require('../internal/isAshTextNode');
-var setNodeProperties = require('./setNodeProperties');
-var constants = require('../internal/constants');
+const INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
+const ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
+const STAGE_ATTRIBUTE_NAME = constants.STAGE_ATTRIBUTE_NAME;
 
-var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
-var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
-var STAGE_ATTRIBUTE_NAME = constants.STAGE_ATTRIBUTE_NAME;
-
-function walk(ashNodeTree)
-{
+function walk(ashNodeTree) {
 	var nodeTree;
 	var child;
 	var i;
 
-	if (isAshTextNode(ashNodeTree))
-	{
+	if (isAshTextNode(ashNodeTree)) {
 		nodeTree = document.createTextNode(ashNodeTree.text);
 		nodeTree[INDEX_ATTRIBUTE_NAME] = ashNodeTree.index;
 		nodeTree[ORDER_ATTRIBUTE_NAME] = ashNodeTree.order;
@@ -26,11 +21,9 @@ function walk(ashNodeTree)
 	}
 
 	// create element
-	if (ashNodeTree.tagName == 'svg' || ashNodeTree.tagName == 'use')
-	{
+	if (ashNodeTree.tagName == 'svg' || ashNodeTree.tagName == 'use') {
 		nodeTree = document.createElementNS('http://www.w3.org/2000/svg', ashNodeTree.tagName);
-	} else
-	{
+	} else {
 		nodeTree = document.createElement(ashNodeTree.tagName);
 	}
 
@@ -43,12 +36,10 @@ function walk(ashNodeTree)
 	//$(nodeTree).attr('order', nodeTree[ORDER_ATTRIBUTE_NAME]/* + ' - ' + ashNodeTree.key*/);
 	//$(nodeTree).attr('levels', ashNodeTree.levels.join('.'));
 
-	for (i = 0; i < ashNodeTree.children.length; i++)
-	{
+	for (i = 0; i < ashNodeTree.children.length; i++) {
 		child = walk(ashNodeTree.children[i]);
 
-		if (child)
-		{
+		if (child) {
 			nodeTree.appendChild(child);
 		}
 	}
@@ -57,8 +48,7 @@ function walk(ashNodeTree)
 }
 
 // helper for creating dom nodeTree
-function createNodeTree(ashNodeTree)
-{
+function createNodeTree(ashNodeTree) {
 	return walk(ashNodeTree);
 }
 

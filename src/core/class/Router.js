@@ -1,7 +1,3 @@
-'use strict';
-
-var _ = require('_');
-var $ = require('jquery');
 var Construct = require('../classes/Construct');
 var Events = require('./Events');
 
@@ -10,20 +6,20 @@ var events = new Events();
 var router;
 
 // Cached regex for stripping a leading hash/slash and trailing space.
-var routeStripper = /^[#\/]|\s+$/g;
+const ROUTE_STRIPPER = /^[#\/]|\s+$/g;
 
 // Cached regex for stripping leading and trailing slashes.
-var rootStripper = /^\/+|\/+$/g;
+const ROOT_STRIPPER = /^\/+|\/+$/g;
 
 // Cached regex for stripping urls of hash.
-var pathStripper = /#.*$/;
+const PATH_STRIPPER = /#.*$/;
 
 // Cached regular expressions for matching named param parts and splatted
 // parts of route strings.
-var optionalParam = /\((.*?)\)/g;
-var namedParam    = /(\(\?)?:\w+/g;
-var splatParam    = /\*\w+/g;
-var escapeRegExp  = /[\-{}\[\]+?.,\\\^$|#\s]/g;
+const OPTIONAL_PARAM = /\((.*?)\)/g;
+const NAMED_PARAM    = /(\(\?)?:\w+/g;
+const SPLAT_PARAM    = /\*\w+/g;
+const ESCAPE_REGEXP  = /[\-{}\[\]+?.,\\\^$|#\s]/g;
 
 
 
@@ -53,8 +49,8 @@ var Router = Construct.extend(
 		// Ensure that `History` can be used outside of the browser.
 		if (typeof window !== 'undefined')
 		{
-			this.location = window.location;
-			this.history = window.history;
+			this.location = global.location;
+			this.history = global.history;
 		}
 
 		router = this;
@@ -111,7 +107,7 @@ var Router = Construct.extend(
 			fragment = this.getPath();
 		}
 
-		return fragment.replace(routeStripper, '');
+		return fragment.replace(ROUTE_STRIPPER, '');
 	},
 
 	// Start the hash change handling, returning `true` if the current URL matches
@@ -124,7 +120,7 @@ var Router = Construct.extend(
 		this.fragment = this.getFragment();
 
 		// Normalize root to always include a leading and trailing slash.
-		this.root = ('/' + this.root + '/').replace(rootStripper, '/');
+		this.root = ('/' + this.root + '/').replace(ROOT_STRIPPER, '/');
 
 		$(window).on('popstate', this.checkUrl);
 
@@ -214,7 +210,7 @@ var Router = Construct.extend(
 		var url = this.root + (fragment = this.getFragment(fragment || ''));
 
 		// Strip the hash and decode for matching.
-		fragment = decodeURI(fragment.replace(pathStripper, ''));
+		fragment = decodeURI(fragment.replace(PATH_STRIPPER, ''));
 
 		if (this.fragment === fragment)
 		{
@@ -229,7 +225,7 @@ var Router = Construct.extend(
 		// If pushState is available, we use it to set the fragment as a real URL.
 		this.history[options.replace ? 'replaceState' : 'pushState']({}, document.title, url);
 
-		if (options.trigger) 
+		if (options.trigger)
 		{
 			return this.loadUrl(fragment);
 		}
@@ -247,13 +243,13 @@ var Router = Construct.extend(
 		// against the current location hash.
 		function routeToRegExp(route)
 		{
-			route = route.replace(escapeRegExp, '\\$&')
-				.replace(optionalParam, '(?:$1)?')
-				.replace(namedParam, function (match, optional)
+			route = route.replace(ESCAPE_REGEXP, '\\$&')
+				.replace(OPTIONAL_PARAM, '(?:$1)?')
+				.replace(NAMED_PARAM, function (match, optional)
 				{
 				 return optional ? match : '([^/?]+)';
 				})
-				.replace(splatParam, '([^?]*?)');
+				.replace(SPLAT_PARAM, '([^?]*?)');
 
 			return new RegExp('^' + route + '(?:\\?([\\s\\S]*))?$');
 		}

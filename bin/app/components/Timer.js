@@ -1,86 +1,94 @@
-var _classProps = function (child, staticProps, instanceProps) {
-  if (staticProps) Object.defineProperties(child, staticProps);
-  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
-
-var _extends = function (child, parent) {
-  child.prototype = Object.create(parent.prototype, {
-    constructor: {
-      value: child,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-  child.__proto__ = parent;
-};
-
 "use strict";
 
-var ash = require("../ash");
-var Display = require("./Display");
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
 
-var Timer = (function (ash) {
-  var Timer = function Timer() {
-    ash.Component.apply(this, arguments);
-  };
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
-  _extends(Timer, ash.Component);
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
-  _classProps(Timer, null, {
-    getInitialState: {
-      writable: true,
-      value: function () {
-        return { timerClicks: 0 };
-      }
-    },
-    autobind: {
-      writable: true,
-      value: function () {
-        return ["tick"];
-      }
-    },
-    tick: {
-      writable: true,
-      value: function () {
-        console.log("timer tick!");
-        this.setState({ timerClicks: this.state.timerClicks + 1 });
-      }
-    },
-    onMount: {
-      writable: true,
-      value: function () {}
-    },
-    onUnmount: {
-      writable: true,
-      value: function () {}
-    },
-    onBeforeMount: {
-      writable: true,
-      value: function () {}
-    },
-    render: {
-      writable: true,
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
+var ash = _interopRequire(require("../ash"));
 
-      /*shouldUpdate () {
-      	return false;
-      }*/
+var Display = _interopRequire(require("./Display"));
 
-      value: function () {
-        return ash.e("div", null, [Display({ timerClicks: this.state.timerClicks }), ash.e("button", {
-          style: {
-            color: this.state.timerClicks % 2 === 0 ? "red" : "blue"
-          },
-          events: {
-            click: this.tick
-          }
-        }, "+")]);
-      }
-    }
-  });
+var Timer = (function (_ash$Component) {
+	function Timer() {
+		_classCallCheck(this, Timer);
 
-  return Timer;
-})(ash);
+		if (_ash$Component != null) {
+			_ash$Component.apply(this, arguments);
+		}
+	}
+
+	_inherits(Timer, _ash$Component);
+
+	_prototypeProperties(Timer, null, {
+		getInitialState: {
+			value: function getInitialState() {
+				return { timerClicks: 0 };
+			},
+			writable: true,
+			configurable: true
+		},
+		autobind: {
+			value: function autobind() {
+				return ["tick"];
+			},
+			writable: true,
+			configurable: true
+		},
+		tick: {
+			value: function tick() {
+				console.log("timer tick!");
+				this.setState({ timerClicks: this.state.timerClicks + 1 });
+			},
+			writable: true,
+			configurable: true
+		},
+		onMount: {
+			value: function onMount() {},
+			writable: true,
+			configurable: true
+		},
+		onUnmount: {
+			value: function onUnmount() {},
+			writable: true,
+			configurable: true
+		},
+		onBeforeMount: {
+			value: function onBeforeMount() {},
+			writable: true,
+			configurable: true
+		},
+		render: {
+
+			/*shouldUpdate () {
+   	return false;
+   }*/
+
+			value: function render() {
+				return ash.e("div", null, [new Display({ timerClicks: this.state.timerClicks }), ash.e("button", {
+					style: {
+						color: this.state.timerClicks % 2 === 0 ? "red" : "blue"
+					},
+					events: {
+						click: this.tick
+					}
+				}, "+")]);
+			},
+			writable: true,
+			configurable: true
+		}
+	});
+
+	return Timer;
+})(ash.Component);
 
 module.exports = ash.createFactory(Timer);
+//console.log('Timer onMount');
+//this.interval = setInterval(this.tick, 1000);
+//console.log(this.getDOMNode());
+//console.log('Timer onUnmount');
+//clearInterval(this.interval);
+//console.log('Timer onBeforeMount');

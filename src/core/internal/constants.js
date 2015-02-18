@@ -1,6 +1,4 @@
-'use strict';
-
-var constants = {
+const constants = {
 	// component lifecycle
 	LIFECYCLE_UNMOUNTED: 'Unmounted',
 	LIFECYCLE_MOUNTING: 'Mounting',
@@ -27,7 +25,9 @@ var constants = {
 	LEVEL_SEPARATOR: '.',
 	INDEX_ATTRIBUTE_NAME: '__ash:index__',
 	ORDER_ATTRIBUTE_NAME: '__ash:order__',
-	STAGE_ATTRIBUTE_NAME: '__ash:stage__'
+	STAGE_ATTRIBUTE_NAME: '__ash:stage__',
+
+	IMMUTABLE_TAG: '__ash:immutable__'
 };
 
-module.exports = constants;
+export default constants;

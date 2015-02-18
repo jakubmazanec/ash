@@ -11,17 +11,17 @@ var matchMedia = require("./matchMedia");
  * @returns {number} Returns the viewport height
  */
 var getViewportHeight = function () {
-  if (document.documentElement["clientHeight"] < window["innerHeight"] && matchMedia("(min-height" + ":" + window["innerHeight"] + "px)")) {
-    getViewportHeight = function () {
-      return window["innerHeight"];
-    };
-  } else {
-    getViewportHeight = function () {
-      return document.documentElement["clientHeight"];
-    };
-  }
+	if (document.documentElement["clientHeight"] < window["innerHeight"] && matchMedia("(min-height" + ":" + window["innerHeight"] + "px)")) {
+		getViewportHeight = function () {
+			return window["innerHeight"];
+		};
+	} else {
+		getViewportHeight = function () {
+			return document.documentElement["clientHeight"];
+		};
+	}
 
-  return getViewportHeight();
+	return getViewportHeight();
 };
 
 module.exports = getViewportHeight;

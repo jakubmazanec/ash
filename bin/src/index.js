@@ -1,30 +1,44 @@
 "use strict";
 
-var _ = require("_");
-var $ = require("jquery");
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
 
-var Observable = require("./core/class/Observable");
-var Component = require("./core/class/Component");
-var Renderer = require("./core/class/Renderer");
-var Action = require("./core/class/Action");
-var Store = require("./core/class/Store");
+var Observable = _interopRequire(require("./core/class/Observable"));
 
-var createElement = require("./core/internal/createElement");
-var createFactory = require("./core/internal/createFactory");
+var Component = _interopRequire(require("./core/class/Component"));
+
+var Renderer = _interopRequire(require("./core/class/Renderer"));
+
+var Action = _interopRequire(require("./core/class/Action"));
+
+var Store = _interopRequire(require("./core/class/Store"));
+
+var createElement = _interopRequire(require("./core/internal/createElement"));
+
+var createFactory = _interopRequire(require("./core/internal/createFactory"));
+
+var _coreImmutableImmutables = require("./core/immutable/Immutables");
+
+var ImmutableArray = _coreImmutableImmutables.ImmutableArray;
+var ImmutableObject = _coreImmutableImmutables.ImmutableObject;
+var assign = _interopRequire(require("./core/internal/assign"));
 
 var ash = {};
 
 var VERSION = "0.1.0";
 
-_.assign(ash, {
-  VERSION: VERSION,
-  Observable: Observable,
-  Component: Component,
-  Renderer: Renderer,
-  Action: Action,
-  Store: Store,
+assign(ash, {
+	VERSION: VERSION,
+	Observable: Observable,
+	Component: Component,
+	Renderer: Renderer,
+	Action: Action,
+	Store: Store,
 
-  e: createElement,
-  createFactory: createFactory });
+	"e": createElement,
+	createFactory: createFactory,
+
+	ImmutableArray: ImmutableArray,
+	ImmutableObject: ImmutableObject
+});
 
 module.exports = ash;

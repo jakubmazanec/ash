@@ -1,11 +1,19 @@
 "use strict";
-exports.test = function () {
-  // Don't get fooled by e.g. browserify environments.
-  return process && !process.browser;
+
+function test() {
+	// Don't get fooled by e.g. browserify environments.
+	return process && !process.browser;
+}
+
+function install(func) {
+	return function () {
+		process.nextTick(func);
+	};
+}
+
+var nextTick = {
+	test: test,
+	install: install
 };
 
-exports.install = function (func) {
-  return function () {
-    process.nextTick(func);
-  };
-};
+module.exports = nextTick;

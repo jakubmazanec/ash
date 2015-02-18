@@ -1,31 +1,39 @@
-'use strict';
+import constants from '../internal/constants';
+import parseAshNodeIndex from './parseAshNodeIndex';
+import createNodeTree from './createNodeTree';
+import setNodeProperties from './setNodeProperties';
+import removeNodeProperties from './removeNodeProperties';
+import findNode from './findNode';
+import DOMEvents from '../class/DOMEvents';
+import sortBy from '../internal/sortBy';
+import forEach from '../internal/forEach';
+import pluck from '../internal/pluck';
+import flatten from '../internal/flatten';
+import max from '../internal/max';
+import padLeft from '../internal/padLeft';
+import isElement from '../internal/isElement';
+import uniq from '../internal/uniq';
 
-var _ = require('_');
-var constants = require('../internal/constants');
-var parseAshNodeIndex = require('./parseAshNodeIndex');
-var createNodeTree = require('./createNodeTree');
-var setNodeProperties = require('./setNodeProperties');
-var removeNodeProperties = require('./removeNodeProperties');
-var findNode = require('./findNode');
-var DOMEvents = require('../class/DOMEvents');
-
-var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
-var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
-var PATCH_NONE = constants.PATCH_NONE;
-var PATCH_ASH_NODE = constants.PATCH_ASH_NODE;
-var PATCH_ASH_TEXT_NODE = constants.PATCH_ASH_TEXT_NODE;
-var PATCH_PROPERTIES = constants.PATCH_PROPERTIES;
-var PATCH_ORDER = constants.PATCH_ORDER;
-var PATCH_INSERT = constants.PATCH_INSERT;
-var PATCH_REMOVE = constants.PATCH_REMOVE;
+const INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
+const ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
+const PATCH_ASH_NODE = constants.PATCH_ASH_NODE;
+const PATCH_ASH_TEXT_NODE = constants.PATCH_ASH_TEXT_NODE;
+const PATCH_PROPERTIES = constants.PATCH_PROPERTIES;
+const PATCH_ORDER = constants.PATCH_ORDER;
+const PATCH_INSERT = constants.PATCH_INSERT;
+const PATCH_REMOVE = constants.PATCH_REMOVE;
 
 var domEvents = new DOMEvents();
 
 // apply patches to dom tree
 function patchNodeTree(domTree, patches) {
 	// type check
-	if (!_.isElement(domTree)) {
+	if (!isElement(domTree)) {
 		return false;
+	}
+
+	if (!patches.length) {
+		return true;
 	}
 
 	//var __patches = [];
@@ -42,15 +50,14 @@ function patchNodeTree(domTree, patches) {
 
 		function walk(node) {
 			var childLevels;
-			var i;
 
-			for (i = 0; i < node.childNodes.length; i++) {
+			for (let i = 0; i < node.childNodes.length; i++) {
 				if (node.childNodes[i].nodeType == 1) {
 					childLevels = parseAshNodeIndex(node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
 					childLevels[levelIndex] = order;
 
 					node.childNodes[i][INDEX_ATTRIBUTE_NAME] = childLevels.join('.');
-					node.childNodes[i][ORDER_ATTRIBUTE_NAME] = order;
+					node.childNodes[i][ORDER_ATTRIBUTE_NAME] = childLevels[childLevels.length - 1];
 					//$(node.childNodes[i]).attr('index', node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
 					//$(node.childNodes[i]).attr('order', node.childNodes[i][ORDER_ATTRIBUTE_NAME]);
 
@@ -86,10 +93,12 @@ function patchNodeTree(domTree, patches) {
 			reindexCache.shift();
 		}
 
-		reorderCache = _.uniq(reorderCache, 'node');
+		reorderCache = uniq(reorderCache, 'node');
 
 		while (reorderCache.length > 0) {
-			_.sortBy(reorderCache[0].node.childNodes, ORDER_ATTRIBUTE_NAME).forEach(appendChild, reorderCache[0].node);
+			let sortedChildren = sortBy(reorderCache[0].node.childNodes, ORDER_ATTRIBUTE_NAME);
+
+			forEach(sortedChildren, appendChild, reorderCache[0].node);
 
 			reorderCache.shift();
 		}
@@ -99,37 +108,89 @@ function patchNodeTree(domTree, patches) {
 		__patches[i].parsedIndex = parseAshNodeIndex(__patches[i].index);
 	}
 
-	var maxIndex = _(__patches).pluck('parsedIndex').flatten().max();
+	var maxIndex = pluck(__patches, 'parsedIndex');
+
+	maxIndex = flatten(maxIndex);
+	maxIndex = max(maxIndex);
 
 	var maxDigits = maxIndex === 0 ? 1 : Math.floor(Math.log(Math.abs(Math.floor(maxIndex))) / Math.LN10) + 1;
 	
-	__patches = _.sortBy(__patches, function (patch) {
+	__patches = sortBy(__patches, (patch) => {
 		var result = '';
 
 		for (var i = 0; i < patch.parsedIndex.length - 1; i++) {
-			result += _.padLeft(patch.parsedIndex[i], maxDigits, '0');
+			result += padLeft(patch.parsedIndex[i], maxDigits, '0');
 		}
 
 		if (patch.type == PATCH_ASH_NODE) {
-			result += _.padLeft(9, maxDigits, '0');
+			result += padLeft(9, maxDigits, '0');
 		} else if (patch.type == PATCH_ASH_TEXT_NODE) {
-			result += _.padLeft(8, maxDigits, '0');
+			result += padLeft(8, maxDigits, '0');
 		} else if (patch.type == PATCH_PROPERTIES) {
-			result += _.padLeft(7, maxDigits, '0');
+			result += padLeft(7, maxDigits, '0');
 		} else if (patch.type == PATCH_REMOVE) {
-			result += _.padLeft(6, maxDigits, '0');
+			result += padLeft(6, maxDigits, '0');
 		} else if (patch.type == PATCH_INSERT) {
-			result += _.padLeft(5, maxDigits, '0');
+			result += padLeft(5, maxDigits, '0');
 		} else if (patch.type == PATCH_ORDER) {
-			result += _.padLeft(4, maxDigits, '0');
+			result += padLeft(4, maxDigits, '0');
 		} else {
-			result += _.padLeft(0, maxDigits, '0');
+			result += padLeft(0, maxDigits, '0');
 		}
 
-		result += _.padLeft(patch.parsedIndex[patch.parsedIndex.length - 1], maxDigits, '0');
+		result += padLeft(patch.parsedIndex[patch.parsedIndex.length - 1], maxDigits, '0');
 
 		return parseInt(result, 10);
 	});
+
+	// now lets proof-check some...
+	var newLevels;
+	var j, k;
+	var levels;
+	var index;
+	for (i = __patches.length - 1; i >= 0; i--)
+	{
+		if (__patches[i].type == PATCH_INSERT) {
+			levels = __patches[i].parsedIndex.slice(0);
+
+			//console.log('look for parents of patch', JSON.stringify(levels), __patches[i]);
+
+			while (levels.length >= 3)
+			{
+				levels.pop();
+				index = levels.join('.');
+
+				//console.log('looking for patch with index', index);
+
+				for (j = i; j >= 0; j--)
+				{
+					if (__patches[j].type == PATCH_ORDER && __patches[j].newIndex == index) {
+						//console.log('*** FOUND!', j, __patches[j]);
+						__patches[i].origIndex = __patches[i].index;
+						__patches[i].origParsedIndex = __patches[i].parsedIndex.slice(0);
+						__patches[i].origParentIndex = __patches[i].parentIndex;
+
+						newLevels = __patches[i].parsedIndex.slice(0);
+
+						for (k = 0; k < __patches[j].parsedIndex.length; k++) {
+							newLevels[k] = __patches[j].parsedIndex[k];
+						}
+
+						__patches[i].index = newLevels.join('.');
+						__patches[i].parsedIndex = newLevels.slice(0);
+
+						newLevels = parseAshNodeIndex(__patches[i].parentIndex);
+
+						for (k = 0; k < __patches[j].parsedIndex.length; k++) {
+							newLevels[k] = __patches[j].parsedIndex[k];
+						}
+
+						__patches[i].parentIndex = newLevels.join('.');
+					}
+				}
+			}
+		}
+	}
 
 	// now iterate over patches...
 	for (i = __patches.length - 1; i >= 0; i--) {
@@ -238,9 +299,9 @@ function patchNodeTree(domTree, patches) {
 
 	flushCache();
 
-	if (__patches[0]) {
+	//if (__patches[0]) {
 		domEvents.markEvents(__patches[0].stage);
-	}
+	//}
 
 	return true;
 }

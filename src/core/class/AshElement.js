@@ -1,42 +1,35 @@
-'use strict';
-
-var constants = require('../internal/constants');
+import constants from '../internal/constants';
 
 // constants references
-var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
-var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
+const ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
+const COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
 
 /**
  * AshElement
  */
 class AshElement {
 	constructor(type, spec) {
-		if (type != COMPONENT_ASH_ELEMENT && type != ASH_NODE_ASH_ELEMENT)
-		{
+		if (type != COMPONENT_ASH_ELEMENT && type != ASH_NODE_ASH_ELEMENT) {
 			throw new Error(type + 'must be ' + COMPONENT_ASH_ELEMENT + ' or ' + ASH_NODE_ASH_ELEMENT + '.');
 		}
 
-		if (!spec)
-		{
+		if (!spec) {
 			throw new Error(spec + 'must be specified.');
 		}
 
-		if (!(this instanceof AshElement))
-		{
+		if (!(this instanceof AshElement)) {
 			if (arguments.length >= 5) {
 				return new AshElement(type, spec, arguments[2], arguments[3], arguments[4]);
 			} else if (arguments.length >= 4) {
 				return new AshElement(type, spec, arguments[2], arguments[3]);
 			} else if (arguments.length >= 3) {
 				return new AshElement(type, spec, arguments[2]);
-			} else
-			{
+			} else {
 				return new AshElement(type, spec);
 			}
 		}
 
-		if (type == COMPONENT_ASH_ELEMENT)
-		{
+		if (type == COMPONENT_ASH_ELEMENT) {
 			this.type = type;
 			this.spec = spec;
 
@@ -47,8 +40,7 @@ class AshElement {
 			}
 
 			this.children = [];
-		} else
-		{
+		} else {
 			this.type = ASH_NODE_ASH_ELEMENT;
 			this.spec = spec;
 
@@ -60,11 +52,9 @@ class AshElement {
 				this.args = null;
 			}
 
-			if (arguments.length >= 5 && arguments[4])
-			{
+			if (arguments.length >= 5 && arguments[4]) {
 				this.children = arguments[4];
-			} else
-			{
+			} else {
 				this.children = [];
 			}
 		}
@@ -74,22 +64,19 @@ class AshElement {
 	}
 
 	instantiate() {
-		if (this.type == COMPONENT_ASH_ELEMENT)
-		{
+		if (this.type == COMPONENT_ASH_ELEMENT) {
 			if (this.args) {
 				this.instance = new this.spec(this.args[0]);
 			} else {
 				this.instance = new this.spec();
 			}
-		} else if (this.type == ASH_NODE_ASH_ELEMENT)
-		{
+		} else if (this.type == ASH_NODE_ASH_ELEMENT) {
 			if (this.args) {
 				this.instance = new this.spec(this.args[0], this.args[1]);
 			} else {
 				this.instance = new this.spec();
 			}
-		} else
-		{
+		} else {
 			throw new Error(this + ' is not a AshElement object.');
 		}
 
@@ -99,4 +86,4 @@ class AshElement {
 	}
 }
 
-module.exports = AshElement;
+export default AshElement;

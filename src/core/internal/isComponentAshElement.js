@@ -1,12 +1,9 @@
-'use strict';
+import constants from './constants';
 
-var constants = require('./constants');
+const COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
 
-var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
-
-function isComponentAshElement(value)
-{
+function isComponentAshElement(value) {
 	return value && value.type == COMPONENT_ASH_ELEMENT;
 }
 
-module.exports = isComponentAshElement;
+export default isComponentAshElement;

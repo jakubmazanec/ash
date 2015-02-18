@@ -1,9 +1,7 @@
-'use strict';
+import parseAshNodeIndex from './parseAshNodeIndex';
+import constants from '../internal/constants';
 
-var parseAshNodeIndex = require('./parseAshNodeIndex');
-var constants = require('../internal/constants');
-
-var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
+const INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
 
 function findNode(nodeTree, nodeIndex) {
 	var parsedAshNodeIndex = parseAshNodeIndex(nodeIndex);
@@ -13,20 +11,6 @@ function findNode(nodeTree, nodeIndex) {
 	if (!nodeTree) {
 		throw new Error(nodeTree + ' cannot be falsy.');
 	}
-
-	/*if (parsedAshNodeIndex.length == 1) {
-		return node;
-	} else if (parsedAshNodeIndex.length) {
-		for (i = 1; i < parsedAshNodeIndex.length; i++) {
-			if (!node) {
-				return false;
-			}
-
-			node = node.childNodes[parsedAshNodeIndex[i]];
-		}
-
-		return node;
-	}*/
 
 	if (parsedAshNodeIndex.length == 1)
 	{
@@ -58,4 +42,4 @@ function findNode(nodeTree, nodeIndex) {
 	return false;
 }
 
-module.exports = findNode;
+export default findNode;

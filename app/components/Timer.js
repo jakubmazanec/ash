@@ -1,7 +1,5 @@
-'use strict';
-
-var ash = require('../ash');
-var Display = require('./Display');
+import ash from '../ash';
+import Display from './Display';
 
 class Timer extends ash.Component {
 	getInitialState() {
@@ -37,8 +35,8 @@ class Timer extends ash.Component {
 	}*/
 
 	render() {
-		return ash.e('div', null, [		
-			Display({timerClicks: this.state.timerClicks}),
+		return ash.e('div', null, [
+			new Display({timerClicks: this.state.timerClicks}),
 			ash.e('button', {
 				style:
 				{
@@ -53,4 +51,4 @@ class Timer extends ash.Component {
 	}
 }
 
-module.exports = ash.createFactory(Timer);
+export default ash.createFactory(Timer);

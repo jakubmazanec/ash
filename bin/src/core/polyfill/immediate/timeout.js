@@ -1,10 +1,18 @@
 "use strict";
-exports.test = function () {
-  return true;
+
+function test() {
+	return true;
+}
+
+function install(t) {
+	return function () {
+		setTimeout(t, 0);
+	};
+}
+
+var timeout = {
+	test: test,
+	install: install
 };
 
-exports.install = function (t) {
-  return function () {
-    setTimeout(t, 0);
-  };
-};
+module.exports = timeout;

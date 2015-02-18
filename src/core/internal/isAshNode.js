@@ -1,12 +1,9 @@
-'use strict';
+import constants from './constants';
 
-var constants = require('./constants');
+const ASH_NODE = constants.ASH_NODE;
 
-var ASH_NODE = constants.ASH_NODE;
-
-function isAshNode(value)
-{
+function isAshNode(value) {
 	return value && value.type == ASH_NODE;
 }
 
-module.exports = isAshNode;
+export default isAshNode;

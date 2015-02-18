@@ -16,17 +16,17 @@ var nativeMatchMedia = isNative(nativeMatchMedia = window.matchMedia) && nativeM
  * @returns {boolean} Returns true if the query is a match, else false.
  **/
 function matchMedia(query) {
-  if (nativeMatchMedia) {
-    ash.matchMedia = function (query) {
-      return nativeMatchMedia.call(window, query).matches;
-    }; // ash.matchMedia
-  } else {
-    ash.matchMedia = function () {
-      return false;
-    }; // ash.matchMedia
-  } // if
+	if (nativeMatchMedia) {
+		ash.matchMedia = function (query) {
+			return nativeMatchMedia.call(window, query).matches;
+		}; // ash.matchMedia
+	} else {
+		ash.matchMedia = function () {
+			return false;
+		}; // ash.matchMedia
+	} // if
 
-  return ash.matchMedia(query);
+	return ash.matchMedia(query);
 } // matchMedia
 
 module.exports = matchMedia;

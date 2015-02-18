@@ -1,14 +1,8 @@
-'use strict';
-
-var ash = require('../ash');
+import ash from '../ash';
 
 class Display extends ash.Component {
 	getInitialState() {
 		return {displayClicks: 0};
-	}
-
-	autobind() {
-		return ['tick'];
 	}
 
 	render() {
@@ -30,6 +24,7 @@ class Display extends ash.Component {
 	}
 
 	tick() {
+		console.log(this);
 		//console.log(this.name + ' tick!');
 		this.setState({displayClicks: this.state.displayClicks + 1});
 	}
@@ -51,4 +46,4 @@ class Display extends ash.Component {
 	}
 }
 
-module.exports = ash.createFactory(Display);
+export default ash.createFactory(Display);

@@ -7,10 +7,8 @@ var server = require('tiny-lr')();
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var nodemon = require('gulp-nodemon');
-var gulpES6 = require('gulp-6to5');
-
-var nodeServer;
-
+var es6 = require('gulp-6to5');
+var babel = require('gulp-babel');
 
 // server app
 gulp.task('server', function ()
@@ -25,20 +23,40 @@ gulp.task('server', function ()
 	});
 });
 
+// gulp.task('es6-app', function () {
+// 	return gulp.src('./app/**/*.js')
+// 		.pipe(es6({
+// 			whitelist: ['es6.classes', 'es6.constants', 'es6.blockScoping', 'es6.arrowFunctions', 'es6.modules', 'es6.properties.shorthand', 'useStrict'],
+// 			sourceMap: false
+// 		}))
+// 		.pipe(gulp.dest('bin/app'));
+// });
+
+// gulp.task('es6-src', function () {
+// 	return gulp.src('./src/**/*.js')
+// 		.pipe(es6({
+// 			whitelist: ['es6.classes', 'es6.constants', 'es6.blockScoping', 'es6.arrowFunctions', 'es6.modules', 'es6.properties.shorthand', 'useStrict'],
+// 			sourceMap: false
+// 		}))
+// 		.pipe(gulp.dest('bin/src'));
+// });
+
 gulp.task('es6-app', function () {
 	return gulp.src('./app/**/*.js')
-		.pipe(gulpES6({
-			whitelist: ['classes', 'letScoping'],
-			sourceMap: false
+		.pipe(babel({
+			whitelist: ['es6.classes', 'es6.constants', 'es6.blockScoping', 'es6.arrowFunctions', 'es6.modules', 'es6.properties.shorthand', 'useStrict'],
+			sourceMap: false,
+			playground: true
 		}))
 		.pipe(gulp.dest('bin/app'));
 });
 
 gulp.task('es6-src', function () {
 	return gulp.src('./src/**/*.js')
-		.pipe(gulpES6({
-			whitelist: ['classes', 'letScoping'],
-			sourceMap: false
+		.pipe(babel({
+			whitelist: ['es6.classes', 'es6.constants', 'es6.blockScoping', 'es6.arrowFunctions', 'es6.modules', 'es6.properties.shorthand', 'useStrict'],
+			sourceMap: false,
+			playground: true
 		}))
 		.pipe(gulp.dest('bin/src'));
 });
@@ -55,14 +73,14 @@ gulp.task('scripts', ['es6-app', 'es6-src'], function ()
 
 
 // build styles
-gulp.task('styles', function ()
-{
-	return gulp.src('./assets/sass/app.scss')
-		.pipe(sass(
-		{
+gulp.task('styles', function () {
+	return sass('./assets/sass/app.scss', {
+			precision: 8,
 			style: 'nested',
-			r: 'compass/import-once/activate'
-		}))
+			require: 'compass/import-once/activate',
+			trace: true,
+			sourcemap: false
+		})
 		.on('error', util.log)
 		.pipe(prefix(
 		{
@@ -74,7 +92,7 @@ gulp.task('styles', function ()
 });
 
 // builds fonts
-gulp.task('fonts', function (cb)
+gulp.task('fonts', function ()
 {
 	return gulp.src(['./assets/fonts/**/*'])
 		.pipe(gulp.dest('./public/fonts'));

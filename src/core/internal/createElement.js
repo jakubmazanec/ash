@@ -1,12 +1,10 @@
-'use strict';
-
-var AshNode = require('../class/AshNode');
-var AshElement = require('../class/AshElement');
-var isAshElement = require('../internal/isAshElement');
-var constants = require('../internal/constants');
+import AshNode from '../class/AshNode';
+import AshElement from '../class/AshElement';
+import isAshElement from './isAshElement';
+import constants from './constants';
 
 // constants references
-var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
+const ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
 
 var createElement = function (tagName/*, props, children*/) {
 	var props = arguments[1];
@@ -59,4 +57,4 @@ var createElement = function (tagName/*, props, children*/) {
 	return new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, tagName, props, children);
 };
 
-module.exports = createElement;
+export default createElement;

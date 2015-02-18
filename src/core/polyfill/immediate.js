@@ -1,41 +1,49 @@
-'use strict';
+import nextTick from './immediate/nextTick';
+import mutation from './immediate/mutation.js';
+import messageChannel from './immediate/messageChannel';
+import stateChange from './immediate/stateChange';
+import timeout from './immediate/timeout';
+
+
 var types = [
-  require('./immediate/nextTick'),
-  require('./immediate/mutation.js'),
-  require('./immediate/messageChannel'),
-  require('./immediate/stateChange'),
-  require('./immediate/timeout')
+	nextTick,
+	mutation.js,
+	messageChannel,
+	stateChange,
+	timeout
 ];
 var draining;
 var queue = [];
 //named nextTick for less confusing stack traces
 function nextTick() {
-  draining = true;
-  var i, oldQueue;
-  var len = queue.length;
-  while (len) {
-    oldQueue = queue;
-    queue = [];
-    i = -1;
-    while (++i < len) {
-      oldQueue[i]();
-    }
-    len = queue.length;
-  }
-  draining = false;
+	draining = true;
+	var i, oldQueue;
+	var len = queue.length;
+	while (len) {
+		oldQueue = queue;
+		queue = [];
+		i = -1;
+		while (++i < len) {
+			oldQueue[i]();
+		}
+		len = queue.length;
+	}
+	draining = false;
 }
 var scheduleDrain;
 var i = -1;
 var len = types.length;
 while (++ i < len) {
-  if (types[i] && types[i].test && types[i].test()) {
-    scheduleDrain = types[i].install(nextTick);
-    break;
-  }
+	if (types[i] && types[i].test && types[i].test()) {
+		scheduleDrain = types[i].install(nextTick);
+		break;
+	}
 }
-module.exports = immediate;
+
 function immediate(task) {
-  if (queue.push(task) === 1 && !draining) {
-    scheduleDrain();
-  }
+	if (queue.push(task) === 1 && !draining) {
+		scheduleDrain();
+	}
 }
+
+export default immediate;

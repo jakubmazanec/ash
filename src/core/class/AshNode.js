@@ -1,18 +1,12 @@
-'use strict';
-
-var _ = require('_');
-var AshElement = require('./AshElement');
-var constants = require('../internal/constants');
+import constants from '../internal/constants';
 
 // constants references
-var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
-var ASH_NODE = constants.ASH_NODE;
-var ASH_TEXT_NODE = constants.ASH_TEXT_NODE;
+const ASH_NODE = constants.ASH_NODE;
+const ASH_TEXT_NODE = constants.ASH_TEXT_NODE;
 
 class AshNode {
 	constructor(tagName, properties) {
-		if (typeof properties !== 'undefined')
-		{
+		if (typeof properties !== 'undefined') {
 			this.type = ASH_NODE;
 			this.tagName = tagName.toLowerCase();
 			this.properties = properties || {};
@@ -21,18 +15,16 @@ class AshNode {
 			this.key = null;
 
 			// find element's key
-			if (this.properties.key)
-			{
+			if (this.properties.key) {
 				this.key = this.properties.key;
 				delete this.properties.key;
 			}
-		} else
-		{
+		} else {
 			this.type = ASH_TEXT_NODE;
 			this.text = tagName;
 			this.index = null;
 		}
-	}	
+	}
 }
 
-module.exports = AshNode;
+export default AshNode;

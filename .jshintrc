@@ -7,5 +7,9 @@
 	"latedef": true,
 	"quotmark": "single",
 	"unused": true,
-	"validthis": true
+	"validthis": true,
+	"unused": "vars",
+	"predef": ["-Promise" , "-Uint8Array", "-Set"],
+	"proto" : true,
+	"undef": true
 }

@@ -1,69 +1,51 @@
-'use strict';
+import Observable from './Observable';
+import isAshNodeAshElement from '../internal/isAshNodeAshElement';
+import constants from '../internal/constants';
+import findNode from '../DOM/findNode';
+import forEach from '../internal/forEach';
+import keys from '../internal/keys';
+import assign from '../internal/assign';
+import isFunction from '../internal/isFunction';
 
-var _ = require('_');
-
-var Observable = require('./Observable');
-var isAshNodeAshElement = require('../internal/isAshNodeAshElement');
-var constants = require('../internal/constants');
-var findNode = require('../DOM/findNode');
-
-var LIFECYCLE_UNMOUNTED = constants.LIFECYCLE_UNMOUNTED;
-var LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
-var LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
+const LIFECYCLE_UNMOUNTED = constants.LIFECYCLE_UNMOUNTED;
+const LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
+const LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
 
 class Component extends Observable {
 	constructor(props) {
-		// autobind functions
-		/*var keys = this.autobind();
-		var i;
-
-		if (keys && Array.isArray(keys) && keys.length)
-		{
-			for (i = 0; i < keys.length; i++)
-			{
-				if (_.isFunction(this[keys[i]]) && keys[i] != 'constructor')
-				{
-					this[keys[i]] = this[keys[i]].bind(this);
-				}
+		// autobind methods
+		forEach(Object.getOwnPropertyNames(this.__proto__), (value) => {
+			if (isFunction(this[value]) && value != 'constructor') {
+				this[value] = this[value].bind(this);
 			}
-		}*/
-		_.forIn(this, function (value, key)
-		{
-			if (_.isFunction(value) && key != 'constructor')
-			{
-				this[key] = value.bind(this);
-			}
-		}, this);
+		});
 
 		this.props = props || {};
-		this.state = this.getInitialState ? this.getInitialState() : {};
+		this.state = this.getInitialState();
 
 		// set state if specified in props
-		if (this.props.state)
+		/*if (this.props.state)
 		{
-			_.keys(this.state).forEach(function (key)
-			{
+			keys(this.state).forEach((key) => {
 				this.props.state[key] = this.state[key];
-			}, this);
+			});
 
 			delete this.props.state;
-		}
+		}*/
 
 		this.__isDirty = true;
 		this.__lifecycle = LIFECYCLE_UNMOUNTED;
 	}
 
-	autobind() {
-		return null;
+	getInitialState() {
+		return {};
 	}
 
 	setDirty(options) {
 		this.__isDirty = true;
 
-		if (!options || (options && options.update !== false))
-		{
-			if (this.element.stage)
-			{
+		if (!options || (options && options.update !== false)) {
+			if (this.element.stage) {
 				this.element.stage.update();
 			}
 		}
@@ -82,7 +64,7 @@ class Component extends Observable {
 	setState(state)	{
 		if (state && typeof state === 'object')
 		{
-			_.assign(this.state, state);
+			assign(this.state, state);
 
 			// set component dirty
 			this.setDirty();
@@ -110,7 +92,10 @@ class Component extends Observable {
 		return this;
 	}
 
-	shouldUpdate() {
+	shouldUpdate(newProps) {
+		// with immutable props...
+		//if (this.props === newProps) return false;
+
 		return true;
 	}
 

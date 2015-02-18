@@ -1,19 +1,17 @@
-'use strict!';
+import constants from '../internal/constants';
+import parseAshNodeIndex from '../DOM/parseAshNodeIndex';
+import forOwn from '../internal/forOwn';
+import isFunction from '../internal/isFunction';
+import isMatching from '../internal/isMatching';
 
-var _ = require('_');
-var $ = require('jquery');
-var constants = require('../internal/constants');
-var parseAshNodeIndex = require('../DOM/parseAshNodeIndex');
-
-var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
-var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
-var STAGE_ATTRIBUTE_NAME = constants.STAGE_ATTRIBUTE_NAME;
-var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
+const INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
+const STAGE_ATTRIBUTE_NAME = constants.STAGE_ATTRIBUTE_NAME;
+const LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
 
 var domEvents;
 
 // list of topics
-var	topics = {};
+var	topics = global.domEvents = {};
 
 class DOMEvents {
 	constructor() {
@@ -39,7 +37,8 @@ class DOMEvents {
 		{
 			topics[eventName] = [];
 
-			$(document).on(eventName, this.callback.bind(this, eventName));
+			//$(document).on(eventName, this.callback.bind(this, eventName));
+			document.addEventListener(eventName, this.callback.bind(this, eventName), true);
 		}
 
 		for (i = 0; i < topics[eventName].length; i++)
@@ -58,15 +57,16 @@ class DOMEvents {
 			index: node[INDEX_ATTRIBUTE_NAME],
 			stage: node[STAGE_ATTRIBUTE_NAME],
 			callback: callback,
-			inserted: inserted
+			inserted: inserted,
+			reindexed: false
 		});
 
-		return this;	
+		return this;
 	}
 
 	addEvents(node, events, inserted) {
-		_.forOwn(events, function (callback, eventName) {
-			if (_.isFunction(callback)) {
+		forOwn(events, function (callback, eventName) {
+			if (isFunction(callback)) {
 				this.addEvent(node, eventName, callback, inserted);
 			}
 		}, this);
@@ -90,7 +90,7 @@ class DOMEvents {
 			}
 		} else if (!eventName)
 		{
-			_.forOwn(topics, function (value, key, object)
+			forOwn(topics, function (value, key, object)
 			{
 				var i;
 
@@ -114,7 +114,7 @@ class DOMEvents {
 	// if eventName is specified, only events with that name are removed
 	removeEvents(index, stage) {
 		//console.log('remove events!');
-		_.forOwn(topics, function (value, key, object)
+		forOwn(topics, function (value, key, object)
 		{
 			var i;
 
@@ -122,7 +122,7 @@ class DOMEvents {
 			{*/
 				for (i = 0; i < value.length; i++)
 				{
-					if (stage == value[i].stage && _.isMatching(index.split(LEVEL_SEPARATOR), value[i].index.split(LEVEL_SEPARATOR), true) && !value[i].inserted)
+					if (stage == value[i].stage && isMatching(index.split(LEVEL_SEPARATOR), value[i].index.split(LEVEL_SEPARATOR), true) && !value[i].inserted)
 					{
 						value.splice(i, 1);
 						i--;
@@ -133,18 +133,19 @@ class DOMEvents {
 	}
 
 	reindexEvents(oldIndex, newOrder, stage) {
-		_.forOwn(topics, function (value, key, object)
+		forOwn(topics, function (value, key, object)
 		{
 			var i;
 			var levels;
 
 			for (i = 0; i < value.length; i++)
 			{
-				if (stage == value[i].stage && _.isMatching(oldIndex.split(LEVEL_SEPARATOR), value[i].index.split(LEVEL_SEPARATOR), true) && !value[i].inserted)
+				if (stage == value[i].stage && isMatching(oldIndex.split(LEVEL_SEPARATOR), value[i].index.split(LEVEL_SEPARATOR), true) && !value[i].inserted && !value[i].reindexed)
 				{
 					levels = parseAshNodeIndex(value[i].index);
 					levels[parseAshNodeIndex(oldIndex).length - 1] = newOrder;
 					value[i].index = levels.join(LEVEL_SEPARATOR);
+					value[i].reindexed = true;
 				}
 			}
 		}, this);
@@ -152,7 +153,7 @@ class DOMEvents {
 
 	markEvents(stage) {
 		//console.log('marking events...');
-		_.forOwn(topics, function (value, key, object)
+		forOwn(topics, function (value, key, object)
 		{
 			var i;
 
@@ -162,6 +163,7 @@ class DOMEvents {
 				if (stage == value[i].stage)
 				{
 					value[i].inserted = false;
+					value[i].reindexed = false;
 				}
 			}
 		}, this);
@@ -193,4 +195,4 @@ class DOMEvents {
 	}
 }
 
-module.exports = DOMEvents;
+export default DOMEvents;

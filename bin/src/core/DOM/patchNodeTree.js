@@ -1,17 +1,39 @@
 "use strict";
 
-var _ = require("_");
-var constants = require("../internal/constants");
-var parseAshNodeIndex = require("./parseAshNodeIndex");
-var createNodeTree = require("./createNodeTree");
-var setNodeProperties = require("./setNodeProperties");
-var removeNodeProperties = require("./removeNodeProperties");
-var findNode = require("./findNode");
-var DOMEvents = require("../class/DOMEvents");
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
+
+var constants = _interopRequire(require("../internal/constants"));
+
+var parseAshNodeIndex = _interopRequire(require("./parseAshNodeIndex"));
+
+var createNodeTree = _interopRequire(require("./createNodeTree"));
+
+var setNodeProperties = _interopRequire(require("./setNodeProperties"));
+
+var removeNodeProperties = _interopRequire(require("./removeNodeProperties"));
+
+var findNode = _interopRequire(require("./findNode"));
+
+var DOMEvents = _interopRequire(require("../class/DOMEvents"));
+
+var sortBy = _interopRequire(require("../internal/sortBy"));
+
+var forEach = _interopRequire(require("../internal/forEach"));
+
+var pluck = _interopRequire(require("../internal/pluck"));
+
+var flatten = _interopRequire(require("../internal/flatten"));
+
+var max = _interopRequire(require("../internal/max"));
+
+var padLeft = _interopRequire(require("../internal/padLeft"));
+
+var isElement = _interopRequire(require("../internal/isElement"));
+
+var uniq = _interopRequire(require("../internal/uniq"));
 
 var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
 var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
-var PATCH_NONE = constants.PATCH_NONE;
 var PATCH_ASH_NODE = constants.PATCH_ASH_NODE;
 var PATCH_ASH_TEXT_NODE = constants.PATCH_ASH_TEXT_NODE;
 var PATCH_PROPERTIES = constants.PATCH_PROPERTIES;
@@ -23,221 +45,279 @@ var domEvents = new DOMEvents();
 
 // apply patches to dom tree
 function patchNodeTree(domTree, patches) {
-  // type check
-  if (!_.isElement(domTree)) {
-    return false;
-  }
+	// type check
+	if (!isElement(domTree)) {
+		return false;
+	}
 
-  //var __patches = [];
-  var __patches = patches;
-  var node;
-  var i;
-  var reindexCache = [];
-  var reorderCache = [];
-  var lastLevel;
+	if (!patches.length) {
+		return true;
+	}
 
-  function reindexChildNodes(parentNode, order) {
-    var parentLevels = parseAshNodeIndex(parentNode[INDEX_ATTRIBUTE_NAME]);
-    var levelIndex = parentLevels.length - 1;
+	//var __patches = [];
+	var __patches = patches;
+	var node;
+	var i;
+	var reindexCache = [];
+	var reorderCache = [];
+	var lastLevel;
 
-    function walk(node) {
-      var childLevels;
-      var i;
+	function reindexChildNodes(parentNode, order) {
+		var parentLevels = parseAshNodeIndex(parentNode[INDEX_ATTRIBUTE_NAME]);
+		var levelIndex = parentLevels.length - 1;
 
-      for (i = 0; i < node.childNodes.length; i++) {
-        childLevels = parseAshNodeIndex(node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
-        childLevels[levelIndex] = order;
+		function walk(node) {
+			var childLevels;
 
-        node.childNodes[i][INDEX_ATTRIBUTE_NAME] = childLevels.join(".");
-        node.childNodes[i][ORDER_ATTRIBUTE_NAME] = order;
-        //$(node.childNodes[i]).attr('index', node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
-        //$(node.childNodes[i]).attr('order', node.childNodes[i][ORDER_ATTRIBUTE_NAME]);
+			for (var _i = 0; _i < node.childNodes.length; _i++) {
+				if (node.childNodes[_i].nodeType == 1) {
+					childLevels = parseAshNodeIndex(node.childNodes[_i][INDEX_ATTRIBUTE_NAME]);
+					childLevels[levelIndex] = order;
 
-        if (node.childNodes[i].childNodes && node.childNodes[i].childNodes.length) {
-          walk(node.childNodes[i]);
-        }
-      }
-    }
+					node.childNodes[_i][INDEX_ATTRIBUTE_NAME] = childLevels.join(".");
+					node.childNodes[_i][ORDER_ATTRIBUTE_NAME] = childLevels[childLevels.length - 1];
+					//$(node.childNodes[i]).attr('index', node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
+					//$(node.childNodes[i]).attr('order', node.childNodes[i][ORDER_ATTRIBUTE_NAME]);
 
-    walk(parentNode);
-  }
+					if (node.childNodes[_i].childNodes && node.childNodes[_i].childNodes.length) {
+						walk(node.childNodes[_i]);
+					}
+				}
+			}
+		}
 
-  function flushCache() {
-    var appendChild = function (item) {
-      this.appendChild(item);
-    };
+		walk(parentNode);
+	}
 
-    while (reindexCache.length > 0) {
-      // reindex events
-      //domEvents.reindexEvents(reindexCache[0].oldIndex, reindexCache[0].newOrder, reindexCache[0].stage);
+	function flushCache() {
+		var appendChild = function (item) {
+			this.appendChild(item);
+		};
 
-      reindexCache[0].node[INDEX_ATTRIBUTE_NAME] = reindexCache[0].newIndex;
-      reindexCache[0].node[ORDER_ATTRIBUTE_NAME] = reindexCache[0].newOrder;
+		while (reindexCache.length > 0) {
+			// reindex events
+			//domEvents.reindexEvents(reindexCache[0].oldIndex, reindexCache[0].newOrder, reindexCache[0].stage);
 
-      //$(reindexCache[0].node).attr('index', reindexCache[0].node[INDEX_ATTRIBUTE_NAME]);
-      //$(reindexCache[0].node).attr('order', reindexCache[0].node[ORDER_ATTRIBUTE_NAME]);
-      //$(reindexCache[0].node).attr('levels', virtualDOM.levels.join('.'));
+			reindexCache[0].node[INDEX_ATTRIBUTE_NAME] = reindexCache[0].newIndex;
+			reindexCache[0].node[ORDER_ATTRIBUTE_NAME] = reindexCache[0].newOrder;
 
-      reindexChildNodes(reindexCache[0].node, reindexCache[0].newOrder);
+			//$(reindexCache[0].node).attr('index', reindexCache[0].node[INDEX_ATTRIBUTE_NAME]);
+			//$(reindexCache[0].node).attr('order', reindexCache[0].node[ORDER_ATTRIBUTE_NAME]);
+			//$(reindexCache[0].node).attr('levels', virtualDOM.levels.join('.'));
 
-      // clear the cache
-      reindexCache.shift();
-    }
+			reindexChildNodes(reindexCache[0].node, reindexCache[0].newOrder);
 
-    reorderCache = _.uniq(reorderCache, "node");
+			// clear the cache
+			reindexCache.shift();
+		}
 
-    while (reorderCache.length > 0) {
-      _.sortBy(reorderCache[0].node.childNodes, ORDER_ATTRIBUTE_NAME).forEach(appendChild, reorderCache[0].node);
+		reorderCache = uniq(reorderCache, "node");
 
-      reorderCache.shift();
-    }
-  }
+		while (reorderCache.length > 0) {
+			var sortedChildren = sortBy(reorderCache[0].node.childNodes, ORDER_ATTRIBUTE_NAME);
 
-  for (i = 0; i < __patches.length; i++) {
-    __patches[i].parsedIndex = parseAshNodeIndex(__patches[i].index);
-  }
+			forEach(sortedChildren, appendChild, reorderCache[0].node);
 
-  var maxIndex = _(__patches).pluck("parsedIndex").flatten().max();
+			reorderCache.shift();
+		}
+	}
 
-  var maxDigits = maxIndex === 0 ? 1 : Math.floor(Math.log(Math.abs(Math.floor(maxIndex))) / Math.LN10) + 1;
+	for (i = 0; i < __patches.length; i++) {
+		__patches[i].parsedIndex = parseAshNodeIndex(__patches[i].index);
+	}
 
-  __patches = _.sortBy(__patches, function (patch) {
-    var result = "";
+	var maxIndex = pluck(__patches, "parsedIndex");
 
-    for (var i = 0; i < patch.parsedIndex.length - 1; i++) {
-      result += _.padLeft(patch.parsedIndex[i], maxDigits, "0");
-    }
+	maxIndex = flatten(maxIndex);
+	maxIndex = max(maxIndex);
 
-    if (patch.type == PATCH_ASH_NODE) {
-      result += _.padLeft(9, maxDigits, "0");
-    } else if (patch.type == PATCH_ASH_TEXT_NODE) {
-      result += _.padLeft(8, maxDigits, "0");
-    } else if (patch.type == PATCH_PROPERTIES) {
-      result += _.padLeft(7, maxDigits, "0");
-    } else if (patch.type == PATCH_REMOVE) {
-      result += _.padLeft(6, maxDigits, "0");
-    } else if (patch.type == PATCH_INSERT) {
-      result += _.padLeft(5, maxDigits, "0");
-    } else if (patch.type == PATCH_ORDER) {
-      result += _.padLeft(4, maxDigits, "0");
-    } else {
-      result += _.padLeft(0, maxDigits, "0");
-    }
+	var maxDigits = maxIndex === 0 ? 1 : Math.floor(Math.log(Math.abs(Math.floor(maxIndex))) / Math.LN10) + 1;
 
-    result += _.padLeft(patch.parsedIndex[patch.parsedIndex.length - 1], maxDigits, "0");
+	__patches = sortBy(__patches, function (patch) {
+		var result = "";
 
-    return parseInt(result, 10);
-  });
+		for (var i = 0; i < patch.parsedIndex.length - 1; i++) {
+			result += padLeft(patch.parsedIndex[i], maxDigits, "0");
+		}
 
-  // now iterate over patches...
-  for (i = __patches.length - 1; i >= 0; i--) {
-    if (!lastLevel) {
-      lastLevel = __patches[i].parsedIndex.length;
-    }
+		if (patch.type == PATCH_ASH_NODE) {
+			result += padLeft(9, maxDigits, "0");
+		} else if (patch.type == PATCH_ASH_TEXT_NODE) {
+			result += padLeft(8, maxDigits, "0");
+		} else if (patch.type == PATCH_PROPERTIES) {
+			result += padLeft(7, maxDigits, "0");
+		} else if (patch.type == PATCH_REMOVE) {
+			result += padLeft(6, maxDigits, "0");
+		} else if (patch.type == PATCH_INSERT) {
+			result += padLeft(5, maxDigits, "0");
+		} else if (patch.type == PATCH_ORDER) {
+			result += padLeft(4, maxDigits, "0");
+		} else {
+			result += padLeft(0, maxDigits, "0");
+		}
 
-    if (lastLevel < __patches[i].parsedIndex.length) {
-      // patching new level, must flush cache
-      flushCache();
-      lastLevel = __patches[i].parsedIndex.length;
-    }
+		result += padLeft(patch.parsedIndex[patch.parsedIndex.length - 1], maxDigits, "0");
 
-    if (__patches[i].type == PATCH_ASH_NODE) {
-      // remove old events
-      domEvents.removeEvents(__patches[i].index, __patches[i].stage);
+		return parseInt(result, 10);
+	});
 
-      // replace node
-      node = findNode(domTree, __patches[i].index);
+	// now lets proof-check some...
+	var newLevels;
+	var j, k;
+	var levels;
+	var index;
+	for (i = __patches.length - 1; i >= 0; i--) {
+		if (__patches[i].type == PATCH_INSERT) {
+			levels = __patches[i].parsedIndex.slice(0);
 
-      if (!node) {
-        return false;
-      }
+			//console.log('look for parents of patch', JSON.stringify(levels), __patches[i]);
 
-      node.parentNode.replaceChild(createNodeTree(__patches[i].node), node);
-    }
+			while (levels.length >= 3) {
+				levels.pop();
+				index = levels.join(".");
 
-    if (__patches[i].type == PATCH_ASH_TEXT_NODE) {
-      node = findNode(domTree, __patches[i].index);
+				//console.log('looking for patch with index', index);
 
-      if (!node) {
-        return false;
-      }
+				for (j = i; j >= 0; j--) {
+					if (__patches[j].type == PATCH_ORDER && __patches[j].newIndex == index) {
+						//console.log('*** FOUND!', j, __patches[j]);
+						__patches[i].origIndex = __patches[i].index;
+						__patches[i].origParsedIndex = __patches[i].parsedIndex.slice(0);
+						__patches[i].origParentIndex = __patches[i].parentIndex;
 
-      node.nodeValue = __patches[i].text;
-    }
+						newLevels = __patches[i].parsedIndex.slice(0);
 
-    if (__patches[i].type == PATCH_PROPERTIES) {
-      node = findNode(domTree, __patches[i].index);
+						for (k = 0; k < __patches[j].parsedIndex.length; k++) {
+							newLevels[k] = __patches[j].parsedIndex[k];
+						}
 
-      if (!node) {
-        return false;
-      }
+						__patches[i].index = newLevels.join(".");
+						__patches[i].parsedIndex = newLevels.slice(0);
 
-      setNodeProperties(node, __patches[i].propertiesToChange, false);
-      removeNodeProperties(node, __patches[i].propertiesToRemove);
-    }
+						newLevels = parseAshNodeIndex(__patches[i].parentIndex);
 
-    if (__patches[i].type == PATCH_REMOVE) {
-      // remove old events
-      domEvents.removeEvents(__patches[i].index, __patches[i].stage);
+						for (k = 0; k < __patches[j].parsedIndex.length; k++) {
+							newLevels[k] = __patches[j].parsedIndex[k];
+						}
 
-      node = findNode(domTree, __patches[i].index);
+						__patches[i].parentIndex = newLevels.join(".");
+					}
+				}
+			}
+		}
+	}
 
-      if (!node) {
-        return false;
-      }
+	// now iterate over patches...
+	for (i = __patches.length - 1; i >= 0; i--) {
+		if (!lastLevel) {
+			lastLevel = __patches[i].parsedIndex.length;
+		}
 
-      node.parentNode.removeChild(node);
-    }
+		if (lastLevel < __patches[i].parsedIndex.length) {
+			// patching new level, must flush cache
+			flushCache();
+			lastLevel = __patches[i].parsedIndex.length;
+		}
 
-    if (__patches[i].type == PATCH_INSERT) {
-      node = findNode(domTree, __patches[i].parentIndex);
+		if (__patches[i].type == PATCH_ASH_NODE) {
+			// remove old events
+			domEvents.removeEvents(__patches[i].index, __patches[i].stage);
 
-      if (!node) {
-        return false;
-      }
+			// replace node
+			node = findNode(domTree, __patches[i].index);
 
-      node.appendChild(createNodeTree(__patches[i].node));
+			if (!node) {
+				return false;
+			}
 
-      reorderCache.push({
-        node: node
-      });
-    }
+			node.parentNode.replaceChild(createNodeTree(__patches[i].node), node);
+		}
 
-    if (__patches[i].type == PATCH_ORDER) {
-      if (typeof __patches[i].index !== "undefined") {
-        // moving existing node
-        node = findNode(domTree, __patches[i].index);
+		if (__patches[i].type == PATCH_ASH_TEXT_NODE) {
+			node = findNode(domTree, __patches[i].index);
 
-        if (!node) {
-          return false;
-        }
+			if (!node) {
+				return false;
+			}
 
-        domEvents.reindexEvents(__patches[i].index, __patches[i].order, __patches[i].stage);
+			node.nodeValue = __patches[i].text;
+		}
 
-        reindexCache.push({
-          node: node,
-          newIndex: __patches[i].newIndex,
-          newOrder: __patches[i].order,
-          oldIndex: __patches[i].index,
-          stage: __patches[i].stage
-        });
-      } else {
-        return false;
-      }
+		if (__patches[i].type == PATCH_PROPERTIES) {
+			node = findNode(domTree, __patches[i].index);
 
-      reorderCache.push({
-        node: node.parentNode
-      });
-    }
-  }
+			if (!node) {
+				return false;
+			}
 
-  flushCache();
+			setNodeProperties(node, __patches[i].propertiesToChange, false);
+			removeNodeProperties(node, __patches[i].propertiesToRemove);
+		}
 
-  if (__patches[0]) {
-    domEvents.markEvents(__patches[0].stage);
-  }
+		if (__patches[i].type == PATCH_REMOVE) {
+			// remove old events
+			domEvents.removeEvents(__patches[i].index, __patches[i].stage);
 
-  return true;
+			node = findNode(domTree, __patches[i].index);
+
+			if (!node) {
+				return false;
+			}
+
+			node.parentNode.removeChild(node);
+		}
+
+		if (__patches[i].type == PATCH_INSERT) {
+			node = findNode(domTree, __patches[i].parentIndex);
+
+			if (!node) {
+				return false;
+			}
+
+			node.appendChild(createNodeTree(__patches[i].node));
+
+			reorderCache.push({
+				node: node
+			});
+		}
+
+		if (__patches[i].type == PATCH_ORDER) {
+			if (typeof __patches[i].index !== "undefined") {
+
+
+				// moving existing node
+				node = findNode(domTree, __patches[i].index);
+
+				if (!node) {
+					return false;
+				}
+
+				domEvents.reindexEvents(__patches[i].index, __patches[i].order, __patches[i].stage);
+
+				reindexCache.push({
+					node: node,
+					newIndex: __patches[i].newIndex,
+					newOrder: __patches[i].order,
+					oldIndex: __patches[i].index,
+					stage: __patches[i].stage
+				});
+			} else {
+				return false;
+			}
+
+			reorderCache.push({
+				node: node.parentNode
+			});
+		}
+	}
+
+	flushCache();
+
+	//if (__patches[0]) {
+	domEvents.markEvents(__patches[0].stage);
+	//}
+
+	return true;
 }
 
 module.exports = patchNodeTree;

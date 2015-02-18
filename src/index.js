@@ -1,48 +1,33 @@
-'use strict';
+import Observable from './core/class/Observable';
+import Component from './core/class/Component';
+import Renderer from './core/class/Renderer';
+import Action from './core/class/Action';
+import Store from './core/class/Store';
 
-var _ = require('_');
-var $ = require('jquery');
+import createElement from './core/internal/createElement';
+import createFactory from './core/internal/createFactory';
 
-var Observable = require('./core/class/Observable');
-var Component = require('./core/class/Component');
-var Renderer = require('./core/class/Renderer');
-var Action = require('./core/class/Action');
-var Store = require('./core/class/Store');
+import {ImmutableArray, ImmutableObject} from './core/immutable/Immutables';
 
-var createElement = require('./core/internal/createElement');
-var createFactory = require('./core/internal/createFactory');
+import assign from './core/internal/assign';
 
 var ash = {};
 
-var VERSION = '0.1.0';
+const VERSION = '0.1.0';
 
-_.assign(ash, {
-	'VERSION': VERSION,
-	'Observable': Observable,
-	'Component': Component,
-	'Renderer': Renderer,
-	'Action': Action,
-	'Store': Store,
+assign(ash, {
+	VERSION,
+	Observable,
+	Component,
+	Renderer,
+	Action,
+	Store,
 
 	'e': createElement,
-	'createFactory': createFactory,
+	createFactory,
 
-/*	ajax: function (options) {
-		return new Promise((resolve, reject) => {
-			$.ajax(_.assign({}, options, {
-				success(data) {
-					resolve(data);
-				},
-				error(jqXHR, textStatus, errorThrown) {
-					if (errorThrown) {
-						reject(new Error(errorThrown));
-					} else {
-						reject(new Error(textStatus));
-					}
-				}
-			}));
-		});
-	}*/
+	ImmutableArray,
+	ImmutableObject
 });
 
-module.exports = ash;
+export default ash;

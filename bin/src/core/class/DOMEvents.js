@@ -1,195 +1,212 @@
-var _classProps = function (child, staticProps, instanceProps) {
-  if (staticProps) Object.defineProperties(child, staticProps);
-  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
+"use strict";
 
-"use strict!";
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
 
-var _ = require("_");
-var $ = require("jquery");
-var constants = require("../internal/constants");
-var parseAshNodeIndex = require("../DOM/parseAshNodeIndex");
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+var constants = _interopRequire(require("../internal/constants"));
+
+var parseAshNodeIndex = _interopRequire(require("../DOM/parseAshNodeIndex"));
+
+var forOwn = _interopRequire(require("../internal/forOwn"));
+
+var isFunction = _interopRequire(require("../internal/isFunction"));
+
+var isMatching = _interopRequire(require("../internal/isMatching"));
 
 var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
-var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
 var STAGE_ATTRIBUTE_NAME = constants.STAGE_ATTRIBUTE_NAME;
 var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
 
 var domEvents;
 
 // list of topics
-var topics = {};
+var topics = global.domEvents = {};
 
 var DOMEvents = (function () {
-  var DOMEvents = function DOMEvents() {
-    if (domEvents) {
-      return domEvents;
-    }
+	function DOMEvents() {
+		_classCallCheck(this, DOMEvents);
 
-    if (!(this instanceof DOMEvents)) {
-      return new DOMEvents();
-    }
+		if (domEvents) {
+			return domEvents;
+		}
 
-    domEvents = this;
+		if (!(this instanceof DOMEvents)) {
+			return new DOMEvents();
+		}
 
-    return domEvents;
-  };
+		domEvents = this;
 
-  _classProps(DOMEvents, null, {
-    addEvent: {
-      writable: true,
-      value: function (node, eventName, callback, inserted) {
-        var i;
+		return domEvents;
+	}
 
-        if (!topics[eventName]) {
-          topics[eventName] = [];
+	_prototypeProperties(DOMEvents, null, {
+		addEvent: {
+			value: function addEvent(node, eventName, callback, inserted) {
+				var i;
 
-          $(document).on(eventName, this.callback.bind(this, eventName));
-        }
+				if (!topics[eventName]) {
+					topics[eventName] = [];
 
-        for (i = 0; i < topics[eventName].length; i++) {
-          if (topics[eventName][i].stage == node[STAGE_ATTRIBUTE_NAME] && topics[eventName][i].index == node[INDEX_ATTRIBUTE_NAME]) {
-            topics[eventName][i].callback = callback;
-            topics[eventName][i].inserted = inserted;
+					//$(document).on(eventName, this.callback.bind(this, eventName));
+					document.addEventListener(eventName, this.callback.bind(this, eventName), true);
+				}
 
-            return this;
-          }
-        }
+				for (i = 0; i < topics[eventName].length; i++) {
+					if (topics[eventName][i].stage == node[STAGE_ATTRIBUTE_NAME] && topics[eventName][i].index == node[INDEX_ATTRIBUTE_NAME]) {
+						topics[eventName][i].callback = callback;
+						topics[eventName][i].inserted = inserted;
 
-        topics[eventName].push({
-          index: node[INDEX_ATTRIBUTE_NAME],
-          stage: node[STAGE_ATTRIBUTE_NAME],
-          callback: callback,
-          inserted: inserted
-        });
+						return this;
+					}
+				}
 
-        return this;
-      }
-    },
-    addEvents: {
-      writable: true,
-      value: function (node, events, inserted) {
-        _.forOwn(events, function (callback, eventName) {
-          if (_.isFunction(callback)) {
-            this.addEvent(node, eventName, callback, inserted);
-          }
-        }, this);
+				topics[eventName].push({
+					index: node[INDEX_ATTRIBUTE_NAME],
+					stage: node[STAGE_ATTRIBUTE_NAME],
+					callback: callback,
+					inserted: inserted,
+					reindexed: false
+				});
 
-        return this;
-      }
-    },
-    removeEvent: {
-      writable: true,
-      value: function (node, eventName) {
-        var i;
+				return this;
+			},
+			writable: true,
+			configurable: true
+		},
+		addEvents: {
+			value: function addEvents(node, events, inserted) {
+				forOwn(events, function (callback, eventName) {
+					if (isFunction(callback)) {
+						this.addEvent(node, eventName, callback, inserted);
+					}
+				}, this);
 
-        if (eventName && topics[eventName]) {
-          for (i = 0; i < topics[eventName].length; i++) {
-            if (topics[eventName][i].stage == node[STAGE_ATTRIBUTE_NAME] && topics[eventName][i].index == node[INDEX_ATTRIBUTE_NAME]) {
-              topics[eventName].splice(i, 1);
+				return this;
+			},
+			writable: true,
+			configurable: true
+		},
+		removeEvent: {
+			value: function removeEvent(node, eventName) {
+				var i;
 
-              return this;
-            }
-          }
-        } else if (!eventName) {
-          _.forOwn(topics, function (value, key, object) {
-            var i;
+				if (eventName && topics[eventName]) {
+					for (i = 0; i < topics[eventName].length; i++) {
+						if (topics[eventName][i].stage == node[STAGE_ATTRIBUTE_NAME] && topics[eventName][i].index == node[INDEX_ATTRIBUTE_NAME]) {
+							topics[eventName].splice(i, 1);
 
-            for (i = 0; i < topics[key].length; i++) {
-              if (topics[key][i].stage == node[STAGE_ATTRIBUTE_NAME] && topics[key][i].index == node[INDEX_ATTRIBUTE_NAME]) {
-                topics[key].splice(i, 1);
+							return this;
+						}
+					}
+				} else if (!eventName) {
+					forOwn(topics, function (value, key, object) {
+						var i;
 
-                return this;
-              }
-            }
-          }, this);
-        }
+						for (i = 0; i < topics[key].length; i++) {
+							if (topics[key][i].stage == node[STAGE_ATTRIBUTE_NAME] && topics[key][i].index == node[INDEX_ATTRIBUTE_NAME]) {
+								topics[key].splice(i, 1);
 
-        return this;
-      }
-    },
-    removeEvents: {
-      writable: true,
+								return this;
+							}
+						}
+					}, this);
+				}
 
+				return this;
+			},
+			writable: true,
+			configurable: true
+		},
+		removeEvents: {
 
-      // removes all events, that has indx same or matching via _.isMatching
-      // removeEvents('0.1') removes events '0.1', '0.1.0', '0.1.1', etc.
-      // if eventName is specified, only events with that name are removed
-      value: function (index, stage) {
-        //console.log('remove events!');
-        _.forOwn(topics, function (value, key, object) {
-          var i;
+			// removes all events, that has indx same or matching via _.isMatching
+			// removeEvents('0.1') removes events '0.1', '0.1.0', '0.1.1', etc.
+			// if eventName is specified, only events with that name are removed
+			value: function removeEvents(index, stage) {
+				//console.log('remove events!');
+				forOwn(topics, function (value, key, object) {
+					var i;
 
-          /*if ((eventName && eventName == key) || !eventName)
-          {*/
-          for (i = 0; i < value.length; i++) {
-            if (stage == value[i].stage && _.isMatching(index.split(LEVEL_SEPARATOR), value[i].index.split(LEVEL_SEPARATOR), true) && !value[i].inserted) {
-              value.splice(i, 1);
-              i--;
-            }
-          }
-          /*}*/
-        }, this);
-      }
-    },
-    reindexEvents: {
-      writable: true,
-      value: function (oldIndex, newOrder, stage) {
-        _.forOwn(topics, function (value, key, object) {
-          var i;
-          var levels;
+					/*if ((eventName && eventName == key) || !eventName)
+     {*/
+					for (i = 0; i < value.length; i++) {
+						if (stage == value[i].stage && isMatching(index.split(LEVEL_SEPARATOR), value[i].index.split(LEVEL_SEPARATOR), true) && !value[i].inserted) {
+							value.splice(i, 1);
+							i--;
+						}
+					}
+					/*}*/
+				}, this);
+			},
+			writable: true,
+			configurable: true
+		},
+		reindexEvents: {
+			value: function reindexEvents(oldIndex, newOrder, stage) {
+				forOwn(topics, function (value, key, object) {
+					var i;
+					var levels;
 
-          for (i = 0; i < value.length; i++) {
-            if (stage == value[i].stage && _.isMatching(oldIndex.split(LEVEL_SEPARATOR), value[i].index.split(LEVEL_SEPARATOR), true) && !value[i].inserted) {
-              levels = parseAshNodeIndex(value[i].index);
-              levels[parseAshNodeIndex(oldIndex).length - 1] = newOrder;
-              value[i].index = levels.join(LEVEL_SEPARATOR);
-            }
-          }
-        }, this);
-      }
-    },
-    markEvents: {
-      writable: true,
-      value: function (stage) {
-        //console.log('marking events...');
-        _.forOwn(topics, function (value, key, object) {
-          var i;
+					for (i = 0; i < value.length; i++) {
+						if (stage == value[i].stage && isMatching(oldIndex.split(LEVEL_SEPARATOR), value[i].index.split(LEVEL_SEPARATOR), true) && !value[i].inserted && !value[i].reindexed) {
+							levels = parseAshNodeIndex(value[i].index);
+							levels[parseAshNodeIndex(oldIndex).length - 1] = newOrder;
+							value[i].index = levels.join(LEVEL_SEPARATOR);
+							value[i].reindexed = true;
+						}
+					}
+				}, this);
+			},
+			writable: true,
+			configurable: true
+		},
+		markEvents: {
+			value: function markEvents(stage) {
+				//console.log('marking events...');
+				forOwn(topics, function (value, key, object) {
+					var i;
 
-          for (i = 0; i < value.length; i++) {
-            if (stage == value[i].stage) {
-              value[i].inserted = false;
-            }
-          }
-        }, this);
-      }
-    },
-    callback: {
-      writable: true,
-      value: function (eventName, event) {
-        var index = event.target[INDEX_ATTRIBUTE_NAME];
-        var levels;
-        var i;
+					for (i = 0; i < value.length; i++) {
+						if (stage == value[i].stage) {
+							value[i].inserted = false;
+							value[i].reindexed = false;
+						}
+					}
+				}, this);
+			},
+			writable: true,
+			configurable: true
+		},
+		callback: {
+			value: function callback(eventName, event) {
+				var index = event.target[INDEX_ATTRIBUTE_NAME];
+				var levels;
+				var i;
 
-        if (index) {
-          levels = parseAshNodeIndex(index);
+				if (index) {
+					levels = parseAshNodeIndex(index);
 
-          while (levels.length) {
-            for (i = 0; i < topics[eventName].length; i++) {
-              if (topics[eventName][i].index == index && topics[eventName][i].stage == event.target[STAGE_ATTRIBUTE_NAME]) {
-                topics[eventName][i].callback(event);
-              }
-            }
+					while (levels.length) {
+						for (i = 0; i < topics[eventName].length; i++) {
+							if (topics[eventName][i].index == index && topics[eventName][i].stage == event.target[STAGE_ATTRIBUTE_NAME]) {
+								topics[eventName][i].callback(event);
+							}
+						}
 
-            levels.pop();
-            index = levels.join(LEVEL_SEPARATOR);
-          }
-        }
-      }
-    }
-  });
+						levels.pop();
+						index = levels.join(LEVEL_SEPARATOR);
+					}
+				}
+			},
+			writable: true,
+			configurable: true
+		}
+	});
 
-  return DOMEvents;
+	return DOMEvents;
 })();
 
 module.exports = DOMEvents;

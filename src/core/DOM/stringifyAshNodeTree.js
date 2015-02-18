@@ -1,15 +1,9 @@
-'use strict';
+import isAshNode from '../internal/isAshNode';
+import constants from '../internal/constants';
 
-var _ = require('_');
-var $ = require('jquery');
-
-var isAshNode = require('../internal/isAshNode');
-var isAshTextNode = require('../internal/isAshTextNode');
-var constants = require('../internal/constants');
-
-var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
-var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
-var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
+const INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
+const ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
+const LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
 
 function escapeAttributeValue(s, preserveCR) {
 	preserveCR = preserveCR ? '&#13;' : '\n';
@@ -20,10 +14,10 @@ function escapeAttributeValue(s, preserveCR) {
 		.replace(/</g, '&lt;')
 		.replace(/>/g, '&gt;')
 		/*
-		You may add other replacements here for HTML only 
+		You may add other replacements here for HTML only
 		(but it's not necessary).
 		Or for XML, only if the named entities are defined in its DTD.
-		*/ 
+		*/
 		.replace(/\r\n/g, preserveCR) /* Must be before the next replacement. */
 		.replace(/[\r\n]/g, preserveCR);
 }
@@ -73,7 +67,7 @@ function walkStringifyAshNodeTree(ashNodeTree, index/*, parentIndex*/) {
 							if (key1.toLowerCase() == 'classname') {
 								openingTag += ' class="' + escapeAttributeValue(ashNodeTree.properties[key1]) + '"';
 							} else {
-								openingTag += ' ' + key1 + '="' + escapeAttributeValue(ashNodeTree.properties[key1]) + '"';	
+								openingTag += ' ' + key1 + '="' + escapeAttributeValue(ashNodeTree.properties[key1]) + '"';
 							}
 						} else if (typeof ashNodeTree.properties[key1] === 'boolean') {
 							openingTag += ' ' + key1;
@@ -106,4 +100,4 @@ function stringifyAshNodeTree(ashNodeTree)
 	return walkStringifyAshNodeTree(ashNodeTree, 0, '');
 }
 
-module.exports = stringifyAshNodeTree;
+export default stringifyAshNodeTree;

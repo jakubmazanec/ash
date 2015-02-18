@@ -1,10 +1,8 @@
-'use strict';
-
-var AshElement = require('../class/AshElement');
-var constants = require('../internal/constants');
+import AshElement from '../class/AshElement';
+import constants from './constants';
 
 // constants references
-var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
+const COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
 
 var createFactory = function (Component) {
 	var ComponentElementFactory = AshElement.bind(null, COMPONENT_ASH_ELEMENT, Component);
@@ -14,4 +12,4 @@ var createFactory = function (Component) {
 	return ComponentElementFactory;
 };
 
-module.exports = createFactory;
+export default createFactory;

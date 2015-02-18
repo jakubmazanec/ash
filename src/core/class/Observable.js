@@ -1,21 +1,18 @@
-'use strict!';
-
-var _ = require('_');
-var setImmediate = require('../polyfill/immediate');
+import immediate from '../polyfill/immediate';
+import isString from '../internal/isString';
+import isFunction from '../internal/isFunction';
+import isObject from '../internal/isObject';
+import isMatching from '../internal/isMatching';
+import isPlainObject from '../internal/isPlainObject';
 
 // Regular expressions used to split event name strings
-var REGEX_TOPIC = /\s+/; // one or more space
-var REGEX_CATEGORY = /\.|\//; // dot , or forward slash
+const REGEX_TOPIC = /\s+/; // one or more space
+const REGEX_CATEGORY = /\.|\//; // dot , or forward slash
 
-var store = global.store = {};
+var store = {};
 
 class Observable {
 	constructor() {
-		if (!(this instanceof Observable))
-		{
-			return new Observable();
-		}
-
 		return this;
 	}
 
@@ -25,30 +22,42 @@ class Observable {
 		var events = arguments[1];
 		var callback = arguments[2];
 		var context = arguments[3];
-		var i;
 
-		if (!_.isObject(object)) {
+		if (isString(object)) {
+			// observed object is missing, `this` is used
+			object = this;
+			context = callback;
+			callback = events;
+			events = object;
+			object = this;
+		} else if (isFunction(object)) {
+			// observed object is missing, `this` is used, and events string is missing, `'*'`' is used
+			context = events;
+			callback = object;
+			events = '*';
+			object = this;
+		} else if (!isObject(object)) {
 			throw new Error(object + ' must be an object.');
 		}
 
 		// events string is missing, we will use '*', and juggle the remaining arguments
-		if (_.isFunction(events)) {
+		if (isFunction(events)) {
 			context = callback;
 			callback = events;
 			events = '*';
 		}
 
-		if (!_.isFunction(callback)) {
+		if (!isFunction(callback)) {
 			throw new Error(callback + ' must be a function.');
 		}
 
-		if (typeof context !== 'undefined' && !_.isObject(context)) {
+		if (typeof context !== 'undefined' && !isObject(context)) {
 			throw new Error(context + ' must be an object.');
 		}
 
-		events = _.isString(events) ? events.trim().split(REGEX_TOPIC) : ['*'];
+		events = isString(events) ? events.trim().split(REGEX_TOPIC) : ['*'];
 
-		for (i = 0; i < events.length; i++) {
+		for (let i = 0; i < events.length; i++) {
 			if (!store[events[i]]) {
 				store[events[i]] = {
 					name: events[i],
@@ -74,21 +83,20 @@ class Observable {
 		var events = arguments[1];
 		var callback = arguments[2];
 		var context = arguments[3];
-		var i, j, key;
 
 		// events string is missing, we will use '*', and juggle the remaining arguments
-		if (_.isFunction(events)) {
+		if (isFunction(events)) {
 			context = callback;
 			callback = events;
 			events = '*';
 		}
 
-		events = _.isString(events) ? events.trim().split(REGEX_TOPIC) : ['*'];
+		events = isString(events) ? events.trim().split(REGEX_TOPIC) : ['*'];
 
-		for (i = 0; i < events.length; i++) {
-			for (key in store) {
+		for (let i = 0; i < events.length; i++) {
+			for (let key in store) {
 				if (store.hasOwnProperty(key) && (store[key] == events[i] || events[i] == '*')) {
-					for (j = 0; j < store[key].observables.length; j++) {
+					for (let j = 0; j < store[key].observables.length; j++) {
 						// we can remove only this observable
 						if (store[key].observables[j].observable == observable) {
 							if ((!object || store[key].observables[j].observed == object) && (!callback || store[key].observables[j].callback == callback) && (!context || store[key].observables[j].context == context)) {
@@ -104,41 +112,28 @@ class Observable {
 		return observable;
 	}
 
-	on(events, callback, context) {
-		return this.observe(this, events, callback, context);
-	}
-
-	off(events, callback, context) {
-		return this.unobserve(this, events, callback, context);
-	}
-
 	trigger(/*events, data, options.useAsync|options.noEventArgument*/) {
 		var observable = this;
-		var events = _.isString(arguments[0]) ? arguments[0].trim().split(REGEX_TOPIC) : ['*'];
+		var events = isString(arguments[0]) ? arguments[0].trim().split(REGEX_TOPIC) : ['*'];
 		var data = [];
-		var useAsync = arguments.length > 1 && _.isPlainObject(arguments[arguments.length - 1]) && arguments[arguments.length - 1].async ? true : false;
-		var noEventArgument = arguments.length > 1 && _.isPlainObject(arguments[arguments.length - 1]) && arguments[arguments.length - 1].noEventArgument ? true : false;
+		var useAsync = arguments.length > 1 && isPlainObject(arguments[arguments.length - 1]) && arguments[arguments.length - 1].async ? true : false;
+		var noEventArgument = arguments.length > 1 && isPlainObject(arguments[arguments.length - 1]) && arguments[arguments.length - 1].noEventArgument ? true : false;
 		var categories;
-		var i, j, k;
 
-		for (i = 1; i < (useAsync || noEventArgument ? arguments.length - 1 : arguments.length); i++)
-		{
+		for (let i = 1; i < (useAsync || noEventArgument ? arguments.length - 1 : arguments.length); i++) {
 			data.push(arguments[i]);
 		}
 
-		function trigger()
-		{
-			for (i = 0; i < events.length; i++) {
+		function trigger() {
+			for (let i = 0; i < events.length; i++) {
 				categories = events[i].split(REGEX_CATEGORY);
 
-				for (j in store) {
-					if (store.hasOwnProperty(j) && (_.isMatching(store[j].categories, categories) || store[j].name == '*' || events[i] == '*')) {
-						for (k = 0; k < store[j].observables.length; k++) {
+				for (let j in store) {
+					if (store.hasOwnProperty(j) && (isMatching(store[j].categories, categories) || store[j].name == '*' || events[i] == '*')) {
+						for (let k = 0; k < store[j].observables.length; k++) {
 							if (observable == store[j].observables[k].observed) {
 								if (!noEventArgument) {
-									data = [{
-										type: events[i]
-									}].concat(data);
+									data = [{type: events[i]}].concat(data);
 								}
 
 								store[j].observables[k].callback.apply(store[j].observables[k].context || store[j].observables[k].observable, data);
@@ -150,7 +145,7 @@ class Observable {
 		}
 
 		if (useAsync) {
-			setImmediate(trigger);
+			immediate(trigger);
 		} else {
 			trigger();
 		}
@@ -159,4 +154,4 @@ class Observable {
 	}
 }
 
-module.exports = Observable;
+export default Observable;
