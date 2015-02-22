@@ -20,25 +20,30 @@ var path = _interopRequire(require("path"));
 
 var app = koa();
 
-var Display = _interopRequire(require("./components/Display"));
+// import Display from './components/Display';
+// import Timer from './components/Timer';
 
-var Timer = _interopRequire(require("./components/Timer"));
+// var Renderer = new ash.Renderer();
 
-var Renderer = new ash.Renderer();
-
-var componentHtml = Renderer.componentToString(new Timer());
+//var componentHtml = Renderer.componentToString(new Timer());
 
 app.use(logger());
 
-
 function* index(next) {
-  this.body = fs.readFileSync(path.join(__dirname, "../../assets/index.html"), "utf8").replace("%CONTENT%", componentHtml);
+  this.body = fs.readFileSync(path.join(__dirname, "../../assets/index.html"), "utf8") /*.replace('%CONTENT%', componentHtml)*/;
 
   yield next;
 }
 
 app.use(route.get("/", index));
 
+function* rendering(next) {
+  this.body = fs.readFileSync(path.join(__dirname, "../../assets/rendering.html"), "utf8");
+
+  yield next;
+}
+
+app.use(route.get("/rendering", rendering));
 
 // serve static files
 app.use(serve(path.join(__dirname, "../../public")));

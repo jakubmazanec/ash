@@ -2,7 +2,7 @@
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
 
-var DOMEvents = _interopRequire(require("../class/DOMEvents"));
+var EventListener = _interopRequire(require("../class/EventListener"));
 
 var constants = _interopRequire(require("../internal/constants"));
 
@@ -10,21 +10,14 @@ var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
 var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
 var STAGE_ATTRIBUTE_NAME = constants.STAGE_ATTRIBUTE_NAME;
 
-var domEvents = new DOMEvents();
+var eventListener = new EventListener();
 
 function walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache) {
-	//console.log('validating ', nodeTree, ashNodeTree, stage);
-
-	if (nodeTree.tagName && nodeTree.tagName.toLowerCase() != ashNodeTree.tagName) {
-		//console.log('!', nodeTree.tagName.toLowerCase(), ashNodeTree.tagName);
-
+	if (nodeTree.tagName && nodeTree.tagName.toLowerCase() !== ashNodeTree.tagName) {
 		return false;
 	}
 
 	if (nodeTree.getAttribute && nodeTree.getAttribute(INDEX_ATTRIBUTE_NAME) != ashNodeTree.index || nodeTree.getAttribute && nodeTree.getAttribute(ORDER_ATTRIBUTE_NAME) != ashNodeTree.order) {
-		//console.log('!', nodeTree.getAttribute(INDEX_ATTRIBUTE_NAME), ashNodeTree.index);
-		//console.log('!', nodeTree.getAttribute(INDEX_ATTRIBUTE_NAME), ashNodeTree.index);
-
 		return false;
 	}
 
@@ -32,7 +25,7 @@ function walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache) {
 	nodeTree[ORDER_ATTRIBUTE_NAME] = ashNodeTree.order;
 	nodeTree[STAGE_ATTRIBUTE_NAME] = ashNodeTree.stage;
 
-	if (ashNodeTree.properties && ashNodeTree.properties.events && typeof ashNodeTree.properties.events == "object") {
+	if (ashNodeTree.properties && ashNodeTree.properties.events && typeof ashNodeTree.properties.events === "object") {
 		eventsCache.push({
 			events: ashNodeTree.properties.events,
 			node: nodeTree
@@ -56,23 +49,15 @@ function walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache) {
 
 function validateNodeTree(nodeTree, ashNodeTree, stage) {
 	var eventsCache = [];
-	var isValid = walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache);
+	var isNodeTreeValid = walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache);
 
-	//console.log(isValid, eventsCache);
-
-	if (isValid) {
+	if (isNodeTreeValid) {
 		for (var i = 0; i < eventsCache.length; i++) {
-			domEvents.addEvents(eventsCache[i].node, eventsCache[i].events);
+			eventListener.addEvents(eventsCache[i].node, eventsCache[i].events);
 		}
 	}
 
-	if (isValid) {
-		for (var i = 0; i < eventsCache.length; i++) {
-			domEvents.addEvents(eventsCache[i].node, eventsCache[i].events);
-		}
-	}
-
-	return isValid;
+	return isNodeTreeValid;
 }
 
 module.exports = validateNodeTree;

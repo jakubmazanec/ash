@@ -12,9 +12,6 @@ var stateChange = _interopRequire(require("./immediate/stateChange"));
 
 var timeout = _interopRequire(require("./immediate/timeout"));
 
-
-
-
 var types = [nextTick, mutation.js, messageChannel, stateChange, timeout];
 var draining;
 var queue = [];

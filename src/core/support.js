@@ -1,4 +1,4 @@
-var isNative = require('./internal/isNative');
+import isNative from './internal/isNative';
 
 /** Used to detect functions containing a `this` reference. */
 var reThis = /\bthis\b/;
@@ -72,4 +72,4 @@ var support = {};
   }
 }(0, 0));
 
-module.exports = support;
+export default support;

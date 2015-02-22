@@ -1,9 +1,9 @@
 import ash from '../ash';
 
 class Display extends ash.Component {
-	getInitialState() {
-		return {displayClicks: 0};
-	}
+	/* jshint ignore:start */
+	state = {displayClicks: 0};
+	/* jshint ignore:end */
 
 	render() {
 		var message =
@@ -46,4 +46,4 @@ class Display extends ash.Component {
 	}
 }
 
-export default ash.createFactory(Display);
+export default ash.createElement(Display);

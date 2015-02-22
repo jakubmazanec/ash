@@ -15,6 +15,7 @@ var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
 /**
  * AshElement
  */
+
 var AshElement = (function () {
 	function AshElement(type, spec) {
 		_classCallCheck(this, AshElement);

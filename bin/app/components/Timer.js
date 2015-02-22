@@ -14,6 +14,8 @@ var Display = _interopRequire(require("./Display"));
 
 var Timer = (function (_ash$Component) {
 	function Timer() {
+		this.state = { timerClicks: 0 };
+
 		_classCallCheck(this, Timer);
 
 		if (_ash$Component != null) {
@@ -24,21 +26,9 @@ var Timer = (function (_ash$Component) {
 	_inherits(Timer, _ash$Component);
 
 	_prototypeProperties(Timer, null, {
-		getInitialState: {
-			value: function getInitialState() {
-				return { timerClicks: 0 };
-			},
-			writable: true,
-			configurable: true
-		},
-		autobind: {
-			value: function autobind() {
-				return ["tick"];
-			},
-			writable: true,
-			configurable: true
-		},
 		tick: {
+			/* jshint ignore:end */
+
 			value: function tick() {
 				console.log("timer tick!");
 				this.setState({ timerClicks: this.state.timerClicks + 1 });
@@ -85,10 +75,15 @@ var Timer = (function (_ash$Component) {
 	return Timer;
 })(ash.Component);
 
-module.exports = ash.createFactory(Timer);
+module.exports = ash.createElement(Timer);
+
+/* jshint ignore:start */
+
 //console.log('Timer onMount');
 //this.interval = setInterval(this.tick, 1000);
 //console.log(this.getDOMNode());
+
 //console.log('Timer onUnmount');
 //clearInterval(this.interval);
+
 //console.log('Timer onBeforeMount');

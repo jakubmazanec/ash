@@ -1,11 +1,9 @@
 import isFinite from '../internal/isFinite';
 import constants from '../internal/constants';
-//import isObject from '../internal/isObject';
 import isArray from '../internal/isArray';
 import isFunction from '../internal/isFunction';
 import isString from '../internal/isString';
 import isImmutable from './isImmutable';
-//import mergeOnto from './mergeOnto';
 
 const IMMUTABLE_TAG = constants.IMMUTABLE_TAG;
 
@@ -18,8 +16,6 @@ class ImmutableArray extends Array {
 		var array;
 		var clone = true;
 
-		//console.log('ImmutableArray constructor');
-
 		if (arguments.length >= 2 && (arguments[arguments.length - 1] !== null && typeof arguments[arguments.length - 1] === 'object') && arguments[arguments.length - 1].clone === false) {
 			clone = false;
 		}
@@ -27,7 +23,6 @@ class ImmutableArray extends Array {
 		if (clone && arguments.length == 1 && Array.isArray(arguments[0])) {
 			array = arguments[0].slice(0);
 		} else if (!clone && arguments.length == 2 && Array.isArray(arguments[0])) {
-			//console.log('no clone!');
 			array = arguments[0];
 		} else {
 			array = [];
@@ -43,7 +38,7 @@ class ImmutableArray extends Array {
 			} else if (array[i] !== null && typeof array[i] === 'object') {
 				array[i] = new ImmutableObject(array[i]);
 			}
-	}
+		}
 
 		// inject prototype
 		array.__proto__ = ImmutableArray.prototype;
@@ -63,7 +58,6 @@ class ImmutableArray extends Array {
 	}
 
 	push() {
-		//console.log('ImmutableArray.push', arguments[0]);
 		var array = this.slice(0);
 
 		array.push.apply(array, arguments);
@@ -72,7 +66,6 @@ class ImmutableArray extends Array {
 	}
 
 	pop() {
-		//console.log('ImmutableArray.pop');
 		var array = this.slice(0);
 
 		array.pop();
@@ -81,7 +74,6 @@ class ImmutableArray extends Array {
 	}
 
 	sort(compareFunction) {
-		//console.log('ImmutableArray.sort');
 		var array = this.slice(0);
 
 		array.sort(compareFunction);
@@ -90,7 +82,6 @@ class ImmutableArray extends Array {
 	}
 
 	splice() {
-		//console.log('ImmutableArray.splice');
 		var array = this.slice(0);
 
 		array.splice.apply(array, arguments);
@@ -99,7 +90,6 @@ class ImmutableArray extends Array {
 	}
 
 	shift() {
-		//console.log('ImmutableArray.shift');
 		var array = this.slice(0);
 
 		array.shift();
@@ -108,7 +98,6 @@ class ImmutableArray extends Array {
 	}
 
 	unshift() {
-		//console.log('ImmutableArray.unshift', arguments[0]);
 		var array = this.slice(0);
 
 		array.unshift.apply(array, arguments);
@@ -117,7 +106,6 @@ class ImmutableArray extends Array {
 	}
 
 	reverse() {
-		//console.log('ImmutableArray.reverse');
 		var array = this.slice(0);
 
 		array.reverse();
@@ -126,7 +114,6 @@ class ImmutableArray extends Array {
 	}
 
 	set(index, value) {
-		//console.log('ImmutableArray.set');
 		if (!(isFinite(index) && index >= 0)) {
 			throw new Error(index + ' ("index") must be non-negative finite number.');
 		}
@@ -159,20 +146,6 @@ class ImmutableObject {
 			}
 		}
 
-
-		// deep immutability
-		/*for (let key in this) {
-			if (this.hasOwnProperty(key)) {
-				if (isImmutable(this[key])) {
-					// no action needed
-				} else if (isArray(this[key])) {
-					this[key] = new ImmutableArray(this[key]);
-				} else if (isObject(this[key])) {
-					this[key] = new ImmutableObject(this[key]);
-				}
-			}
-		}*/
-
 		// immutable tag
 		Object.defineProperty(this, IMMUTABLE_TAG, {
 			enumerable: false,
@@ -184,14 +157,10 @@ class ImmutableObject {
 		// freeze the object
 		Object.freeze(this);
 
-		//console.log('ImmutableObject constructor done');
-
 		return this;
 	}
 
 	set(key, value) {
-		//console.log('ImmutableObject.set');
-
 		var clone;
 
 		if (!isString(key)) {
@@ -215,32 +184,43 @@ class ImmutableObject {
 			}
 		}
 
-		clone[arguments[0]] = arguments[1];
+		clone[key] = value;
 
-		return new ImmutableObject(clone, {clone: false});
+		return new ImmutableObject(clone);
+	}
+
+	remove(key) {
+		var clone;
+
+		if (!isString(key)) {
+			throw new Error(key + ' ("key") must be a string.');
+		}
+
+		if (typeof this[key] === 'undefined') {
+			return this;
+		}
+
+		// create copy
+		clone = {};
+
+		for (let prop in this) {
+			if (this.hasOwnProperty(prop) && key !== prop) {
+				clone[prop] = this[prop];
+			}
+		}
+
+		return new ImmutableObject(clone);
 	}
 
 	merge(source) {
-		//var isDifferent;
 		var hasChanged;
 		var clone;
-
-		//console.log('ImmutableObject.merge');
 
 		if (!(source !== null && typeof source === 'object')) {
 			throw new Error(source + ' ("source") must be an object.');
 		}
 
-		/*isDifferent = diff(this, value);
-
-		if (!isDifferent) {
-			console.log('same!');
-			return this;
-		}*/
-
 		clone = {};
-
-		//hasChanged = mergeOnto(clone, this, source);
 
 		for (let prop in source) {
 			if (source.hasOwnProperty(prop) && !isFunction(source[prop])) {
@@ -271,32 +251,7 @@ class ImmutableObject {
 			}
 		}
 
-		/*for (let prop in source) {
-			if (source.hasOwnProperty(prop) && !isFunction(source[prop])) {
-				if (isImmutable(source[prop])) {
-					if (source[prop] !== this[prop]) {
-						clone[prop] = source[prop];
-						hasChanged = true;
-					}
-				} else if (isArray(source[prop])) {
-					if (source[prop] !== this[prop]) {
-						clone[prop] = source[prop];
-						hasChanged = true;
-					}
-				} else if (isObject(source[prop])) {
-
-				} else {
-					if (source[prop] !== this[prop]) {
-						clone[prop] = source[prop];
-						hasChanged = true;
-					}
-				}
-			}
-		}*/
-
 		if (!hasChanged) {
-			//console.log('no change!');
-
 			return this;
 		}
 
@@ -307,39 +262,8 @@ class ImmutableObject {
 			}
 		}
 
-		//console.log('clone = ', JSON.stringify(clone));
-
-		return new ImmutableObject(clone, {clone: false});
+		return new ImmutableObject(clone);
 	}
 }
-
-// would merging object onto target result in differences intarget?
-/*function diff(target, source) {
-	console.log('diffing...');
-
-	for (let prop in source) {
-		if (source.hasOwnProperty(prop) && !isFunction(source[prop])) {
-			let isDifferent;
-
-			if (isImmutable(source[prop])) {
-				isDifferent = source[prop] !== target[prop];
-			} else if (isArray(source[prop])) {
-				isDifferent = source[prop] !== target[prop];
-			} else if (isObject(source[prop])) {
-				isDifferent = diff(target[prop], source[prop]);
-			} else {
-				isDifferent = source[prop] !== target[prop];
-			}
-
-			if (isDifferent) {
-				return true;
-			}
-		}
-	}
-
-	return false;
-}*/
-
-
 
 export {ImmutableArray, ImmutableObject};

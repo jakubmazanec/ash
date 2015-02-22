@@ -1,4 +1,3 @@
-
 "use strict";
 
 var _ = require("_");
@@ -57,6 +56,7 @@ var TodoTextInput = ash.Component.create({
 });
 
 module.exports = TodoTextInput;
+
 /*console.log('text input onchange event');
 this.setState(
 {

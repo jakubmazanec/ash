@@ -17,6 +17,7 @@ class AshNode {
 			// find element's key
 			if (this.properties.key) {
 				this.key = this.properties.key;
+				
 				delete this.properties.key;
 			}
 		} else {

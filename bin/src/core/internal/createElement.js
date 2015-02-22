@@ -11,15 +11,17 @@ var isAshElement = _interopRequire(require("./isAshElement"));
 var constants = _interopRequire(require("./constants"));
 
 // constants references
+var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
 var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
 
-var createElement = function (tagName /*, props, children*/) {
+function createElement(tagName /*, props, children*/) {
 	var props = arguments[1];
 	var children = arguments[2];
-	var i;
 
 	if (typeof tagName !== "string" || !tagName.length) {
-		throw new Error(tagName + " (tagName parameter) must be a nonempty string.");
+		return AshElement.bind(null, COMPONENT_ASH_ELEMENT, tagName);
+	} else if (typeof tagName === "string" && !tagName.length) {
+		throw new Error(tagName + " (tagName) must be non-empty string.");
 	}
 
 	// type check
@@ -30,15 +32,13 @@ var createElement = function (tagName /*, props, children*/) {
 	if (Array.isArray(props)) {
 		children = props;
 		props = null;
-	} /* else if (typeof children === 'string') {
-   children = [children];
-   }*/
+	}
 
 	if (!Array.isArray(children)) {
 		children = [];
 
 		// children are not in an array, iterate over arguments...
-		for (i = 2; i < arguments.length; i++) {
+		for (var i = 2; i < arguments.length; i++) {
 			if (typeof arguments[i] === "string") {
 				children.push(new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, arguments[i]));
 			} else if (isAshElement(arguments[i])) {
@@ -47,14 +47,13 @@ var createElement = function (tagName /*, props, children*/) {
 		}
 	} else {
 		// check type of children
-		for (i = 0; i < children.length; i++) {
+		for (var i = 0; i < children.length; i++) {
 			if (typeof children[i] === "string") {
 				children[i] = new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, children[i]);
 			} else if (!children[i]) {
 				children.splice(i, 1);
 				i--;
 			} else if (!isAshElement(children[i])) {
-				//throw new Error(children[i] + ' must be a AshElement object.');
 				children.splice(i, 1);
 				i--;
 			}
@@ -62,6 +61,6 @@ var createElement = function (tagName /*, props, children*/) {
 	}
 
 	return new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, tagName, props, children);
-};
+}
 
 module.exports = createElement;

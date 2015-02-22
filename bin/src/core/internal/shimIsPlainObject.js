@@ -2,8 +2,6 @@
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
 
-var baseForIn = _interopRequire(require("./baseForIn"));
-
 var isObjectLike = _interopRequire(require("./isObjectLike"));
 
 /** `Object#toString` result references. */
@@ -32,9 +30,9 @@ function shimIsPlainObject(value) {
 	// In most environments an object's own properties are iterated before
 	// its inherited properties. If the last iterated property is an object's
 	// own property then there are no inherited enumerable properties.
-	baseForIn(value, function (subValue, key) {
-		result = key;
-	});
+	for (var prop in value) {
+		result = prop;
+	}
 	return typeof result == "undefined" || Object.prototype.hasOwnProperty.call(value, result);
 }
 

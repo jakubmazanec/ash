@@ -21,14 +21,12 @@ function diffChildren(oldChildren, newChildren, patches) {
 	}
 
 	// lets fill in keys, if needed; simple first-to-first correspondence
-	var __length = Math.max(oldChildren.length, newChildren.length);
-	var __a = 0;
-	var __b = 0;
-	var __keyCount = 0;
-	var __key = "Key: " + __keyCount;
-	var i;
+	var oldChildIndex = 0;
+	var newChildIndex = 0;
+	var lastKey = 0;
+	var key = "__key:" + lastKey + "__";
 
-	for (i = 0; i < __length; i++) {
+	for (var i = 0, _length = Math.max(oldChildren.length, newChildren.length); i < _length; i++) {
 		if (oldChildren[i] && oldChildren[i].key) {
 			oldChildren[i].tempKey = oldChildren[i].key;
 		}
@@ -37,115 +35,139 @@ function diffChildren(oldChildren, newChildren, patches) {
 			newChildren[i].tempKey = newChildren[i].key;
 		}
 
-		while (oldChildren[__a] && oldChildren[__a].key) {
-			__a++;
+		while (oldChildren[oldChildIndex] && oldChildren[oldChildIndex].key) {
+			oldChildIndex++;
 		}
 
-		while (newChildren[__b] && newChildren[__b].key) {
-			__b++;
+		while (newChildren[newChildIndex] && newChildren[newChildIndex].key) {
+			newChildIndex++;
 		}
 
-		if (oldChildren[__a]) {
-			oldChildren[__a].tempKey = __key;
+		if (oldChildren[oldChildIndex]) {
+			oldChildren[oldChildIndex].tempKey = key;
 		}
 
-		if (newChildren[__b]) {
-			newChildren[__b].tempKey = __key;
+		if (newChildren[newChildIndex]) {
+			newChildren[newChildIndex].tempKey = key;
 		}
 
-		__keyCount++;
-		__key = "Key: " + __keyCount;
-		__a++;
-		__b++;
+		lastKey++;
+		key = "__key:" + lastKey + "__";
+		oldChildIndex++;
+		newChildIndex++;
 	}
 
 	// keys are in; let's compare order of children
-	var __found;
-	var j;
-	var __index;
+	var foundIndex;
 
 	// first iterate over old children
-	for (i = 0; i < oldChildren.length; i++) {
-		__found = false;
+	for (var i = 0; i < oldChildren.length; i++) {
+		var isChildFound = false;
 
-		for (j = 0; j < newChildren.length; j++) {
+		for (var j = 0; j < newChildren.length; j++) {
 			if (oldChildren[i].tempKey === newChildren[j].tempKey) {
-				__found = true;
+				isChildFound = true;
+				foundIndex = j;
 
 				break;
 			}
 		}
 
 		// node with matching key was found?
-		if (__found) {
+		if (isChildFound) {
 			// is order same?
-			if (i != j) {
+			if (i != foundIndex) {
 				patches.push({
 					type: PATCH_ORDER,
-					newIndex: newChildren[j].index,
+					newIndex: newChildren[foundIndex].index,
 					index: oldChildren[i].index,
+					parsedIndex: parseAshNodeIndex(oldChildren[i].index),
 					stage: oldChildren[i].stage,
-					order: j
+					order: foundIndex
 				});
+
+				for (var k = 0; k < patches[patches.length - 1].parsedIndex.length; k++) {
+					if (patches.maxIndex < patches[patches.length - 1].parsedIndex[k]) {
+						patches.maxIndex = patches[patches.length - 1].parsedIndex[k];
+					}
+				}
 			}
 
 			// now walk inside those children...
-			walk(oldChildren[i], newChildren[j], patches);
+			diffAshNodeTree(oldChildren[i], newChildren[foundIndex], patches);
 		} else {
 			// node is to be removed...
 			patches.push({
 				type: PATCH_REMOVE,
 				index: oldChildren[i].index,
+				parsedIndex: parseAshNodeIndex(oldChildren[i].index),
 				stage: oldChildren[i].stage });
+
+			for (var k = 0; k < patches[patches.length - 1].parsedIndex.length; k++) {
+				if (patches.maxIndex < patches[patches.length - 1].parsedIndex[k]) {
+					patches.maxIndex = patches[patches.length - 1].parsedIndex[k];
+				}
+			}
 		}
 	}
 
 	// now iterate over new children; let's see, if there are any new...
-	for (j = 0; j < newChildren.length; j++) {
-		__found = false;
+	for (var j = 0; j < newChildren.length; j++) {
+		var isChildFound = false;
 
-		for (i = 0; i < oldChildren.length; i++) {
+		for (var i = 0; i < oldChildren.length; i++) {
 			if (oldChildren[i].tempKey === newChildren[j].tempKey) {
-				__found = true;
+				isChildFound = true;
 				break;
 			}
 		}
 
 		// new child was not found
-		if (!__found) {
+		if (!isChildFound) {
 			// create patch for insert
 			patches.push({
 				type: PATCH_INSERT,
 				index: newChildren[j].index,
+				parsedIndex: parseAshNodeIndex(newChildren[j].index),
 				node: newChildren[j]
 			});
 
-			__index = parseAshNodeIndex(newChildren[j].index);
-			__index.pop();
-			patches[patches.length - 1].parentIndex = __index.join(LEVEL_SEPARATOR);
+			for (var k = 0; k < patches[patches.length - 1].parsedIndex.length; k++) {
+				if (patches.maxIndex < patches[patches.length - 1].parsedIndex[k]) {
+					patches.maxIndex = patches[patches.length - 1].parsedIndex[k];
+				}
+			}
+
+			var parentIndex = parseAshNodeIndex(newChildren[j].index);
+			parentIndex.pop();
+			patches[patches.length - 1].parentIndex = parentIndex.join(LEVEL_SEPARATOR);
 		}
 	}
 
 	return patches;
 }
 
-function walk(oldAshNode, newAshNode /*, patches*/) {
+function diffAshNodeTree(oldAshNode, newAshNode /*, patches*/) {
 	// compare nodes
-	var patches = arguments[2] || [];
+	var patches = Array.isArray(arguments[2]) ? arguments[2] : [];
 	var differentProperties = false;
 	var propertiesToChange = {};
 	var propertiesToRemove = [];
-	var newProperty;
-	var newSubproperty;
-	var oldProperty;
-	var oldSubproperty;
+
+	if (typeof patches.maxIndex === "undefined") {
+		patches.maxIndex = 0;
+	}
+
+	if (typeof patches.stage === "undefined") {
+		patches.stage = oldAshNode.stage;
+	}
 
 	// which propertie are different or new
-	for (newProperty in newAshNode.properties) {
+	for (var newProperty in newAshNode.properties) {
 		if (newAshNode.properties.hasOwnProperty(newProperty) && oldAshNode.properties && newAshNode.properties[newProperty] !== oldAshNode.properties[newProperty]) {
 			if (typeof newAshNode.properties[newProperty] === "object" && oldAshNode.properties[newProperty] && typeof oldAshNode.properties[newProperty] == "object") {
 				// which propertie are different or new
-				for (newSubproperty in newAshNode.properties[newProperty]) {
+				for (var newSubproperty in newAshNode.properties[newProperty]) {
 					if (newAshNode.properties[newProperty].hasOwnProperty(newSubproperty) && newAshNode.properties[newProperty][newSubproperty] !== oldAshNode.properties[newProperty][newSubproperty]) {
 						propertiesToChange[newProperty] = propertiesToChange[newProperty] || {};
 						propertiesToChange[newProperty][newSubproperty] = newAshNode.properties[newProperty][newSubproperty];
@@ -155,7 +177,7 @@ function walk(oldAshNode, newAshNode /*, patches*/) {
 				}
 
 				// which properties are to be removed
-				for (oldSubproperty in oldAshNode.properties[newProperty]) {
+				for (var oldSubproperty in oldAshNode.properties[newProperty]) {
 					if (oldAshNode.properties[newProperty].hasOwnProperty(oldSubproperty) && typeof newAshNode.properties[newProperty][oldSubproperty] === "undefined") {
 						propertiesToRemove.push(newProperty + "." + oldSubproperty);
 
@@ -171,7 +193,7 @@ function walk(oldAshNode, newAshNode /*, patches*/) {
 	}
 
 	// which properties are to be removed
-	for (oldProperty in oldAshNode.properties) {
+	for (var oldProperty in oldAshNode.properties) {
 		if (oldAshNode.properties.hasOwnProperty(oldProperty) && newAshNode.properties && typeof newAshNode.properties[oldProperty] === "undefined") {
 			differentProperties = true;
 			propertiesToRemove.push(oldProperty);
@@ -182,9 +204,16 @@ function walk(oldAshNode, newAshNode /*, patches*/) {
 		patches.push({
 			type: PATCH_ASH_NODE,
 			index: oldAshNode.index,
+			parsedIndex: parseAshNodeIndex(oldAshNode.index),
 			stage: oldAshNode.stage,
 			node: newAshNode
 		});
+
+		for (var k = 0; k < patches[patches.length - 1].parsedIndex.length; k++) {
+			if (patches.maxIndex < patches[patches.length - 1].parsedIndex[k]) {
+				patches.maxIndex = patches[patches.length - 1].parsedIndex[k];
+			}
+		}
 
 		// whole node must be replaced; no sense in finding other differences
 		return patches;
@@ -194,29 +223,38 @@ function walk(oldAshNode, newAshNode /*, patches*/) {
 		patches.push({
 			type: PATCH_ASH_TEXT_NODE,
 			index: oldAshNode.index,
+			parsedIndex: parseAshNodeIndex(oldAshNode.index),
 			text: newAshNode.text
 		});
+
+		for (var k = 0; k < patches[patches.length - 1].parsedIndex.length; k++) {
+			if (patches.maxIndex < patches[patches.length - 1].parsedIndex[k]) {
+				patches.maxIndex = patches[patches.length - 1].parsedIndex[k];
+			}
+		}
 	}
 
 	if (differentProperties) {
 		patches.push({
 			type: PATCH_PROPERTIES,
 			index: oldAshNode.index,
+			parsedIndex: parseAshNodeIndex(oldAshNode.index),
 			stage: oldAshNode.stage,
 			propertiesToChange: propertiesToChange,
 			propertiesToRemove: propertiesToRemove
 		});
+
+		for (var k = 0; k < patches[patches.length - 1].parsedIndex.length; k++) {
+			if (patches.maxIndex < patches[patches.length - 1].parsedIndex[k]) {
+				patches.maxIndex = patches[patches.length - 1].parsedIndex[k];
+			}
+		}
 	}
 
-	// now let's check the children...
+	// diff the children...
 	patches = diffChildren(oldAshNode.children, newAshNode.children, patches);
 
 	return patches;
-}
-
-// differences between trees
-function diffAshNodeTree(oldAshNodeTree, newAshNodeTree) {
-	return walk(oldAshNodeTree, newAshNodeTree);
 }
 
 module.exports = diffAshNodeTree;

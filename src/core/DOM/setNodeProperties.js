@@ -1,40 +1,39 @@
 import isObject from '../internal/isObject';
-import DOMEvents from '../class/DOMEvents';
+import EventListener from '../class/EventListener';
 
-var domEvents = new DOMEvents();
+var eventListener = new EventListener();
 
-function setNodeProperties(node, properties, inserted)
-{
-	for (let key in properties) {
-		if (properties.hasOwnProperty(key)) {
-			if (key == 'style' && isObject(properties[key])) {
-				//node.style.
-				// TO DO
-			} else if (key == 'events' && isObject(properties[key])) {
-				domEvents.addEvents(node, properties[key], inserted);
-			} else if (key == 'className' || key == 'class') {
-				node.className = properties[key];
-			}	else if (!isObject(properties[key])) {
-				// TODO
-				if (key.substring(0, 6) == 'xlink:') {
-					node.setAttributeNS('http://www.w3.org/1999/xlink', key.substring(6), properties[key]);
-				} else if (key.substring(0, 4) == 'xml:') {
-					node.setAttributeNS('http://www.w3.org/2000/svg', key.substring(4), properties[key]);
+function setNodeProperties(node, properties, inserted) {
+	for (let prop in properties) {
+		if (properties.hasOwnProperty(prop)) {
+			if (prop == 'style' && isObject(properties[prop])) {
+				for (let style in properties[prop]) {
+					if (properties[prop].hasOwnProperty(style)) {
+						node.style[style] = properties[prop][style];
+					}
+				}
+			} else if (prop === 'events' && isObject(properties[prop])) {
+				eventListener.addEvents(node, properties[prop], inserted);
+			} else if (prop === 'className' || prop === 'class') {
+				node.className = properties[prop];
+			}	else if (!isObject(properties[prop])) {
+				if (prop.substring(0, 6) == 'xlink:') {
+					node.setAttributeNS('http://www.w3.org/1999/xlink', prop.substring(6), properties[prop]);
+				} else if (prop.substring(0, 4) == 'xml:') {
+					node.setAttributeNS('http://www.w3.org/2000/svg', prop.substring(4), properties[prop]);
 				} else {
-					if (key == 'checked')
-					{
-						node.checked = !!properties[key];
+					if (prop == 'checked') {
+						node.checked = !!properties[prop];
 						if (node.checked) {
 							node.setAttribute('checked', 'checked');
 						} else {
 							node.removeAttribute('checked');
 						}
-					} else if (key == 'value')
-					{
-						node.value = properties[key];
-						node.setAttribute(key, properties[key]);
+					} else if (prop == 'value') {
+						node.value = properties[prop];
+						node.setAttribute(prop, properties[prop]);
 					} else {
-						node.setAttribute(key, properties[key]);
+						node.setAttribute(prop, properties[prop]);
 					}
 				}
 			}

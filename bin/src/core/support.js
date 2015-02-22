@@ -1,6 +1,8 @@
 "use strict";
 
-var isNative = require("./internal/isNative");
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
+
+var isNative = _interopRequire(require("./internal/isNative"));
 
 /** Used to detect functions containing a `this` reference. */
 var reThis = /\bthis\b/;
@@ -24,6 +26,7 @@ var propertyIsEnumerable = objectProto.propertyIsEnumerable;
 var support = {};
 
 (function (x) {
+
   /**
    * Detect if functions can be decompiled by `Function#toString`
    * (all but Firefox OS certified apps, older Opera mobile browsers, and

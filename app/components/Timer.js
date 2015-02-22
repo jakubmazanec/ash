@@ -2,13 +2,9 @@ import ash from '../ash';
 import Display from './Display';
 
 class Timer extends ash.Component {
-	getInitialState() {
-		return {timerClicks: 0};
-	}
-
-	autobind() {
-		return ['tick'];
-	}
+	/* jshint ignore:start */
+	state = {timerClicks: 0};
+	/* jshint ignore:end */
 
 	tick() {
 		console.log('timer tick!');
@@ -51,4 +47,4 @@ class Timer extends ash.Component {
 	}
 }
 
-export default ash.createFactory(Timer);
+export default ash.createElement(Timer);

@@ -7,16 +7,13 @@ import constants from '../internal/constants';
 const LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
 const LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
 
-function walk(ashElement, index, owner, lastLevel) {
-	var i;
-
+function walkCreateAshElementTree(ashElement, index, owner, lastLevel) {
 	// type check
 	if (!isComponentAshElement(owner)) {
 		throw new Error(owner + ' must be a Component type AshElement Object');
 	}
 
-	if (isAshNodeAshElement(ashElement))
-	{
+	if (isAshNodeAshElement(ashElement)) {
 		// instantiate ashElement
 		ashElement.instantiate();
 
@@ -28,19 +25,16 @@ function walk(ashElement, index, owner, lastLevel) {
 		ashElement.owner = owner;
 		ashElement.stage = owner.stage;
 
-		for (i = 0; i < ashElement.children.length; i++)
-		{
-			if (ashElement.children[i])
-			{
+		for (let i = 0; i < ashElement.children.length; i++) {
+			if (ashElement.children[i]) {
 				// set up parent
 				ashElement.children[i].parent = ashElement;
 
 				// walk the child
-				walk(ashElement.children[i], i, owner, ashElement.level);
+				walkCreateAshElementTree(ashElement.children[i], i, owner, ashElement.level);
 			}
 		}
-	} else if (isComponentAshElement(ashElement))
-	{
+	} else if (isComponentAshElement(ashElement)) {
 		// instantiate ashElement
 		ashElement.instantiate();
 
@@ -54,16 +48,15 @@ function walk(ashElement, index, owner, lastLevel) {
 
 		// create child by rendering component
 		ashElement.instance.onBeforeMount();
-		ashElement.instance.__setLifecycle(LIFECYCLE_MOUNTING);
-		ashElement.children[0] = ashElement.instance.__getRender();
+		ashElement.instance.lifecycle = LIFECYCLE_MOUNTING;
+		ashElement.children[0] = ashElement.instance.cachedRender;
 		
-		if (ashElement.children[0])
-		{
+		if (ashElement.children[0]) {
 			// set up parent
 			ashElement.children[0].parent = ashElement;
 
 			// walk the child
-			walk(ashElement.children[0], 0, ashElement, ashElement.level);
+			walkCreateAshElementTree(ashElement.children[0], 0, ashElement, ashElement.level);
 		}
 	}
 }
@@ -95,14 +88,14 @@ function createAshElementTree(rootAshElement, stage, startingLevel) {
 
 		// create child by rendering component
 		ashElementTree.instance.onBeforeMount();
-		ashElementTree.children[0] = ashElementTree.instance.__getRender();
-		ashElementTree.instance.__setLifecycle(LIFECYCLE_MOUNTING);
+		ashElementTree.children[0] = ashElementTree.instance.cachedRender;
+		ashElementTree.instance.lifecycle = LIFECYCLE_MOUNTING;
 
 		// set up a parent
 		ashElementTree.children[0].parent = ashElementTree;
 
 		// walk the child
-		walk(ashElementTree.children[0], 0, ashElementTree, ashElementTree.level);
+		walkCreateAshElementTree(ashElementTree.children[0], 0, ashElementTree, ashElementTree.level);
 	} else {
 		// instantiate descriptor
 		ashElementTree.instantiate();
@@ -116,7 +109,7 @@ function createAshElementTree(rootAshElement, stage, startingLevel) {
 			ashElementTree.children[i].parent = ashElementTree;
 
 			// walk the child
-			walk(ashElementTree.children[i], i, ashElementTree.owner, ashElementTree.level);
+			walkCreateAshElementTree(ashElementTree.children[i], i, ashElementTree.owner, ashElementTree.level);
 		}
 	}
 

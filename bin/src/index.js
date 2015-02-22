@@ -14,12 +14,11 @@ var Store = _interopRequire(require("./core/class/Store"));
 
 var createElement = _interopRequire(require("./core/internal/createElement"));
 
-var createFactory = _interopRequire(require("./core/internal/createFactory"));
-
 var _coreImmutableImmutables = require("./core/immutable/Immutables");
 
 var ImmutableArray = _coreImmutableImmutables.ImmutableArray;
 var ImmutableObject = _coreImmutableImmutables.ImmutableObject;
+
 var assign = _interopRequire(require("./core/internal/assign"));
 
 var ash = {};
@@ -35,7 +34,7 @@ assign(ash, {
 	Store: Store,
 
 	"e": createElement,
-	createFactory: createFactory,
+	createElement: createElement,
 
 	ImmutableArray: ImmutableArray,
 	ImmutableObject: ImmutableObject

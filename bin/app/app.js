@@ -14,30 +14,29 @@ var _ = _interopRequire(require("_"));
 
 var ash = _interopRequire(require("./ash"));
 
-var imm = _interopRequire(require("seamless-immutable"));
+var icepick = _interopRequire(require("icepick"));
 
-var Immutable = _interopRequire(require("immutable"));
+// import m from 'mithril';
+// import React from 'react';
 
-var mori = _interopRequire(require("mori"));
-
-var Display = _interopRequire(require("./components/Display"));
-
-var Timer = _interopRequire(require("./components/Timer"));
+// import Display from './components/Display';
+// import Timer from './components/Timer';
 
 global.$ = $;
 global._ = _;
 global.ash = ash;
-global.imm = imm;
-global.mori = mori;
-global.Immutable = Immutable;
 
 var Renderer = global.Renderer = new ash.Renderer();
-
 
 // Renderer.addComponent(new Timer(), $('.page')[0]);
 
 var AppComponent = (function (_ash$Component) {
 	function AppComponent() {
+		this.state = new ash.ImmutableObject({
+			list1: new ash.ImmutableArray(),
+			list2: new ash.ImmutableArray()
+		});
+
 		_classCallCheck(this, AppComponent);
 
 		if (_ash$Component != null) {
@@ -48,19 +47,15 @@ var AppComponent = (function (_ash$Component) {
 	_inherits(AppComponent, _ash$Component);
 
 	_prototypeProperties(AppComponent, null, {
-		getInitialState: {
-			value: function getInitialState() {
-				return new ash.ImmutableObject({
-					list1: new ash.ImmutableArray(),
-					list2: new ash.ImmutableArray()
-				});
-			},
-			writable: true,
-			configurable: true
-		},
 		render: {
+			/* jshint ignore:end */
+
 			value: function render() {
-				return ash.e("div", null, ash.e("div", null, ash.e("button", {
+				return ash.e("div", null, ash.e("div", {
+					style: {
+						boxShadow: "2px 2px 5px red"
+					}
+				}, ash.e("button", {
 					events: { click: this.addToList1 }
 				}, "+ list 1"), ash.e("button", {
 					events: { click: this.addToList2 }
@@ -73,13 +68,15 @@ var AppComponent = (function (_ash$Component) {
 			value: function addToList1() {
 				var items = [];
 
-				for (var i = 0; i < 1000; i++) {
+				for (var i = 0; i < 5000; i++) {
 					items.push(Math.random().toFixed(1));
 				}
 
 				this.state = this.state.merge({ list1: this.state.list1.concat(items) });
+				//this.state.list1 = this.state.list1.concat(items);
 
-				this.setDirty();
+				// this.setDirty();
+				this.isDirty = true;
 			},
 			writable: true,
 			configurable: true
@@ -88,13 +85,15 @@ var AppComponent = (function (_ash$Component) {
 			value: function addToList2() {
 				var items = [];
 
-				for (var i = 0; i < 1000; i++) {
+				for (var i = 0; i < 5000; i++) {
 					items.push(Math.random().toFixed(1));
 				}
 
 				this.state = this.state.merge({ list2: this.state.list2.concat(items) });
+				//this.state.list2 = this.state.list2.concat(items);
 
-				this.setDirty();
+				// this.setDirty();
+				this.isDirty = true;
 			},
 			writable: true,
 			configurable: true
@@ -104,7 +103,7 @@ var AppComponent = (function (_ash$Component) {
 	return AppComponent;
 })(ash.Component);
 
-var App = ash.createFactory(AppComponent);
+var App = ash.createElement(AppComponent);
 
 var ListComponent = (function (_ash$Component2) {
 	function ListComponent() {
@@ -118,22 +117,12 @@ var ListComponent = (function (_ash$Component2) {
 	_inherits(ListComponent, _ash$Component2);
 
 	_prototypeProperties(ListComponent, null, {
-		shouldUpdate: {
-			value: function shouldUpdate(nextProps) {
-				//console.log('should i update list?', this.props !== nextProps);
-
-				return this.props !== nextProps;
-				//return true;
-			},
-			writable: true,
-			configurable: true
-		},
 		render: {
 			value: function render() {
 				var items = [];
 
 				for (var i = 0; i < this.props.length; i++) {
-					items.push(ash.e("li", null, this.props[i] + ""));
+					items.push(ash.e("li", null, /*{key: i + ''}*/this.props[i] + ""));
 				}
 
 				return ash.e("ul", null, items);
@@ -146,56 +135,136 @@ var ListComponent = (function (_ash$Component2) {
 	return ListComponent;
 })(ash.Component);
 
-var List = ash.createFactory(ListComponent);
+var List = ash.createElement(ListComponent);
 
 Renderer.addComponent(new App(), $(".page")[0]);
 
+function assign() {
+	var sources = [];
+	var target = arguments[0] || {};
 
-
-
-
-var start;
-var end;
-var total1 = 0;
-var total2 = 0;
-
-function parseAshNodeIndex1(index) {
-	return index.split(".").map(function (value) {
-		return parseInt(value, 10);
-	});
-}
-
-function parseAshNodeIndex2(index) {
-	var result = index.split(".");
-	for (var i = 0; i < result.length; i++) {
-		result[i] = parseInt(result[i], 10);
+	for (var i = 1; i < arguments.length; i++) {
+		if (arguments[i] && typeof arguments[i] === "object") {
+			sources.push(arguments[i]);
+		}
 	}
 
-	return result;
+	if (!sources.length) {
+		return target;
+	}
+
+	for (var i = 0; i < sources.length; i++) {
+		for (var prop in sources[i]) {
+			if (sources[i].hasOwnProperty(prop) && typeof sources[i].prop !== "undefined" && sources[i].prop !== null) {
+				target[prop] = sources[i][prop];
+			}
+		}
+	}
 }
 
-for (var j = 0; j < 10; j++) {
-	start = global.performance.now();
-	for (var i = 0; i < 1000; i++) {
-		parseAshNodeIndex1("0.1.2.3.4.5.6.7.8.9.10");
-	}
-	end = global.performance.now();
-	total1 += end - start;
+global.assign = assign;
 
-	start = global.performance.now();
-	for (var i = 0; i < 1000; i++) {
-		parseAshNodeIndex2("0.1.2.3.4.5.6.7.8.9.10");
+/*class AppComponent extends React.Component {
+	state = {
+		list1: [],
+		list2: []
+	};
+
+	render() {
+		return React.createElement('div', null,
+			React.createElement('div', null,
+				React.createElement('button', {
+					onClick: this.addToList1.bind(this)
+				}, '+ list 1'),
+				React.createElement('button', {
+					onClick: this.addToList2.bind(this)
+				}, '+ list 2')),
+			React.createElement(ListComponent, {list: this.state.list1}),
+			React.createElement(ListComponent, {list: this.state.list2}));
 	}
-	end = global.performance.now();
-	total2 += end - start;
+
+	addToList1() {
+		var items = [];
+
+		for (let i = 0; i < 5000; i++) {
+			items.push(Math.random().toFixed(1));
+		}
+
+		this.setState({list1: this.state.list1.concat(items)});
+	}
+
+	addToList2() {
+		var items = [];
+
+		for (let i = 0; i < 5000; i++) {
+			items.push(Math.random().toFixed(1));
+		}
+
+		this.setState({list2: this.state.list2.concat(items)});
+	}
 }
 
 
+class ListComponent extends React.Component {
+	render() {
+		var items = [];
 
+		if (this.props.list) {
+			for (let i = 0; i < this.props.list.length; i++) {
+				items.push(React.createElement('li', null, this.props.list[i] + ''));
+			}
+		}
 
-console.log("parseAshNodeIndex1", total1 / 10);
-console.log("parseAshNodeIndex2", total2 / 10);
+		return React.createElement('ul', null, items);
+	}
+}
 
+React.render(React.createElement(AppComponent, null), $('.page')[0]);*/
+
+// benchmark
+// var start;
+// var end;
+// var total1 = 0;
+// var total2 = 0;
+// var total3 = 0;
+// var total4 = 0;
+// var total5 = 0;
+// var total6 = 0;
+
+// var object = {a: 1, b: 2};
+
+// var coll = icepick.freeze(object);
+// var imobj = new ash.ImmutableObject(object);
+
+// const TEST_STRESS = 100;
+// const TEST_REPEAT = 10;
+
+// for (let j = 0; j < TEST_REPEAT; j++) {
+// 	start = global.performance.now();
+// 	for (let i = 0; i < TEST_STRESS; i++) {
+// 		coll = icepick.assoc(coll, 'new' + i, i);
+// 	}
+// 	end = global.performance.now();
+// 	total1 += (end - start);
+
+// 	start = global.performance.now();
+// 	for (let i = 0; i < TEST_STRESS; i++) {
+// 		imobj = imobj.set('new' + i, i);
+// 	}
+// 	end = global.performance.now();
+// 	total2 += (end - start);
+
+// start = global.performance.now();
+// for (let i = 0; i < TEST_STRESS; i++) {
+// 	zeroPadNumber2(12345, 10, '0');
+// }
+// end = global.performance.now();
+// total3 += (end - start);
+// }
+
+// console.log('icepick', total1 / TEST_REPEAT);
+// console.log('ImmutableObject', total2 / TEST_REPEAT);
+// console.log('_.padLeft', total3 / TEST_REPEAT);
 
 // var map1 = new ash.ImmutableArray(1, 2);
 // var map2 = map1.push(3);
@@ -240,7 +309,6 @@ console.log("parseAshNodeIndex2", total2 / 10);
 
 // var hash8 = hash5.merge({imm: [1, 2, hash7]});
 
-
 // console.log('map1', JSON.stringify(map1), map1, map1['__ash:immutable__']);
 // console.log('map2', JSON.stringify(map2), map2);
 // console.log('map3', JSON.stringify(map3), map3);
@@ -257,95 +325,6 @@ console.log("parseAshNodeIndex2", total2 / 10);
 // console.log('hash6', JSON.stringify(hash6), hash6, hash6 === hash5);
 // console.log('hash7', JSON.stringify(hash7), hash7);
 // console.log('hash8', JSON.stringify(hash8), hash8, hash8.imm[2] === hash7);
-
-
-var array = [];
-var object1 = {};
-var object2 = {};
-
-
-for (var i = 0; i < 10000; i++) {
-	array.push(i);
-}
-
-for (var i = 0; i < 50000; i++) {
-	object1[i + ""] = i;
-}
-
-for (var i = 0; i < 50000; i++) {
-	object2[i + ""] = i + 50000;
-}
-
-// start = performance.now();
-// var map1 = new ash.ImmutableArray(array);
-// end = performance.now();
-// console.log('create ImmutableArray', end - start);
-
-// start = performance.now();
-// var map2 = new Immutable.List(array);
-// end = performance.now();
-// console.log('create List', end - start);
-
-// start = performance.now();
-// for (let i = 0; i < 100; i++) {
-// 	map1.push(i);
-// }
-// end = performance.now();
-// console.log('push to ImmutableArray', end - start);
-
-// start = performance.now();
-// for (let i = 0; i < 100; i++) {
-// 	map2.push(i);
-// }
-// end = performance.now();
-// console.log('push to List', end - start);
-
-
-for (var i = 0; i < 5; i++) {}
-
-// var map1 = imm({foo: {bar: true}});
-
-// var map2 = map1.merge({foo: {}});
-
-
-//console.log(map1, map2, map1 === map2);
-
-
-/*class SubArray extends Array {
-	constructor() {
-		var arr = [ ];
-	  arr.push.apply(arr, arguments);
-	  arr.__proto__ = SubArray.prototype;
-	  return arr;
-	}
-
-	lastElement() {
-		return this[this.length - 1];
-	}
-}
-
-var sub = new SubArray(1, 2, 3);
-
-console.log('tag', Object.prototype.toString.call(sub));
-console.log('instanceof SubArray', sub instanceof SubArray);
-console.log('instanceof Array', sub instanceof Array);
-console.log('isArray', Array.isArray(sub));
-console.log('lastElement', sub.lastElement ? sub.lastElement() : 'not a function!');
-console.log('---');
-console.log(sub.length, JSON.stringify(sub));
-
-sub.length = 1;
-console.log(sub.length, JSON.stringify(sub));
-
-sub[10] = 'x';
-console.log(sub.length, JSON.stringify(sub));
-
-sub.push(1);
-console.log(sub.length, JSON.stringify(sub));*/
-
-
-
-
 
 /*$(document).on('click', 'a', function (event) {
 	event.preventDefault();
@@ -364,7 +343,7 @@ var makeProgress = function () {
 	if (progress > 100) progress = 0;
 
 	$buttons.removeClass (function (index, css) {
-	    return (css.match (/(^|\s)progress-\S+/g) || []).join(' ');
+			return (css.match (/(^|\s)progress-\S+/g) || []).join(' ');
 	});
 
 	$buttons.addClass('progress-' + Math.floor(progress));
@@ -375,7 +354,6 @@ var makeProgress = function () {
 //requestAnimationFrame(makeProgress);
 
 //Renderer.addComponent(timer(), $('.page-content')[0]);
-
 
 /*class FooComponent extends ash.Component {
 	render() {
@@ -395,76 +373,12 @@ var makeProgress = function () {
 
 var fooComponent = ash.createFactory(FooComponent);*/
 
-
 //html = Renderer.componentToString(fooComponent());
 //html = Renderer.componentToString(Timer());
 
 //console.log(html);
 
-
-
 //$('.page').html('<br>');
-
-
-
-
-
-
-
-
-
-/**
- * observables & actions test
- *
-
-class BarAction extends ash.Action {
-	onTrigger(value)
-	{
-		return value * 2;
-	}
-}
-
-
-
-
-var fooObservable = global.fooObservable = new ash.Observable();
-var barAction = global.barAction = new BarAction();
-
-fooObservable.name = 'fooObservable';
-barAction.name = 'barAction';
-
-function report()
-{
-	console.log('reporting argument 1: ', arguments[0], ' and 2: ', arguments[1]);
-	console.log('this is ', this);
-}
-
-function reportAll()
-{
-	console.log('reporting all arguments: ', arguments);
-	console.log('this is ', this);
-}
-
-fooObservable.observe(barAction, '*', report);
-
-barAction.trigger(42, 47);*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /**
  * todo
@@ -481,7 +395,6 @@ router.on('all', function ()
 });
 router.start();*/
 
-
 // global.TodoStore = TodoStore;
 // var todoApp = global.todoApp = new TodoApp();
 
@@ -494,33 +407,17 @@ router.start();*/
 
 // Renderer.registerComponent(todoApp, $('.page-content')[0]);
 
-
-// start = global.performance.now();
-// var map1 = new ash.ImmutableObject(object1);
-// end = global.performance.now();
-// console.log('create ImmutableObject', end - start);
-
-// start = performance.now();
-// var map2 = new Immutable.Map(object2);
-// end = performance.now();
-// console.log('create Map', end - start);
-
-// start = performance.now();
-// var map3 = new imm(object1);
-// end = performance.now();
-// console.log('create imm', end - start);
-
-// start = global.performance.now();
-// map1.merge(object2);
-// end = global.performance.now();
-// console.log('merge to ImmutableObject', end - start);
-
-// start = performance.now();
-// map2.merge(object2);
-// end = performance.now();
-// console.log('merge to Map', end - start);
-
-// start = performance.now();
-// map3.merge(object2);
-// end = performance.now();
-// console.log('merge to imm', end - start);
+/*getInitialState() {
+	return new ash.ImmutableObject({
+		list1: new ash.ImmutableArray(),
+		list2: new ash.ImmutableArray()
+	});
+}*/
+/*getInitialState() {
+	return {
+		list1: [],
+		list2: []
+	};
+}*/
+/* jshint ignore:start */
+/*target, ...source*/

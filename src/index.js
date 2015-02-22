@@ -5,7 +5,6 @@ import Action from './core/class/Action';
 import Store from './core/class/Store';
 
 import createElement from './core/internal/createElement';
-import createFactory from './core/internal/createFactory';
 
 import {ImmutableArray, ImmutableObject} from './core/immutable/Immutables';
 
@@ -24,7 +23,7 @@ assign(ash, {
 	Store,
 
 	'e': createElement,
-	createFactory,
+	createElement,
 
 	ImmutableArray,
 	ImmutableObject

@@ -8,17 +8,13 @@ var isAshNodeAshElement = _interopRequire(require("../internal/isAshNodeAshEleme
 
 var isAshNode = _interopRequire(require("../internal/isAshNode"));
 
-var isAshTextNode = _interopRequire(require("../internal/isAshTextNode"));
-
 var constants = _interopRequire(require("../internal/constants"));
 
 var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
 
 function cloneAshNode(ashNodeAshElement) {
-	var clonedAshNode;
-
 	if (isAshNode(ashNodeAshElement.instance)) {
-		clonedAshNode = {
+		return {
 			type: ashNodeAshElement.instance.type,
 			index: ashNodeAshElement.instance.index,
 			stage: ashNodeAshElement.stage.id,
@@ -27,23 +23,18 @@ function cloneAshNode(ashNodeAshElement) {
 			properties: ashNodeAshElement.instance.properties,
 			children: []
 		};
-	} else if (isAshTextNode(ashNodeAshElement.instance)) {
-		clonedAshNode = {
+	} else {
+		return {
 			type: ashNodeAshElement.instance.type,
 			index: ashNodeAshElement.instance.index,
 			stage: ashNodeAshElement.stage.id,
 			text: ashNodeAshElement.instance.text
 		};
-	} else {
-		throw new Error(ashNodeAshElement + " must have property named \"instance\" containing Ash Node or Ash Text Node object.");
 	}
-
-	return clonedAshNode;
 }
 
-function walk(ashNodeTree, ashElement, index, parentIndex) {
+function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentIndex) {
 	var clonedAshNode;
-	var i;
 
 	if (isAshNodeAshElement(ashElement)) {
 		// clone virtual node
@@ -57,11 +48,11 @@ function walk(ashNodeTree, ashElement, index, parentIndex) {
 		ashNodeTree.children.push(clonedAshNode);
 
 		// walk the children
-		for (i = 0; i < ashElement.children.length; i++) {
-			walk(ashNodeTree.children[ashNodeTree.children.length - 1], ashElement.children[i], i, ashNodeTree.children[ashNodeTree.children.length - 1].index);
+		for (var i = 0; i < ashElement.children.length; i++) {
+			walkCreateAshNodeTree(ashNodeTree.children[ashNodeTree.children.length - 1], ashElement.children[i], i, ashNodeTree.children[ashNodeTree.children.length - 1].index);
 		}
 	} else if (ashElement && ashElement.children[0]) {
-		walk(ashNodeTree, ashElement.children[0], index, parentIndex);
+		walkCreateAshNodeTree(ashNodeTree, ashElement.children[0], index, parentIndex);
 	}
 }
 
@@ -73,14 +64,13 @@ function createAshNodeTree(componentAshElement) {
 
 	var ashElement = componentAshElement;
 	var ashNodeTree;
-	var i;
 
 	// find first children Virtual Node ashElement
 	while (!isAshNodeAshElement(ashElement)) {
 		ashElement = ashElement.children[0];
 	}
 
-	// set up Virtual DOM
+	// set up ash node tree
 	ashNodeTree = cloneAshNode(ashElement);
 
 	// set up ordering properties
@@ -88,8 +78,8 @@ function createAshNodeTree(componentAshElement) {
 	ashElement.instance.order = ashNodeTree.order = 0;
 
 	// walk the children
-	for (i = 0; i < ashElement.children.length; i++) {
-		walk(ashNodeTree, ashElement.children[i], i, ashNodeTree.index);
+	for (var i = 0; i < ashElement.children.length; i++) {
+		walkCreateAshNodeTree(ashNodeTree, ashElement.children[i], i, ashNodeTree.index);
 	}
 
 	return ashNodeTree;

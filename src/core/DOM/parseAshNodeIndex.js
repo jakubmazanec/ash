@@ -1,7 +1,11 @@
 function parseAshNodeIndex(index) {
-	return index.split('.').map((value) => {
-		return parseInt(value, 10);
-	});
+	var result = index.split('.');
+	
+	for (let i = 0; i < result.length; i++) {
+		result[i] = parseInt(result[i], 10);
+	}
+
+	return result;
 }
 
 export default parseAshNodeIndex;

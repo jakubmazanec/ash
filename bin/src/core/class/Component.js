@@ -16,12 +16,6 @@ var constants = _interopRequire(require("../internal/constants"));
 
 var findNode = _interopRequire(require("../DOM/findNode"));
 
-var forEach = _interopRequire(require("../internal/forEach"));
-
-var keys = _interopRequire(require("../internal/keys"));
-
-var assign = _interopRequire(require("../internal/assign"));
-
 var isFunction = _interopRequire(require("../internal/isFunction"));
 
 var LIFECYCLE_UNMOUNTED = constants.LIFECYCLE_UNMOUNTED;
@@ -31,26 +25,18 @@ var LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
 var Component = (function (Observable) {
 	function Component(props) {
 		var _this = this;
+
 		_classCallCheck(this, Component);
 
 		// autobind methods
-		forEach(Object.getOwnPropertyNames(this.__proto__), function (value) {
-			if (isFunction(_this[value]) && value != "constructor") {
+		Object.getOwnPropertyNames(this.__proto__).forEach(function (value) {
+			if (isFunction(_this[value]) && value !== "constructor") {
 				_this[value] = _this[value].bind(_this);
 			}
 		});
 
 		this.props = props || {};
-		this.state = this.getInitialState();
-
-		// set state if specified in props
-		/*if (this.props.state)
-  {
-  	keys(this.state).forEach((key) => {
-  		this.props.state[key] = this.state[key];
-  	});
-  			delete this.props.state;
-  }*/
+		this.state = this.state || {};
 
 		this.__isDirty = true;
 		this.__lifecycle = LIFECYCLE_UNMOUNTED;
@@ -59,112 +45,60 @@ var Component = (function (Observable) {
 	_inherits(Component, Observable);
 
 	_prototypeProperties(Component, null, {
-		getInitialState: {
-			value: function getInitialState() {
-				return {};
+		isDirty: {
+			get: function () {
+				return this.__isDirty;
 			},
-			writable: true,
+			set: function (value) {
+				this.__isDirty = !!value;
+
+				if (this.__isDirty && this.element.stage) {
+					this.element.stage.update();
+				}
+			},
 			configurable: true
 		},
-		setDirty: {
-			value: function setDirty(options) {
-				this.__isDirty = true;
-
-				if (!options || options && options.update !== false) {
-					if (this.element.stage) {
-						this.element.stage.update();
-					}
+		lifecycle: {
+			get: function () {
+				return this.__lifecycle;
+			},
+			set: function (value) {
+				if (value != LIFECYCLE_UNMOUNTED && value != LIFECYCLE_MOUNTING && value != LIFECYCLE_MOUNTED) {
+					throw new Error(value + " must be \"Unmounted\", \"Mounting\" or \"Mounted\".");
 				}
 
-				return this;
+				this.__lifecycle = value;
 			},
-			writable: true,
 			configurable: true
 		},
 		isMounted: {
-			value: function isMounted() {
-				return this.__lifecycle == LIFECYCLE_MOUNTED;
+			get: function () {
+				return this.__lifecycle === LIFECYCLE_MOUNTED;
 			},
-			writable: true,
 			configurable: true
 		},
-		isDirty: {
-			value: function isDirty() {
-				return !!this.__isDirty;
-			},
-			writable: true,
-			configurable: true
-		},
-		setState: {
-			value: function setState(state) {
-				if (state && typeof state === "object") {
-					assign(this.state, state);
-
-					// set component dirty
-					this.setDirty();
-				}
-
-				return this;
-			},
-			writable: true,
-			configurable: true
-		},
-		__getRender: {
-			value: function __getRender() {
-				this.__isDirty = false;
+		cachedRender: {
+			get: function () {
 				this.__cachedRender = this.render();
+				this.isDirty = false;
 
 				return this.__cachedRender;
 			},
-			writable: true,
 			configurable: true
 		},
-		__setLifecycle: {
-			value: function __setLifecycle(lifecycle) {
-				// value check
-				if (lifecycle != LIFECYCLE_UNMOUNTED && lifecycle != LIFECYCLE_MOUNTING && lifecycle != LIFECYCLE_MOUNTED) {
-					throw new Error(lifecycle + " must be \"Unmounted\", \"Mounting\" or \"Mounted\".");
+		domNode: {
+			get: function () {
+				if (this.isMounted && isAshNodeAshElement(this.__cachedRender)) {
+					return findNode(this.element.stage.getRootNode(), this.__cachedRender.instance.index);
 				}
 
-				this.__lifecycle = lifecycle;
-
-				return this;
+				return null;
 			},
-			writable: true,
 			configurable: true
 		},
 		shouldUpdate: {
 			value: function shouldUpdate(newProps) {
-				// with immutable props...
-				//if (this.props === newProps) return false;
-
-				return true;
-			},
-			writable: true,
-			configurable: true
-		},
-		mount: {
-			value: function mount() {
-				// set lifecycle
-				this.__setLifecycle(LIFECYCLE_MOUNTED);
-
-				// call an event
-				this.onMount();
-
-				return this;
-			},
-			writable: true,
-			configurable: true
-		},
-		unmount: {
-			value: function unmount() {
-				// set lifecycle
-				this.__setLifecycle(LIFECYCLE_UNMOUNTED);
-
-				// call an event
-				this.onUnmount();
-
-				return this;
+				return this.props !== newProps;
 			},
 			writable: true,
 			configurable: true
@@ -191,17 +125,6 @@ var Component = (function (Observable) {
 		},
 		render: {
 			value: function render() {
-				return null;
-			},
-			writable: true,
-			configurable: true
-		},
-		getDOMNode: {
-			value: function getDOMNode() {
-				if (this.isMounted() && isAshNodeAshElement(this.__cachedRender)) {
-					return findNode(this.element.stage.getRootDOMNode(), this.__cachedRender.instance.index);
-				}
-
 				return null;
 			},
 			writable: true,

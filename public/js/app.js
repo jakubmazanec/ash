@@ -16,30 +16,29 @@ var _ = _interopRequire(require("_"));
 
 var ash = _interopRequire(require("./ash"));
 
-var imm = _interopRequire(require("seamless-immutable"));
+var icepick = _interopRequire(require("icepick"));
 
-var Immutable = _interopRequire(require("immutable"));
+// import m from 'mithril';
+// import React from 'react';
 
-var mori = _interopRequire(require("mori"));
-
-var Display = _interopRequire(require("./components/Display"));
-
-var Timer = _interopRequire(require("./components/Timer"));
+// import Display from './components/Display';
+// import Timer from './components/Timer';
 
 global.$ = $;
 global._ = _;
 global.ash = ash;
-global.imm = imm;
-global.mori = mori;
-global.Immutable = Immutable;
 
 var Renderer = global.Renderer = new ash.Renderer();
-
 
 // Renderer.addComponent(new Timer(), $('.page')[0]);
 
 var AppComponent = (function (_ash$Component) {
 	function AppComponent() {
+		this.state = new ash.ImmutableObject({
+			list1: new ash.ImmutableArray(),
+			list2: new ash.ImmutableArray()
+		});
+
 		_classCallCheck(this, AppComponent);
 
 		if (_ash$Component != null) {
@@ -50,19 +49,15 @@ var AppComponent = (function (_ash$Component) {
 	_inherits(AppComponent, _ash$Component);
 
 	_prototypeProperties(AppComponent, null, {
-		getInitialState: {
-			value: function getInitialState() {
-				return new ash.ImmutableObject({
-					list1: new ash.ImmutableArray(),
-					list2: new ash.ImmutableArray()
-				});
-			},
-			writable: true,
-			configurable: true
-		},
 		render: {
+			/* jshint ignore:end */
+
 			value: function render() {
-				return ash.e("div", null, ash.e("div", null, ash.e("button", {
+				return ash.e("div", null, ash.e("div", {
+					style: {
+						boxShadow: "2px 2px 5px red"
+					}
+				}, ash.e("button", {
 					events: { click: this.addToList1 }
 				}, "+ list 1"), ash.e("button", {
 					events: { click: this.addToList2 }
@@ -75,13 +70,15 @@ var AppComponent = (function (_ash$Component) {
 			value: function addToList1() {
 				var items = [];
 
-				for (var i = 0; i < 1000; i++) {
+				for (var i = 0; i < 5000; i++) {
 					items.push(Math.random().toFixed(1));
 				}
 
 				this.state = this.state.merge({ list1: this.state.list1.concat(items) });
+				//this.state.list1 = this.state.list1.concat(items);
 
-				this.setDirty();
+				// this.setDirty();
+				this.isDirty = true;
 			},
 			writable: true,
 			configurable: true
@@ -90,13 +87,15 @@ var AppComponent = (function (_ash$Component) {
 			value: function addToList2() {
 				var items = [];
 
-				for (var i = 0; i < 1000; i++) {
+				for (var i = 0; i < 5000; i++) {
 					items.push(Math.random().toFixed(1));
 				}
 
 				this.state = this.state.merge({ list2: this.state.list2.concat(items) });
+				//this.state.list2 = this.state.list2.concat(items);
 
-				this.setDirty();
+				// this.setDirty();
+				this.isDirty = true;
 			},
 			writable: true,
 			configurable: true
@@ -106,7 +105,7 @@ var AppComponent = (function (_ash$Component) {
 	return AppComponent;
 })(ash.Component);
 
-var App = ash.createFactory(AppComponent);
+var App = ash.createElement(AppComponent);
 
 var ListComponent = (function (_ash$Component2) {
 	function ListComponent() {
@@ -120,22 +119,12 @@ var ListComponent = (function (_ash$Component2) {
 	_inherits(ListComponent, _ash$Component2);
 
 	_prototypeProperties(ListComponent, null, {
-		shouldUpdate: {
-			value: function shouldUpdate(nextProps) {
-				//console.log('should i update list?', this.props !== nextProps);
-
-				return this.props !== nextProps;
-				//return true;
-			},
-			writable: true,
-			configurable: true
-		},
 		render: {
 			value: function render() {
 				var items = [];
 
 				for (var i = 0; i < this.props.length; i++) {
-					items.push(ash.e("li", null, this.props[i] + ""));
+					items.push(ash.e("li", null, /*{key: i + ''}*/this.props[i] + ""));
 				}
 
 				return ash.e("ul", null, items);
@@ -148,56 +137,136 @@ var ListComponent = (function (_ash$Component2) {
 	return ListComponent;
 })(ash.Component);
 
-var List = ash.createFactory(ListComponent);
+var List = ash.createElement(ListComponent);
 
 Renderer.addComponent(new App(), $(".page")[0]);
 
+function assign() {
+	var sources = [];
+	var target = arguments[0] || {};
 
-
-
-
-var start;
-var end;
-var total1 = 0;
-var total2 = 0;
-
-function parseAshNodeIndex1(index) {
-	return index.split(".").map(function (value) {
-		return parseInt(value, 10);
-	});
-}
-
-function parseAshNodeIndex2(index) {
-	var result = index.split(".");
-	for (var i = 0; i < result.length; i++) {
-		result[i] = parseInt(result[i], 10);
+	for (var i = 1; i < arguments.length; i++) {
+		if (arguments[i] && typeof arguments[i] === "object") {
+			sources.push(arguments[i]);
+		}
 	}
 
-	return result;
+	if (!sources.length) {
+		return target;
+	}
+
+	for (var i = 0; i < sources.length; i++) {
+		for (var prop in sources[i]) {
+			if (sources[i].hasOwnProperty(prop) && typeof sources[i].prop !== "undefined" && sources[i].prop !== null) {
+				target[prop] = sources[i][prop];
+			}
+		}
+	}
 }
 
-for (var j = 0; j < 10; j++) {
-	start = global.performance.now();
-	for (var i = 0; i < 1000; i++) {
-		parseAshNodeIndex1("0.1.2.3.4.5.6.7.8.9.10");
-	}
-	end = global.performance.now();
-	total1 += end - start;
+global.assign = assign;
 
-	start = global.performance.now();
-	for (var i = 0; i < 1000; i++) {
-		parseAshNodeIndex2("0.1.2.3.4.5.6.7.8.9.10");
+/*class AppComponent extends React.Component {
+	state = {
+		list1: [],
+		list2: []
+	};
+
+	render() {
+		return React.createElement('div', null,
+			React.createElement('div', null,
+				React.createElement('button', {
+					onClick: this.addToList1.bind(this)
+				}, '+ list 1'),
+				React.createElement('button', {
+					onClick: this.addToList2.bind(this)
+				}, '+ list 2')),
+			React.createElement(ListComponent, {list: this.state.list1}),
+			React.createElement(ListComponent, {list: this.state.list2}));
 	}
-	end = global.performance.now();
-	total2 += end - start;
+
+	addToList1() {
+		var items = [];
+
+		for (let i = 0; i < 5000; i++) {
+			items.push(Math.random().toFixed(1));
+		}
+
+		this.setState({list1: this.state.list1.concat(items)});
+	}
+
+	addToList2() {
+		var items = [];
+
+		for (let i = 0; i < 5000; i++) {
+			items.push(Math.random().toFixed(1));
+		}
+
+		this.setState({list2: this.state.list2.concat(items)});
+	}
 }
 
 
+class ListComponent extends React.Component {
+	render() {
+		var items = [];
 
+		if (this.props.list) {
+			for (let i = 0; i < this.props.list.length; i++) {
+				items.push(React.createElement('li', null, this.props.list[i] + ''));
+			}
+		}
 
-console.log("parseAshNodeIndex1", total1 / 10);
-console.log("parseAshNodeIndex2", total2 / 10);
+		return React.createElement('ul', null, items);
+	}
+}
 
+React.render(React.createElement(AppComponent, null), $('.page')[0]);*/
+
+// benchmark
+// var start;
+// var end;
+// var total1 = 0;
+// var total2 = 0;
+// var total3 = 0;
+// var total4 = 0;
+// var total5 = 0;
+// var total6 = 0;
+
+// var object = {a: 1, b: 2};
+
+// var coll = icepick.freeze(object);
+// var imobj = new ash.ImmutableObject(object);
+
+// const TEST_STRESS = 100;
+// const TEST_REPEAT = 10;
+
+// for (let j = 0; j < TEST_REPEAT; j++) {
+// 	start = global.performance.now();
+// 	for (let i = 0; i < TEST_STRESS; i++) {
+// 		coll = icepick.assoc(coll, 'new' + i, i);
+// 	}
+// 	end = global.performance.now();
+// 	total1 += (end - start);
+
+// 	start = global.performance.now();
+// 	for (let i = 0; i < TEST_STRESS; i++) {
+// 		imobj = imobj.set('new' + i, i);
+// 	}
+// 	end = global.performance.now();
+// 	total2 += (end - start);
+
+// start = global.performance.now();
+// for (let i = 0; i < TEST_STRESS; i++) {
+// 	zeroPadNumber2(12345, 10, '0');
+// }
+// end = global.performance.now();
+// total3 += (end - start);
+// }
+
+// console.log('icepick', total1 / TEST_REPEAT);
+// console.log('ImmutableObject', total2 / TEST_REPEAT);
+// console.log('_.padLeft', total3 / TEST_REPEAT);
 
 // var map1 = new ash.ImmutableArray(1, 2);
 // var map2 = map1.push(3);
@@ -242,7 +311,6 @@ console.log("parseAshNodeIndex2", total2 / 10);
 
 // var hash8 = hash5.merge({imm: [1, 2, hash7]});
 
-
 // console.log('map1', JSON.stringify(map1), map1, map1['__ash:immutable__']);
 // console.log('map2', JSON.stringify(map2), map2);
 // console.log('map3', JSON.stringify(map3), map3);
@@ -259,95 +327,6 @@ console.log("parseAshNodeIndex2", total2 / 10);
 // console.log('hash6', JSON.stringify(hash6), hash6, hash6 === hash5);
 // console.log('hash7', JSON.stringify(hash7), hash7);
 // console.log('hash8', JSON.stringify(hash8), hash8, hash8.imm[2] === hash7);
-
-
-var array = [];
-var object1 = {};
-var object2 = {};
-
-
-for (var i = 0; i < 10000; i++) {
-	array.push(i);
-}
-
-for (var i = 0; i < 50000; i++) {
-	object1[i + ""] = i;
-}
-
-for (var i = 0; i < 50000; i++) {
-	object2[i + ""] = i + 50000;
-}
-
-// start = performance.now();
-// var map1 = new ash.ImmutableArray(array);
-// end = performance.now();
-// console.log('create ImmutableArray', end - start);
-
-// start = performance.now();
-// var map2 = new Immutable.List(array);
-// end = performance.now();
-// console.log('create List', end - start);
-
-// start = performance.now();
-// for (let i = 0; i < 100; i++) {
-// 	map1.push(i);
-// }
-// end = performance.now();
-// console.log('push to ImmutableArray', end - start);
-
-// start = performance.now();
-// for (let i = 0; i < 100; i++) {
-// 	map2.push(i);
-// }
-// end = performance.now();
-// console.log('push to List', end - start);
-
-
-for (var i = 0; i < 5; i++) {}
-
-// var map1 = imm({foo: {bar: true}});
-
-// var map2 = map1.merge({foo: {}});
-
-
-//console.log(map1, map2, map1 === map2);
-
-
-/*class SubArray extends Array {
-	constructor() {
-		var arr = [ ];
-	  arr.push.apply(arr, arguments);
-	  arr.__proto__ = SubArray.prototype;
-	  return arr;
-	}
-
-	lastElement() {
-		return this[this.length - 1];
-	}
-}
-
-var sub = new SubArray(1, 2, 3);
-
-console.log('tag', Object.prototype.toString.call(sub));
-console.log('instanceof SubArray', sub instanceof SubArray);
-console.log('instanceof Array', sub instanceof Array);
-console.log('isArray', Array.isArray(sub));
-console.log('lastElement', sub.lastElement ? sub.lastElement() : 'not a function!');
-console.log('---');
-console.log(sub.length, JSON.stringify(sub));
-
-sub.length = 1;
-console.log(sub.length, JSON.stringify(sub));
-
-sub[10] = 'x';
-console.log(sub.length, JSON.stringify(sub));
-
-sub.push(1);
-console.log(sub.length, JSON.stringify(sub));*/
-
-
-
-
 
 /*$(document).on('click', 'a', function (event) {
 	event.preventDefault();
@@ -366,7 +345,7 @@ var makeProgress = function () {
 	if (progress > 100) progress = 0;
 
 	$buttons.removeClass (function (index, css) {
-	    return (css.match (/(^|\s)progress-\S+/g) || []).join(' ');
+			return (css.match (/(^|\s)progress-\S+/g) || []).join(' ');
 	});
 
 	$buttons.addClass('progress-' + Math.floor(progress));
@@ -377,7 +356,6 @@ var makeProgress = function () {
 //requestAnimationFrame(makeProgress);
 
 //Renderer.addComponent(timer(), $('.page-content')[0]);
-
 
 /*class FooComponent extends ash.Component {
 	render() {
@@ -397,76 +375,12 @@ var makeProgress = function () {
 
 var fooComponent = ash.createFactory(FooComponent);*/
 
-
 //html = Renderer.componentToString(fooComponent());
 //html = Renderer.componentToString(Timer());
 
 //console.log(html);
 
-
-
 //$('.page').html('<br>');
-
-
-
-
-
-
-
-
-
-/**
- * observables & actions test
- *
-
-class BarAction extends ash.Action {
-	onTrigger(value)
-	{
-		return value * 2;
-	}
-}
-
-
-
-
-var fooObservable = global.fooObservable = new ash.Observable();
-var barAction = global.barAction = new BarAction();
-
-fooObservable.name = 'fooObservable';
-barAction.name = 'barAction';
-
-function report()
-{
-	console.log('reporting argument 1: ', arguments[0], ' and 2: ', arguments[1]);
-	console.log('this is ', this);
-}
-
-function reportAll()
-{
-	console.log('reporting all arguments: ', arguments);
-	console.log('this is ', this);
-}
-
-fooObservable.observe(barAction, '*', report);
-
-barAction.trigger(42, 47);*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /**
  * todo
@@ -483,7 +397,6 @@ router.on('all', function ()
 });
 router.start();*/
 
-
 // global.TodoStore = TodoStore;
 // var todoApp = global.todoApp = new TodoApp();
 
@@ -496,225 +409,28 @@ router.start();*/
 
 // Renderer.registerComponent(todoApp, $('.page-content')[0]);
 
-
-// start = global.performance.now();
-// var map1 = new ash.ImmutableObject(object1);
-// end = global.performance.now();
-// console.log('create ImmutableObject', end - start);
-
-// start = performance.now();
-// var map2 = new Immutable.Map(object2);
-// end = performance.now();
-// console.log('create Map', end - start);
-
-// start = performance.now();
-// var map3 = new imm(object1);
-// end = performance.now();
-// console.log('create imm', end - start);
-
-// start = global.performance.now();
-// map1.merge(object2);
-// end = global.performance.now();
-// console.log('merge to ImmutableObject', end - start);
-
-// start = performance.now();
-// map2.merge(object2);
-// end = performance.now();
-// console.log('merge to Map', end - start);
-
-// start = performance.now();
-// map3.merge(object2);
-// end = performance.now();
-// console.log('merge to imm', end - start);
+/*getInitialState() {
+	return new ash.ImmutableObject({
+		list1: new ash.ImmutableArray(),
+		list2: new ash.ImmutableArray()
+	});
+}*/
+/*getInitialState() {
+	return {
+		list1: [],
+		list2: []
+	};
+}*/
+/* jshint ignore:start */
+/*target, ...source*/
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./ash":2,"./components/Display":3,"./components/Timer":4,"_":218,"immutable":382,"jquery":383,"mori":384,"seamless-immutable":385}],2:[function(require,module,exports){
+},{"./ash":2,"_":148,"icepick":312,"jquery":313}],2:[function(require,module,exports){
 "use strict";
 
 var ash = require("../src/index");
 
 module.exports = ash;
-},{"../src/index":119}],3:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
-
-var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
-
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
-
-var ash = _interopRequire(require("../ash"));
-
-var Display = (function (_ash$Component) {
-	function Display() {
-		_classCallCheck(this, Display);
-
-		if (_ash$Component != null) {
-			_ash$Component.apply(this, arguments);
-		}
-	}
-
-	_inherits(Display, _ash$Component);
-
-	_prototypeProperties(Display, null, {
-		getInitialState: {
-			value: function getInitialState() {
-				return { displayClicks: 0 };
-			},
-			writable: true,
-			configurable: true
-		},
-		render: {
-			value: function render() {
-				var message = "Timer Clicks = " + this.props.timerClicks + " -- Display Click = " + this.state.displayClicks;
-
-				return ash.e("div", null, [message, ash.e("button", {
-					className: "big",
-					style: {
-						color: this.state.displayClicks % 2 === 0 ? "red" : "blue"
-					},
-					events: {
-						click: this.tick
-					}
-				}, "+")]);
-			},
-			writable: true,
-			configurable: true
-		},
-		tick: {
-			value: function tick() {
-				console.log(this);
-				//console.log(this.name + ' tick!');
-				this.setState({ displayClicks: this.state.displayClicks + 1 });
-			},
-			writable: true,
-			configurable: true
-		},
-		onBeforeReceiveProps: {
-			value: function onBeforeReceiveProps() {},
-			writable: true,
-			configurable: true
-		},
-		onMount: {
-			value: function onMount() {},
-			writable: true,
-			configurable: true
-		},
-		onUnmount: {
-			value: function onUnmount() {},
-			writable: true,
-			configurable: true
-		}
-	});
-
-	return Display;
-})(ash.Component);
-
-module.exports = ash.createFactory(Display);
-//console.log('display componentWillReceiveProps');
-//console.log('display componentDidMount');
-//debugger;
-//this.interval = setInterval(this.tick, 500);
-//console.log(this.getDOMNode());
-//console.log('display componentWillUnmount');
-//clearInterval(this.interval);
-},{"../ash":2}],4:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
-
-var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
-
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
-
-var ash = _interopRequire(require("../ash"));
-
-var Display = _interopRequire(require("./Display"));
-
-var Timer = (function (_ash$Component) {
-	function Timer() {
-		_classCallCheck(this, Timer);
-
-		if (_ash$Component != null) {
-			_ash$Component.apply(this, arguments);
-		}
-	}
-
-	_inherits(Timer, _ash$Component);
-
-	_prototypeProperties(Timer, null, {
-		getInitialState: {
-			value: function getInitialState() {
-				return { timerClicks: 0 };
-			},
-			writable: true,
-			configurable: true
-		},
-		autobind: {
-			value: function autobind() {
-				return ["tick"];
-			},
-			writable: true,
-			configurable: true
-		},
-		tick: {
-			value: function tick() {
-				console.log("timer tick!");
-				this.setState({ timerClicks: this.state.timerClicks + 1 });
-			},
-			writable: true,
-			configurable: true
-		},
-		onMount: {
-			value: function onMount() {},
-			writable: true,
-			configurable: true
-		},
-		onUnmount: {
-			value: function onUnmount() {},
-			writable: true,
-			configurable: true
-		},
-		onBeforeMount: {
-			value: function onBeforeMount() {},
-			writable: true,
-			configurable: true
-		},
-		render: {
-
-			/*shouldUpdate () {
-   	return false;
-   }*/
-
-			value: function render() {
-				return ash.e("div", null, [new Display({ timerClicks: this.state.timerClicks }), ash.e("button", {
-					style: {
-						color: this.state.timerClicks % 2 === 0 ? "red" : "blue"
-					},
-					events: {
-						click: this.tick
-					}
-				}, "+")]);
-			},
-			writable: true,
-			configurable: true
-		}
-	});
-
-	return Timer;
-})(ash.Component);
-
-module.exports = ash.createFactory(Timer);
-//console.log('Timer onMount');
-//this.interval = setInterval(this.tick, 1000);
-//console.log(this.getDOMNode());
-//console.log('Timer onUnmount');
-//clearInterval(this.interval);
-//console.log('Timer onBeforeMount');
-},{"../ash":2,"./Display":3}],5:[function(require,module,exports){
+},{"../src/index":49}],3:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -732,9 +448,7 @@ var constants = _interopRequire(require("../internal/constants"));
 var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
 var LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
 
-function walk(ashElement, index, owner, lastLevel) {
-	var i;
-
+function walkCreateAshElementTree(ashElement, index, owner, lastLevel) {
 	// type check
 	if (!isComponentAshElement(owner)) {
 		throw new Error(owner + " must be a Component type AshElement Object");
@@ -752,13 +466,13 @@ function walk(ashElement, index, owner, lastLevel) {
 		ashElement.owner = owner;
 		ashElement.stage = owner.stage;
 
-		for (i = 0; i < ashElement.children.length; i++) {
+		for (var i = 0; i < ashElement.children.length; i++) {
 			if (ashElement.children[i]) {
 				// set up parent
 				ashElement.children[i].parent = ashElement;
 
 				// walk the child
-				walk(ashElement.children[i], i, owner, ashElement.level);
+				walkCreateAshElementTree(ashElement.children[i], i, owner, ashElement.level);
 			}
 		}
 	} else if (isComponentAshElement(ashElement)) {
@@ -775,15 +489,15 @@ function walk(ashElement, index, owner, lastLevel) {
 
 		// create child by rendering component
 		ashElement.instance.onBeforeMount();
-		ashElement.instance.__setLifecycle(LIFECYCLE_MOUNTING);
-		ashElement.children[0] = ashElement.instance.__getRender();
+		ashElement.instance.lifecycle = LIFECYCLE_MOUNTING;
+		ashElement.children[0] = ashElement.instance.cachedRender;
 
 		if (ashElement.children[0]) {
 			// set up parent
 			ashElement.children[0].parent = ashElement;
 
 			// walk the child
-			walk(ashElement.children[0], 0, ashElement, ashElement.level);
+			walkCreateAshElementTree(ashElement.children[0], 0, ashElement, ashElement.level);
 		}
 	}
 }
@@ -815,14 +529,14 @@ function createAshElementTree(rootAshElement, stage, startingLevel) {
 
 		// create child by rendering component
 		ashElementTree.instance.onBeforeMount();
-		ashElementTree.children[0] = ashElementTree.instance.__getRender();
-		ashElementTree.instance.__setLifecycle(LIFECYCLE_MOUNTING);
+		ashElementTree.children[0] = ashElementTree.instance.cachedRender;
+		ashElementTree.instance.lifecycle = LIFECYCLE_MOUNTING;
 
 		// set up a parent
 		ashElementTree.children[0].parent = ashElementTree;
 
 		// walk the child
-		walk(ashElementTree.children[0], 0, ashElementTree, ashElementTree.level);
+		walkCreateAshElementTree(ashElementTree.children[0], 0, ashElementTree, ashElementTree.level);
 	} else {
 		// instantiate descriptor
 		ashElementTree.instantiate();
@@ -836,7 +550,7 @@ function createAshElementTree(rootAshElement, stage, startingLevel) {
 			ashElementTree.children[i].parent = ashElementTree;
 
 			// walk the child
-			walk(ashElementTree.children[i], i, ashElementTree.owner, ashElementTree.level);
+			walkCreateAshElementTree(ashElementTree.children[i], i, ashElementTree.owner, ashElementTree.level);
 		}
 	}
 
@@ -845,7 +559,7 @@ function createAshElementTree(rootAshElement, stage, startingLevel) {
 }
 
 module.exports = createAshElementTree;
-},{"../internal/constants":58,"../internal/isAshElement":76,"../internal/isAshNodeAshElement":78,"../internal/isComponentAshElement":81,"../internal/isString":94}],6:[function(require,module,exports){
+},{"../internal/constants":25,"../internal/isAshElement":28,"../internal/isAshNodeAshElement":30,"../internal/isComponentAshElement":32,"../internal/isString":41}],4:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -856,17 +570,13 @@ var isAshNodeAshElement = _interopRequire(require("../internal/isAshNodeAshEleme
 
 var isAshNode = _interopRequire(require("../internal/isAshNode"));
 
-var isAshTextNode = _interopRequire(require("../internal/isAshTextNode"));
-
 var constants = _interopRequire(require("../internal/constants"));
 
 var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
 
 function cloneAshNode(ashNodeAshElement) {
-	var clonedAshNode;
-
 	if (isAshNode(ashNodeAshElement.instance)) {
-		clonedAshNode = {
+		return {
 			type: ashNodeAshElement.instance.type,
 			index: ashNodeAshElement.instance.index,
 			stage: ashNodeAshElement.stage.id,
@@ -875,23 +585,18 @@ function cloneAshNode(ashNodeAshElement) {
 			properties: ashNodeAshElement.instance.properties,
 			children: []
 		};
-	} else if (isAshTextNode(ashNodeAshElement.instance)) {
-		clonedAshNode = {
+	} else {
+		return {
 			type: ashNodeAshElement.instance.type,
 			index: ashNodeAshElement.instance.index,
 			stage: ashNodeAshElement.stage.id,
 			text: ashNodeAshElement.instance.text
 		};
-	} else {
-		throw new Error(ashNodeAshElement + " must have property named \"instance\" containing Ash Node or Ash Text Node object.");
 	}
-
-	return clonedAshNode;
 }
 
-function walk(ashNodeTree, ashElement, index, parentIndex) {
+function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentIndex) {
 	var clonedAshNode;
-	var i;
 
 	if (isAshNodeAshElement(ashElement)) {
 		// clone virtual node
@@ -905,11 +610,11 @@ function walk(ashNodeTree, ashElement, index, parentIndex) {
 		ashNodeTree.children.push(clonedAshNode);
 
 		// walk the children
-		for (i = 0; i < ashElement.children.length; i++) {
-			walk(ashNodeTree.children[ashNodeTree.children.length - 1], ashElement.children[i], i, ashNodeTree.children[ashNodeTree.children.length - 1].index);
+		for (var i = 0; i < ashElement.children.length; i++) {
+			walkCreateAshNodeTree(ashNodeTree.children[ashNodeTree.children.length - 1], ashElement.children[i], i, ashNodeTree.children[ashNodeTree.children.length - 1].index);
 		}
 	} else if (ashElement && ashElement.children[0]) {
-		walk(ashNodeTree, ashElement.children[0], index, parentIndex);
+		walkCreateAshNodeTree(ashNodeTree, ashElement.children[0], index, parentIndex);
 	}
 }
 
@@ -921,14 +626,13 @@ function createAshNodeTree(componentAshElement) {
 
 	var ashElement = componentAshElement;
 	var ashNodeTree;
-	var i;
 
 	// find first children Virtual Node ashElement
 	while (!isAshNodeAshElement(ashElement)) {
 		ashElement = ashElement.children[0];
 	}
 
-	// set up Virtual DOM
+	// set up ash node tree
 	ashNodeTree = cloneAshNode(ashElement);
 
 	// set up ordering properties
@@ -936,15 +640,16 @@ function createAshNodeTree(componentAshElement) {
 	ashElement.instance.order = ashNodeTree.order = 0;
 
 	// walk the children
-	for (i = 0; i < ashElement.children.length; i++) {
-		walk(ashNodeTree, ashElement.children[i], i, ashNodeTree.index);
+	for (var i = 0; i < ashElement.children.length; i++) {
+		walkCreateAshNodeTree(ashNodeTree, ashElement.children[i], i, ashNodeTree.index);
 	}
 
 	return ashNodeTree;
 }
 
 module.exports = createAshNodeTree;
-},{"../internal/constants":58,"../internal/isAshNode":77,"../internal/isAshNodeAshElement":78,"../internal/isAshTextNode":79,"../internal/isComponentAshElement":81}],7:[function(require,module,exports){
+},{"../internal/constants":25,"../internal/isAshNode":29,"../internal/isAshNodeAshElement":30,"../internal/isComponentAshElement":32}],5:[function(require,module,exports){
+(function (global){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -959,13 +664,12 @@ var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
 var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
 var STAGE_ATTRIBUTE_NAME = constants.STAGE_ATTRIBUTE_NAME;
 
-function walk(ashNodeTree) {
+function createNodeTree(ashNodeTree) {
 	var nodeTree;
 	var child;
-	var i;
 
 	if (isAshTextNode(ashNodeTree)) {
-		nodeTree = document.createTextNode(ashNodeTree.text);
+		nodeTree = global.document.createTextNode(ashNodeTree.text);
 		nodeTree[INDEX_ATTRIBUTE_NAME] = ashNodeTree.index;
 		nodeTree[ORDER_ATTRIBUTE_NAME] = ashNodeTree.order;
 		nodeTree[STAGE_ATTRIBUTE_NAME] = ashNodeTree.stage;
@@ -975,9 +679,9 @@ function walk(ashNodeTree) {
 
 	// create element
 	if (ashNodeTree.tagName == "svg" || ashNodeTree.tagName == "use") {
-		nodeTree = document.createElementNS("http://www.w3.org/2000/svg", ashNodeTree.tagName);
+		nodeTree = global.document.createElementNS("http://www.w3.org/2000/svg", ashNodeTree.tagName);
 	} else {
-		nodeTree = document.createElement(ashNodeTree.tagName);
+		nodeTree = global.document.createElement(ashNodeTree.tagName);
 	}
 
 	// set properties
@@ -987,10 +691,9 @@ function walk(ashNodeTree) {
 	setNodeProperties(nodeTree, ashNodeTree.properties, true);
 	//$(nodeTree).attr('index', nodeTree[INDEX_ATTRIBUTE_NAME]/* + ' - ' + ashNodeTree.key*/);
 	//$(nodeTree).attr('order', nodeTree[ORDER_ATTRIBUTE_NAME]/* + ' - ' + ashNodeTree.key*/);
-	//$(nodeTree).attr('levels', ashNodeTree.levels.join('.'));
 
-	for (i = 0; i < ashNodeTree.children.length; i++) {
-		child = walk(ashNodeTree.children[i]);
+	for (var i = 0; i < ashNodeTree.children.length; i++) {
+		child = createNodeTree(ashNodeTree.children[i]);
 
 		if (child) {
 			nodeTree.appendChild(child);
@@ -1000,13 +703,9 @@ function walk(ashNodeTree) {
 	return nodeTree;
 }
 
-// helper for creating dom nodeTree
-function createNodeTree(ashNodeTree) {
-	return walk(ashNodeTree);
-}
-
 module.exports = createNodeTree;
-},{"../internal/constants":58,"../internal/isAshTextNode":79,"./setNodeProperties":13}],8:[function(require,module,exports){
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"../internal/constants":25,"../internal/isAshTextNode":31,"./setNodeProperties":11}],6:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -1030,14 +729,12 @@ function diffChildren(oldChildren, newChildren, patches) {
 	}
 
 	// lets fill in keys, if needed; simple first-to-first correspondence
-	var __length = Math.max(oldChildren.length, newChildren.length);
-	var __a = 0;
-	var __b = 0;
-	var __keyCount = 0;
-	var __key = "Key: " + __keyCount;
-	var i;
+	var oldChildIndex = 0;
+	var newChildIndex = 0;
+	var lastKey = 0;
+	var key = "__key:" + lastKey + "__";
 
-	for (i = 0; i < __length; i++) {
+	for (var i = 0, _length = Math.max(oldChildren.length, newChildren.length); i < _length; i++) {
 		if (oldChildren[i] && oldChildren[i].key) {
 			oldChildren[i].tempKey = oldChildren[i].key;
 		}
@@ -1046,115 +743,139 @@ function diffChildren(oldChildren, newChildren, patches) {
 			newChildren[i].tempKey = newChildren[i].key;
 		}
 
-		while (oldChildren[__a] && oldChildren[__a].key) {
-			__a++;
+		while (oldChildren[oldChildIndex] && oldChildren[oldChildIndex].key) {
+			oldChildIndex++;
 		}
 
-		while (newChildren[__b] && newChildren[__b].key) {
-			__b++;
+		while (newChildren[newChildIndex] && newChildren[newChildIndex].key) {
+			newChildIndex++;
 		}
 
-		if (oldChildren[__a]) {
-			oldChildren[__a].tempKey = __key;
+		if (oldChildren[oldChildIndex]) {
+			oldChildren[oldChildIndex].tempKey = key;
 		}
 
-		if (newChildren[__b]) {
-			newChildren[__b].tempKey = __key;
+		if (newChildren[newChildIndex]) {
+			newChildren[newChildIndex].tempKey = key;
 		}
 
-		__keyCount++;
-		__key = "Key: " + __keyCount;
-		__a++;
-		__b++;
+		lastKey++;
+		key = "__key:" + lastKey + "__";
+		oldChildIndex++;
+		newChildIndex++;
 	}
 
 	// keys are in; let's compare order of children
-	var __found;
-	var j;
-	var __index;
+	var foundIndex;
 
 	// first iterate over old children
-	for (i = 0; i < oldChildren.length; i++) {
-		__found = false;
+	for (var i = 0; i < oldChildren.length; i++) {
+		var isChildFound = false;
 
-		for (j = 0; j < newChildren.length; j++) {
+		for (var j = 0; j < newChildren.length; j++) {
 			if (oldChildren[i].tempKey === newChildren[j].tempKey) {
-				__found = true;
+				isChildFound = true;
+				foundIndex = j;
 
 				break;
 			}
 		}
 
 		// node with matching key was found?
-		if (__found) {
+		if (isChildFound) {
 			// is order same?
-			if (i != j) {
+			if (i != foundIndex) {
 				patches.push({
 					type: PATCH_ORDER,
-					newIndex: newChildren[j].index,
+					newIndex: newChildren[foundIndex].index,
 					index: oldChildren[i].index,
+					parsedIndex: parseAshNodeIndex(oldChildren[i].index),
 					stage: oldChildren[i].stage,
-					order: j
+					order: foundIndex
 				});
+
+				for (var k = 0; k < patches[patches.length - 1].parsedIndex.length; k++) {
+					if (patches.maxIndex < patches[patches.length - 1].parsedIndex[k]) {
+						patches.maxIndex = patches[patches.length - 1].parsedIndex[k];
+					}
+				}
 			}
 
 			// now walk inside those children...
-			walk(oldChildren[i], newChildren[j], patches);
+			diffAshNodeTree(oldChildren[i], newChildren[foundIndex], patches);
 		} else {
 			// node is to be removed...
 			patches.push({
 				type: PATCH_REMOVE,
 				index: oldChildren[i].index,
+				parsedIndex: parseAshNodeIndex(oldChildren[i].index),
 				stage: oldChildren[i].stage });
+
+			for (var k = 0; k < patches[patches.length - 1].parsedIndex.length; k++) {
+				if (patches.maxIndex < patches[patches.length - 1].parsedIndex[k]) {
+					patches.maxIndex = patches[patches.length - 1].parsedIndex[k];
+				}
+			}
 		}
 	}
 
 	// now iterate over new children; let's see, if there are any new...
-	for (j = 0; j < newChildren.length; j++) {
-		__found = false;
+	for (var j = 0; j < newChildren.length; j++) {
+		var isChildFound = false;
 
-		for (i = 0; i < oldChildren.length; i++) {
+		for (var i = 0; i < oldChildren.length; i++) {
 			if (oldChildren[i].tempKey === newChildren[j].tempKey) {
-				__found = true;
+				isChildFound = true;
 				break;
 			}
 		}
 
 		// new child was not found
-		if (!__found) {
+		if (!isChildFound) {
 			// create patch for insert
 			patches.push({
 				type: PATCH_INSERT,
 				index: newChildren[j].index,
+				parsedIndex: parseAshNodeIndex(newChildren[j].index),
 				node: newChildren[j]
 			});
 
-			__index = parseAshNodeIndex(newChildren[j].index);
-			__index.pop();
-			patches[patches.length - 1].parentIndex = __index.join(LEVEL_SEPARATOR);
+			for (var k = 0; k < patches[patches.length - 1].parsedIndex.length; k++) {
+				if (patches.maxIndex < patches[patches.length - 1].parsedIndex[k]) {
+					patches.maxIndex = patches[patches.length - 1].parsedIndex[k];
+				}
+			}
+
+			var parentIndex = parseAshNodeIndex(newChildren[j].index);
+			parentIndex.pop();
+			patches[patches.length - 1].parentIndex = parentIndex.join(LEVEL_SEPARATOR);
 		}
 	}
 
 	return patches;
 }
 
-function walk(oldAshNode, newAshNode /*, patches*/) {
+function diffAshNodeTree(oldAshNode, newAshNode /*, patches*/) {
 	// compare nodes
-	var patches = arguments[2] || [];
+	var patches = Array.isArray(arguments[2]) ? arguments[2] : [];
 	var differentProperties = false;
 	var propertiesToChange = {};
 	var propertiesToRemove = [];
-	var newProperty;
-	var newSubproperty;
-	var oldProperty;
-	var oldSubproperty;
+
+	if (typeof patches.maxIndex === "undefined") {
+		patches.maxIndex = 0;
+	}
+
+	if (typeof patches.stage === "undefined") {
+		patches.stage = oldAshNode.stage;
+	}
 
 	// which propertie are different or new
-	for (newProperty in newAshNode.properties) {
+	for (var newProperty in newAshNode.properties) {
 		if (newAshNode.properties.hasOwnProperty(newProperty) && oldAshNode.properties && newAshNode.properties[newProperty] !== oldAshNode.properties[newProperty]) {
 			if (typeof newAshNode.properties[newProperty] === "object" && oldAshNode.properties[newProperty] && typeof oldAshNode.properties[newProperty] == "object") {
 				// which propertie are different or new
-				for (newSubproperty in newAshNode.properties[newProperty]) {
+				for (var newSubproperty in newAshNode.properties[newProperty]) {
 					if (newAshNode.properties[newProperty].hasOwnProperty(newSubproperty) && newAshNode.properties[newProperty][newSubproperty] !== oldAshNode.properties[newProperty][newSubproperty]) {
 						propertiesToChange[newProperty] = propertiesToChange[newProperty] || {};
 						propertiesToChange[newProperty][newSubproperty] = newAshNode.properties[newProperty][newSubproperty];
@@ -1164,7 +885,7 @@ function walk(oldAshNode, newAshNode /*, patches*/) {
 				}
 
 				// which properties are to be removed
-				for (oldSubproperty in oldAshNode.properties[newProperty]) {
+				for (var oldSubproperty in oldAshNode.properties[newProperty]) {
 					if (oldAshNode.properties[newProperty].hasOwnProperty(oldSubproperty) && typeof newAshNode.properties[newProperty][oldSubproperty] === "undefined") {
 						propertiesToRemove.push(newProperty + "." + oldSubproperty);
 
@@ -1180,7 +901,7 @@ function walk(oldAshNode, newAshNode /*, patches*/) {
 	}
 
 	// which properties are to be removed
-	for (oldProperty in oldAshNode.properties) {
+	for (var oldProperty in oldAshNode.properties) {
 		if (oldAshNode.properties.hasOwnProperty(oldProperty) && newAshNode.properties && typeof newAshNode.properties[oldProperty] === "undefined") {
 			differentProperties = true;
 			propertiesToRemove.push(oldProperty);
@@ -1191,9 +912,16 @@ function walk(oldAshNode, newAshNode /*, patches*/) {
 		patches.push({
 			type: PATCH_ASH_NODE,
 			index: oldAshNode.index,
+			parsedIndex: parseAshNodeIndex(oldAshNode.index),
 			stage: oldAshNode.stage,
 			node: newAshNode
 		});
+
+		for (var k = 0; k < patches[patches.length - 1].parsedIndex.length; k++) {
+			if (patches.maxIndex < patches[patches.length - 1].parsedIndex[k]) {
+				patches.maxIndex = patches[patches.length - 1].parsedIndex[k];
+			}
+		}
 
 		// whole node must be replaced; no sense in finding other differences
 		return patches;
@@ -1203,33 +931,42 @@ function walk(oldAshNode, newAshNode /*, patches*/) {
 		patches.push({
 			type: PATCH_ASH_TEXT_NODE,
 			index: oldAshNode.index,
+			parsedIndex: parseAshNodeIndex(oldAshNode.index),
 			text: newAshNode.text
 		});
+
+		for (var k = 0; k < patches[patches.length - 1].parsedIndex.length; k++) {
+			if (patches.maxIndex < patches[patches.length - 1].parsedIndex[k]) {
+				patches.maxIndex = patches[patches.length - 1].parsedIndex[k];
+			}
+		}
 	}
 
 	if (differentProperties) {
 		patches.push({
 			type: PATCH_PROPERTIES,
 			index: oldAshNode.index,
+			parsedIndex: parseAshNodeIndex(oldAshNode.index),
 			stage: oldAshNode.stage,
 			propertiesToChange: propertiesToChange,
 			propertiesToRemove: propertiesToRemove
 		});
+
+		for (var k = 0; k < patches[patches.length - 1].parsedIndex.length; k++) {
+			if (patches.maxIndex < patches[patches.length - 1].parsedIndex[k]) {
+				patches.maxIndex = patches[patches.length - 1].parsedIndex[k];
+			}
+		}
 	}
 
-	// now let's check the children...
+	// diff the children...
 	patches = diffChildren(oldAshNode.children, newAshNode.children, patches);
 
 	return patches;
 }
 
-// differences between trees
-function diffAshNodeTree(oldAshNodeTree, newAshNodeTree) {
-	return walk(oldAshNodeTree, newAshNodeTree);
-}
-
 module.exports = diffAshNodeTree;
-},{"../internal/constants":58,"./parseAshNodeIndex":10}],9:[function(require,module,exports){
+},{"../internal/constants":25,"./parseAshNodeIndex":8}],7:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -1243,7 +980,6 @@ var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
 function findNode(nodeTree, nodeIndex) {
 	var parsedAshNodeIndex = parseAshNodeIndex(nodeIndex);
 	var node = nodeTree;
-	var i;
 
 	if (!nodeTree) {
 		throw new Error(nodeTree + " cannot be falsy.");
@@ -1252,7 +988,7 @@ function findNode(nodeTree, nodeIndex) {
 	if (parsedAshNodeIndex.length == 1) {
 		return node;
 	} else {
-		for (i = 1; i < parsedAshNodeIndex.length - 1; i++) {
+		for (var i = 1; i < parsedAshNodeIndex.length - 1; i++) {
 			if (!node) {
 				return false;
 			}
@@ -1261,7 +997,7 @@ function findNode(nodeTree, nodeIndex) {
 		}
 	}
 
-	for (i = 0; i < node.childNodes.length; i++) {
+	for (var i = 0; i < node.childNodes.length; i++) {
 		if (node.childNodes[i].nodeType == 1 && node.childNodes[i][INDEX_ATTRIBUTE_NAME] == nodeIndex) {
 			return node.childNodes[i];
 		} else if (node.childNodes[i].nodeType == 3 && i == parsedAshNodeIndex[parsedAshNodeIndex.length - 1]) {
@@ -1273,17 +1009,21 @@ function findNode(nodeTree, nodeIndex) {
 }
 
 module.exports = findNode;
-},{"../internal/constants":58,"./parseAshNodeIndex":10}],10:[function(require,module,exports){
+},{"../internal/constants":25,"./parseAshNodeIndex":8}],8:[function(require,module,exports){
 "use strict";
 
 function parseAshNodeIndex(index) {
-	return index.split(".").map(function (value) {
-		return parseInt(value, 10);
-	});
+	var result = index.split(".");
+
+	for (var i = 0; i < result.length; i++) {
+		result[i] = parseInt(result[i], 10);
+	}
+
+	return result;
 }
 
 module.exports = parseAshNodeIndex;
-},{}],11:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -1300,23 +1040,9 @@ var removeNodeProperties = _interopRequire(require("./removeNodeProperties"));
 
 var findNode = _interopRequire(require("./findNode"));
 
-var DOMEvents = _interopRequire(require("../class/DOMEvents"));
-
-var sortBy = _interopRequire(require("../internal/sortBy"));
-
-var forEach = _interopRequire(require("../internal/forEach"));
-
-var pluck = _interopRequire(require("../internal/pluck"));
-
-var flatten = _interopRequire(require("../internal/flatten"));
-
-var max = _interopRequire(require("../internal/max"));
-
-var padLeft = _interopRequire(require("../internal/padLeft"));
+var EventListener = _interopRequire(require("../class/EventListener"));
 
 var isElement = _interopRequire(require("../internal/isElement"));
-
-var uniq = _interopRequire(require("../internal/uniq"));
 
 var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
 var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
@@ -1326,13 +1052,103 @@ var PATCH_PROPERTIES = constants.PATCH_PROPERTIES;
 var PATCH_ORDER = constants.PATCH_ORDER;
 var PATCH_INSERT = constants.PATCH_INSERT;
 var PATCH_REMOVE = constants.PATCH_REMOVE;
+var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
 
-var domEvents = new DOMEvents();
+var eventListener = new EventListener();
+
+function zeroPadNumber(number, length) {
+	var n = Math.pow(10, length);
+
+	return number < n ? ("" + (n + number)).slice(1) : "" + number;
+}
+
+function comparePatches(a, b) {
+	return a.sortOrder - b.sortOrder;
+}
+
+function compareNodes(a, b) {
+	return a[ORDER_ATTRIBUTE_NAME] - b[ORDER_ATTRIBUTE_NAME];
+}
+
+function walkReindexChildNodes(node, levelIndex, order) {
+	var childLevels;
+
+	for (var i = 0; i < node.childNodes.length; i++) {
+		if (node.childNodes[i].nodeType == 1) {
+			childLevels = parseAshNodeIndex(node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
+			childLevels[levelIndex] = order;
+
+			node.childNodes[i][INDEX_ATTRIBUTE_NAME] = childLevels.join(LEVEL_SEPARATOR);
+			node.childNodes[i][ORDER_ATTRIBUTE_NAME] = childLevels[childLevels.length - 1];
+			//$(node.childNodes[i]).attr('index', node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
+			//$(node.childNodes[i]).attr('order', node.childNodes[i][ORDER_ATTRIBUTE_NAME]);
+
+			if (node.childNodes[i].childNodes && node.childNodes[i].childNodes.length) {
+				walkReindexChildNodes(node.childNodes[i], levelIndex, order);
+			}
+		}
+	}
+}
+
+function reindexChildNodes(parentNode, order) {
+	var parentLevels = parseAshNodeIndex(parentNode[INDEX_ATTRIBUTE_NAME]);
+	var levelIndex = parentLevels.length - 1;
+
+	walkReindexChildNodes(parentNode, levelIndex, order);
+}
+
+function flushCache(reindexCache, reorderCache) {
+	while (reindexCache.length > 0) {
+		reindexCache[0].node[INDEX_ATTRIBUTE_NAME] = reindexCache[0].newIndex;
+		reindexCache[0].node[ORDER_ATTRIBUTE_NAME] = reindexCache[0].newOrder;
+
+		//$(reindexCache[0].node).attr('index', reindexCache[0].node[INDEX_ATTRIBUTE_NAME]);
+		//$(reindexCache[0].node).attr('order', reindexCache[0].node[ORDER_ATTRIBUTE_NAME]);
+
+		reindexChildNodes(reindexCache[0].node, reindexCache[0].newOrder);
+
+		// clear the cache
+		reindexCache.shift();
+	}
+
+	// remove un-unique nodes from reorder cache
+	for (var i = 0; i < reorderCache.length; i++) {
+		for (var j = i + 1; j < reorderCache.length; j++) {
+			if (reorderCache[j] === reorderCache[i]) {
+				reorderCache.splice(j, 1);
+				j--;
+			}
+		}
+	}
+
+	while (reorderCache.length > 0) {
+		var children = [];
+
+		for (var i = 0; i < reorderCache[0].childNodes.length; i++) {
+			children[i] = reorderCache[0].childNodes[i];
+		}
+
+		// sort children
+		children.sort(compareNodes);
+
+		for (var i = 0; i < children.length; i++) {
+			reorderCache[0].appendChild(children[i]);
+		}
+
+		// remove cache item
+		reorderCache.shift();
+	}
+}
 
 // apply patches to dom tree
-function patchNodeTree(domTree, patches) {
+function patchNodeTree(nodeTree /*, patches*/) {
+	var patches = arguments[1];
+	var node;
+	var reindexCache = [];
+	var reorderCache = [];
+
 	// type check
-	if (!isElement(domTree)) {
+	if (!isElement(nodeTree)) {
 		return false;
 	}
 
@@ -1340,153 +1156,82 @@ function patchNodeTree(domTree, patches) {
 		return true;
 	}
 
-	//var __patches = [];
-	var __patches = patches;
-	var node;
-	var i;
-	var reindexCache = [];
-	var reorderCache = [];
-	var lastLevel;
+	// if there is non zero max index, compute number of its digits
+	var maxDigits = 1;
 
-	function reindexChildNodes(parentNode, order) {
-		var parentLevels = parseAshNodeIndex(parentNode[INDEX_ATTRIBUTE_NAME]);
-		var levelIndex = parentLevels.length - 1;
-
-		function walk(node) {
-			var childLevels;
-
-			for (var _i = 0; _i < node.childNodes.length; _i++) {
-				if (node.childNodes[_i].nodeType == 1) {
-					childLevels = parseAshNodeIndex(node.childNodes[_i][INDEX_ATTRIBUTE_NAME]);
-					childLevels[levelIndex] = order;
-
-					node.childNodes[_i][INDEX_ATTRIBUTE_NAME] = childLevels.join(".");
-					node.childNodes[_i][ORDER_ATTRIBUTE_NAME] = childLevels[childLevels.length - 1];
-					//$(node.childNodes[i]).attr('index', node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
-					//$(node.childNodes[i]).attr('order', node.childNodes[i][ORDER_ATTRIBUTE_NAME]);
-
-					if (node.childNodes[_i].childNodes && node.childNodes[_i].childNodes.length) {
-						walk(node.childNodes[_i]);
-					}
-				}
-			}
-		}
-
-		walk(parentNode);
+	if (patches.maxIndex > 0) {
+		maxDigits = Math.floor(Math.log(Math.abs(Math.floor(patches.maxIndex))) / Math.LN10) + 1;
 	}
 
-	function flushCache() {
-		var appendChild = function (item) {
-			this.appendChild(item);
-		};
+	// compute sort order
+	for (var i = 0; i < patches.length; i++) {
+		patches[i].sortOrder = "";
 
-		while (reindexCache.length > 0) {
-			// reindex events
-			//domEvents.reindexEvents(reindexCache[0].oldIndex, reindexCache[0].newOrder, reindexCache[0].stage);
-
-			reindexCache[0].node[INDEX_ATTRIBUTE_NAME] = reindexCache[0].newIndex;
-			reindexCache[0].node[ORDER_ATTRIBUTE_NAME] = reindexCache[0].newOrder;
-
-			//$(reindexCache[0].node).attr('index', reindexCache[0].node[INDEX_ATTRIBUTE_NAME]);
-			//$(reindexCache[0].node).attr('order', reindexCache[0].node[ORDER_ATTRIBUTE_NAME]);
-			//$(reindexCache[0].node).attr('levels', virtualDOM.levels.join('.'));
-
-			reindexChildNodes(reindexCache[0].node, reindexCache[0].newOrder);
-
-			// clear the cache
-			reindexCache.shift();
+		// first we order patches by their levels without the last level
+		for (var j = 0; j < patches[i].parsedIndex.length - 1; j++) {
+			patches[i].sortOrder += zeroPadNumber(patches[i].parsedIndex[j], maxDigits);
 		}
 
-		reorderCache = uniq(reorderCache, "node");
-
-		while (reorderCache.length > 0) {
-			var sortedChildren = sortBy(reorderCache[0].node.childNodes, ORDER_ATTRIBUTE_NAME);
-
-			forEach(sortedChildren, appendChild, reorderCache[0].node);
-
-			reorderCache.shift();
-		}
-	}
-
-	for (i = 0; i < __patches.length; i++) {
-		__patches[i].parsedIndex = parseAshNodeIndex(__patches[i].index);
-	}
-
-	var maxIndex = pluck(__patches, "parsedIndex");
-
-	maxIndex = flatten(maxIndex);
-	maxIndex = max(maxIndex);
-
-	var maxDigits = maxIndex === 0 ? 1 : Math.floor(Math.log(Math.abs(Math.floor(maxIndex))) / Math.LN10) + 1;
-
-	__patches = sortBy(__patches, function (patch) {
-		var result = "";
-
-		for (var i = 0; i < patch.parsedIndex.length - 1; i++) {
-			result += padLeft(patch.parsedIndex[i], maxDigits, "0");
-		}
-
-		if (patch.type == PATCH_ASH_NODE) {
-			result += padLeft(9, maxDigits, "0");
-		} else if (patch.type == PATCH_ASH_TEXT_NODE) {
-			result += padLeft(8, maxDigits, "0");
-		} else if (patch.type == PATCH_PROPERTIES) {
-			result += padLeft(7, maxDigits, "0");
-		} else if (patch.type == PATCH_REMOVE) {
-			result += padLeft(6, maxDigits, "0");
-		} else if (patch.type == PATCH_INSERT) {
-			result += padLeft(5, maxDigits, "0");
-		} else if (patch.type == PATCH_ORDER) {
-			result += padLeft(4, maxDigits, "0");
+		// then the patch type is important
+		if (patches[i].type === PATCH_ASH_NODE) {
+			patches[i].sortOrder += zeroPadNumber(9, maxDigits);
+		} else if (patches[i].type == PATCH_ASH_TEXT_NODE) {
+			patches[i].sortOrder += zeroPadNumber(8, maxDigits);
+		} else if (patches[i].type == PATCH_PROPERTIES) {
+			patches[i].sortOrder += zeroPadNumber(7, maxDigits);
+		} else if (patches[i].type == PATCH_REMOVE) {
+			patches[i].sortOrder += zeroPadNumber(6, maxDigits);
+		} else if (patches[i].type == PATCH_INSERT) {
+			patches[i].sortOrder += zeroPadNumber(5, maxDigits);
+		} else if (patches[i].type == PATCH_ORDER) {
+			patches[i].sortOrder += zeroPadNumber(4, maxDigits);
 		} else {
-			result += padLeft(0, maxDigits, "0");
+			patches[i].sortOrder += zeroPadNumber(0, maxDigits);
 		}
 
-		result += padLeft(patch.parsedIndex[patch.parsedIndex.length - 1], maxDigits, "0");
+		// and now the last level
+		patches[i].sortOrder += zeroPadNumber(patches[i].parsedIndex[patches[i].parsedIndex.length - 1], maxDigits);
 
-		return parseInt(result, 10);
-	});
+		// convert to number;
+		patches[i].sortOrder = parseInt(patches[i].sortOrder, 10);
+	}
+
+	// sort patches by their order
+	patches.sort(comparePatches);
 
 	// now lets proof-check some...
-	var newLevels;
-	var j, k;
+	var newParsedIndex;
 	var levels;
 	var index;
-	for (i = __patches.length - 1; i >= 0; i--) {
-		if (__patches[i].type == PATCH_INSERT) {
-			levels = __patches[i].parsedIndex.slice(0);
 
-			//console.log('look for parents of patch', JSON.stringify(levels), __patches[i]);
+	for (var i = patches.length - 1; i >= 0; i--) {
+		if (patches[i].type === PATCH_INSERT) {
+			levels = patches[i].parsedIndex.slice(0);
 
 			while (levels.length >= 3) {
 				levels.pop();
-				index = levels.join(".");
+				index = levels.join(LEVEL_SEPARATOR);
 
-				//console.log('looking for patch with index', index);
+				for (var j = i; j >= 0; j--) {
+					if (patches[j].type === PATCH_ORDER && patches[j].newIndex == index) {
+						// patches[i].origIndex = patches[i].index;
+						// patches[i].origParsedIndex = patches[i].parsedIndex.slice(0);
+						// patches[i].origParentIndex = patches[i].parentIndex;
+						newParsedIndex = patches[i].parsedIndex.slice(0);
 
-				for (j = i; j >= 0; j--) {
-					if (__patches[j].type == PATCH_ORDER && __patches[j].newIndex == index) {
-						//console.log('*** FOUND!', j, __patches[j]);
-						__patches[i].origIndex = __patches[i].index;
-						__patches[i].origParsedIndex = __patches[i].parsedIndex.slice(0);
-						__patches[i].origParentIndex = __patches[i].parentIndex;
-
-						newLevels = __patches[i].parsedIndex.slice(0);
-
-						for (k = 0; k < __patches[j].parsedIndex.length; k++) {
-							newLevels[k] = __patches[j].parsedIndex[k];
+						for (var k = 0; k < patches[j].parsedIndex.length; k++) {
+							newParsedIndex[k] = patches[j].parsedIndex[k];
 						}
 
-						__patches[i].index = newLevels.join(".");
-						__patches[i].parsedIndex = newLevels.slice(0);
+						patches[i].index = newParsedIndex.join(LEVEL_SEPARATOR);
+						patches[i].parsedIndex = newParsedIndex.slice(0);
+						newParsedIndex = parseAshNodeIndex(patches[i].parentIndex);
 
-						newLevels = parseAshNodeIndex(__patches[i].parentIndex);
-
-						for (k = 0; k < __patches[j].parsedIndex.length; k++) {
-							newLevels[k] = __patches[j].parsedIndex[k];
+						for (var k = 0; k < patches[j].parsedIndex.length; k++) {
+							newParsedIndex[k] = patches[j].parsedIndex[k];
 						}
 
-						__patches[i].parentIndex = newLevels.join(".");
+						patches[i].parentIndex = newParsedIndex.join(LEVEL_SEPARATOR);
 					}
 				}
 			}
@@ -1494,197 +1239,189 @@ function patchNodeTree(domTree, patches) {
 	}
 
 	// now iterate over patches...
-	for (i = __patches.length - 1; i >= 0; i--) {
+	var lastLevel;
+
+	for (var i = patches.length - 1; i >= 0; i--) {
 		if (!lastLevel) {
-			lastLevel = __patches[i].parsedIndex.length;
+			lastLevel = patches[i].parsedIndex.length;
 		}
 
-		if (lastLevel < __patches[i].parsedIndex.length) {
+		if (lastLevel < patches[i].parsedIndex.length) {
 			// patching new level, must flush cache
-			flushCache();
-			lastLevel = __patches[i].parsedIndex.length;
+			flushCache(reindexCache, reorderCache);
+			lastLevel = patches[i].parsedIndex.length;
 		}
 
-		if (__patches[i].type == PATCH_ASH_NODE) {
+		if (patches[i].type === PATCH_ASH_NODE) {
 			// remove old events
-			domEvents.removeEvents(__patches[i].index, __patches[i].stage);
+			eventListener.removeEvents(patches[i].index, patches[i].stage);
 
 			// replace node
-			node = findNode(domTree, __patches[i].index);
+			node = findNode(nodeTree, patches[i].index);
 
 			if (!node) {
 				return false;
 			}
 
-			node.parentNode.replaceChild(createNodeTree(__patches[i].node), node);
+			node.parentNode.replaceChild(createNodeTree(patches[i].node), node);
 		}
 
-		if (__patches[i].type == PATCH_ASH_TEXT_NODE) {
-			node = findNode(domTree, __patches[i].index);
+		if (patches[i].type === PATCH_ASH_TEXT_NODE) {
+			node = findNode(nodeTree, patches[i].index);
 
 			if (!node) {
 				return false;
 			}
 
-			node.nodeValue = __patches[i].text;
+			node.nodeValue = patches[i].text;
 		}
 
-		if (__patches[i].type == PATCH_PROPERTIES) {
-			node = findNode(domTree, __patches[i].index);
+		if (patches[i].type === PATCH_PROPERTIES) {
+			node = findNode(nodeTree, patches[i].index);
 
 			if (!node) {
 				return false;
 			}
 
-			setNodeProperties(node, __patches[i].propertiesToChange, false);
-			removeNodeProperties(node, __patches[i].propertiesToRemove);
+			setNodeProperties(node, patches[i].propertiesToChange, false);
+			removeNodeProperties(node, patches[i].propertiesToRemove);
 		}
 
-		if (__patches[i].type == PATCH_REMOVE) {
+		if (patches[i].type === PATCH_REMOVE) {
+			node = findNode(nodeTree, patches[i].index);
+
+			if (!node) {
+				return false;
+			}
+
 			// remove old events
-			domEvents.removeEvents(__patches[i].index, __patches[i].stage);
-
-			node = findNode(domTree, __patches[i].index);
-
-			if (!node) {
-				return false;
-			}
+			eventListener.removeEvents(patches[i].index, patches[i].stage);
 
 			node.parentNode.removeChild(node);
 		}
 
-		if (__patches[i].type == PATCH_INSERT) {
-			node = findNode(domTree, __patches[i].parentIndex);
+		if (patches[i].type === PATCH_INSERT) {
+			node = findNode(nodeTree, patches[i].parentIndex);
 
 			if (!node) {
 				return false;
 			}
 
-			node.appendChild(createNodeTree(__patches[i].node));
+			node.appendChild(createNodeTree(patches[i].node));
 
-			reorderCache.push({
-				node: node
-			});
+			reorderCache.push(node);
 		}
 
-		if (__patches[i].type == PATCH_ORDER) {
-			if (typeof __patches[i].index !== "undefined") {
+		if (patches[i].type === PATCH_ORDER) {
+			node = findNode(nodeTree, patches[i].index);
 
-
-				// moving existing node
-				node = findNode(domTree, __patches[i].index);
-
-				if (!node) {
-					return false;
-				}
-
-				domEvents.reindexEvents(__patches[i].index, __patches[i].order, __patches[i].stage);
-
-				reindexCache.push({
-					node: node,
-					newIndex: __patches[i].newIndex,
-					newOrder: __patches[i].order,
-					oldIndex: __patches[i].index,
-					stage: __patches[i].stage
-				});
-			} else {
+			if (!node) {
 				return false;
 			}
 
-			reorderCache.push({
-				node: node.parentNode
+			// reindex events
+			eventListener.reindexEvents(patches[i].index, patches[i].order, patches[i].stage);
+
+			reindexCache.push({
+				node: node,
+				newIndex: patches[i].newIndex,
+				newOrder: patches[i].order,
+				oldIndex: patches[i].index,
+				stage: patches[i].stage
 			});
+
+			reorderCache.push(node.parentNode);
 		}
 	}
 
-	flushCache();
+	flushCache(reindexCache, reorderCache);
 
-	//if (__patches[0]) {
-	domEvents.markEvents(__patches[0].stage);
-	//}
+	eventListener.markEvents(patches.stage);
 
 	return true;
 }
 
 module.exports = patchNodeTree;
-},{"../class/DOMEvents":20,"../internal/constants":58,"../internal/flatten":69,"../internal/forEach":70,"../internal/isElement":82,"../internal/max":99,"../internal/padLeft":101,"../internal/pluck":102,"../internal/sortBy":106,"../internal/uniq":110,"./createNodeTree":7,"./findNode":9,"./parseAshNodeIndex":10,"./removeNodeProperties":12,"./setNodeProperties":13}],12:[function(require,module,exports){
+},{"../class/EventListener":18,"../internal/constants":25,"../internal/isElement":33,"./createNodeTree":5,"./findNode":7,"./parseAshNodeIndex":8,"./removeNodeProperties":10,"./setNodeProperties":11}],10:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
 
-var DOMEvents = _interopRequire(require("../class/DOMEvents"));
+var EventListener = _interopRequire(require("../class/EventListener"));
 
-var domEvents = new DOMEvents();
+var eventListener = new EventListener();
 
 function removeNodeProperties(node, properties) {
-	var prop;
-	var i;
+	for (var i = 0; i < properties.length; i++) {
+		var props = properties[i].split(".");
 
-	for (i = 0; i < properties.length; i++) {
-		prop = properties[i].split(".");
-		if (prop.length == 1) {
-			if (prop[0] == "style") {
+		if (props.length == 1) {
+			if (props[0] == "style") {
 				node.removeAttribute("style");
-			} else if (prop[0] == "events") {} else if (prop[0] == "className" || prop[0] == "class") {
+			} else if (props[0] == "events") {} else if (props[0] == "className" || props[0] == "class") {
 				node.className = "";
 			} else {
-				if (prop[0].substring(0, 6) == "xlink:") {
-					node.removeAttributeNS("http://www.w3.org/1999/xlink", prop[0].substring(6));
-				} else if (prop[0].substring(0, 4) == "xml:") {
-					node.removeAttributeNS("http://www.w3.org/2000/svg", prop[0].substring(4));
+				if (props[0].substring(0, 6) == "xlink:") {
+					node.removeAttributeNS("http://www.w3.org/1999/xlink", props[0].substring(6));
+				} else if (props[0].substring(0, 4) == "xml:") {
+					node.removeAttributeNS("http://www.w3.org/2000/svg", props[0].substring(4));
 				} else {
-					node.removeAttribute(prop[0]);
+					node.removeAttribute(props[0]);
 				}
 			}
-		} else if (prop.length == 2) {
-			if (prop[0] == "style") {
-				node.style[prop[1]] = "";
-			} else if (prop[0] == "events") {
-				domEvents.removeEvent(node, prop[1]);
-			} else {}
+		} else if (props.length == 2) {
+			if (props[0] == "style") {
+				node.style[props[1]] = "";
+			} else if (props[0] == "events") {
+				eventListener.removeEvent(node, props[1]);
+			}
 		}
 	}
 }
 
 module.exports = removeNodeProperties;
-// TODO
-},{"../class/DOMEvents":20}],13:[function(require,module,exports){
+},{"../class/EventListener":18}],11:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
 
 var isObject = _interopRequire(require("../internal/isObject"));
 
-var DOMEvents = _interopRequire(require("../class/DOMEvents"));
+var EventListener = _interopRequire(require("../class/EventListener"));
 
-var domEvents = new DOMEvents();
+var eventListener = new EventListener();
 
 function setNodeProperties(node, properties, inserted) {
-	for (var key in properties) {
-		if (properties.hasOwnProperty(key)) {
-			if (key == "style" && isObject(properties[key])) {} else if (key == "events" && isObject(properties[key])) {
-				domEvents.addEvents(node, properties[key], inserted);
-			} else if (key == "className" || key == "class") {
-				node.className = properties[key];
-			} else if (!isObject(properties[key])) {
-				// TODO
-				if (key.substring(0, 6) == "xlink:") {
-					node.setAttributeNS("http://www.w3.org/1999/xlink", key.substring(6), properties[key]);
-				} else if (key.substring(0, 4) == "xml:") {
-					node.setAttributeNS("http://www.w3.org/2000/svg", key.substring(4), properties[key]);
+	for (var prop in properties) {
+		if (properties.hasOwnProperty(prop)) {
+			if (prop == "style" && isObject(properties[prop])) {
+				for (var style in properties[prop]) {
+					if (properties[prop].hasOwnProperty(style)) {
+						node.style[style] = properties[prop][style];
+					}
+				}
+			} else if (prop === "events" && isObject(properties[prop])) {
+				eventListener.addEvents(node, properties[prop], inserted);
+			} else if (prop === "className" || prop === "class") {
+				node.className = properties[prop];
+			} else if (!isObject(properties[prop])) {
+				if (prop.substring(0, 6) == "xlink:") {
+					node.setAttributeNS("http://www.w3.org/1999/xlink", prop.substring(6), properties[prop]);
+				} else if (prop.substring(0, 4) == "xml:") {
+					node.setAttributeNS("http://www.w3.org/2000/svg", prop.substring(4), properties[prop]);
 				} else {
-					if (key == "checked") {
-						node.checked = !!properties[key];
+					if (prop == "checked") {
+						node.checked = !!properties[prop];
 						if (node.checked) {
 							node.setAttribute("checked", "checked");
 						} else {
 							node.removeAttribute("checked");
 						}
-					} else if (key == "value") {
-						node.value = properties[key];
-						node.setAttribute(key, properties[key]);
+					} else if (prop == "value") {
+						node.value = properties[prop];
+						node.setAttribute(prop, properties[prop]);
 					} else {
-						node.setAttribute(key, properties[key]);
+						node.setAttribute(prop, properties[prop]);
 					}
 				}
 			}
@@ -1695,9 +1432,7 @@ function setNodeProperties(node, properties, inserted) {
 }
 
 module.exports = setNodeProperties;
-//node.style.
-// TO DO
-},{"../class/DOMEvents":20,"../internal/isObject":90}],14:[function(require,module,exports){
+},{"../class/EventListener":18,"../internal/isObject":38}],12:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -1801,13 +1536,14 @@ function stringifyAshNodeTree(ashNodeTree) {
 
 module.exports = stringifyAshNodeTree;
 /* Forces the conversion to string. */
+
 // TODO
-},{"../internal/constants":58,"../internal/isAshNode":77}],15:[function(require,module,exports){
+},{"../internal/constants":25,"../internal/isAshNode":29}],13:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
 
-var DOMEvents = _interopRequire(require("../class/DOMEvents"));
+var EventListener = _interopRequire(require("../class/EventListener"));
 
 var constants = _interopRequire(require("../internal/constants"));
 
@@ -1815,21 +1551,14 @@ var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
 var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
 var STAGE_ATTRIBUTE_NAME = constants.STAGE_ATTRIBUTE_NAME;
 
-var domEvents = new DOMEvents();
+var eventListener = new EventListener();
 
 function walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache) {
-	//console.log('validating ', nodeTree, ashNodeTree, stage);
-
-	if (nodeTree.tagName && nodeTree.tagName.toLowerCase() != ashNodeTree.tagName) {
-		//console.log('!', nodeTree.tagName.toLowerCase(), ashNodeTree.tagName);
-
+	if (nodeTree.tagName && nodeTree.tagName.toLowerCase() !== ashNodeTree.tagName) {
 		return false;
 	}
 
 	if (nodeTree.getAttribute && nodeTree.getAttribute(INDEX_ATTRIBUTE_NAME) != ashNodeTree.index || nodeTree.getAttribute && nodeTree.getAttribute(ORDER_ATTRIBUTE_NAME) != ashNodeTree.order) {
-		//console.log('!', nodeTree.getAttribute(INDEX_ATTRIBUTE_NAME), ashNodeTree.index);
-		//console.log('!', nodeTree.getAttribute(INDEX_ATTRIBUTE_NAME), ashNodeTree.index);
-
 		return false;
 	}
 
@@ -1837,7 +1566,7 @@ function walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache) {
 	nodeTree[ORDER_ATTRIBUTE_NAME] = ashNodeTree.order;
 	nodeTree[STAGE_ATTRIBUTE_NAME] = ashNodeTree.stage;
 
-	if (ashNodeTree.properties && ashNodeTree.properties.events && typeof ashNodeTree.properties.events == "object") {
+	if (ashNodeTree.properties && ashNodeTree.properties.events && typeof ashNodeTree.properties.events === "object") {
 		eventsCache.push({
 			events: ashNodeTree.properties.events,
 			node: nodeTree
@@ -1861,27 +1590,19 @@ function walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache) {
 
 function validateNodeTree(nodeTree, ashNodeTree, stage) {
 	var eventsCache = [];
-	var isValid = walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache);
+	var isNodeTreeValid = walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache);
 
-	//console.log(isValid, eventsCache);
-
-	if (isValid) {
+	if (isNodeTreeValid) {
 		for (var i = 0; i < eventsCache.length; i++) {
-			domEvents.addEvents(eventsCache[i].node, eventsCache[i].events);
+			eventListener.addEvents(eventsCache[i].node, eventsCache[i].events);
 		}
 	}
 
-	if (isValid) {
-		for (var i = 0; i < eventsCache.length; i++) {
-			domEvents.addEvents(eventsCache[i].node, eventsCache[i].events);
-		}
-	}
-
-	return isValid;
+	return isNodeTreeValid;
 }
 
 module.exports = validateNodeTree;
-},{"../class/DOMEvents":20,"../internal/constants":58}],16:[function(require,module,exports){
+},{"../class/EventListener":18,"../internal/constants":25}],14:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -1954,7 +1675,7 @@ var Action = (function (Observable) {
 
 module.exports = Action;
 /*data*/
-},{"./Observable":21}],17:[function(require,module,exports){
+},{"./Observable":19}],15:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -1972,6 +1693,7 @@ var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
 /**
  * AshElement
  */
+
 var AshElement = (function () {
 	function AshElement(type, spec) {
 		_classCallCheck(this, AshElement);
@@ -2062,7 +1784,7 @@ var AshElement = (function () {
 })();
 
 module.exports = AshElement;
-},{"../internal/constants":58}],18:[function(require,module,exports){
+},{"../internal/constants":25}],16:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -2089,6 +1811,7 @@ var AshNode = function AshNode(tagName, properties) {
 		// find element's key
 		if (this.properties.key) {
 			this.key = this.properties.key;
+
 			delete this.properties.key;
 		}
 	} else {
@@ -2099,7 +1822,7 @@ var AshNode = function AshNode(tagName, properties) {
 };
 
 module.exports = AshNode;
-},{"../internal/constants":58}],19:[function(require,module,exports){
+},{"../internal/constants":25}],17:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -2118,12 +1841,6 @@ var constants = _interopRequire(require("../internal/constants"));
 
 var findNode = _interopRequire(require("../DOM/findNode"));
 
-var forEach = _interopRequire(require("../internal/forEach"));
-
-var keys = _interopRequire(require("../internal/keys"));
-
-var assign = _interopRequire(require("../internal/assign"));
-
 var isFunction = _interopRequire(require("../internal/isFunction"));
 
 var LIFECYCLE_UNMOUNTED = constants.LIFECYCLE_UNMOUNTED;
@@ -2133,26 +1850,18 @@ var LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
 var Component = (function (Observable) {
 	function Component(props) {
 		var _this = this;
+
 		_classCallCheck(this, Component);
 
 		// autobind methods
-		forEach(Object.getOwnPropertyNames(this.__proto__), function (value) {
-			if (isFunction(_this[value]) && value != "constructor") {
+		Object.getOwnPropertyNames(this.__proto__).forEach(function (value) {
+			if (isFunction(_this[value]) && value !== "constructor") {
 				_this[value] = _this[value].bind(_this);
 			}
 		});
 
 		this.props = props || {};
-		this.state = this.getInitialState();
-
-		// set state if specified in props
-		/*if (this.props.state)
-  {
-  	keys(this.state).forEach((key) => {
-  		this.props.state[key] = this.state[key];
-  	});
-  			delete this.props.state;
-  }*/
+		this.state = this.state || {};
 
 		this.__isDirty = true;
 		this.__lifecycle = LIFECYCLE_UNMOUNTED;
@@ -2161,112 +1870,60 @@ var Component = (function (Observable) {
 	_inherits(Component, Observable);
 
 	_prototypeProperties(Component, null, {
-		getInitialState: {
-			value: function getInitialState() {
-				return {};
+		isDirty: {
+			get: function () {
+				return this.__isDirty;
 			},
-			writable: true,
+			set: function (value) {
+				this.__isDirty = !!value;
+
+				if (this.__isDirty && this.element.stage) {
+					this.element.stage.update();
+				}
+			},
 			configurable: true
 		},
-		setDirty: {
-			value: function setDirty(options) {
-				this.__isDirty = true;
-
-				if (!options || options && options.update !== false) {
-					if (this.element.stage) {
-						this.element.stage.update();
-					}
+		lifecycle: {
+			get: function () {
+				return this.__lifecycle;
+			},
+			set: function (value) {
+				if (value != LIFECYCLE_UNMOUNTED && value != LIFECYCLE_MOUNTING && value != LIFECYCLE_MOUNTED) {
+					throw new Error(value + " must be \"Unmounted\", \"Mounting\" or \"Mounted\".");
 				}
 
-				return this;
+				this.__lifecycle = value;
 			},
-			writable: true,
 			configurable: true
 		},
 		isMounted: {
-			value: function isMounted() {
-				return this.__lifecycle == LIFECYCLE_MOUNTED;
+			get: function () {
+				return this.__lifecycle === LIFECYCLE_MOUNTED;
 			},
-			writable: true,
 			configurable: true
 		},
-		isDirty: {
-			value: function isDirty() {
-				return !!this.__isDirty;
-			},
-			writable: true,
-			configurable: true
-		},
-		setState: {
-			value: function setState(state) {
-				if (state && typeof state === "object") {
-					assign(this.state, state);
-
-					// set component dirty
-					this.setDirty();
-				}
-
-				return this;
-			},
-			writable: true,
-			configurable: true
-		},
-		__getRender: {
-			value: function __getRender() {
-				this.__isDirty = false;
+		cachedRender: {
+			get: function () {
 				this.__cachedRender = this.render();
+				this.isDirty = false;
 
 				return this.__cachedRender;
 			},
-			writable: true,
 			configurable: true
 		},
-		__setLifecycle: {
-			value: function __setLifecycle(lifecycle) {
-				// value check
-				if (lifecycle != LIFECYCLE_UNMOUNTED && lifecycle != LIFECYCLE_MOUNTING && lifecycle != LIFECYCLE_MOUNTED) {
-					throw new Error(lifecycle + " must be \"Unmounted\", \"Mounting\" or \"Mounted\".");
+		domNode: {
+			get: function () {
+				if (this.isMounted && isAshNodeAshElement(this.__cachedRender)) {
+					return findNode(this.element.stage.getRootNode(), this.__cachedRender.instance.index);
 				}
 
-				this.__lifecycle = lifecycle;
-
-				return this;
+				return null;
 			},
-			writable: true,
 			configurable: true
 		},
 		shouldUpdate: {
 			value: function shouldUpdate(newProps) {
-				// with immutable props...
-				//if (this.props === newProps) return false;
-
-				return true;
-			},
-			writable: true,
-			configurable: true
-		},
-		mount: {
-			value: function mount() {
-				// set lifecycle
-				this.__setLifecycle(LIFECYCLE_MOUNTED);
-
-				// call an event
-				this.onMount();
-
-				return this;
-			},
-			writable: true,
-			configurable: true
-		},
-		unmount: {
-			value: function unmount() {
-				// set lifecycle
-				this.__setLifecycle(LIFECYCLE_UNMOUNTED);
-
-				// call an event
-				this.onUnmount();
-
-				return this;
+				return this.props !== newProps;
 			},
 			writable: true,
 			configurable: true
@@ -2297,17 +1954,6 @@ var Component = (function (Observable) {
 			},
 			writable: true,
 			configurable: true
-		},
-		getDOMNode: {
-			value: function getDOMNode() {
-				if (this.isMounted() && isAshNodeAshElement(this.__cachedRender)) {
-					return findNode(this.element.stage.getRootDOMNode(), this.__cachedRender.instance.index);
-				}
-
-				return null;
-			},
-			writable: true,
-			configurable: true
 		}
 	});
 
@@ -2315,7 +1961,7 @@ var Component = (function (Observable) {
 })(Observable);
 
 module.exports = Component;
-},{"../DOM/findNode":9,"../internal/assign":30,"../internal/constants":58,"../internal/forEach":70,"../internal/isAshNodeAshElement":78,"../internal/isFunction":84,"../internal/keys":96,"./Observable":21}],20:[function(require,module,exports){
+},{"../DOM/findNode":7,"../internal/constants":25,"../internal/isAshNodeAshElement":30,"../internal/isFunction":35,"./Observable":19}],18:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -2329,54 +1975,46 @@ var constants = _interopRequire(require("../internal/constants"));
 
 var parseAshNodeIndex = _interopRequire(require("../DOM/parseAshNodeIndex"));
 
-var forOwn = _interopRequire(require("../internal/forOwn"));
-
 var isFunction = _interopRequire(require("../internal/isFunction"));
 
 var isMatching = _interopRequire(require("../internal/isMatching"));
 
+// constants references
 var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
 var STAGE_ATTRIBUTE_NAME = constants.STAGE_ATTRIBUTE_NAME;
 var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
 
-var domEvents;
+var eventListener;
 
 // list of topics
-var topics = global.domEvents = {};
+var topics = {};
 
-var DOMEvents = (function () {
-	function DOMEvents() {
-		_classCallCheck(this, DOMEvents);
+var EventListener = (function () {
+	function EventListener() {
+		_classCallCheck(this, EventListener);
 
-		if (domEvents) {
-			return domEvents;
+		if (eventListener) {
+			return eventListener;
 		}
 
-		if (!(this instanceof DOMEvents)) {
-			return new DOMEvents();
-		}
+		eventListener = this;
 
-		domEvents = this;
-
-		return domEvents;
+		return eventListener;
 	}
 
-	_prototypeProperties(DOMEvents, null, {
+	_prototypeProperties(EventListener, null, {
 		addEvent: {
-			value: function addEvent(node, eventName, callback, inserted) {
-				var i;
-
+			value: function addEvent(node, eventName, callback, isInserted) {
 				if (!topics[eventName]) {
 					topics[eventName] = [];
 
-					//$(document).on(eventName, this.callback.bind(this, eventName));
-					document.addEventListener(eventName, this.callback.bind(this, eventName), true);
+					global.document.addEventListener(eventName, this.callback.bind(this, eventName), true);
 				}
 
-				for (i = 0; i < topics[eventName].length; i++) {
+				for (var i = 0; i < topics[eventName].length; i++) {
 					if (topics[eventName][i].stage == node[STAGE_ATTRIBUTE_NAME] && topics[eventName][i].index == node[INDEX_ATTRIBUTE_NAME]) {
 						topics[eventName][i].callback = callback;
-						topics[eventName][i].inserted = inserted;
+						topics[eventName][i].isInserted = isInserted;
 
 						return this;
 					}
@@ -2386,8 +2024,8 @@ var DOMEvents = (function () {
 					index: node[INDEX_ATTRIBUTE_NAME],
 					stage: node[STAGE_ATTRIBUTE_NAME],
 					callback: callback,
-					inserted: inserted,
-					reindexed: false
+					isInserted: isInserted,
+					isReindexed: false
 				});
 
 				return this;
@@ -2396,12 +2034,14 @@ var DOMEvents = (function () {
 			configurable: true
 		},
 		addEvents: {
-			value: function addEvents(node, events, inserted) {
-				forOwn(events, function (callback, eventName) {
-					if (isFunction(callback)) {
-						this.addEvent(node, eventName, callback, inserted);
+			value: function addEvents(node, events, isInserted) {
+				for (var prop in events) {
+					if (events.hasOwnProperty(prop)) {
+						if (isFunction(events[prop])) {
+							this.addEvent(node, prop, events[prop], isInserted);
+						}
 					}
-				}, this);
+				}
 
 				return this;
 			},
@@ -2410,10 +2050,8 @@ var DOMEvents = (function () {
 		},
 		removeEvent: {
 			value: function removeEvent(node, eventName) {
-				var i;
-
 				if (eventName && topics[eventName]) {
-					for (i = 0; i < topics[eventName].length; i++) {
+					for (var i = 0; i < topics[eventName].length; i++) {
 						if (topics[eventName][i].stage == node[STAGE_ATTRIBUTE_NAME] && topics[eventName][i].index == node[INDEX_ATTRIBUTE_NAME]) {
 							topics[eventName].splice(i, 1);
 
@@ -2421,17 +2059,17 @@ var DOMEvents = (function () {
 						}
 					}
 				} else if (!eventName) {
-					forOwn(topics, function (value, key, object) {
-						var i;
+					for (var prop in topics) {
+						if (topics.hasOwnProperty(prop)) {
+							for (var i = 0; i < topics[prop].length; i++) {
+								if (topics[prop][i].stage == node[STAGE_ATTRIBUTE_NAME] && topics[prop][i].index == node[INDEX_ATTRIBUTE_NAME]) {
+									topics[prop].splice(i, 1);
 
-						for (i = 0; i < topics[key].length; i++) {
-							if (topics[key][i].stage == node[STAGE_ATTRIBUTE_NAME] && topics[key][i].index == node[INDEX_ATTRIBUTE_NAME]) {
-								topics[key].splice(i, 1);
-
-								return this;
+									return this;
+								}
 							}
 						}
-					}, this);
+					}
 				}
 
 				return this;
@@ -2441,77 +2079,78 @@ var DOMEvents = (function () {
 		},
 		removeEvents: {
 
-			// removes all events, that has indx same or matching via _.isMatching
+			// removes all events, that has index same or matching via _.isMatching
 			// removeEvents('0.1') removes events '0.1', '0.1.0', '0.1.1', etc.
 			// if eventName is specified, only events with that name are removed
-			value: function removeEvents(index, stage) {
-				//console.log('remove events!');
-				forOwn(topics, function (value, key, object) {
-					var i;
 
-					/*if ((eventName && eventName == key) || !eventName)
-     {*/
-					for (i = 0; i < value.length; i++) {
-						if (stage == value[i].stage && isMatching(index.split(LEVEL_SEPARATOR), value[i].index.split(LEVEL_SEPARATOR), true) && !value[i].inserted) {
-							value.splice(i, 1);
-							i--;
+			value: function removeEvents(index, stage) {
+				for (var prop in topics) {
+					if (topics.hasOwnProperty(prop)) {
+						for (var i = 0; i < topics[prop].length; i++) {
+							if (stage == topics[prop][i].stage && isMatching(index.split(LEVEL_SEPARATOR), topics[prop][i].index.split(LEVEL_SEPARATOR), true) && !topics[prop][i].isInserted) {
+								topics[prop].splice(i, 1);
+								i--;
+							}
 						}
 					}
-					/*}*/
-				}, this);
+				}
+
+				return this;
 			},
 			writable: true,
 			configurable: true
 		},
 		reindexEvents: {
 			value: function reindexEvents(oldIndex, newOrder, stage) {
-				forOwn(topics, function (value, key, object) {
-					var i;
-					var levels;
+				for (var prop in topics) {
+					if (topics.hasOwnProperty(prop)) {
+						var levels = undefined;
 
-					for (i = 0; i < value.length; i++) {
-						if (stage == value[i].stage && isMatching(oldIndex.split(LEVEL_SEPARATOR), value[i].index.split(LEVEL_SEPARATOR), true) && !value[i].inserted && !value[i].reindexed) {
-							levels = parseAshNodeIndex(value[i].index);
-							levels[parseAshNodeIndex(oldIndex).length - 1] = newOrder;
-							value[i].index = levels.join(LEVEL_SEPARATOR);
-							value[i].reindexed = true;
+						for (var i = 0; i < topics[prop].length; i++) {
+							if (stage == topics[prop][i].stage && isMatching(oldIndex.split(LEVEL_SEPARATOR), topics[prop][i].index.split(LEVEL_SEPARATOR), true) && !topics[prop][i].isInserted && !topics[prop][i].isReindexed) {
+								levels = parseAshNodeIndex(topics[prop][i].index);
+								levels[parseAshNodeIndex(oldIndex).length - 1] = newOrder;
+								topics[prop][i].index = levels.join(LEVEL_SEPARATOR);
+								topics[prop][i].isReindexed = true;
+							}
 						}
 					}
-				}, this);
+				}
+
+				return this;
 			},
 			writable: true,
 			configurable: true
 		},
 		markEvents: {
 			value: function markEvents(stage) {
-				//console.log('marking events...');
-				forOwn(topics, function (value, key, object) {
-					var i;
-
-					for (i = 0; i < value.length; i++) {
-						if (stage == value[i].stage) {
-							value[i].inserted = false;
-							value[i].reindexed = false;
+				for (var prop in topics) {
+					if (topics.hasOwnProperty(prop)) {
+						for (var i = 0; i < topics[prop].length; i++) {
+							if (stage == topics[prop][i].stage) {
+								topics[prop][i].isInserted = false;
+								topics[prop][i].isReindexed = false;
+							}
 						}
 					}
-				}, this);
+				}
+
+				return this;
 			},
 			writable: true,
 			configurable: true
 		},
 		callback: {
-			value: function callback(eventName, event) {
-				var index = event.target[INDEX_ATTRIBUTE_NAME];
-				var levels;
-				var i;
+			value: function callback(eventName, eventObject) {
+				var index = eventObject.target[INDEX_ATTRIBUTE_NAME];
 
 				if (index) {
-					levels = parseAshNodeIndex(index);
+					var levels = parseAshNodeIndex(index);
 
 					while (levels.length) {
-						for (i = 0; i < topics[eventName].length; i++) {
-							if (topics[eventName][i].index == index && topics[eventName][i].stage == event.target[STAGE_ATTRIBUTE_NAME]) {
-								topics[eventName][i].callback(event);
+						for (var i = 0; i < topics[eventName].length; i++) {
+							if (topics[eventName][i].index == index && topics[eventName][i].stage == eventObject.target[STAGE_ATTRIBUTE_NAME]) {
+								topics[eventName][i].callback(eventObject);
 							}
 						}
 
@@ -2525,12 +2164,12 @@ var DOMEvents = (function () {
 		}
 	});
 
-	return DOMEvents;
+	return EventListener;
 })();
 
-module.exports = DOMEvents;
+module.exports = EventListener;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../DOM/parseAshNodeIndex":10,"../internal/constants":58,"../internal/forOwn":71,"../internal/isFunction":84,"../internal/isMatching":88}],21:[function(require,module,exports){
+},{"../DOM/parseAshNodeIndex":8,"../internal/constants":25,"../internal/isFunction":35,"../internal/isMatching":36}],19:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -2718,7 +2357,7 @@ var Observable = (function () {
 
 module.exports = Observable;
 /*object, events, callback, context*/ /*object, events, callback, context*/ /*events, data, options.useAsync|options.noEventArgument*/
-},{"../internal/isFunction":84,"../internal/isMatching":88,"../internal/isObject":90,"../internal/isPlainObject":92,"../internal/isString":94,"../polyfill/immediate":112}],22:[function(require,module,exports){
+},{"../internal/isFunction":35,"../internal/isMatching":36,"../internal/isObject":38,"../internal/isPlainObject":40,"../internal/isString":41,"../polyfill/immediate":43}],20:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -2751,6 +2390,8 @@ var constants = _interopRequire(require("../internal/constants"));
 var isElement = _interopRequire(require("../internal/isElement"));
 
 var LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
+var LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
+var LIFECYCLE_UNMOUNTED = constants.LIFECYCLE_UNMOUNTED;
 var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
 var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
 var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
@@ -2758,29 +2399,26 @@ var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
 var stageId = 0;
 var renderer;
 
-
 function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
-	if (newAshElement.type == COMPONENT_ASH_ELEMENT) {
+	if (newAshElement.type === COMPONENT_ASH_ELEMENT) {
 		if (oldAshElement === null) {
 			// old is null, new is component
 
 			// newAshElement must be added as a child...
-			if (newAshElement.parent.type == ASH_NODE_ASH_ELEMENT) {
+			if (newAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
 				createAshElementTree(newAshElement, stage, newAshElement.owner.id, newAshElement.level);
 
 				// replace the old
 				newAshElement.parent.children[newAshElement.order] = newAshElement;
-			} else if (newAshElement.parent.type == COMPONENT_ASH_ELEMENT) {
+			} else if (newAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
 				createAshElementTree(newAshElement, stage, newAshElement.id, newAshElement.level);
 
 				// replace the old
 				newAshElement.parent.children[0] = newAshElement;
-			} else {
-				throw new Error(newAshElement.parent + " must be a AshElement object.");
 			}
-		} else if (oldAshElement.type == COMPONENT_ASH_ELEMENT && newAshElement.spec == oldAshElement.spec) {
+		} else if (oldAshElement.type === COMPONENT_ASH_ELEMENT && newAshElement.spec === oldAshElement.spec) {
 			// old is component, new is same component
 
 			if (oldAshElement.instance.shouldUpdate(newAshElement.args[0])) {
@@ -2790,7 +2428,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				oldAshElement.instance.props = newAshElement.args[0];
 
 				// create child for the new descriptor
-				newAshElement.children[0] = oldAshElement.instance.__getRender();
+				newAshElement.children[0] = oldAshElement.instance.cachedRender;
 
 				// adding children to the queue
 				if (newAshElement.children[0] && oldAshElement.children[0]) {
@@ -2810,16 +2448,17 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				// deleting old surplus children
 				if (!newAshElement.children[0] && oldAshElement.children[0]) {
 					if (oldAshElement.children[0].type == COMPONENT_ASH_ELEMENT) {
-						oldAshElement.children[0].instance.unmount();
+						oldAshElement.children[0].instance.lifecycle = LIFECYCLE_UNMOUNTED;
+						oldAshElement.children[0].instance.onUnmount();
 					}
 
 					oldAshElement.children.pop();
 				}
 			}
-		} else if (oldAshElement.type == COMPONENT_ASH_ELEMENT) {
+		} else if (oldAshElement.type === COMPONENT_ASH_ELEMENT) {
 			// old is component, new is different component
 
-			if (oldAshElement.parent.type == ASH_NODE_ASH_ELEMENT) {
+			if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
@@ -2827,7 +2466,8 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				createAshElementTree(newAshElement, stage, oldAshElement.owner.id, oldAshElement.level);
 
 				// replace the old
-				oldAshElement.instance.unmount();
+				oldAshElement.instance.lifecycle = LIFECYCLE_UNMOUNTED;
+				oldAshElement.instance.onUnmount();
 				oldAshElement.parent.children[oldAshElement.order] = newAshElement;
 			} else if (oldAshElement.parent.type == COMPONENT_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
@@ -2837,15 +2477,14 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				createAshElementTree(newAshElement, stage, oldAshElement.id, oldAshElement.level);
 
 				// replace the old
-				oldAshElement.instance.unmount();
+				oldAshElement.instance.lifecycle = LIFECYCLE_UNMOUNTED;
+				oldAshElement.instance.onUnmount();
 				oldAshElement.parent.children[0] = newAshElement;
-			} else {
-				throw new Error(oldAshElement.parent + " must be a AshElement object.");
 			}
 		} else {
 			// old is virtual node, new is component
 
-			if (oldAshElement.parent.type == ASH_NODE_ASH_ELEMENT) {
+			if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
@@ -2863,8 +2502,6 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 
 				// replace the old
 				oldAshElement.parent.children[0] = newAshElement;
-			} else {
-				throw new Error(oldAshElement.parent + " must be a AshElement object.");
 			}
 		}
 	} else {
@@ -2872,22 +2509,20 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 			// old is null, new is virtual node
 
 			// newAshElement must be added as a child...
-			if (newAshElement.parent.type == COMPONENT_ASH_ELEMENT) {
+			if (newAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
 				createAshElementTree(newAshElement, stage, newAshElement.id, newAshElement.level);
 
 				// replace the old
 				newAshElement.parent.children[0] = newAshElement;
-			} else if (newAshElement.parent.type == ASH_NODE_ASH_ELEMENT) {
+			} else if (newAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
 				createAshElementTree(newAshElement, stage, newAshElement.owner.id, newAshElement.level);
 
 				// replace the old
 				newAshElement.parent.children[newAshElement.order] = newAshElement;
-			} else {
-				throw new Error(oldAshElement.parent + " must be a AshElement object.");
 			}
-		} else if (newAshElement.type == oldAshElement.type) {
+		} else if (newAshElement.type === oldAshElement.type) {
 			// old is virtual node, new is virtual node
 
 			oldAshElement.args = newAshElement.args;
@@ -2913,7 +2548,8 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 			// deleting old surplus children
 			while (oldAshElement.children.length > newAshElement.children.length) {
 				if (oldAshElement.children[oldAshElement.children.length - 1].type == COMPONENT_ASH_ELEMENT) {
-					oldAshElement.children[oldAshElement.children.length - 1].instance.unmount();
+					oldAshElement.children[oldAshElement.children.length - 1].instance.lifecycle = LIFECYCLE_UNMOUNTED;
+					oldAshElement.children[oldAshElement.children.length - 1].instance.onUnmount();
 				}
 
 				oldAshElement.children.pop();
@@ -2921,7 +2557,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 		} else {
 			// old is component, new is virtual node
 
-			if (oldAshElement.parent.type == COMPONENT_ASH_ELEMENT) {
+			if (oldAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
@@ -2929,9 +2565,10 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				createAshElementTree(newAshElement, stage, oldAshElement.id, oldAshElement.level);
 
 				// replace the old
-				oldAshElement.instance.unmount();
+				oldAshElement.instance.lifecycle = LIFECYCLE_UNMOUNTED;
+				oldAshElement.instance.onUnmount();
 				oldAshElement.parent.children[0] = newAshElement;
-			} else if (oldAshElement.parent.type == ASH_NODE_ASH_ELEMENT) {
+			} else if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
@@ -2939,96 +2576,70 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				createAshElementTree(newAshElement, stage, oldAshElement.owner.id, oldAshElement.level);
 
 				// replace the old
-				oldAshElement.instance.unmount();
+				oldAshElement.instance.lifecycle = LIFECYCLE_UNMOUNTED;
+				oldAshElement.instance.onUnmount();
 				oldAshElement.parent.children[oldAshElement.order] = newAshElement;
-			} else {
-				throw new Error(oldAshElement.parent + " must be a AshElement object.");
 			}
 		}
 	}
 }
 
 function updateComponentAshElement(componentAshElement, stage) {
-	// type check
-	if (componentAshElement.type != COMPONENT_ASH_ELEMENT) {
-		throw new Error(componentAshElement + " must be a Component type AshElement object.");
-	}
-
-	//if (componentAshElement.instance.shouldUpdate()) {
-	var render;
-
-	render = componentAshElement.instance.__getRender();
+	var render = componentAshElement.instance.cachedRender;
 	render.owner = componentAshElement;
 	render.parent = componentAshElement;
 	render.order = 0;
 
+	componentAshElement.instance.isDirty = false;
+
 	walkUpdateComponentAshElement(componentAshElement.children[0], render, stage);
-	//}
 }
 
 function findDirtyComponent(ashElement, stage) {
-	if (ashElement.type == ASH_NODE_ASH_ELEMENT) {
+	if (ashElement.type === ASH_NODE_ASH_ELEMENT) {
 		for (var i = 0; i < ashElement.children.length; i++) {
-			// walk the child
 			findDirtyComponent(ashElement.children[i], stage);
 		}
-	} else if (ashElement.type == COMPONENT_ASH_ELEMENT) {
-		if (ashElement.instance.isDirty() /* && ashElement.instance.shouldUpdate(null)*/) {
+	} else if (ashElement.type === COMPONENT_ASH_ELEMENT) {
+		if (ashElement.instance.isDirty) {
 			// descriptor is dirty, let's update
 			updateComponentAshElement(ashElement, stage);
 		} else {
-			// walk the child
 			findDirtyComponent(ashElement.children[0], stage);
 		}
 	}
 }
 
-
-
-
-
-function walkMountComponents(ashElement) {
-	var i;
-
+function mountComponents(ashElement) {
 	if (isAshNodeAshElement(ashElement)) {
-		for (i = 0; i < ashElement.children.length; i++) {
+		for (var i = 0; i < ashElement.children.length; i++) {
 			if (ashElement.children[i]) {
 				// walk the child
-				walkMountComponents(ashElement.children[i]);
+				mountComponents(ashElement.children[i]);
 			}
 		}
 	} else if (isComponentAshElement(ashElement)) {
 		if (ashElement.instance && ashElement.instance.__lifecycle == LIFECYCLE_MOUNTING) {
-			ashElement.instance.mount();
+			ashElement.instance.lifecycle = LIFECYCLE_MOUNTED;
+			ashElement.instance.onMount();
 		}
 
 		// walk the child
 		if (ashElement.children[0]) {
-			walkMountComponents(ashElement.children[0]);
+			mountComponents(ashElement.children[0]);
 		}
 	}
 }
 
-function mountComponents(componentAshElement) {
-	// type check
-	if (!isComponentAshElement(componentAshElement)) {
-		throw new Error(componentAshElement + " must be a Component type AshElement object.");
+function getRootNode(stageId) {
+	for (var i = 0; i < this.stages[stageId].node.childNodes.length; i++) {
+		if (typeof this.stages[stageId].node.childNodes[i][INDEX_ATTRIBUTE_NAME] !== "undefined") {
+			return this.stages[stageId].node.childNodes[i];
+		}
 	}
 
-	if (componentAshElement.instance && componentAshElement.instance.__lifecycle == LIFECYCLE_MOUNTING) {
-		componentAshElement.instance.mount();
-	}
-
-	if (componentAshElement.children[0]) {
-		// walk the child
-		walkMountComponents(componentAshElement.children[0]);
-	}
-
-	// return resulting componentAshElement tree
-	return componentAshElement;
+	return null;
 }
-
-
 
 var Renderer = (function () {
 	function Renderer() {
@@ -3036,10 +2647,6 @@ var Renderer = (function () {
 
 		if (renderer) {
 			return renderer;
-		}
-
-		if (!(this instanceof Renderer)) {
-			return new Renderer();
 		}
 
 		// save singleton
@@ -3056,9 +2663,6 @@ var Renderer = (function () {
 	_prototypeProperties(Renderer, null, {
 		addComponent: {
 			value: function addComponent(componentAshElement, node) {
-				var renderer = this;
-				var stage;
-
 				// type check
 				if (!isComponentAshElement(componentAshElement)) {
 					throw new Error(componentAshElement + " must be a Componenet Descriptor.");
@@ -3068,7 +2672,7 @@ var Renderer = (function () {
 					throw new Error(node + " must be a DOM Element.");
 				}
 
-				stage = {
+				var stage = {
 					id: stageId,
 					isRendering: false,
 					isDirty: true,
@@ -3076,38 +2680,35 @@ var Renderer = (function () {
 					node: node,
 					ashNodeTree: null,
 
-					getRootDOMNode: renderer.getRootDOMNode.bind(renderer, stageId),
-					update: renderer.update.bind(renderer, stageId)
+					getRootNode: getRootNode.bind(this, stageId),
+					update: this.update.bind(this, stageId)
 				};
 
 				// create Ash Element tree for the Component Ash Element
 				stage.ashElementTree = createAshElementTree(componentAshElement, stage);
 
 				// push the stages
-				renderer.stages.push(stage);
+				this.stages.push(stage);
 				stageId++;
 
 				// render
 				this.render();
 
-				return renderer;
+				return this;
 			},
 			writable: true,
 			configurable: true
 		},
 		componentToString: {
 			value: function componentToString(componentAshElement) {
-				var stage;
-
 				// type check
 				if (!isComponentAshElement(componentAshElement)) {
 					throw new Error(componentAshElement + " must be a Componenet Descriptor.");
 				}
 
-				stage = {
+				var stage = {
 					isRendering: false,
 					isDirty: true,
-
 					node: null,
 					ashNodeTree: null
 				};
@@ -3115,7 +2716,7 @@ var Renderer = (function () {
 				// create Ash Element tree for the Component Ash Element
 				stage.ashElementTree = createAshElementTree(componentAshElement, stage);
 
-				// create Virtual DOM
+				// create ash node tree
 				stage.ashNodeTree = createAshNodeTree(stage.ashElementTree);
 
 				return stringifyAshNodeTree(stage.ashNodeTree);
@@ -3123,111 +2724,96 @@ var Renderer = (function () {
 			writable: true,
 			configurable: true
 		},
-		getRootDOMNode: {
-			value: function getRootDOMNode(stageId) {
-				for (var i = 0; i < this.stages[stageId].node.childNodes.length; i++) {
-					if (typeof this.stages[stageId].node.childNodes[i][INDEX_ATTRIBUTE_NAME] !== "undefined") {
-						return this.stages[stageId].node.childNodes[i];
-					}
-				}
-
-				return null;
-			},
-			writable: true,
-			configurable: true
-		},
 		update: {
 			value: function update(stageId) {
-				var renderer = this;
-				var stage = renderer.stages[stageId];
+				if (this.stages[stageId] && !this.stages[stageId].isRendering) {
+					// find descriptors that should be updated
+					findDirtyComponent(this.stages[stageId].ashElementTree, this.stages[stageId]);
 
-				// find descriptors that should be updated
-				findDirtyComponent(stage.ashElementTree, stage);
+					// set stage to dirty, so Renderer can rerender the DOM
+					this.stages[stageId].isDirty = true;
+					this.render();
+				}
 
-				// set stage to dirty, so Renderer can rerender the DOM
-				stage.isDirty = true;
-				renderer.render();
-
-				return renderer;
+				return this;
 			},
 			writable: true,
 			configurable: true
 		},
 		render: {
 			value: function render() {
-				var renderer = this;
+				var _this = this;
+
+				var isNodeTreeValid;
+				var isNodeTreeValidated;
 				var newAshNodeTree;
 				var patches;
-				var rerender;
-				var i;
-				var j;
-				var stage;
-				var validNodeTree;
 
-				//console.log('rendering');
+				for (var i = 0; i < this.stages.length; i++) {
+					(function (i) {
+						if (_this.stages[i].isDirty && !_this.stages[i].isRendering) {
+							_this.stages[i].isRendering = true;
 
-				for (i = 0; i < renderer.stages.length; i++) {
-					stage = renderer.stages[i];
+							if (!_this.stages[i].ashNodeTree) {
+								isNodeTreeValid = false;
+								isNodeTreeValidated = false;
 
-					if (stage.isDirty && !stage.isRendering) {
-						stage.isRendering = true;
-
-						if (!renderer.stages[i].ashNodeTree) {
-							validNodeTree = false;
-
-							// remove child nodes which are not element nodes
-							for (j = 0; j < stage.node.childNodes.length; j++) {
-								if (stage.node.childNodes[j].nodeType != 1) {
-									stage.node.removeChild(stage.node.childNodes[j]);
-									j--;
-								}
-							}
-
-							// create Virtual DOM
-							stage.ashNodeTree = createAshNodeTree(stage.ashElementTree);
-
-							// there are some element nodes?
-							if (stage.node.childNodes.length) {
-								//console.log('validating existing html');
-								validNodeTree = validateNodeTree(stage.node.childNodes[0], stage.ashNodeTree, stage);
-							}
-
-							// render to the Real DOM, if needed
-							if (!validNodeTree) {
-								console.warn("existing html is invalid!");
-
-								while (stage.node.firstChild) {
-									stage.node.removeChild(stage.node.firstChild);
+								// remove child nodes which are not element nodes
+								for (var j = 0; j < _this.stages[i].node.childNodes.length; j++) {
+									if (_this.stages[i].node.childNodes[j].nodeType != 1) {
+										_this.stages[i].node.removeChild(_this.stages[i].node.childNodes[j]);
+										j--;
+									}
 								}
 
-								stage.node.appendChild(createNodeTree(stage.ashNodeTree));
+								// create ash node tree
+								_this.stages[i].ashNodeTree = createAshNodeTree(_this.stages[i].ashElementTree);
+
+								// there are some element nodes?
+								if (_this.stages[i].node.childNodes.length) {
+									isNodeTreeValidated = true;
+									isNodeTreeValid = validateNodeTree(_this.stages[i].node.childNodes[0], _this.stages[i].ashNodeTree, _this.stages[i]);
+								}
+
+								// render to the Real DOM, if needed
+								if (!isNodeTreeValid || !isNodeTreeValidated) {
+									if (isNodeTreeValidated) {
+										console.warn("Existing html is invalid!");
+									}
+
+									while (_this.stages[i].node.firstChild) {
+										_this.stages[i].node.removeChild(_this.stages[i].node.firstChild);
+									}
+
+									_this.stages[i].node.appendChild(createNodeTree(_this.stages[i].ashNodeTree));
+								}
+
+								// mount components
+								mountComponents(_this.stages[i].ashElementTree);
+							} else {
+								newAshNodeTree = createAshNodeTree(_this.stages[i].ashElementTree);
+								patches = diffAshNodeTree(_this.stages[i].ashNodeTree, newAshNodeTree);
+								_this.stages[i].ashNodeTree = newAshNodeTree;
+
+								global.requestAnimationFrame(function (timestamp) {
+									var isSuccessful = patchNodeTree(_this.stages[i].getRootNode(), patches);
+
+									if (!isSuccessful) {
+										throw new Error("Patching the DOM was unsuccesful!");
+									}
+								});
+
+								// mount components
+								mountComponents(_this.stages[i].ashElementTree);
 							}
 
-							// mount components
-							mountComponents(renderer.stages[i].ashElementTree);
-						} else {
-							newAshNodeTree = createAshNodeTree(stage.ashElementTree);
-							patches = diffAshNodeTree(stage.ashNodeTree, newAshNodeTree);
-							stage.ashNodeTree = newAshNodeTree;
-
-							global.requestAnimationFrame(function () {
-								rerender = !patchNodeTree(stage.getRootDOMNode(), patches);
-
-								if (rerender) {
-									throw new Error("Patching the DOM was unsuccesful!");
-								}
-							});
-
-							// mount components
-							mountComponents(stage.ashElementTree);
+							_this.stages[i].isDirty = false;
+							_this.stages[i].isRendering = false;
 						}
-
-						stage.isDirty = false;
-						stage.isRendering = false;
-					}
+					})(i);
 				}
 
-				return renderer;
+				return this;
 			},
 			writable: true,
 			configurable: true
@@ -3239,7 +2825,7 @@ var Renderer = (function () {
 
 module.exports = Renderer;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../DOM/createAshElementTree":5,"../DOM/createAshNodeTree":6,"../DOM/createNodeTree":7,"../DOM/diffAshNodeTree":8,"../DOM/patchNodeTree":11,"../DOM/stringifyAshNodeTree":14,"../DOM/validateNodeTree":15,"../internal/constants":58,"../internal/isAshNodeAshElement":78,"../internal/isComponentAshElement":81,"../internal/isElement":82}],23:[function(require,module,exports){
+},{"../DOM/createAshElementTree":3,"../DOM/createAshNodeTree":4,"../DOM/createNodeTree":5,"../DOM/diffAshNodeTree":6,"../DOM/patchNodeTree":9,"../DOM/stringifyAshNodeTree":12,"../DOM/validateNodeTree":13,"../internal/constants":25,"../internal/isAshNodeAshElement":30,"../internal/isComponentAshElement":32,"../internal/isElement":33}],21:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -3308,7 +2894,7 @@ var Store = (function (Observable) {
 
 module.exports = Store;
 /*data*/
-},{"./Observable":21}],24:[function(require,module,exports){
+},{"./Observable":19}],22:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -3323,7 +2909,6 @@ var isFinite = _interopRequire(require("../internal/isFinite"));
 
 var constants = _interopRequire(require("../internal/constants"));
 
-//import isObject from '../internal/isObject';
 var isArray = _interopRequire(require("../internal/isArray"));
 
 var isFunction = _interopRequire(require("../internal/isFunction"));
@@ -3331,8 +2916,6 @@ var isFunction = _interopRequire(require("../internal/isFunction"));
 var isString = _interopRequire(require("../internal/isString"));
 
 var isImmutable = _interopRequire(require("./isImmutable"));
-
-//import mergeOnto from './mergeOnto';
 
 var IMMUTABLE_TAG = constants.IMMUTABLE_TAG;
 
@@ -3347,8 +2930,6 @@ var ImmutableArray = (function (Array) {
 		var array;
 		var clone = true;
 
-		//console.log('ImmutableArray constructor');
-
 		if (arguments.length >= 2 && (arguments[arguments.length - 1] !== null && typeof arguments[arguments.length - 1] === "object") && arguments[arguments.length - 1].clone === false) {
 			clone = false;
 		}
@@ -3356,7 +2937,6 @@ var ImmutableArray = (function (Array) {
 		if (clone && arguments.length == 1 && Array.isArray(arguments[0])) {
 			array = arguments[0].slice(0);
 		} else if (!clone && arguments.length == 2 && Array.isArray(arguments[0])) {
-			//console.log('no clone!');
 			array = arguments[0];
 		} else {
 			array = [];
@@ -3394,7 +2974,6 @@ var ImmutableArray = (function (Array) {
 	_prototypeProperties(ImmutableArray, null, {
 		push: {
 			value: function push() {
-				//console.log('ImmutableArray.push', arguments[0]);
 				var array = this.slice(0);
 
 				array.push.apply(array, arguments);
@@ -3406,7 +2985,6 @@ var ImmutableArray = (function (Array) {
 		},
 		pop: {
 			value: function pop() {
-				//console.log('ImmutableArray.pop');
 				var array = this.slice(0);
 
 				array.pop();
@@ -3418,7 +2996,6 @@ var ImmutableArray = (function (Array) {
 		},
 		sort: {
 			value: function sort(compareFunction) {
-				//console.log('ImmutableArray.sort');
 				var array = this.slice(0);
 
 				array.sort(compareFunction);
@@ -3430,7 +3007,6 @@ var ImmutableArray = (function (Array) {
 		},
 		splice: {
 			value: function splice() {
-				//console.log('ImmutableArray.splice');
 				var array = this.slice(0);
 
 				array.splice.apply(array, arguments);
@@ -3442,7 +3018,6 @@ var ImmutableArray = (function (Array) {
 		},
 		shift: {
 			value: function shift() {
-				//console.log('ImmutableArray.shift');
 				var array = this.slice(0);
 
 				array.shift();
@@ -3454,7 +3029,6 @@ var ImmutableArray = (function (Array) {
 		},
 		unshift: {
 			value: function unshift() {
-				//console.log('ImmutableArray.unshift', arguments[0]);
 				var array = this.slice(0);
 
 				array.unshift.apply(array, arguments);
@@ -3466,7 +3040,6 @@ var ImmutableArray = (function (Array) {
 		},
 		reverse: {
 			value: function reverse() {
-				//console.log('ImmutableArray.reverse');
 				var array = this.slice(0);
 
 				array.reverse();
@@ -3478,7 +3051,6 @@ var ImmutableArray = (function (Array) {
 		},
 		set: {
 			value: function set(index, value) {
-				//console.log('ImmutableArray.set');
 				if (!(isFinite(index) && index >= 0)) {
 					throw new Error(index + " (\"index\") must be non-negative finite number.");
 				}
@@ -3517,20 +3089,6 @@ var ImmutableObject = (function () {
 			}
 		}
 
-
-		// deep immutability
-		/*for (let key in this) {
-  	if (this.hasOwnProperty(key)) {
-  		if (isImmutable(this[key])) {
-  			// no action needed
-  		} else if (isArray(this[key])) {
-  			this[key] = new ImmutableArray(this[key]);
-  		} else if (isObject(this[key])) {
-  			this[key] = new ImmutableObject(this[key]);
-  		}
-  	}
-  }*/
-
 		// immutable tag
 		Object.defineProperty(this, IMMUTABLE_TAG, {
 			enumerable: false,
@@ -3542,16 +3100,12 @@ var ImmutableObject = (function () {
 		// freeze the object
 		Object.freeze(this);
 
-		//console.log('ImmutableObject constructor done');
-
 		return this;
 	}
 
 	_prototypeProperties(ImmutableObject, null, {
 		set: {
 			value: function set(key, value) {
-				//console.log('ImmutableObject.set');
-
 				var clone;
 
 				if (!isString(key)) {
@@ -3575,34 +3129,49 @@ var ImmutableObject = (function () {
 					}
 				}
 
-				clone[arguments[0]] = arguments[1];
+				clone[key] = value;
 
-				return new ImmutableObject(clone, { clone: false });
+				return new ImmutableObject(clone);
+			},
+			writable: true,
+			configurable: true
+		},
+		remove: {
+			value: function remove(key) {
+				var clone;
+
+				if (!isString(key)) {
+					throw new Error(key + " (\"key\") must be a string.");
+				}
+
+				if (typeof this[key] === "undefined") {
+					return this;
+				}
+
+				// create copy
+				clone = {};
+
+				for (var prop in this) {
+					if (this.hasOwnProperty(prop) && key !== prop) {
+						clone[prop] = this[prop];
+					}
+				}
+
+				return new ImmutableObject(clone);
 			},
 			writable: true,
 			configurable: true
 		},
 		merge: {
 			value: function merge(source) {
-				//var isDifferent;
 				var hasChanged;
 				var clone;
-
-				//console.log('ImmutableObject.merge');
 
 				if (!(source !== null && typeof source === "object")) {
 					throw new Error(source + " (\"source\") must be an object.");
 				}
 
-				/*isDifferent = diff(this, value);
-    		if (!isDifferent) {
-    	console.log('same!');
-    	return this;
-    }*/
-
 				clone = {};
-
-				//hasChanged = mergeOnto(clone, this, source);
 
 				for (var prop in source) {
 					if (source.hasOwnProperty(prop) && !isFunction(source[prop])) {
@@ -3633,31 +3202,7 @@ var ImmutableObject = (function () {
 					}
 				}
 
-				/*for (let prop in source) {
-    	if (source.hasOwnProperty(prop) && !isFunction(source[prop])) {
-    		if (isImmutable(source[prop])) {
-    			if (source[prop] !== this[prop]) {
-    				clone[prop] = source[prop];
-    				hasChanged = true;
-    			}
-    		} else if (isArray(source[prop])) {
-    			if (source[prop] !== this[prop]) {
-    				clone[prop] = source[prop];
-    				hasChanged = true;
-    			}
-    		} else if (isObject(source[prop])) {
-    				} else {
-    			if (source[prop] !== this[prop]) {
-    				clone[prop] = source[prop];
-    				hasChanged = true;
-    			}
-    		}
-    	}
-    }*/
-
 				if (!hasChanged) {
-					//console.log('no change!');
-
 					return this;
 				}
 
@@ -3668,9 +3213,7 @@ var ImmutableObject = (function () {
 					}
 				}
 
-				//console.log('clone = ', JSON.stringify(clone));
-
-				return new ImmutableObject(clone, { clone: false });
+				return new ImmutableObject(clone);
 			},
 			writable: true,
 			configurable: true
@@ -3680,35 +3223,6 @@ var ImmutableObject = (function () {
 	return ImmutableObject;
 })();
 
-// would merging object onto target result in differences intarget?
-/*function diff(target, source) {
-	console.log('diffing...');
-
-	for (let prop in source) {
-		if (source.hasOwnProperty(prop) && !isFunction(source[prop])) {
-			let isDifferent;
-
-			if (isImmutable(source[prop])) {
-				isDifferent = source[prop] !== target[prop];
-			} else if (isArray(source[prop])) {
-				isDifferent = source[prop] !== target[prop];
-			} else if (isObject(source[prop])) {
-				isDifferent = diff(target[prop], source[prop]);
-			} else {
-				isDifferent = source[prop] !== target[prop];
-			}
-
-			if (isDifferent) {
-				return true;
-			}
-		}
-	}
-
-	return false;
-}*/
-
-
-
 exports.ImmutableArray = ImmutableArray;
 exports.ImmutableObject = ImmutableObject;
 Object.defineProperty(exports, "__esModule", {
@@ -3716,8 +3230,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 // no action needed
+
 // no action needed
-},{"../internal/constants":58,"../internal/isArray":75,"../internal/isFinite":83,"../internal/isFunction":84,"../internal/isString":94,"./isImmutable":25}],25:[function(require,module,exports){
+},{"../internal/constants":25,"../internal/isArray":27,"../internal/isFinite":34,"../internal/isFunction":35,"../internal/isString":41,"./isImmutable":23}],23:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -3731,1108 +3246,37 @@ function isImmutable(value) {
 }
 
 module.exports = isImmutable;
-},{"../internal/constants":58}],26:[function(require,module,exports){
-(function (global){
+},{"../internal/constants":25}],24:[function(require,module,exports){
 "use strict";
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
+function assign() {
+	var sources = [];
+	var target = arguments[0] || {};
 
-var cachePush = _interopRequire(require("./cachePush"));
-
-var isNative = _interopRequire(require("./isNative"));
-
-/** Native method references. */
-var Set = isNative(Set = global.Set) && Set;
-
-/* Native method references for those with the same name as other `lodash` methods. */
-var nativeCreate = isNative(nativeCreate = Object.create) && nativeCreate;
-
-/**
- *
- * Creates a cache object to store unique values.
- *
- * @private
- * @param {Array} [values] The values to cache.
- */
-function SetCache(values) {
-  var length = values ? values.length : 0;
-
-  this.data = { "hash": nativeCreate(null), "set": new Set() };
-  while (length--) {
-    this.push(values[length]);
-  }
-}
-
-// Add functions to the `Set` cache.
-SetCache.prototype.push = cachePush;
-
-module.exports = SetCache;
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./cachePush":54,"./isNative":89}],27:[function(require,module,exports){
-"use strict";
-
-/**
- * A specialized version of `_.forEach` for arrays without support for callback
- * shorthands or `this` binding.
- *
- * @private
- * @param {Array} array The array to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array} Returns `array`.
- */
-function arrayEach(array, iteratee) {
-  var index = -1,
-      length = array.length;
-
-  while (++index < length) {
-    if (iteratee(array[index], index, array) === false) {
-      break;
-    }
-  }
-  return array;
-}
-
-module.exports = arrayEach;
-},{}],28:[function(require,module,exports){
-"use strict";
-
-/**
- * A specialized version of `_.map` for arrays without support for callback
- * shorthands or `this` binding.
- *
- * @private
- * @param {Array} array The array to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array} Returns the new mapped array.
- */
-function arrayMap(array, iteratee) {
-  var index = -1,
-      length = array.length,
-      result = Array(length);
-
-  while (++index < length) {
-    result[index] = iteratee(array[index], index, array);
-  }
-  return result;
-}
-
-module.exports = arrayMap;
-},{}],29:[function(require,module,exports){
-"use strict";
-
-/** Used as references for `-Infinity` and `Infinity`. */
-var NEGATIVE_INFINITY = Number.NEGATIVE_INFINITY;
-
-/**
- * A specialized version of `_.max` for arrays without support for iteratees.
- *
- * @private
- * @param {Array} array The array to iterate over.
- * @returns {*} Returns the maximum value.
- */
-function arrayMax(array) {
-	var index = -1,
-	    length = array.length,
-	    result = NEGATIVE_INFINITY;
-
-	while (++index < length) {
-		var value = array[index];
-		if (value > result) {
-			result = value;
+	for (var i = 1; i < arguments.length; i++) {
+		if (arguments[i] && typeof arguments[i] === "object") {
+			sources.push(arguments[i]);
 		}
 	}
-	return result;
+
+	if (!sources.length) {
+		return target;
+	}
+
+	for (var i = 0; i < sources.length; i++) {
+		for (var prop in sources[i]) {
+			if (sources[i].hasOwnProperty(prop) && typeof sources[i][prop] !== "undefined" && sources[i][prop] !== null) {
+				target[prop] = sources[i][prop];
+			}
+		}
+	}
+
+	return target;
 }
-
-module.exports = arrayMax;
-},{}],30:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseAssign = _interopRequire(require("./baseAssign"));
-
-var createAssigner = _interopRequire(require("./createAssigner"));
-
-/**
- * Assigns own enumerable properties of source object(s) to the destination
- * object. Subsequent sources overwrite property assignments of previous sources.
- * If `customizer` is provided it is invoked to produce the assigned values.
- * The `customizer` is bound to `thisArg` and invoked with five arguments;
- * (objectValue, sourceValue, key, object, source).
- *
- * @static
- * @memberOf _
- * @alias extend
- * @category Object
- * @param {Object} object The destination object.
- * @param {...Object} [sources] The source objects.
- * @param {Function} [customizer] The function to customize assigning values.
- * @param {*} [thisArg] The `this` binding of `customizer`.
- * @returns {Object} Returns `object`.
- * @example
- *
- * _.assign({ 'user': 'barney' }, { 'age': 40 }, { 'user': 'fred' });
- * // => { 'user': 'fred', 'age': 40 }
- *
- * // using a customizer callback
- * var defaults = _.partialRight(_.assign, function(value, other) {
- *   return typeof value == 'undefined' ? other : value;
- * });
- *
- * defaults({ 'user': 'barney' }, { 'age': 36 }, { 'user': 'fred' });
- * // => { 'user': 'barney', 'age': 36 }
- */
-var assign = createAssigner(baseAssign);
 
 module.exports = assign;
-},{"./baseAssign":31,"./createAssigner":59}],31:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseCopy = _interopRequire(require("./baseCopy"));
-
-var keys = _interopRequire(require("./keys"));
-
-/**
- * The base implementation of `_.assign` without support for argument juggling,
- * multiple sources, and `this` binding `customizer` functions.
- *
- * @private
- * @param {Object} object The destination object.
- * @param {Object} source The source object.
- * @param {Function} [customizer] The function to customize assigning values.
- * @returns {Object} Returns the destination object.
- */
-function baseAssign(object, source, customizer) {
-	var props = keys(source);
-	if (!customizer) {
-		return baseCopy(source, object, props);
-	}
-	var index = -1,
-	    length = props.length;
-
-	while (++index < length) {
-		var key = props[index],
-		    value = object[key],
-		    result = customizer(value, source[key], key, object, source);
-
-		if ((result === result ? result !== value : value === value) || typeof value == "undefined" && !(key in object)) {
-			object[key] = result;
-		}
-	}
-	return object;
-}
-
-module.exports = baseAssign;
-},{"./baseCopy":34,"./keys":96}],32:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseMatches = _interopRequire(require("./baseMatches"));
-
-var baseProperty = _interopRequire(require("./baseProperty"));
-
-var bindCallback = _interopRequire(require("./bindCallback"));
-
-var identity = _interopRequire(require("./identity"));
-
-var isBindable = _interopRequire(require("./isBindable"));
-
-/**
- * The base implementation of `_.callback` which supports specifying the
- * number of arguments to provide to `func`.
- *
- * @private
- * @param {*} [func=_.identity] The value to convert to a callback.
- * @param {*} [thisArg] The `this` binding of `func`.
- * @param {number} [argCount] The number of arguments to provide to `func`.
- * @returns {Function} Returns the callback.
- */
-function baseCallback(func, thisArg, argCount) {
-  var type = typeof func;
-  if (type == "function") {
-    return typeof thisArg != "undefined" && isBindable(func) ? bindCallback(func, thisArg, argCount) : func;
-  }
-  if (func === null) {
-    return identity;
-  }
-  // Handle "_.property" and "_.matches" style callback shorthands.
-  return type == "object" ? baseMatches(func) : baseProperty(func + "");
-}
-
-module.exports = baseCallback;
-},{"./baseMatches":45,"./baseProperty":46,"./bindCallback":52,"./identity":72,"./isBindable":80}],33:[function(require,module,exports){
-"use strict";
-
-/**
- * The base implementation of `compareAscending` which compares values and
- * sorts them in ascending order without guaranteeing a stable sort.
- *
- * @private
- * @param {*} value The value to compare to `other`.
- * @param {*} other The value to compare to `value`.
- * @returns {number} Returns the sort order indicator for `value`.
- */
-function baseCompareAscending(value, other) {
-	if (value !== other) {
-		var valIsReflexive = value === value,
-		    othIsReflexive = other === other;
-
-		if (value > other || !valIsReflexive || typeof value == "undefined" && othIsReflexive) {
-			return 1;
-		}
-		if (value < other || !othIsReflexive || typeof other == "undefined" && valIsReflexive) {
-			return -1;
-		}
-	}
-	return 0;
-}
-
-module.exports = baseCompareAscending;
-},{}],34:[function(require,module,exports){
-"use strict";
-
-/**
- * Copies the properties of `source` to `object`.
- *
- * @private
- * @param {Object} source The object to copy properties from.
- * @param {Object} [object={}] The object to copy properties to.
- * @param {Array} props The property names to copy.
- * @returns {Object} Returns `object`.
- */
-function baseCopy(source, object, props) {
-	if (!props) {
-		props = object;
-		object = {};
-	}
-	var index = -1,
-	    length = props.length;
-
-	while (++index < length) {
-		var key = props[index];
-		object[key] = source[key];
-	}
-	return object;
-}
-
-module.exports = baseCopy;
-},{}],35:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseForOwn = _interopRequire(require("./baseForOwn"));
-
-var isLength = _interopRequire(require("./isLength"));
-
-var toObject = _interopRequire(require("./toObject"));
-
-/**
- * The base implementation of `_.forEach` without support for callback
- * shorthands and `this` binding.
- *
- * @private
- * @param {Array|Object|string} collection The collection to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array|Object|string} Returns `collection`.
- */
-function baseEach(collection, iteratee) {
-	var length = collection ? collection.length : 0;
-	if (!isLength(length)) {
-		return baseForOwn(collection, iteratee);
-	}
-	var index = -1,
-	    iterable = toObject(collection);
-
-	while (++index < length) {
-		if (iteratee(iterable[index], index, iterable) === false) {
-			break;
-		}
-	}
-	return collection;
-}
-
-module.exports = baseEach;
-},{"./baseForOwn":39,"./isLength":87,"./toObject":109}],36:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var isArguments = _interopRequire(require("./isArguments"));
-
-var isArray = _interopRequire(require("./isArray"));
-
-var isLength = _interopRequire(require("./isLength"));
-
-var isObjectLike = _interopRequire(require("./isObjectLike"));
-
-/**
- * The base implementation of `_.flatten` with added support for restricting
- * flattening and specifying the start index.
- *
- * @private
- * @param {Array} array The array to flatten.
- * @param {boolean} [isDeep] Specify a deep flatten.
- * @param {boolean} [isStrict] Restrict flattening to arrays and `arguments` objects.
- * @param {number} [fromIndex=0] The index to start from.
- * @returns {Array} Returns the new flattened array.
- */
-function baseFlatten(array, isDeep, isStrict, fromIndex) {
-  var index = (fromIndex || 0) - 1,
-      length = array.length,
-      resIndex = -1,
-      result = [];
-
-  while (++index < length) {
-    var value = array[index];
-
-    if (isObjectLike(value) && isLength(value.length) && (isArray(value) || isArguments(value))) {
-      if (isDeep) {
-        // Recursively flatten arrays (susceptible to call stack limits).
-        value = baseFlatten(value, isDeep, isStrict);
-      }
-      var valIndex = -1,
-          valLength = value.length;
-
-      result.length += valLength;
-      while (++valIndex < valLength) {
-        result[++resIndex] = value[valIndex];
-      }
-    } else if (!isStrict) {
-      result[++resIndex] = value;
-    }
-  }
-  return result;
-}
-
-module.exports = baseFlatten;
-},{"./isArguments":74,"./isArray":75,"./isLength":87,"./isObjectLike":91}],37:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var toObject = _interopRequire(require("./toObject"));
-
-/**
- * The base implementation of `baseForIn` and `baseForOwn` which iterates
- * over `object` properties returned by `keysFunc` invoking `iteratee` for
- * each property. Iterator functions may exit iteration early by explicitly
- * returning `false`.
- *
- * @private
- * @param {Object} object The object to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @param {Function} keysFunc The function to get the keys of `object`.
- * @returns {Object} Returns `object`.
- */
-function baseFor(object, iteratee, keysFunc) {
-  var index = -1,
-      iterable = toObject(object),
-      props = keysFunc(object),
-      length = props.length;
-
-  while (++index < length) {
-    var key = props[index];
-    if (iteratee(iterable[key], key, iterable) === false) {
-      break;
-    }
-  }
-  return object;
-}
-
-module.exports = baseFor;
-},{"./toObject":109}],38:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseFor = _interopRequire(require("./baseFor"));
-
-var keysIn = _interopRequire(require("./keysIn"));
-
-/**
- * The base implementation of `_.forIn` without support for callback
- * shorthands and `this` binding.
- *
- * @private
- * @param {Object} object The object to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Object} Returns `object`.
- */
-function baseForIn(object, iteratee) {
-  return baseFor(object, iteratee, keysIn);
-}
-
-module.exports = baseForIn;
-},{"./baseFor":37,"./keysIn":97}],39:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseFor = _interopRequire(require("./baseFor"));
-
-var keys = _interopRequire(require("./keys"));
-
-/**
- * The base implementation of `_.forOwn` without support for callback
- * shorthands and `this` binding.
- *
- * @private
- * @param {Object} object The object to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Object} Returns `object`.
- */
-function baseForOwn(object, iteratee) {
-  return baseFor(object, iteratee, keys);
-}
-
-module.exports = baseForOwn;
-},{"./baseFor":37,"./keys":96}],40:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var indexOfNaN = _interopRequire(require("./indexOfNaN"));
-
-/**
- * The base implementation of `_.indexOf` without support for binary searches.
- *
- * @private
- * @param {Array} array The array to search.
- * @param {*} value The value to search for.
- * @param {number} [fromIndex=0] The index to search from.
- * @returns {number} Returns the index of the matched value, else `-1`.
- */
-function baseIndexOf(array, value, fromIndex) {
-	if (value !== value) {
-		return indexOfNaN(array, fromIndex);
-	}
-	var index = (fromIndex || 0) - 1,
-	    length = array.length;
-
-	while (++index < length) {
-		if (array[index] === value) {
-			return index;
-		}
-	}
-	return -1;
-}
-
-module.exports = baseIndexOf;
-},{"./indexOfNaN":73}],41:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseIsEqualDeep = _interopRequire(require("./baseIsEqualDeep"));
-
-/**
- * The base implementation of `_.isEqual` without support for `this` binding
- * `customizer` functions.
- *
- * @private
- * @param {*} value The value to compare.
- * @param {*} other The other value to compare.
- * @param {Function} [customizer] The function to customize comparing values.
- * @param {boolean} [isWhere] Specify performing partial comparisons.
- * @param {Array} [stackA] Tracks traversed `value` objects.
- * @param {Array} [stackB] Tracks traversed `other` objects.
- * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
- */
-function baseIsEqual(value, other, customizer, isWhere, stackA, stackB) {
-	// Exit early for identical values.
-	if (value === other) {
-		// Treat `+0` vs. `-0` as not equal.
-		return value !== 0 || 1 / value == 1 / other;
-	}
-	var valType = typeof value,
-	    othType = typeof other;
-
-	// Exit early for unlike primitive values.
-	if (valType != "function" && valType != "object" && othType != "function" && othType != "object" || value === null || other === null) {
-		// Return `false` unless both values are `NaN`.
-		return value !== value && other !== other;
-	}
-	return baseIsEqualDeep(value, other, baseIsEqual, customizer, isWhere, stackA, stackB);
-}
-
-module.exports = baseIsEqual;
-},{"./baseIsEqualDeep":42}],42:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var equalArrays = _interopRequire(require("./equalArrays"));
-
-var equalByTag = _interopRequire(require("./equalByTag"));
-
-var equalObjects = _interopRequire(require("./equalObjects"));
-
-var isArray = _interopRequire(require("./isArray"));
-
-var isTypedArray = _interopRequire(require("./isTypedArray"));
-
-/** `Object#toString` result references. */
-var argsTag = "[object Arguments]",
-    arrayTag = "[object Array]",
-    objectTag = "[object Object]";
-
-/** Used for native method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Used to resolve the `toStringTag` of values.
- * See the [ES spec](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.prototype.tostring)
- * for more details.
- */
-var objToString = objectProto.toString;
-
-/**
- * A specialized version of `baseIsEqual` for arrays and objects which performs
- * deep comparisons and tracks traversed objects enabling objects with circular
- * references to be compared.
- *
- * @private
- * @param {Object} object The object to compare.
- * @param {Object} other The other object to compare.
- * @param {Function} equalFunc The function to determine equivalents of values.
- * @param {Function} [customizer] The function to customize comparing objects.
- * @param {boolean} [isWhere] Specify performing partial comparisons.
- * @param {Array} [stackA=[]] Tracks traversed `value` objects.
- * @param {Array} [stackB=[]] Tracks traversed `other` objects.
- * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
- */
-function baseIsEqualDeep(object, other, equalFunc, customizer, isWhere, stackA, stackB) {
-	var objIsArr = isArray(object),
-	    othIsArr = isArray(other),
-	    objTag = arrayTag,
-	    othTag = arrayTag;
-
-	if (!objIsArr) {
-		objTag = objToString.call(object);
-		if (objTag == argsTag) {
-			objTag = objectTag;
-		} else if (objTag != objectTag) {
-			objIsArr = isTypedArray(object);
-		}
-	}
-	if (!othIsArr) {
-		othTag = objToString.call(other);
-		if (othTag == argsTag) {
-			othTag = objectTag;
-		} else if (othTag != objectTag) {
-			othIsArr = isTypedArray(other);
-		}
-	}
-	var objIsObj = objTag == objectTag,
-	    othIsObj = othTag == objectTag,
-	    isSameTag = objTag == othTag;
-
-	if (isSameTag && !(objIsArr || objIsObj)) {
-		return equalByTag(object, other, objTag);
-	}
-	var valWrapped = objIsObj && hasOwnProperty.call(object, "__wrapped__"),
-	    othWrapped = othIsObj && hasOwnProperty.call(other, "__wrapped__");
-
-	if (valWrapped || othWrapped) {
-		return equalFunc(valWrapped ? object.value() : object, othWrapped ? other.value() : other, customizer, isWhere, stackA, stackB);
-	}
-	if (!isSameTag) {
-		return false;
-	}
-	// Assume cyclic values are equal.
-	// For more information on detecting circular references see https://es5.github.io/#JO.
-	stackA || (stackA = []);
-	stackB || (stackB = []);
-
-	var length = stackA.length;
-	while (length--) {
-		if (stackA[length] == object) {
-			return stackB[length] == other;
-		}
-	}
-	// Add `object` and `other` to the stack of traversed objects.
-	stackA.push(object);
-	stackB.push(other);
-
-	var result = (objIsArr ? equalArrays : equalObjects)(object, other, equalFunc, customizer, isWhere, stackA, stackB);
-
-	stackA.pop();
-	stackB.pop();
-
-	return result;
-}
-
-module.exports = baseIsEqualDeep;
-},{"./equalArrays":65,"./equalByTag":66,"./equalObjects":67,"./isArray":75,"./isTypedArray":95}],43:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseIsEqual = _interopRequire(require("./baseIsEqual"));
-
-/**
- * The base implementation of `_.isMatch` without support for callback
- * shorthands or `this` binding.
- *
- * @private
- * @param {Object} source The object to inspect.
- * @param {Array} props The source property names to match.
- * @param {Array} values The source values to match.
- * @param {Array} strictCompareFlags Strict comparison flags for source values.
- * @param {Function} [customizer] The function to customize comparing objects.
- * @returns {boolean} Returns `true` if `object` is a match, else `false`.
- */
-function baseIsMatch(object, props, values, strictCompareFlags, customizer) {
-	var length = props.length;
-	var result;
-	if (object === null) {
-		return !length;
-	}
-	var index = -1,
-	    noCustomizer = !customizer;
-
-	while (++index < length) {
-		if (noCustomizer && strictCompareFlags[index] ? values[index] !== object[props[index]] : !Object.prototype.hasOwnProperty.call(object, props[index])) {
-			return false;
-		}
-	}
-	index = -1;
-	while (++index < length) {
-		var key = props[index];
-		if (noCustomizer && strictCompareFlags[index]) {
-			result = Object.prototype.hasOwnProperty.call(object, key);
-		} else {
-			var objValue = object[key],
-			    srcValue = values[index];
-
-			result = customizer ? customizer(objValue, srcValue, key) : undefined;
-			if (typeof result == "undefined") {
-				result = baseIsEqual(srcValue, objValue, customizer, true);
-			}
-		}
-		if (!result) {
-			return false;
-		}
-	}
-	return true;
-}
-
-module.exports = baseIsMatch;
-},{"./baseIsEqual":41}],44:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseEach = _interopRequire(require("./baseEach"));
-
-/**
- * The base implementation of `_.map` without support for callback shorthands
- * or `this` binding.
- *
- * @private
- * @param {Array|Object|string} collection The collection to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array} Returns the new mapped array.
- */
-function baseMap(collection, iteratee) {
-  var result = [];
-  baseEach(collection, function (value, key, collection) {
-    result.push(iteratee(value, key, collection));
-  });
-  return result;
-}
-
-module.exports = baseMap;
-},{"./baseEach":35}],45:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseIsMatch = _interopRequire(require("./baseIsMatch"));
-
-var isStrictComparable = _interopRequire(require("./isStrictComparable"));
-
-var keys = _interopRequire(require("./keys"));
-
-/** Used for native method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * The base implementation of `_.matches` which supports specifying whether
- * `source` should be cloned.
- *
- * @private
- * @param {Object} source The object of property values to match.
- * @returns {Function} Returns the new function.
- */
-function baseMatches(source) {
-	var props = keys(source),
-	    length = props.length;
-
-	if (length == 1) {
-		var key = props[0],
-		    value = source[key];
-
-		if (isStrictComparable(value)) {
-			return function (object) {
-				return object != null && value === object[key] && hasOwnProperty.call(object, key);
-			};
-		}
-	}
-	var values = Array(length),
-	    strictCompareFlags = Array(length);
-
-	while (length--) {
-		value = source[props[length]];
-		values[length] = value;
-		strictCompareFlags[length] = isStrictComparable(value);
-	}
-	return function (object) {
-		return baseIsMatch(object, props, values, strictCompareFlags);
-	};
-}
-
-module.exports = baseMatches;
-},{"./baseIsMatch":43,"./isStrictComparable":93,"./keys":96}],46:[function(require,module,exports){
-"use strict";
-
-/**
- * The base implementation of `_.property` which does not coerce `key` to a string.
- *
- * @private
- * @param {string} key The key of the property to get.
- * @returns {Function} Returns the new function.
- */
-function baseProperty(key) {
-  return function (object) {
-    return object === null ? undefined : object[key];
-  };
-}
-
-module.exports = baseProperty;
-},{}],47:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var identity = _interopRequire(require("./identity"));
-
-var metaMap = _interopRequire(require("./metaMap"));
-
-/**
- * The base implementation of `setData` without support for hot loop detection.
- *
- * @private
- * @param {Function} func The function to associate metadata with.
- * @param {*} data The metadata.
- * @returns {Function} Returns `func`.
- */
-var baseSetData = !metaMap ? identity : function (func, data) {
-  metaMap.set(func, data);
-  return func;
-};
-
-module.exports = baseSetData;
-},{"./identity":72,"./metaMap":100}],48:[function(require,module,exports){
-"use strict";
-
-/**
- * The base implementation of `_.sortBy` and `_.sortByAll` which uses `comparer`
- * to define the sort order of `array` and replaces criteria objects with their
- * corresponding values.
- *
- * @private
- * @param {Array} array The array to sort.
- * @param {Function} comparer The function to define sort order.
- * @returns {Array} Returns `array`.
- */
-function baseSortBy(array, comparer) {
-  var length = array.length;
-
-  array.sort(comparer);
-  while (length--) {
-    array[length] = array[length].value;
-  }
-  return array;
-}
-
-module.exports = baseSortBy;
-},{}],49:[function(require,module,exports){
-"use strict";
-
-/**
- * Converts `value` to a string if it is not one. An empty string is returned
- * for `null` or `undefined` values.
- *
- * @private
- * @param {*} value The value to process.
- * @returns {string} Returns the string.
- */
-function baseToString(value) {
-  if (typeof value == "string") {
-    return value;
-  }
-  return value === null ? "" : value + "";
-}
-
-module.exports = baseToString;
-},{}],50:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseIndexOf = _interopRequire(require("./baseIndexOf"));
-
-var cacheIndexOf = _interopRequire(require("./cacheIndexOf"));
-
-var createCache = _interopRequire(require("./createCache"));
-
-/**
- * The base implementation of `_.uniq` without support for callback shorthands
- * and `this` binding.
- *
- * @private
- * @param {Array} array The array to inspect.
- * @param {Function} [iteratee] The function invoked per iteration.
- * @returns {Array} Returns the new duplicate-value-free array.
- */
-function baseUniq(array, iteratee) {
-	var index = -1,
-	    indexOf = baseIndexOf,
-	    length = array.length,
-	    isCommon = true,
-	    isLarge = isCommon && length >= 200,
-	    seen = isLarge && createCache(),
-	    result = [];
-
-	if (seen) {
-		indexOf = cacheIndexOf;
-		isCommon = false;
-	} else {
-		isLarge = false;
-		seen = iteratee ? [] : result;
-	}
-	outer: while (++index < length) {
-		var value = array[index],
-		    computed = iteratee ? iteratee(value, index, array) : value;
-
-		if (isCommon && value === value) {
-			var seenIndex = seen.length;
-			while (seenIndex--) {
-				if (seen[seenIndex] === computed) {
-					continue outer;
-				}
-			}
-			if (iteratee) {
-				seen.push(computed);
-			}
-			result.push(value);
-		} else if (indexOf(seen, computed) < 0) {
-			if (iteratee || isLarge) {
-				seen.push(computed);
-			}
-			result.push(value);
-		}
-	}
-	return result;
-}
-
-module.exports = baseUniq;
-},{"./baseIndexOf":40,"./cacheIndexOf":53,"./createCache":60}],51:[function(require,module,exports){
-"use strict";
-
-/**
- * The base implementation of `_.values` and `_.valuesIn` which creates an
- * array of `object` property values corresponding to the property names
- * returned by `keysFunc`.
- *
- * @private
- * @param {Object} object The object to query.
- * @param {Array} props The property names to get values for.
- * @returns {Object} Returns the array of property values.
- */
-function baseValues(object, props) {
-  var index = -1,
-      length = props.length,
-      result = Array(length);
-
-  while (++index < length) {
-    result[index] = object[props[index]];
-  }
-  return result;
-}
-
-module.exports = baseValues;
-},{}],52:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var identity = _interopRequire(require("./identity"));
-
-/**
- * A specialized version of `baseCallback` which only supports `this` binding
- * and specifying the number of arguments to provide to `func`.
- *
- * @private
- * @param {Function} func The function to bind.
- * @param {*} thisArg The `this` binding of `func`.
- * @param {number} [argCount] The number of arguments to provide to `func`.
- * @returns {Function} Returns the callback.
- */
-function bindCallback(func, thisArg, argCount) {
-	if (typeof func != "function") {
-		return identity;
-	}
-	if (typeof thisArg == "undefined") {
-		return func;
-	}
-	switch (argCount) {
-		case 1:
-			return function (value) {
-				return func.call(thisArg, value);
-			};
-		case 3:
-			return function (value, index, collection) {
-				return func.call(thisArg, value, index, collection);
-			};
-		case 4:
-			return function (accumulator, value, index, collection) {
-				return func.call(thisArg, accumulator, value, index, collection);
-			};
-		case 5:
-			return function (value, other, key, object, source) {
-				return func.call(thisArg, value, other, key, object, source);
-			};
-	}
-	return function () {
-		return func.apply(thisArg, arguments);
-	};
-}
-
-module.exports = bindCallback;
-},{"./identity":72}],53:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var isObject = _interopRequire(require("./isObject"));
-
-/**
- * Checks if `value` is in `cache` mimicking the return signature of
- * `_.indexOf` by returning `0` if the value is found, else `-1`.
- *
- * @private
- * @param {Object} cache The cache to search.
- * @param {*} value The value to search for.
- * @returns {number} Returns `0` if `value` is found, else `-1`.
- */
-function cacheIndexOf(cache, value) {
-  var data = cache.data,
-      result = typeof value == "string" || isObject(value) ? data.set.has(value) : data.hash[value];
-
-  return result ? 0 : -1;
-}
-
-module.exports = cacheIndexOf;
-},{"./isObject":90}],54:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var isObject = _interopRequire(require("./isObject"));
-
-/**
- * Adds `value` to the cache.
- *
- * @private
- * @name push
- * @memberOf SetCache
- * @param {*} value The value to cache.
- */
-function cachePush(value) {
-  var data = this.data;
-  if (typeof value == "string" || isObject(value)) {
-    data.set.add(value);
-  } else {
-    data.hash[value] = true;
-  }
-}
-
-module.exports = cachePush;
-},{"./isObject":90}],55:[function(require,module,exports){
-"use strict";
-
-/**
- * Used by `_.max` and `_.min` as the default callback for string values.
- *
- * @private
- * @param {string} string The string to inspect.
- * @returns {number} Returns the code unit of the first character of the string.
- */
-function charAtCallback(string) {
-  return string.charCodeAt(0);
-}
-
-module.exports = charAtCallback;
-},{}],56:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseCompareAscending = _interopRequire(require("./baseCompareAscending"));
-
-/**
- * Used by `_.sortBy` to compare transformed elements of a collection and stable
- * sort them in ascending order.
- *
- * @private
- * @param {Object} object The object to compare to `other`.
- * @param {Object} other The object to compare to `object`.
- * @returns {number} Returns the sort order indicator for `object`.
- */
-function compareAscending(object, other) {
-  return baseCompareAscending(object.criteria, other.criteria) || object.index - other.index;
-}
-
-module.exports = compareAscending;
-},{"./baseCompareAscending":33}],57:[function(require,module,exports){
-"use strict";
-
-/**
- * Creates a function that returns `value`.
- *
- * @static
- * @memberOf _
- * @category Utility
- * @param {*} value The value to return from the new function.
- * @returns {Function} Returns the new function.
- * @example
- *
- * var object = { 'user': 'fred' };
- * var getter = _.constant(object);
- * getter() === object;
- * // => true
- */
-function constant(value) {
-  return function () {
-    return value;
-  };
-}
-
-module.exports = constant;
-},{}],58:[function(require,module,exports){
+/*target, ...source*/
+},{}],25:[function(require,module,exports){
 "use strict";
 
 var constants = {
@@ -4868,85 +3312,7 @@ var constants = {
 };
 
 module.exports = constants;
-},{}],59:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var bindCallback = _interopRequire(require("./bindCallback"));
-
-var isIterateeCall = _interopRequire(require("./isIterateeCall"));
-
-/**
- * Creates a function that assigns properties of source object(s) to a given
- * destination object.
- *
- * @private
- * @param {Function} assigner The function to assign values.
- * @returns {Function} Returns the new assigner function.
- */
-function createAssigner(assigner) {
-	return function () {
-		var length = arguments.length,
-		    object = arguments[0];
-		var customizer;
-
-		if (length < 2 || object === null) {
-			return object;
-		}
-		if (length > 3 && isIterateeCall(arguments[1], arguments[2], arguments[3])) {
-			length = 2;
-		}
-		// Juggle arguments.
-		if (length > 3 && typeof arguments[length - 2] == "function") {
-			customizer = bindCallback(arguments[--length - 1], arguments[length--], 5);
-		} else if (length > 2 && typeof arguments[length - 1] == "function") {
-			customizer = arguments[--length];
-		}
-		var index = 0;
-		while (++index < length) {
-			var source = arguments[index];
-			if (source) {
-				assigner(object, source, customizer);
-			}
-		}
-		return object;
-	};
-}
-
-module.exports = createAssigner;
-},{"./bindCallback":52,"./isIterateeCall":86}],60:[function(require,module,exports){
-(function (global){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var SetCache = _interopRequire(require("./SetCache"));
-
-var constant = _interopRequire(require("./constant"));
-
-var isNative = _interopRequire(require("./isNative"));
-
-/** Native method references. */
-var Set = isNative(Set = global.Set) && Set;
-
-/* Native method references for those with the same name as other `lodash` methods. */
-var nativeCreate = isNative(nativeCreate = Object.create) && nativeCreate;
-
-/**
- * Creates a `Set` cache object to optimize linear searches of large arrays.
- *
- * @private
- * @param {Array} [values] The values to cache.
- * @returns {null|Object} Returns the new cache object if `Set` is supported, else `null`.
- */
-var createCache = !(nativeCreate && Set) ? constant(null) : function (values) {
-  return new SetCache(values);
-};
-
-module.exports = createCache;
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./SetCache":26,"./constant":57,"./isNative":89}],61:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -4960,15 +3326,17 @@ var isAshElement = _interopRequire(require("./isAshElement"));
 var constants = _interopRequire(require("./constants"));
 
 // constants references
+var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
 var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
 
-var createElement = function (tagName /*, props, children*/) {
+function createElement(tagName /*, props, children*/) {
 	var props = arguments[1];
 	var children = arguments[2];
-	var i;
 
 	if (typeof tagName !== "string" || !tagName.length) {
-		throw new Error(tagName + " (tagName parameter) must be a nonempty string.");
+		return AshElement.bind(null, COMPONENT_ASH_ELEMENT, tagName);
+	} else if (typeof tagName === "string" && !tagName.length) {
+		throw new Error(tagName + " (tagName) must be non-empty string.");
 	}
 
 	// type check
@@ -4979,15 +3347,13 @@ var createElement = function (tagName /*, props, children*/) {
 	if (Array.isArray(props)) {
 		children = props;
 		props = null;
-	} /* else if (typeof children === 'string') {
-   children = [children];
-   }*/
+	}
 
 	if (!Array.isArray(children)) {
 		children = [];
 
 		// children are not in an array, iterate over arguments...
-		for (i = 2; i < arguments.length; i++) {
+		for (var i = 2; i < arguments.length; i++) {
 			if (typeof arguments[i] === "string") {
 				children.push(new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, arguments[i]));
 			} else if (isAshElement(arguments[i])) {
@@ -4996,14 +3362,13 @@ var createElement = function (tagName /*, props, children*/) {
 		}
 	} else {
 		// check type of children
-		for (i = 0; i < children.length; i++) {
+		for (var i = 0; i < children.length; i++) {
 			if (typeof children[i] === "string") {
 				children[i] = new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, children[i]);
 			} else if (!children[i]) {
 				children.splice(i, 1);
 				i--;
 			} else if (!isAshElement(children[i])) {
-				//throw new Error(children[i] + ' must be a AshElement object.');
 				children.splice(i, 1);
 				i--;
 			}
@@ -5011,532 +3376,10 @@ var createElement = function (tagName /*, props, children*/) {
 	}
 
 	return new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, tagName, props, children);
-};
+}
 
 module.exports = createElement;
-},{"../class/AshElement":17,"../class/AshNode":18,"./constants":58,"./isAshElement":76}],62:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseCallback = _interopRequire(require("./baseCallback"));
-
-var charAtCallback = _interopRequire(require("./charAtCallback"));
-
-var extremumBy = _interopRequire(require("./extremumBy"));
-
-var isArray = _interopRequire(require("./isArray"));
-
-var isIterateeCall = _interopRequire(require("./isIterateeCall"));
-
-var isString = _interopRequire(require("./isString"));
-
-var toIterable = _interopRequire(require("./toIterable"));
-
-/**
- * Creates a function that gets the extremum value of a collection.
- *
- * @private
- * @param {Function} arrayFunc The function to get the extremum value from an array.
- * @param {boolean} [isMin] Specify returning the minimum, instead of the maximum,
- *  extremum value.
- * @returns {Function} Returns the new extremum function.
- */
-function createExtremum(arrayFunc, isMin) {
-	return function (collection, iteratee, thisArg) {
-		if (thisArg && isIterateeCall(collection, iteratee, thisArg)) {
-			iteratee = null;
-		}
-		var noIteratee = iteratee === null;
-
-		iteratee = noIteratee ? iteratee : baseCallback(iteratee, thisArg, 3);
-		if (noIteratee) {
-			var isArr = isArray(collection);
-			if (!isArr && isString(collection)) {
-				iteratee = charAtCallback;
-			} else {
-				return arrayFunc(isArr ? collection : toIterable(collection));
-			}
-		}
-		return extremumBy(collection, iteratee, isMin);
-	};
-}
-
-module.exports = createExtremum;
-},{"./baseCallback":32,"./charAtCallback":55,"./extremumBy":68,"./isArray":75,"./isIterateeCall":86,"./isString":94,"./toIterable":108}],63:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var AshElement = _interopRequire(require("../class/AshElement"));
-
-var constants = _interopRequire(require("./constants"));
-
-// constants references
-var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
-
-var createFactory = function (Component) {
-	var ComponentElementFactory = AshElement.bind(null, COMPONENT_ASH_ELEMENT, Component);
-
-	ComponentElementFactory.spec = Component;
-
-	return ComponentElementFactory;
-};
-
-module.exports = createFactory;
-},{"../class/AshElement":17,"./constants":58}],64:[function(require,module,exports){
-(function (global){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var repeat = _interopRequire(require("./repeat"));
-
-/**
- * Creates the pad required for `string` based on the given padding length.
- * The `chars` string may be truncated if the number of padding characters
- * exceeds the padding length.
- *
- * @private
- * @param {string} string The string to create padding for.
- * @param {number} [length=0] The padding length.
- * @param {string} [chars=' '] The string used as padding.
- * @returns {string} Returns the pad for `string`.
- */
-function createPad(string, length, chars) {
-  var strLength = string.length;
-  length = +length;
-
-  if (strLength >= length || !global.isFinite(length)) {
-    return "";
-  }
-  var padLength = length - strLength;
-  chars = chars === null ? " " : chars + "";
-  return repeat(chars, Math.ceil(padLength / chars.length)).slice(0, padLength);
-}
-
-module.exports = createPad;
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./repeat":103}],65:[function(require,module,exports){
-"use strict";
-
-/**
- * A specialized version of `baseIsEqualDeep` for arrays with support for
- * partial deep comparisons.
- *
- * @private
- * @param {Array} array The array to compare.
- * @param {Array} other The other array to compare.
- * @param {Function} equalFunc The function to determine equivalents of values.
- * @param {Function} [customizer] The function to customize comparing arrays.
- * @param {boolean} [isWhere] Specify performing partial comparisons.
- * @param {Array} [stackA] Tracks traversed `value` objects.
- * @param {Array} [stackB] Tracks traversed `other` objects.
- * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
- */
-function equalArrays(array, other, equalFunc, customizer, isWhere, stackA, stackB) {
-	var index = -1,
-	    arrLength = array.length,
-	    othLength = other.length,
-	    result = true;
-
-	if (arrLength != othLength && !(isWhere && othLength > arrLength)) {
-		return false;
-	}
-	// Deep compare the contents, ignoring non-numeric properties.
-	while (result && ++index < arrLength) {
-		var arrValue = array[index],
-		    othValue = other[index];
-
-		result = undefined;
-		if (customizer) {
-			result = isWhere ? customizer(othValue, arrValue, index) : customizer(arrValue, othValue, index);
-		}
-		if (typeof result == "undefined") {
-			// Recursively compare arrays (susceptible to call stack limits).
-			if (isWhere) {
-				var othIndex = othLength;
-				while (othIndex--) {
-					othValue = other[othIndex];
-					result = arrValue && arrValue === othValue || equalFunc(arrValue, othValue, customizer, isWhere, stackA, stackB);
-					if (result) {
-						break;
-					}
-				}
-			} else {
-				result = arrValue && arrValue === othValue || equalFunc(arrValue, othValue, customizer, isWhere, stackA, stackB);
-			}
-		}
-	}
-	return !!result;
-}
-
-module.exports = equalArrays;
-},{}],66:[function(require,module,exports){
-"use strict";
-
-/** `Object#toString` result references. */
-var boolTag = "[object Boolean]",
-    dateTag = "[object Date]",
-    errorTag = "[object Error]",
-    numberTag = "[object Number]",
-    regexpTag = "[object RegExp]",
-    stringTag = "[object String]";
-
-/**
- * A specialized version of `baseIsEqualDeep` for comparing objects of
- * the same `toStringTag`.
- *
- * **Note:** This function only supports comparing values with tags of
- * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
- *
- * @private
- * @param {Object} value The object to compare.
- * @param {Object} other The other object to compare.
- * @param {string} tag The `toStringTag` of the objects to compare.
- * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
- */
-function equalByTag(object, other, tag) {
-	switch (tag) {
-		case boolTag:
-		case dateTag:
-			// Coerce dates and booleans to numbers, dates to milliseconds and booleans
-			// to `1` or `0` treating invalid dates coerced to `NaN` as not equal.
-			return +object == +other;
-
-		case errorTag:
-			return object.name == other.name && object.message == other.message;
-
-		case numberTag:
-			// Treat `NaN` vs. `NaN` as equal.
-			return object != +object ? other != +other : object === 0 ? 1 / object == 1 / other : object == +other; // But, treat `-0` vs. `+0` as not equal.
-
-		case regexpTag:
-		case stringTag:
-			// Coerce regexes to strings and treat strings primitives and string
-			// objects as equal. See https://es5.github.io/#x15.10.6.4 for more details.
-			return object == other + "";
-	}
-	return false;
-}
-
-module.exports = equalByTag;
-},{}],67:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var keys = _interopRequire(require("./keys"));
-
-/** Used for native method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * A specialized version of `baseIsEqualDeep` for objects with support for
- * partial deep comparisons.
- *
- * @private
- * @param {Object} object The object to compare.
- * @param {Object} other The other object to compare.
- * @param {Function} equalFunc The function to determine equivalents of values.
- * @param {Function} [customizer] The function to customize comparing values.
- * @param {boolean} [isWhere] Specify performing partial comparisons.
- * @param {Array} [stackA] Tracks traversed `value` objects.
- * @param {Array} [stackB] Tracks traversed `other` objects.
- * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
- */
-function equalObjects(object, other, equalFunc, customizer, isWhere, stackA, stackB) {
-	var objProps = keys(object),
-	    objLength = objProps.length,
-	    othProps = keys(other),
-	    othLength = othProps.length;
-
-	if (objLength != othLength && !isWhere) {
-		return false;
-	}
-	var hasCtor,
-	    index = -1;
-
-	while (++index < objLength) {
-		var key = objProps[index],
-		    result = hasOwnProperty.call(other, key);
-
-		if (result) {
-			var objValue = object[key],
-			    othValue = other[key];
-
-			result = undefined;
-			if (customizer) {
-				result = isWhere ? customizer(othValue, objValue, key) : customizer(objValue, othValue, key);
-			}
-			if (typeof result == "undefined") {
-				// Recursively compare objects (susceptible to call stack limits).
-				result = objValue && objValue === othValue || equalFunc(objValue, othValue, customizer, isWhere, stackA, stackB);
-			}
-		}
-		if (!result) {
-			return false;
-		}
-		hasCtor || (hasCtor = key == "constructor");
-	}
-	if (!hasCtor) {
-		var objCtor = object.constructor,
-		    othCtor = other.constructor;
-
-		// Non `Object` object instances with different constructors are not equal.
-		if (objCtor != othCtor && ("constructor" in object && "constructor" in other) && !(typeof objCtor == "function" && objCtor instanceof objCtor && typeof othCtor == "function" && othCtor instanceof othCtor)) {
-			return false;
-		}
-	}
-	return true;
-}
-
-module.exports = equalObjects;
-},{"./keys":96}],68:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseEach = _interopRequire(require("./baseEach"));
-
-/** Used as references for `-Infinity` and `Infinity`. */
-var NEGATIVE_INFINITY = Number.NEGATIVE_INFINITY;
-var POSITIVE_INFINITY = Number.POSITIVE_INFINITY;
-
-/**
- * Gets the extremum value of `collection` invoking `iteratee` for each value
- * in `collection` to generate the criterion by which the value is ranked.
- * The `iteratee` is invoked with three arguments; (value, index, collection).
- *
- * @private
- * @param {Array|Object|string} collection The collection to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @param {boolean} [isMin] Specify returning the minimum, instead of the
- *  maximum, extremum value.
- * @returns {*} Returns the extremum value.
- */
-function extremumBy(collection, iteratee, isMin) {
-  var exValue = isMin ? POSITIVE_INFINITY : NEGATIVE_INFINITY,
-      computed = exValue,
-      result = computed;
-
-  baseEach(collection, function (value, index, collection) {
-    var current = iteratee(value, index, collection);
-    if ((isMin ? current < computed : current > computed) || current === exValue && current === result) {
-      computed = current;
-      result = value;
-    }
-  });
-  return result;
-}
-
-module.exports = extremumBy;
-},{"./baseEach":35}],69:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseFlatten = _interopRequire(require("./baseFlatten"));
-
-var isIterateeCall = _interopRequire(require("./isIterateeCall"));
-
-/**
- * Flattens a nested array. If `isDeep` is `true` the array is recursively
- * flattened, otherwise it is only flattened a single level.
- *
- * @static
- * @memberOf _
- * @category Array
- * @param {Array} array The array to flatten.
- * @param {boolean} [isDeep] Specify a deep flatten.
- * @param- {Object} [guard] Enables use as a callback for functions like `_.map`.
- * @returns {Array} Returns the new flattened array.
- * @example
- *
- * _.flatten([1, [2], [3, [[4]]]]);
- * // => [1, 2, 3, [[4]]];
- *
- * // using `isDeep`
- * _.flatten([1, [2], [3, [[4]]]], true);
- * // => [1, 2, 3, 4];
- */
-function flatten(array, isDeep, guard) {
-  var length = array ? array.length : 0;
-  if (guard && isIterateeCall(array, isDeep, guard)) {
-    isDeep = false;
-  }
-  return length ? baseFlatten(array, isDeep) : [];
-}
-
-module.exports = flatten;
-},{"./baseFlatten":36,"./isIterateeCall":86}],70:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var arrayEach = _interopRequire(require("./arrayEach"));
-
-var baseEach = _interopRequire(require("./baseEach"));
-
-var bindCallback = _interopRequire(require("./bindCallback"));
-
-var isArray = _interopRequire(require("./isArray"));
-
-/**
- * Iterates over elements of `collection` invoking `iteratee` for each element.
- * The `iteratee` is bound to `thisArg` and invoked with three arguments;
- * (value, index|key, collection). Iterator functions may exit iteration early
- * by explicitly returning `false`.
- *
- * **Note:** As with other "Collections" methods, objects with a `length` property
- * are iterated like arrays. To avoid this behavior `_.forIn` or `_.forOwn`
- * may be used for object iteration.
- *
- * @static
- * @memberOf _
- * @alias each
- * @category Collection
- * @param {Array|Object|string} collection The collection to iterate over.
- * @param {Function} [iteratee=_.identity] The function invoked per iteration.
- * @param {*} [thisArg] The `this` binding of `iteratee`.
- * @returns {Array|Object|string} Returns `collection`.
- * @example
- *
- * _([1, 2, 3]).forEach(function(n) { console.log(n); }).value();
- * // => logs each value from left to right and returns the array
- *
- * _.forEach({ 'one': 1, 'two': 2, 'three': 3 }, function(n, key) { console.log(n, key); });
- * // => logs each value-key pair and returns the object (iteration order is not guaranteed)
- */
-function forEach(collection, iteratee, thisArg) {
-  return typeof iteratee == "function" && typeof thisArg == "undefined" && isArray(collection) ? arrayEach(collection, iteratee) : baseEach(collection, bindCallback(iteratee, thisArg, 3));
-}
-
-module.exports = forEach;
-},{"./arrayEach":27,"./baseEach":35,"./bindCallback":52,"./isArray":75}],71:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseForOwn = _interopRequire(require("./baseForOwn"));
-
-var bindCallback = _interopRequire(require("./bindCallback"));
-
-/**
- * Iterates over own enumerable properties of an object invoking `iteratee`
- * for each property. The `iteratee` is bound to `thisArg` and invoked with
- * three arguments; (value, key, object). Iterator functions may exit iteration
- * early by explicitly returning `false`.
- *
- * @static
- * @memberOf _
- * @category Object
- * @param {Object} object The object to iterate over.
- * @param {Function} [iteratee=_.identity] The function invoked per iteration.
- * @param {*} [thisArg] The `this` binding of `iteratee`.
- * @returns {Object} Returns `object`.
- * @example
- *
- * _.forOwn({ '0': 'zero', '1': 'one', 'length': 2 }, function(n, key) {
- *   console.log(key);
- * });
- * // => logs '0', '1', and 'length' (iteration order is not guaranteed)
- */
-function forOwn(object, iteratee, thisArg) {
-  if (typeof iteratee != "function" || typeof thisArg != "undefined") {
-    iteratee = bindCallback(iteratee, thisArg, 3);
-  }
-  return baseForOwn(object, iteratee);
-}
-
-module.exports = forOwn;
-},{"./baseForOwn":39,"./bindCallback":52}],72:[function(require,module,exports){
-"use strict";
-
-/**
- * This method returns the first argument provided to it.
- *
- * @static
- * @memberOf _
- * @category Utility
- * @param {*} value Any value.
- * @returns {*} Returns `value`.
- * @example
- *
- * var object = { 'user': 'fred' };
- * _.identity(object) === object;
- * // => true
- */
-function identity(value) {
-  return value;
-}
-
-module.exports = identity;
-},{}],73:[function(require,module,exports){
-"use strict";
-
-/**
- * Gets the index at which the first occurrence of `NaN` is found in `array`.
- * If `fromRight` is provided elements of `array` are iterated from right to left.
- *
- * @private
- * @param {Array} array The array to search.
- * @param {number} [fromIndex] The index to search from.
- * @param {boolean} [fromRight] Specify iterating from right to left.
- * @returns {number} Returns the index of the matched `NaN`, else `-1`.
- */
-function indexOfNaN(array, fromIndex, fromRight) {
-  var length = array.length,
-      index = fromRight ? fromIndex || length : (fromIndex || 0) - 1;
-
-  while (fromRight ? index-- : ++index < length) {
-    var other = array[index];
-    if (other !== other) {
-      return index;
-    }
-  }
-  return -1;
-}
-
-module.exports = indexOfNaN;
-},{}],74:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var isLength = _interopRequire(require("./isLength"));
-
-var isObjectLike = _interopRequire(require("./isObjectLike"));
-
-/** `Object#toString` result references. */
-var ARGS_TAG = "[object Arguments]";
-
-/**
- * Checks if `value` is classified as an `arguments` object.
- *
- * @static
- * @memberOf _
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
- * @example
- *
- * (function() { return _.isArguments(arguments); })();
- * // => true
- *
- * _.isArguments([1, 2, 3]);
- * // => false
- */
-function isArguments(value) {
-  var length = isObjectLike(value) ? value.length : undefined;
-  return isLength(length) && Object.prototype.toString.call(value) == ARGS_TAG || false;
-}
-
-module.exports = isArguments;
-},{"./isLength":87,"./isObjectLike":91}],75:[function(require,module,exports){
+},{"../class/AshElement":15,"../class/AshNode":16,"./constants":25,"./isAshElement":28}],27:[function(require,module,exports){
 "use strict";
 
 /**
@@ -5557,7 +3400,7 @@ module.exports = isArguments;
  */
 
 module.exports = Array.isArray;
-},{}],76:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -5568,11 +3411,11 @@ var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
 var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
 
 function isAshElement(value) {
-	return value && (value.type == COMPONENT_ASH_ELEMENT || value.type == ASH_NODE_ASH_ELEMENT);
+	return value && (value.type === COMPONENT_ASH_ELEMENT || value.type === ASH_NODE_ASH_ELEMENT);
 }
 
 module.exports = isAshElement;
-},{"./constants":58}],77:[function(require,module,exports){
+},{"./constants":25}],29:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -5582,11 +3425,11 @@ var constants = _interopRequire(require("./constants"));
 var ASH_NODE = constants.ASH_NODE;
 
 function isAshNode(value) {
-	return value && value.type == ASH_NODE;
+	return value && value.type === ASH_NODE;
 }
 
 module.exports = isAshNode;
-},{"./constants":58}],78:[function(require,module,exports){
+},{"./constants":25}],30:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -5596,11 +3439,11 @@ var constants = _interopRequire(require("./constants"));
 var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
 
 function isAshNodeAshElement(value) {
-	return value && value.type == ASH_NODE_ASH_ELEMENT;
+	return value && value.type === ASH_NODE_ASH_ELEMENT;
 }
 
 module.exports = isAshNodeAshElement;
-},{"./constants":58}],79:[function(require,module,exports){
+},{"./constants":25}],31:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -5610,56 +3453,11 @@ var constants = _interopRequire(require("./constants"));
 var ASH_TEXT_NODE = constants.ASH_TEXT_NODE;
 
 function isAshTextNode(value) {
-	return value && value.type == ASH_TEXT_NODE;
+	return value && value.type === ASH_TEXT_NODE;
 }
 
 module.exports = isAshTextNode;
-},{"./constants":58}],80:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseSetData = _interopRequire(require("./baseSetData"));
-
-var isNative = _interopRequire(require("./isNative"));
-
-var support = _interopRequire(require("../support"));
-
-/** Used to detect named functions. */
-var reFuncName = /^\s*function[ \n\r\t]+\w/;
-
-/** Used to detect functions containing a `this` reference. */
-var reThis = /\bthis\b/;
-
-/** Used to resolve the decompiled source of functions. */
-var fnToString = Function.prototype.toString;
-
-/**
- * Checks if `func` is eligible for `this` binding.
- *
- * @private
- * @param {Function} func The function to check.
- * @returns {boolean} Returns `true` if `func` is eligible, else `false`.
- */
-function isBindable(func) {
-	var result = !(support.funcNames ? func.name : support.funcDecomp);
-
-	if (!result) {
-		var source = fnToString.call(func);
-		if (!support.funcNames) {
-			result = !reFuncName.test(source);
-		}
-		if (!result) {
-			// Check if `func` references the `this` keyword and store the result.
-			result = reThis.test(source) || isNative(func);
-			baseSetData(func, result);
-		}
-	}
-	return result;
-}
-
-module.exports = isBindable;
-},{"../support":118,"./baseSetData":47,"./isNative":89}],81:[function(require,module,exports){
+},{"./constants":25}],32:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -5673,7 +3471,7 @@ function isComponentAshElement(value) {
 }
 
 module.exports = isComponentAshElement;
-},{"./constants":58}],82:[function(require,module,exports){
+},{"./constants":25}],33:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -5701,7 +3499,7 @@ function isElement(value) {
 }
 
 module.exports = isElement;
-},{"./isObjectLike":91}],83:[function(require,module,exports){
+},{"./isObjectLike":39}],34:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -5748,7 +3546,7 @@ var isFinite = nativeNumIsFinite || function (value) {
 
 module.exports = isFinite;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./isNative":89}],84:[function(require,module,exports){
+},{"./isNative":37}],35:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -5806,94 +3604,7 @@ if (isFunction(/x/) || Uint8Array && !isFunction(Uint8Array)) {
 
 module.exports = isFunction;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./isNative":89}],85:[function(require,module,exports){
-"use strict";
-
-/**
- * Used as the maximum length of an array-like value.
- * See the [ES spec](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-number.max_safe_integer)
- * for more details.
- */
-var MAX_SAFE_INTEGER = Math.pow(2, 53) - 1;
-
-/**
- * Checks if `value` is a valid array-like index.
- *
- * @private
- * @param {*} value The value to check.
- * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
- * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
- */
-function isIndex(value, length) {
-  value = +value;
-  length = length === null ? MAX_SAFE_INTEGER : length;
-  return value > -1 && value % 1 === 0 && value < length;
-}
-
-module.exports = isIndex;
-},{}],86:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var isIndex = _interopRequire(require("./isIndex"));
-
-var isLength = _interopRequire(require("./isLength"));
-
-var isObject = _interopRequire(require("./isObject"));
-
-/**
- * Checks if the provided arguments are from an iteratee call.
- *
- * @private
- * @param {*} value The potential iteratee value argument.
- * @param {*} index The potential iteratee index or key argument.
- * @param {*} object The potential iteratee object argument.
- * @returns {boolean} Returns `true` if the arguments are from an iteratee call, else `false`.
- */
-function isIterateeCall(value, index, object) {
-  var prereq;
-  if (!isObject(object)) {
-    return false;
-  }
-  var type = typeof index;
-  if (type == "number") {
-    var length = object.length;
-    prereq = isLength(length) && isIndex(index, length);
-  } else {
-    prereq = type == "string" && index in object;
-  }
-  return prereq && object[index] === value;
-}
-
-module.exports = isIterateeCall;
-},{"./isIndex":85,"./isLength":87,"./isObject":90}],87:[function(require,module,exports){
-"use strict";
-
-/**
- * Used as the maximum length of an array-like value.
- * See the [ES spec](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-number.max_safe_integer)
- * for more details.
- */
-var MAX_SAFE_INTEGER = Math.pow(2, 53) - 1;
-
-/**
- * Checks if `value` is a valid array-like length.
- *
- * **Note:** This function is based on ES `ToLength`. See the
- * [ES spec](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength)
- * for more details.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
- */
-function isLength(value) {
-  return typeof value == "number" && value > -1 && value % 1 === 0 && value <= MAX_SAFE_INTEGER;
-}
-
-module.exports = isLength;
-},{}],88:[function(require,module,exports){
+},{"./isNative":37}],36:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -5961,7 +3672,7 @@ function isMatching(chain1, chain2, options) {
 } // isMatching
 
 module.exports = isMatching;
-},{"./isArray":75}],89:[function(require,module,exports){
+},{"./isArray":27}],37:[function(require,module,exports){
 "use strict";
 
 /** Used to detect if a method is native */
@@ -5979,7 +3690,7 @@ function isNative(value) {
 }
 
 module.exports = isNative;
-},{}],90:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 "use strict";
 
 /**
@@ -6012,7 +3723,7 @@ function isObject(value) {
 }
 
 module.exports = isObject;
-},{}],91:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 "use strict";
 
 /**
@@ -6027,7 +3738,7 @@ function isObjectLike(value) {
 }
 
 module.exports = isObjectLike;
-},{}],92:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -6081,27 +3792,7 @@ function isPlainObject(value) {
 }
 
 module.exports = isPlainObject;
-},{"./isNative":89,"./shimIsPlainObject":104}],93:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var isObject = _interopRequire(require("./isObject"));
-
-/**
- * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` if suitable for strict
- *  equality comparisons, else `false`.
- */
-function isStrictComparable(value) {
-  return value === value && (value === 0 ? 1 / value > 0 : !isObject(value));
-}
-
-module.exports = isStrictComparable;
-},{"./isObject":90}],94:[function(require,module,exports){
+},{"./isNative":37,"./shimIsPlainObject":42}],41:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -6132,464 +3823,10 @@ function isString(value) {
 }
 
 module.exports = isString;
-},{"./isObjectLike":91}],95:[function(require,module,exports){
+},{"./isObjectLike":39}],42:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var isLength = _interopRequire(require("./isLength"));
-
-var isObjectLike = _interopRequire(require("./isObjectLike"));
-
-/** `Object#toString` result references. */
-var argsTag = "[object Arguments]",
-    arrayTag = "[object Array]",
-    boolTag = "[object Boolean]",
-    dateTag = "[object Date]",
-    errorTag = "[object Error]",
-    funcTag = "[object Function]",
-    mapTag = "[object Map]",
-    numberTag = "[object Number]",
-    objectTag = "[object Object]",
-    regexpTag = "[object RegExp]",
-    setTag = "[object Set]",
-    stringTag = "[object String]",
-    weakMapTag = "[object WeakMap]";
-
-var arrayBufferTag = "[object ArrayBuffer]",
-    float32Tag = "[object Float32Array]",
-    float64Tag = "[object Float64Array]",
-    int8Tag = "[object Int8Array]",
-    int16Tag = "[object Int16Array]",
-    int32Tag = "[object Int32Array]",
-    uint8Tag = "[object Uint8Array]",
-    uint8ClampedTag = "[object Uint8ClampedArray]",
-    uint16Tag = "[object Uint16Array]",
-    uint32Tag = "[object Uint32Array]";
-
-/** Used to identify `toStringTag` values of typed arrays. */
-var typedArrayTags = {};
-typedArrayTags[float32Tag] = typedArrayTags[float64Tag] = typedArrayTags[int8Tag] = typedArrayTags[int16Tag] = typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] = typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] = typedArrayTags[uint32Tag] = true;
-typedArrayTags[argsTag] = typedArrayTags[arrayTag] = typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] = typedArrayTags[dateTag] = typedArrayTags[errorTag] = typedArrayTags[funcTag] = typedArrayTags[mapTag] = typedArrayTags[numberTag] = typedArrayTags[objectTag] = typedArrayTags[regexpTag] = typedArrayTags[setTag] = typedArrayTags[stringTag] = typedArrayTags[weakMapTag] = false;
-
-/** Used for native method references. */
-var objectProto = Object.prototype;
-
-/**
- * Used to resolve the `toStringTag` of values.
- * See the [ES spec](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.prototype.tostring)
- * for more details.
- */
-var objToString = objectProto.toString;
-
-/**
- * Checks if `value` is classified as a typed array.
- *
- * @static
- * @memberOf _
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
- * @example
- *
- * _.isTypedArray(new Uint8Array);
- * // => true
- *
- * _.isTypedArray([]);
- * // => false
- */
-function isTypedArray(value) {
-	return isObjectLike(value) && isLength(value.length) && typedArrayTags[objToString.call(value)] || false;
-}
-
-module.exports = isTypedArray;
-},{"./isLength":87,"./isObjectLike":91}],96:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var isLength = _interopRequire(require("./isLength"));
-
-var isNative = _interopRequire(require("./isNative"));
-
-var isObject = _interopRequire(require("./isObject"));
-
-var shimKeys = _interopRequire(require("./shimKeys"));
-
-/* Native method references for those with the same name as other `lodash` methods. */
-var nativeKeys = isNative(nativeKeys = Object.keys) && nativeKeys;
-
-/**
- * Creates an array of the own enumerable property names of `object`.
- *
- * **Note:** Non-object values are coerced to objects. See the
- * [ES spec](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.keys)
- * for more details.
- *
- * @static
- * @memberOf _
- * @category Object
- * @param {Object} object The object to inspect.
- * @returns {Array} Returns the array of property names.
- * @example
- *
- * function Foo() {
- *   this.a = 1;
- *   this.b = 2;
- * }
- *
- * Foo.prototype.c = 3;
- *
- * _.keys(new Foo);
- * // => ['a', 'b'] (iteration order is not guaranteed)
- *
- * _.keys('hi');
- * // => ['0', '1']
- */
-var keys = !nativeKeys ? shimKeys : function (object) {
-  var Ctor;
-  var length;
-
-  if (object) {
-    Ctor = object.constructor;
-    length = object.length;
-  }
-
-  if (typeof Ctor == "function" && Ctor.prototype === object || typeof object != "function" && (length && isLength(length))) {
-    return shimKeys(object);
-  }
-  return isObject(object) ? nativeKeys(object) : [];
-};
-
-module.exports = keys;
-},{"./isLength":87,"./isNative":89,"./isObject":90,"./shimKeys":105}],97:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var isArguments = _interopRequire(require("./isArguments"));
-
-var isArray = _interopRequire(require("./isArray"));
-
-var isIndex = _interopRequire(require("./isIndex"));
-
-var isLength = _interopRequire(require("./isLength"));
-
-var isObject = _interopRequire(require("./isObject"));
-
-var support = _interopRequire(require("../support"));
-
-/**
- * Creates an array of the own and inherited enumerable property names of `object`.
- *
- * **Note:** Non-object values are coerced to objects.
- *
- * @static
- * @memberOf _
- * @category Object
- * @param {Object} object The object to inspect.
- * @returns {Array} Returns the array of property names.
- * @example
- *
- * function Foo() {
- *   this.a = 1;
- *   this.b = 2;
- * }
- *
- * Foo.prototype.c = 3;
- *
- * _.keysIn(new Foo);
- * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
- */
-function keysIn(object) {
-	if (object === null) {
-		return [];
-	}
-	if (!isObject(object)) {
-		object = Object(object);
-	}
-	var length = object.length;
-	length = length && isLength(length) && (isArray(object) || support.nonEnumArgs && isArguments(object)) && length || 0;
-
-	var Ctor = object.constructor,
-	    index = -1,
-	    isProto = typeof Ctor == "function" && Ctor.prototype == object,
-	    result = Array(length),
-	    skipIndexes = length > 0;
-
-	while (++index < length) {
-		result[index] = index + "";
-	}
-	for (var key in object) {
-		if (!(skipIndexes && isIndex(key, length)) && !(key == "constructor" && (isProto || !Object.prototype.hasOwnProperty.call(object, key)))) {
-			result.push(key);
-		}
-	}
-	return result;
-}
-
-module.exports = keysIn;
-},{"../support":118,"./isArguments":74,"./isArray":75,"./isIndex":85,"./isLength":87,"./isObject":90}],98:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var arrayMap = _interopRequire(require("./arrayMap"));
-
-var baseCallback = _interopRequire(require("./baseCallback"));
-
-var baseMap = _interopRequire(require("./baseMap"));
-
-var isArray = _interopRequire(require("./isArray"));
-
-/**
- * Creates an array of values by running each element in `collection` through
- * `iteratee`. The `iteratee` is bound to `thisArg` and invoked with three
- * arguments; (value, index|key, collection).
- *
- * If a property name is provided for `predicate` the created "_.property"
- * style callback returns the property value of the given element.
- *
- * If an object is provided for `predicate` the created "_.matches" style
- * callback returns `true` for elements that have the properties of the given
- * object, else `false`.
- *
- * @static
- * @memberOf _
- * @alias collect
- * @category Collection
- * @param {Array|Object|string} collection The collection to iterate over.
- * @param {Function|Object|string} [iteratee=_.identity] The function invoked
- *  per iteration. If a property name or object is provided it is used to
- *  create a "_.property" or "_.matches" style callback respectively.
- * @param {*} [thisArg] The `this` binding of `iteratee`.
- * @returns {Array} Returns the new mapped array.
- * @example
- *
- * _.map([1, 2, 3], function(n) { return n * 3; });
- * // => [3, 6, 9]
- *
- * _.map({ 'one': 1, 'two': 2, 'three': 3 }, function(n) { return n * 3; });
- * // => [3, 6, 9] (iteration order is not guaranteed)
- *
- * var users = [
- *   { 'user': 'barney' },
- *   { 'user': 'fred' }
- * ];
- *
- * // using the "_.property" callback shorthand
- * _.map(users, 'user');
- * // => ['barney', 'fred']
- */
-function map(collection, iteratee, thisArg) {
-  var func = isArray(collection) ? arrayMap : baseMap;
-  iteratee = baseCallback(iteratee, thisArg, 3);
-  return func(collection, iteratee);
-}
-
-module.exports = map;
-},{"./arrayMap":28,"./baseCallback":32,"./baseMap":44,"./isArray":75}],99:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var arrayMax = _interopRequire(require("./arrayMax"));
-
-var createExtremum = _interopRequire(require("./createExtremum"));
-
-/**
- * Gets the maximum value of `collection`. If `collection` is empty or falsey
- * `-Infinity` is returned. If an iteratee function is provided it is invoked
- * for each value in `collection` to generate the criterion by which the value
- * is ranked. The `iteratee` is bound to `thisArg` and invoked with three
- * arguments; (value, index, collection).
- *
- * If a property name is provided for `predicate` the created "_.property"
- * style callback returns the property value of the given element.
- *
- * If an object is provided for `predicate` the created "_.matches" style
- * callback returns `true` for elements that have the properties of the given
- * object, else `false`.
- *
- * @static
- * @memberOf _
- * @category Collection
- * @param {Array|Object|string} collection The collection to iterate over.
- * @param {Function|Object|string} [iteratee] The function invoked per iteration.
- *  If a property name or object is provided it is used to create a "_.property"
- *  or "_.matches" style callback respectively.
- * @param {*} [thisArg] The `this` binding of `iteratee`.
- * @returns {*} Returns the maximum value.
- * @example
- *
- * _.max([4, 2, 8, 6]);
- * // => 8
- *
- * _.max([]);
- * // => -Infinity
- *
- * var users = [
- *   { 'user': 'barney', 'age': 36 },
- *   { 'user': 'fred',   'age': 40 }
- * ];
- *
- * _.max(users, function(chr) { return chr.age; });
- * // => { 'user': 'fred', 'age': 40 };
- *
- * // using the "_.property" callback shorthand
- * _.max(users, 'age');
- * // => { 'user': 'fred', 'age': 40 };
- */
-var max = createExtremum(arrayMax);
-
-module.exports = max;
-},{"./arrayMax":29,"./createExtremum":62}],100:[function(require,module,exports){
-(function (global){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var isNative = _interopRequire(require("./isNative"));
-
-/** Native method references. */
-var WeakMap = isNative(WeakMap = global.WeakMap) && WeakMap;
-
-/** Used to store function metadata. */
-var metaMap = WeakMap && new WeakMap();
-
-module.exports = metaMap;
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./isNative":89}],101:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseToString = _interopRequire(require("./baseToString"));
-
-var createPad = _interopRequire(require("./createPad"));
-
-/**
- * Pads `string` on the left side if it is shorter then the given padding
- * length. The `chars` string may be truncated if the number of padding
- * characters exceeds the padding length.
- *
- * @static
- * @memberOf _
- * @category String
- * @param {string} [string=''] The string to pad.
- * @param {number} [length=0] The padding length.
- * @param {string} [chars=' '] The string used as padding.
- * @returns {string} Returns the padded string.
- * @example
- *
- * _.padLeft('abc', 6);
- * // => '   abc'
- *
- * _.padLeft('abc', 6, '_-');
- * // => '_-_abc'
- *
- * _.padLeft('abc', 3);
- * // => 'abc'
- */
-function padLeft(string, length, chars) {
-  string = baseToString(string);
-  return string && createPad(string, length, chars) + string;
-}
-
-module.exports = padLeft;
-},{"./baseToString":49,"./createPad":64}],102:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseProperty = _interopRequire(require("./baseProperty"));
-
-var map = _interopRequire(require("./map"));
-
-/**
- * Gets the value of `key` from all elements in `collection`.
- *
- * @static
- * @memberOf _
- * @category Collection
- * @param {Array|Object|string} collection The collection to iterate over.
- * @param {string} key The key of the property to pluck.
- * @returns {Array} Returns the property values.
- * @example
- *
- * var users = [
- *   { 'user': 'barney', 'age': 36 },
- *   { 'user': 'fred',   'age': 40 }
- * ];
- *
- * _.pluck(users, 'user');
- * // => ['barney', 'fred']
- *
- * var userIndex = _.indexBy(users, 'user');
- * _.pluck(userIndex, 'age');
- * // => [36, 40] (iteration order is not guaranteed)
- */
-function pluck(collection, key) {
-  return map(collection, baseProperty(key + ""));
-}
-
-module.exports = pluck;
-},{"./baseProperty":46,"./map":98}],103:[function(require,module,exports){
-(function (global){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseToString = _interopRequire(require("./baseToString"));
-
-/**
- * Repeats the given string `n` times.
- *
- * @static
- * @memberOf _
- * @category String
- * @param {string} [string=''] The string to repeat.
- * @param {number} [n=0] The number of times to repeat the string.
- * @returns {string} Returns the repeated string.
- * @example
- *
- * _.repeat('*', 3);
- * // => '***'
- *
- * _.repeat('abc', 2);
- * // => 'abcabc'
- *
- * _.repeat('abc', 0);
- * // => ''
- */
-function repeat(string, n) {
-  var result = "";
-  string = baseToString(string);
-  n = +n;
-  if (n < 1 || !string || !global.isFinite(n)) {
-    return result;
-  }
-  // Leverage the exponentiation by squaring algorithm for a faster repeat.
-  // See https://en.wikipedia.org/wiki/Exponentiation_by_squaring for more details.
-  do {
-    if (n % 2) {
-      result += string;
-    }
-    n = Math.floor(n / 2);
-    string += string;
-  } while (n);
-
-  return result;
-}
-
-module.exports = repeat;
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./baseToString":49}],104:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseForIn = _interopRequire(require("./baseForIn"));
 
 var isObjectLike = _interopRequire(require("./isObjectLike"));
 
@@ -6619,329 +3856,14 @@ function shimIsPlainObject(value) {
 	// In most environments an object's own properties are iterated before
 	// its inherited properties. If the last iterated property is an object's
 	// own property then there are no inherited enumerable properties.
-	baseForIn(value, function (subValue, key) {
-		result = key;
-	});
+	for (var prop in value) {
+		result = prop;
+	}
 	return typeof result == "undefined" || Object.prototype.hasOwnProperty.call(value, result);
 }
 
 module.exports = shimIsPlainObject;
-},{"./baseForIn":38,"./isObjectLike":91}],105:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var isArguments = _interopRequire(require("./isArguments"));
-
-var isArray = _interopRequire(require("./isArray"));
-
-var isIndex = _interopRequire(require("./isIndex"));
-
-var isLength = _interopRequire(require("./isLength"));
-
-var keysIn = _interopRequire(require("./keysIn"));
-
-var support = _interopRequire(require("../support"));
-
-/**
- * A fallback implementation of `Object.keys` which creates an array of the
- * own enumerable property names of `object`.
- *
- * @private
- * @param {Object} object The object to inspect.
- * @returns {Array} Returns the array of property names.
- */
-function shimKeys(object) {
-  var props = keysIn(object),
-      propsLength = props.length,
-      length = propsLength && object.length;
-
-  var allowIndexes = length && isLength(length) && (isArray(object) || support.nonEnumArgs && isArguments(object));
-
-  var index = -1,
-      result = [];
-
-  while (++index < propsLength) {
-    var key = props[index];
-    if (allowIndexes && isIndex(key, length) || Object.prototype.hasOwnProperty.call(object, key)) {
-      result.push(key);
-    }
-  }
-  return result;
-}
-
-module.exports = shimKeys;
-},{"../support":118,"./isArguments":74,"./isArray":75,"./isIndex":85,"./isLength":87,"./keysIn":97}],106:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseCallback = _interopRequire(require("./baseCallback"));
-
-var baseEach = _interopRequire(require("./baseEach"));
-
-var baseSortBy = _interopRequire(require("./baseSortBy"));
-
-var compareAscending = _interopRequire(require("./compareAscending"));
-
-var isIterateeCall = _interopRequire(require("./isIterateeCall"));
-
-var isLength = _interopRequire(require("./isLength"));
-
-/**
- * Creates an array of elements, sorted in ascending order by the results of
- * running each element in a collection through `iteratee`. This method performs
- * a stable sort, that is, it preserves the original sort order of equal elements.
- * The `iteratee` is bound to `thisArg` and invoked with three arguments;
- * (value, index|key, collection).
- *
- * If a property name is provided for `predicate` the created "_.property"
- * style callback returns the property value of the given element.
- *
- * If an object is provided for `predicate` the created "_.matches" style
- * callback returns `true` for elements that have the properties of the given
- * object, else `false`.
- *
- * @static
- * @memberOf _
- * @category Collection
- * @param {Array|Object|string} collection The collection to iterate over.
- * @param {Array|Function|Object|string} [iteratee=_.identity] The function
- *  invoked per iteration. If a property name or an object is provided it is
- *  used to create a "_.property" or "_.matches" style callback respectively.
- * @param {*} [thisArg] The `this` binding of `iteratee`.
- * @returns {Array} Returns the new sorted array.
- * @example
- *
- * _.sortBy([1, 2, 3], function(n) { return Math.sin(n); });
- * // => [3, 1, 2]
- *
- * _.sortBy([1, 2, 3], function(n) { return this.sin(n); }, Math);
- * // => [3, 1, 2]
- *
- * var users = [
- *   { 'user': 'fred' },
- *   { 'user': 'pebbles' },
- *   { 'user': 'barney' }
- * ];
- *
- * // using the "_.property" callback shorthand
- * _.pluck(_.sortBy(users, 'user'), 'user');
- * // => ['barney', 'fred', 'pebbles']
- */
-function sortBy(collection, iteratee, thisArg) {
-  var index = -1,
-      length = collection ? collection.length : 0,
-      result = isLength(length) ? Array(length) : [];
-
-  if (thisArg && isIterateeCall(collection, iteratee, thisArg)) {
-    iteratee = null;
-  }
-  iteratee = baseCallback(iteratee, thisArg, 3);
-  baseEach(collection, function (value, key, collection) {
-    result[++index] = { "criteria": iteratee(value, key, collection), "index": index, "value": value };
-  });
-  return baseSortBy(result, compareAscending);
-}
-
-module.exports = sortBy;
-},{"./baseCallback":32,"./baseEach":35,"./baseSortBy":48,"./compareAscending":56,"./isIterateeCall":86,"./isLength":87}],107:[function(require,module,exports){
-"use strict";
-
-/**
- * An implementation of `_.uniq` optimized for sorted arrays without support
- * for callback shorthands and `this` binding.
- *
- * @private
- * @param {Array} array The array to inspect.
- * @param {Function} [iteratee] The function invoked per iteration.
- * @returns {Array} Returns the new duplicate-value-free array.
- */
-function sortedUniq(array, iteratee) {
-	var seen,
-	    index = -1,
-	    length = array.length,
-	    resIndex = -1,
-	    result = [];
-
-	while (++index < length) {
-		var value = array[index],
-		    computed = iteratee ? iteratee(value, index, array) : value;
-
-		if (!index || seen !== computed) {
-			seen = computed;
-			result[++resIndex] = value;
-		}
-	}
-	return result;
-}
-
-module.exports = sortedUniq;
-},{}],108:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var isLength = _interopRequire(require("./isLength"));
-
-var isObject = _interopRequire(require("./isObject"));
-
-var values = _interopRequire(require("./values"));
-
-/**
- * Converts `value` to an array-like object if it is not one.
- *
- * @private
- * @param {*} value The value to process.
- * @returns {Array|Object} Returns the array-like object.
- */
-function toIterable(value) {
-	if (value === null) {
-		return [];
-	}
-	if (!isLength(value.length)) {
-		return values(value);
-	}
-	return isObject(value) ? value : Object(value);
-}
-
-module.exports = toIterable;
-},{"./isLength":87,"./isObject":90,"./values":111}],109:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var isObject = _interopRequire(require("./isObject"));
-
-/**
- * Converts `value` to an object if it is not one.
- *
- * @private
- * @param {*} value The value to process.
- * @returns {Object} Returns the object.
- */
-function toObject(value) {
-  return isObject(value) ? value : Object(value);
-}
-
-module.exports = toObject;
-},{"./isObject":90}],110:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseCallback = _interopRequire(require("./baseCallback"));
-
-var baseUniq = _interopRequire(require("./baseUniq"));
-
-var isIterateeCall = _interopRequire(require("./isIterateeCall"));
-
-var sortedUniq = _interopRequire(require("./sortedUniq"));
-
-/**
- * Creates a duplicate-value-free version of an array using `SameValueZero`
- * for equality comparisons. Providing `true` for `isSorted` performs a faster
- * search algorithm for sorted arrays. If an iteratee function is provided it
- * is invoked for each value in the array to generate the criterion by which
- * uniqueness is computed. The `iteratee` is bound to `thisArg` and invoked
- * with three arguments; (value, index, array).
- *
- * If a property name is provided for `predicate` the created "_.property"
- * style callback returns the property value of the given element.
- *
- * If an object is provided for `predicate` the created "_.matches" style
- * callback returns `true` for elements that have the properties of the given
- * object, else `false`.
- *
- * **Note:** `SameValueZero` comparisons are like strict equality comparisons,
- * e.g. `===`, except that `NaN` matches `NaN`. See the
- * [ES spec](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevaluezero)
- * for more details.
- *
- * @static
- * @memberOf _
- * @alias unique
- * @category Array
- * @param {Array} array The array to inspect.
- * @param {boolean} [isSorted] Specify the array is sorted.
- * @param {Function|Object|string} [iteratee] The function invoked per iteration.
- *  If a property name or object is provided it is used to create a "_.property"
- *  or "_.matches" style callback respectively.
- * @param {*} [thisArg] The `this` binding of `iteratee`.
- * @returns {Array} Returns the new duplicate-value-free array.
- * @example
- *
- * _.uniq([1, 2, 1]);
- * // => [1, 2]
- *
- * // using `isSorted`
- * _.uniq([1, 1, 2], true);
- * // => [1, 2]
- *
- * // using an iteratee function
- * _.uniq([1, 2.5, 1.5, 2], function(n) { return this.floor(n); }, Math);
- * // => [1, 2.5]
- *
- * // using the "_.property" callback shorthand
- * _.uniq([{ 'x': 1 }, { 'x': 2 }, { 'x': 1 }], 'x');
- * // => [{ 'x': 1 }, { 'x': 2 }]
- */
-function uniq(array, isSorted, iteratee, thisArg) {
-  var length = array ? array.length : 0;
-  if (!length) {
-    return [];
-  }
-  // Juggle arguments.
-  if (typeof isSorted != "boolean" && isSorted !== null) {
-    thisArg = iteratee;
-    iteratee = isIterateeCall(array, isSorted, thisArg) ? null : isSorted;
-    isSorted = false;
-  }
-  iteratee = iteratee === null ? iteratee : baseCallback(iteratee, thisArg, 3);
-  return isSorted ? sortedUniq(array, iteratee) : baseUniq(array, iteratee);
-}
-
-module.exports = uniq;
-},{"./baseCallback":32,"./baseUniq":50,"./isIterateeCall":86,"./sortedUniq":107}],111:[function(require,module,exports){
-"use strict";
-
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
-
-var baseValues = _interopRequire(require("./baseValues"));
-
-var keys = _interopRequire(require("./keys"));
-
-/**
- * Creates an array of the own enumerable property values of `object`.
- *
- * **Note:** Non-object values are coerced to objects.
- *
- * @static
- * @memberOf _
- * @category Object
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property values.
- * @example
- *
- * function Foo() {
- *   this.a = 1;
- *   this.b = 2;
- * }
- *
- * Foo.prototype.c = 3;
- *
- * _.values(new Foo);
- * // => [1, 2] (iteration order is not guaranteed)
- *
- * _.values('hi');
- * // => ['h', 'i']
- */
-function values(object) {
-  return baseValues(object, keys(object));
-}
-
-module.exports = values;
-},{"./baseValues":51,"./keys":96}],112:[function(require,module,exports){
+},{"./isObjectLike":39}],43:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -6955,9 +3877,6 @@ var messageChannel = _interopRequire(require("./immediate/messageChannel"));
 var stateChange = _interopRequire(require("./immediate/stateChange"));
 
 var timeout = _interopRequire(require("./immediate/timeout"));
-
-
-
 
 var types = [nextTick, mutation.js, messageChannel, stateChange, timeout];
 var draining;
@@ -6995,7 +3914,7 @@ function immediate(task) {
 }
 
 module.exports = immediate;
-},{"./immediate/messageChannel":113,"./immediate/mutation.js":114,"./immediate/nextTick":115,"./immediate/stateChange":116,"./immediate/timeout":117}],113:[function(require,module,exports){
+},{"./immediate/messageChannel":44,"./immediate/mutation.js":45,"./immediate/nextTick":46,"./immediate/stateChange":47,"./immediate/timeout":48}],44:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -7023,7 +3942,7 @@ var messageChannel = {
 
 module.exports = messageChannel;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],114:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -7056,7 +3975,7 @@ var mutation = {
 
 module.exports = mutation;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],115:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 (function (process){
 "use strict";
 
@@ -7078,7 +3997,7 @@ var nextTick = {
 
 module.exports = nextTick;
 }).call(this,require('_process'))
-},{"_process":381}],116:[function(require,module,exports){
+},{"_process":311}],47:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -7088,6 +4007,7 @@ function test() {
 
 function install(handle) {
 	return function () {
+
 		// Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
 		// into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
 		var scriptEl = global.document.createElement("script");
@@ -7111,7 +4031,7 @@ var stateChange = {
 
 module.exports = stateChange;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],117:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 "use strict";
 
 function test() {
@@ -7130,88 +4050,7 @@ var timeout = {
 };
 
 module.exports = timeout;
-},{}],118:[function(require,module,exports){
-(function (global){
-"use strict";
-
-var isNative = require("./internal/isNative");
-
-/** Used to detect functions containing a `this` reference. */
-var reThis = /\bthis\b/;
-
-/** Used for native method references. */
-var objectProto = Object.prototype;
-
-/** Used to detect DOM support. */
-var document = (document = global.window) && document.document;
-
-/** Native method references. */
-var propertyIsEnumerable = objectProto.propertyIsEnumerable;
-
-/**
- * An object environment feature flags.
- *
- * @static
- * @memberOf _
- * @type Object
- */
-var support = {};
-
-(function (x) {
-  /**
-   * Detect if functions can be decompiled by `Function#toString`
-   * (all but Firefox OS certified apps, older Opera mobile browsers, and
-   * the PlayStation 3; forced `false` for Windows 8 apps).
-   *
-   * @memberOf _.support
-   * @type boolean
-   */
-  support.funcDecomp = !isNative(global.WinRTError) && reThis.test(function () {
-    return this;
-  });
-
-  /**
-   * Detect if `Function#name` is supported (all but IE).
-   *
-   * @memberOf _.support
-   * @type boolean
-   */
-  support.funcNames = typeof Function.name == "string";
-
-  /**
-   * Detect if the DOM is supported.
-   *
-   * @memberOf _.support
-   * @type boolean
-   */
-  try {
-    support.dom = document.createDocumentFragment().nodeType === 11;
-  } catch (e) {
-    support.dom = false;
-  }
-
-  /**
-   * Detect if `arguments` object indexes are non-enumerable.
-   *
-   * In Firefox < 4, IE < 9, PhantomJS, and Safari < 5.1 `arguments` object
-   * indexes are non-enumerable. Chrome < 25 and Node.js < 0.11.0 treat
-   * `arguments` object indexes as non-enumerable and fail `hasOwnProperty`
-   * checks for indexes that exceed their function's formal parameters with
-   * associated values of `0`.
-   *
-   * @memberOf _.support
-   * @type boolean
-   */
-  try {
-    support.nonEnumArgs = !propertyIsEnumerable.call(arguments, 1);
-  } catch (e) {
-    support.nonEnumArgs = true;
-  }
-})(0, 0);
-
-module.exports = support;
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./internal/isNative":89}],119:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -7228,12 +4067,11 @@ var Store = _interopRequire(require("./core/class/Store"));
 
 var createElement = _interopRequire(require("./core/internal/createElement"));
 
-var createFactory = _interopRequire(require("./core/internal/createFactory"));
-
 var _coreImmutableImmutables = require("./core/immutable/Immutables");
 
 var ImmutableArray = _coreImmutableImmutables.ImmutableArray;
 var ImmutableObject = _coreImmutableImmutables.ImmutableObject;
+
 var assign = _interopRequire(require("./core/internal/assign"));
 
 var ash = {};
@@ -7249,14 +4087,14 @@ assign(ash, {
 	Store: Store,
 
 	"e": createElement,
-	createFactory: createFactory,
+	createElement: createElement,
 
 	ImmutableArray: ImmutableArray,
 	ImmutableObject: ImmutableObject
 });
 
 module.exports = ash;
-},{"./core/class/Action":16,"./core/class/Component":19,"./core/class/Observable":21,"./core/class/Renderer":22,"./core/class/Store":23,"./core/immutable/Immutables":24,"./core/internal/assign":30,"./core/internal/createElement":61,"./core/internal/createFactory":63}],120:[function(require,module,exports){
+},{"./core/class/Action":14,"./core/class/Component":17,"./core/class/Observable":19,"./core/class/Renderer":20,"./core/class/Store":21,"./core/immutable/Immutables":22,"./core/internal/assign":24,"./core/internal/createElement":26}],50:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7309,7 +4147,7 @@ module.exports = {
   'isMatching': require('./array/isMatching')
 };
 
-},{"./array/chunk":121,"./array/compact":122,"./array/difference":123,"./array/drop":124,"./array/dropRight":125,"./array/dropRightWhile":126,"./array/dropWhile":127,"./array/findIndex":128,"./array/findLastIndex":129,"./array/first":130,"./array/flatten":131,"./array/flattenDeep":132,"./array/indexOf":133,"./array/initial":134,"./array/intersection":135,"./array/isMatching":136,"./array/last":137,"./array/lastIndexOf":138,"./array/pull":139,"./array/pullAt":140,"./array/remove":141,"./array/rest":142,"./array/slice":143,"./array/sortedIndex":144,"./array/sortedLastIndex":145,"./array/take":146,"./array/takeRight":147,"./array/takeRightWhile":148,"./array/takeWhile":149,"./array/union":150,"./array/uniq":151,"./array/unzip":152,"./array/without":153,"./array/xor":154,"./array/zip":155,"./array/zipObject":156}],121:[function(require,module,exports){
+},{"./array/chunk":51,"./array/compact":52,"./array/difference":53,"./array/drop":54,"./array/dropRight":55,"./array/dropRightWhile":56,"./array/dropWhile":57,"./array/findIndex":58,"./array/findLastIndex":59,"./array/first":60,"./array/flatten":61,"./array/flattenDeep":62,"./array/indexOf":63,"./array/initial":64,"./array/intersection":65,"./array/isMatching":66,"./array/last":67,"./array/lastIndexOf":68,"./array/pull":69,"./array/pullAt":70,"./array/remove":71,"./array/rest":72,"./array/slice":73,"./array/sortedIndex":74,"./array/sortedLastIndex":75,"./array/take":76,"./array/takeRight":77,"./array/takeRightWhile":78,"./array/takeWhile":79,"./array/union":80,"./array/uniq":81,"./array/unzip":82,"./array/without":83,"./array/xor":84,"./array/zip":85,"./array/zipObject":86}],51:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7357,7 +4195,7 @@ function chunk(array, size) {
 
 module.exports = chunk;
 
-},{"./slice":143}],122:[function(require,module,exports){
+},{"./slice":73}],52:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7398,7 +4236,7 @@ function compact(array) {
 
 module.exports = compact;
 
-},{}],123:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7446,7 +4284,7 @@ function difference() {
 
 module.exports = difference;
 
-},{"../internal/baseDifference":230,"../internal/baseFlatten":235,"../lang/isArguments":293,"../lang/isArray":294}],124:[function(require,module,exports){
+},{"../internal/baseDifference":160,"../internal/baseFlatten":165,"../lang/isArguments":223,"../lang/isArray":224}],54:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7489,7 +4327,7 @@ function drop(array, n, guard) {
 
 module.exports = drop;
 
-},{"./slice":143}],125:[function(require,module,exports){
+},{"./slice":73}],55:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7534,7 +4372,7 @@ function dropRight(array, n, guard) {
 
 module.exports = dropRight;
 
-},{"./slice":143}],126:[function(require,module,exports){
+},{"./slice":73}],56:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7597,7 +4435,7 @@ function dropRightWhile(array, predicate, thisArg) {
 
 module.exports = dropRightWhile;
 
-},{"../internal/baseCallback":225,"./slice":143}],127:[function(require,module,exports){
+},{"../internal/baseCallback":155,"./slice":73}],57:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7660,7 +4498,7 @@ function dropWhile(array, predicate, thisArg) {
 
 module.exports = dropWhile;
 
-},{"../internal/baseCallback":225,"./slice":143}],128:[function(require,module,exports){
+},{"../internal/baseCallback":155,"./slice":73}],58:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7727,7 +4565,7 @@ function findIndex(array, predicate, thisArg) {
 
 module.exports = findIndex;
 
-},{"../internal/baseCallback":225}],129:[function(require,module,exports){
+},{"../internal/baseCallback":155}],59:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7793,7 +4631,7 @@ function findLastIndex(array, predicate, thisArg) {
 
 module.exports = findLastIndex;
 
-},{"../internal/baseCallback":225}],130:[function(require,module,exports){
+},{"../internal/baseCallback":155}],60:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7826,7 +4664,7 @@ function first(array) {
 
 module.exports = first;
 
-},{}],131:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7872,7 +4710,7 @@ function flatten(array, isDeep, guard) {
 
 module.exports = flatten;
 
-},{"../internal/baseFlatten":235}],132:[function(require,module,exports){
+},{"../internal/baseFlatten":165}],62:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7903,7 +4741,7 @@ function flattenDeep(array) {
 
 module.exports = flattenDeep;
 
-},{"../internal/baseFlatten":235}],133:[function(require,module,exports){
+},{"../internal/baseFlatten":165}],63:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7963,7 +4801,7 @@ function indexOf(array, value, fromIndex) {
 
 module.exports = indexOf;
 
-},{"../internal/baseIndexOf":242,"./sortedIndex":144}],134:[function(require,module,exports){
+},{"../internal/baseIndexOf":172,"./sortedIndex":74}],64:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -7994,7 +4832,7 @@ function initial(array) {
 
 module.exports = initial;
 
-},{"./slice":143}],135:[function(require,module,exports){
+},{"./slice":73}],65:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8072,7 +4910,7 @@ function intersection() {
 
 module.exports = intersection;
 
-},{"../internal/baseIndexOf":242,"../internal/cacheIndexOf":254,"../internal/createCache":263,"../lang/isArguments":293,"../lang/isArray":294}],136:[function(require,module,exports){
+},{"../internal/baseIndexOf":172,"../internal/cacheIndexOf":184,"../internal/createCache":193,"../lang/isArguments":223,"../lang/isArray":224}],66:[function(require,module,exports){
 
 'use strict';
 
@@ -8150,7 +4988,7 @@ function isMatching(chain1, chain2, options)
 } // isMatching
 
 module.exports = isMatching;
-},{"../lang/isArray":294}],137:[function(require,module,exports){
+},{"../lang/isArray":224}],67:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8180,7 +5018,7 @@ function last(array) {
 
 module.exports = last;
 
-},{}],138:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8242,7 +5080,7 @@ function lastIndexOf(array, value, fromIndex) {
 
 module.exports = lastIndexOf;
 
-},{"./sortedLastIndex":145}],139:[function(require,module,exports){
+},{"./sortedLastIndex":75}],69:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8301,7 +5139,7 @@ function pull() {
 
 module.exports = pull;
 
-},{"../internal/baseIndexOf":242}],140:[function(require,module,exports){
+},{"../internal/baseIndexOf":172}],70:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8375,7 +5213,7 @@ function pullAt(array) {
 
 module.exports = pullAt;
 
-},{"../internal/baseAt":224,"../internal/baseCompareAscending":227,"../internal/baseFlatten":235}],141:[function(require,module,exports){
+},{"../internal/baseAt":154,"../internal/baseCompareAscending":157,"../internal/baseFlatten":165}],71:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8445,7 +5283,7 @@ function remove(array, predicate, thisArg) {
 
 module.exports = remove;
 
-},{"../internal/baseCallback":225}],142:[function(require,module,exports){
+},{"../internal/baseCallback":155}],72:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8476,7 +5314,7 @@ function rest(array) {
 
 module.exports = rest;
 
-},{"./slice":143}],143:[function(require,module,exports){
+},{"./slice":73}],73:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8527,7 +5365,7 @@ function slice(array, start, end) {
 
 module.exports = slice;
 
-},{"../internal/baseSlice":249}],144:[function(require,module,exports){
+},{"../internal/baseSlice":179}],74:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8592,7 +5430,7 @@ function sortedIndex(array, value, iteratee, thisArg) {
 
 module.exports = sortedIndex;
 
-},{"../internal/baseCallback":225,"../internal/baseSortedIndex":250,"../utility/identity":367}],145:[function(require,module,exports){
+},{"../internal/baseCallback":155,"../internal/baseSortedIndex":180,"../utility/identity":297}],75:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8633,7 +5471,7 @@ function sortedLastIndex(array, value, iteratee, thisArg) {
 
 module.exports = sortedLastIndex;
 
-},{"../internal/baseCallback":225,"../internal/baseSortedIndex":250,"../utility/identity":367}],146:[function(require,module,exports){
+},{"../internal/baseCallback":155,"../internal/baseSortedIndex":180,"../utility/identity":297}],76:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8676,7 +5514,7 @@ function take(array, n, guard) {
 
 module.exports = take;
 
-},{"./slice":143}],147:[function(require,module,exports){
+},{"./slice":73}],77:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8721,7 +5559,7 @@ function takeRight(array, n, guard) {
 
 module.exports = takeRight;
 
-},{"./slice":143}],148:[function(require,module,exports){
+},{"./slice":73}],78:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8784,7 +5622,7 @@ function takeRightWhile(array, predicate, thisArg) {
 
 module.exports = takeRightWhile;
 
-},{"../internal/baseCallback":225,"./slice":143}],149:[function(require,module,exports){
+},{"../internal/baseCallback":155,"./slice":73}],79:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8847,7 +5685,7 @@ function takeWhile(array, predicate, thisArg) {
 
 module.exports = takeWhile;
 
-},{"../internal/baseCallback":225,"./slice":143}],150:[function(require,module,exports){
+},{"../internal/baseCallback":155,"./slice":73}],80:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8883,7 +5721,7 @@ function union() {
 
 module.exports = union;
 
-},{"../internal/baseFlatten":235,"../internal/baseUniq":251}],151:[function(require,module,exports){
+},{"../internal/baseFlatten":165,"../internal/baseUniq":181}],81:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -8998,7 +5836,7 @@ function uniq(array, isSorted, iteratee, thisArg) {
 
 module.exports = uniq;
 
-},{"../internal/baseCallback":225,"../internal/baseIndexOf":242,"../internal/baseUniq":251}],152:[function(require,module,exports){
+},{"../internal/baseCallback":155,"../internal/baseIndexOf":172,"../internal/baseUniq":181}],82:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9042,7 +5880,7 @@ function unzip(array) {
 
 module.exports = unzip;
 
-},{"../collection/max":180,"../collection/pluck":183,"../lang/isObject":310}],153:[function(require,module,exports){
+},{"../collection/max":110,"../collection/pluck":113,"../lang/isObject":240}],83:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9079,7 +5917,7 @@ function without(array) {
 
 module.exports = without;
 
-},{"../internal/baseDifference":230,"./slice":143}],154:[function(require,module,exports){
+},{"../internal/baseDifference":160,"./slice":73}],84:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9128,7 +5966,7 @@ function xor() {
 
 module.exports = xor;
 
-},{"../internal/baseDifference":230,"../internal/baseUniq":251,"../lang/isArguments":293,"../lang/isArray":294}],155:[function(require,module,exports){
+},{"../internal/baseDifference":160,"../internal/baseUniq":181,"../lang/isArguments":223,"../lang/isArray":224}],85:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9166,7 +6004,7 @@ function zip() {
 
 module.exports = zip;
 
-},{"./unzip":152}],156:[function(require,module,exports){
+},{"./unzip":82}],86:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9215,7 +6053,7 @@ function zipObject(props, vals) {
 
 module.exports = zipObject;
 
-},{"../lang/isArray":294}],157:[function(require,module,exports){
+},{"../lang/isArray":224}],87:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9236,7 +6074,7 @@ module.exports = {
   'wrapperValueOf': require('./chain/wrapperValueOf')
 };
 
-},{"./chain/chain":158,"./chain/lodash":159,"./chain/tap":160,"./chain/wrapperChain":161,"./chain/wrapperToString":162,"./chain/wrapperValueOf":163}],158:[function(require,module,exports){
+},{"./chain/chain":88,"./chain/lodash":89,"./chain/tap":90,"./chain/wrapperChain":91,"./chain/wrapperToString":92,"./chain/wrapperValueOf":93}],88:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9279,7 +6117,7 @@ function chain(value) {
 
 module.exports = chain;
 
-},{"./lodash":159}],159:[function(require,module,exports){
+},{"./lodash":89}],89:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9382,7 +6220,7 @@ lodashWrapper.prototype = lodash.prototype;
 
 module.exports = lodash;
 
-},{"../internal/lodashWrapper":277,"../lang/isArray":294}],160:[function(require,module,exports){
+},{"../internal/lodashWrapper":207,"../lang/isArray":224}],90:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9420,7 +6258,7 @@ function tap(value, interceptor, thisArg) {
 
 module.exports = tap;
 
-},{}],161:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9462,7 +6300,7 @@ function wrapperChain() {
 
 module.exports = wrapperChain;
 
-},{}],162:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9490,7 +6328,7 @@ function wrapperToString() {
 
 module.exports = wrapperToString;
 
-},{}],163:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9519,7 +6357,7 @@ function wrapperValueOf() {
 
 module.exports = wrapperValueOf;
 
-},{}],164:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9572,7 +6410,7 @@ module.exports = {
   'clear': require('./collection/clear')
 };
 
-},{"./collection/at":165,"./collection/clear":166,"./collection/contains":167,"./collection/countBy":168,"./collection/every":169,"./collection/filter":170,"./collection/find":171,"./collection/findLast":172,"./collection/findWhere":173,"./collection/forEach":174,"./collection/forEachRight":175,"./collection/groupBy":176,"./collection/indexBy":177,"./collection/invoke":178,"./collection/map":179,"./collection/max":180,"./collection/min":181,"./collection/partition":182,"./collection/pluck":183,"./collection/reduce":184,"./collection/reduceRight":185,"./collection/reject":186,"./collection/sample":187,"./collection/shuffle":188,"./collection/size":189,"./collection/some":190,"./collection/sortBy":191,"./collection/toArray":192,"./collection/where":193}],165:[function(require,module,exports){
+},{"./collection/at":95,"./collection/clear":96,"./collection/contains":97,"./collection/countBy":98,"./collection/every":99,"./collection/filter":100,"./collection/find":101,"./collection/findLast":102,"./collection/findWhere":103,"./collection/forEach":104,"./collection/forEachRight":105,"./collection/groupBy":106,"./collection/indexBy":107,"./collection/invoke":108,"./collection/map":109,"./collection/max":110,"./collection/min":111,"./collection/partition":112,"./collection/pluck":113,"./collection/reduce":114,"./collection/reduceRight":115,"./collection/reject":116,"./collection/sample":117,"./collection/shuffle":118,"./collection/size":119,"./collection/some":120,"./collection/sortBy":121,"./collection/toArray":122,"./collection/where":123}],95:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9623,7 +6461,7 @@ function at(collection) {
 
 module.exports = at;
 
-},{"../internal/baseAt":224,"../internal/baseFlatten":235,"../internal/toIterable":286}],166:[function(require,module,exports){
+},{"../internal/baseAt":154,"../internal/baseFlatten":165,"../internal/toIterable":216}],96:[function(require,module,exports){
 
 'use strict';
 
@@ -9663,7 +6501,7 @@ function clear(collection)
 } // clear
 
 module.exports = clear;
-},{"../lang/isArray":294,"../lang/isObject":310,"../lang/isString":313,"../object/forOwn":327}],167:[function(require,module,exports){
+},{"../lang/isArray":224,"../lang/isObject":240,"../lang/isString":243,"../object/forOwn":257}],97:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9737,7 +6575,7 @@ function contains(collection, target, fromIndex) {
 
 module.exports = contains;
 
-},{"../internal/baseIndexOf":242,"../lang/isArray":294,"../lang/isString":313,"../object/values":340}],168:[function(require,module,exports){
+},{"../internal/baseIndexOf":172,"../lang/isArray":224,"../lang/isString":243,"../object/values":270}],98:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9794,7 +6632,7 @@ var countBy = createAggregator(function(result, value, key) {
 
 module.exports = countBy;
 
-},{"../internal/createAggregator":260}],169:[function(require,module,exports){
+},{"../internal/createAggregator":190}],99:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9879,7 +6717,7 @@ function every(collection, predicate, thisArg) {
 
 module.exports = every;
 
-},{"../internal/arrayEvery":220,"../internal/baseCallback":225,"../internal/baseEach":231,"../lang/isArray":294}],170:[function(require,module,exports){
+},{"../internal/arrayEvery":150,"../internal/baseCallback":155,"../internal/baseEach":161,"../lang/isArray":224}],100:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -9942,7 +6780,7 @@ function filter(collection, predicate, thisArg) {
 
 module.exports = filter;
 
-},{"../internal/arrayFilter":221,"../internal/baseCallback":225,"../internal/baseFilter":233,"../lang/isArray":294}],171:[function(require,module,exports){
+},{"../internal/arrayFilter":151,"../internal/baseCallback":155,"../internal/baseFilter":163,"../lang/isArray":224}],101:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10011,7 +6849,7 @@ function find(collection, predicate, thisArg) {
 
 module.exports = find;
 
-},{"../array/findIndex":128,"../internal/baseCallback":225,"../internal/baseEach":231,"../internal/baseFind":234,"../lang/isArray":294}],172:[function(require,module,exports){
+},{"../array/findIndex":58,"../internal/baseCallback":155,"../internal/baseEach":161,"../internal/baseFind":164,"../lang/isArray":224}],102:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10049,7 +6887,7 @@ function findLast(collection, predicate, thisArg) {
 
 module.exports = findLast;
 
-},{"../internal/baseCallback":225,"../internal/baseEachRight":232,"../internal/baseFind":234}],173:[function(require,module,exports){
+},{"../internal/baseCallback":155,"../internal/baseEachRight":162,"../internal/baseFind":164}],103:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10091,7 +6929,7 @@ function findWhere(collection, source) {
 
 module.exports = findWhere;
 
-},{"../utility/matches":368,"./find":171}],174:[function(require,module,exports){
+},{"../utility/matches":298,"./find":101}],104:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10139,7 +6977,7 @@ function forEach(collection, iteratee, thisArg) {
 
 module.exports = forEach;
 
-},{"../internal/arrayEach":219,"../internal/baseCallback":225,"../internal/baseEach":231,"../lang/isArray":294}],175:[function(require,module,exports){
+},{"../internal/arrayEach":149,"../internal/baseCallback":155,"../internal/baseEach":161,"../lang/isArray":224}],105:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10197,7 +7035,7 @@ function forEachRight(collection, iteratee, thisArg) {
 
 module.exports = forEachRight;
 
-},{"../internal/baseCallback":225,"../internal/baseEachRight":232,"../lang/isArray":294}],176:[function(require,module,exports){
+},{"../internal/baseCallback":155,"../internal/baseEachRight":162,"../lang/isArray":224}],106:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10259,7 +7097,7 @@ var groupBy = createAggregator(function(result, value, key) {
 
 module.exports = groupBy;
 
-},{"../internal/createAggregator":260}],177:[function(require,module,exports){
+},{"../internal/createAggregator":190}],107:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10315,7 +7153,7 @@ var indexBy = createAggregator(function(result, value, key) {
 
 module.exports = indexBy;
 
-},{"../internal/createAggregator":260}],178:[function(require,module,exports){
+},{"../internal/createAggregator":190}],108:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10389,7 +7227,7 @@ function invoke(collection, methodName) {
 
 module.exports = invoke;
 
-},{"../array/slice":143,"../internal/baseEach":231}],179:[function(require,module,exports){
+},{"../array/slice":73,"../internal/baseEach":161}],109:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10451,7 +7289,7 @@ function map(collection, iteratee, thisArg) {
 
 module.exports = map;
 
-},{"../internal/arrayMap":222,"../internal/baseCallback":225,"../internal/baseMap":244,"../lang/isArray":294}],180:[function(require,module,exports){
+},{"../internal/arrayMap":152,"../internal/baseCallback":155,"../internal/baseMap":174,"../lang/isArray":224}],110:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10552,7 +7390,7 @@ function max(collection, iteratee, thisArg) {
 
 module.exports = max;
 
-},{"../internal/baseCallback":225,"../internal/baseEach":231,"../internal/charAtCallback":255,"../internal/toIterable":286,"../lang/isArray":294,"../lang/isString":313}],181:[function(require,module,exports){
+},{"../internal/baseCallback":155,"../internal/baseEach":161,"../internal/charAtCallback":185,"../internal/toIterable":216,"../lang/isArray":224,"../lang/isString":243}],111:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10653,7 +7491,7 @@ function min(collection, iteratee, thisArg) {
 
 module.exports = min;
 
-},{"../internal/baseCallback":225,"../internal/baseEach":231,"../internal/charAtCallback":255,"../internal/toIterable":286,"../lang/isArray":294,"../lang/isString":313}],182:[function(require,module,exports){
+},{"../internal/baseCallback":155,"../internal/baseEach":161,"../internal/charAtCallback":185,"../internal/toIterable":216,"../lang/isArray":224,"../lang/isString":243}],112:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10714,7 +7552,7 @@ var partition = createAggregator(function(result, value, key) {
 
 module.exports = partition;
 
-},{"../internal/createAggregator":260}],183:[function(require,module,exports){
+},{"../internal/createAggregator":190}],113:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10751,7 +7589,7 @@ function pluck(collection, key) {
 
 module.exports = pluck;
 
-},{"../utility/property":374,"./map":179}],184:[function(require,module,exports){
+},{"../utility/property":304,"./map":109}],114:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10825,7 +7663,7 @@ function reduce(collection, iteratee, accumulator, thisArg) {
 
 module.exports = reduce;
 
-},{"../internal/baseCallback":225,"../internal/baseEach":231,"../internal/baseReduce":247,"../lang/isArray":294}],185:[function(require,module,exports){
+},{"../internal/baseCallback":155,"../internal/baseEach":161,"../internal/baseReduce":177,"../lang/isArray":224}],115:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10889,7 +7727,7 @@ function reduceRight(collection, iteratee, accumulator, thisArg) {
 
 module.exports = reduceRight;
 
-},{"../internal/baseCallback":225,"../internal/baseEachRight":232,"../internal/baseReduce":247,"../lang/isArray":294}],186:[function(require,module,exports){
+},{"../internal/baseCallback":155,"../internal/baseEachRight":162,"../internal/baseReduce":177,"../lang/isArray":224}],116:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10952,7 +7790,7 @@ function reject(collection, predicate, thisArg) {
 
 module.exports = reject;
 
-},{"../internal/arrayFilter":221,"../internal/baseCallback":225,"../internal/baseFilter":233,"../lang/isArray":294}],187:[function(require,module,exports){
+},{"../internal/arrayFilter":151,"../internal/baseCallback":155,"../internal/baseFilter":163,"../lang/isArray":224}],117:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -10999,7 +7837,7 @@ function sample(collection, n, guard) {
 
 module.exports = sample;
 
-},{"../internal/baseRandom":246,"../internal/toIterable":286,"./shuffle":188}],188:[function(require,module,exports){
+},{"../internal/baseRandom":176,"../internal/toIterable":216,"./shuffle":118}],118:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11045,7 +7883,7 @@ function shuffle(collection) {
 
 module.exports = shuffle;
 
-},{"../internal/baseRandom":246,"../internal/toIterable":286}],189:[function(require,module,exports){
+},{"../internal/baseRandom":176,"../internal/toIterable":216}],119:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11092,7 +7930,7 @@ function size(collection) {
 
 module.exports = size;
 
-},{"../object/keys":332}],190:[function(require,module,exports){
+},{"../object/keys":262}],120:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11199,7 +8037,7 @@ function some(collection, predicate, thisArg) {
 
 module.exports = some;
 
-},{"../internal/baseCallback":225,"../internal/baseEach":231,"../lang/isArray":294}],191:[function(require,module,exports){
+},{"../internal/baseCallback":155,"../internal/baseEach":161,"../lang/isArray":224}],121:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11348,7 +8186,7 @@ function sortBy(collection, iteratee, thisArg) {
 
 module.exports = sortBy;
 
-},{"../internal/baseCallback":225,"../internal/baseCompareAscending":227,"../internal/baseEach":231,"../lang/isArray":294}],192:[function(require,module,exports){
+},{"../internal/baseCallback":155,"../internal/baseCompareAscending":157,"../internal/baseEach":161,"../lang/isArray":224}],122:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11390,7 +8228,7 @@ function toArray(collection) {
 
 module.exports = toArray;
 
-},{"../internal/baseSlice":249,"../object/values":340}],193:[function(require,module,exports){
+},{"../internal/baseSlice":179,"../object/values":270}],123:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11435,7 +8273,7 @@ function where(collection, source) {
 
 module.exports = where;
 
-},{"../utility/matches":368,"./filter":170}],194:[function(require,module,exports){
+},{"../utility/matches":298,"./filter":100}],124:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11473,7 +8311,7 @@ module.exports = {
   'quaternary': require('./function/quaternary')
 };
 
-},{"./function/after":195,"./function/before":196,"./function/binary":197,"./function/bind":198,"./function/bindAll":199,"./function/bindKey":200,"./function/curry":201,"./function/curryRight":202,"./function/debounce":203,"./function/defer":204,"./function/delay":205,"./function/flow":206,"./function/flowRight":207,"./function/memoize":208,"./function/negate":209,"./function/once":210,"./function/partial":211,"./function/partialRight":212,"./function/quaternary":213,"./function/ternary":214,"./function/throttle":215,"./function/unary":216,"./function/wrap":217}],195:[function(require,module,exports){
+},{"./function/after":125,"./function/before":126,"./function/binary":127,"./function/bind":128,"./function/bindAll":129,"./function/bindKey":130,"./function/curry":131,"./function/curryRight":132,"./function/debounce":133,"./function/defer":134,"./function/delay":135,"./function/flow":136,"./function/flowRight":137,"./function/memoize":138,"./function/negate":139,"./function/once":140,"./function/partial":141,"./function/partialRight":142,"./function/quaternary":143,"./function/ternary":144,"./function/throttle":145,"./function/unary":146,"./function/wrap":147}],125:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -11535,7 +8373,7 @@ function after(n, func) {
 module.exports = after;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../lang/isFunction":303}],196:[function(require,module,exports){
+},{"../lang/isFunction":233}],126:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11587,7 +8425,7 @@ function before(n, func) {
 
 module.exports = before;
 
-},{"../lang/isFunction":303}],197:[function(require,module,exports){
+},{"../lang/isFunction":233}],127:[function(require,module,exports){
 'use strict';
 
 /**
@@ -11620,7 +8458,7 @@ function binary (func)
 }
 
 module.exports = binary;
-},{}],198:[function(require,module,exports){
+},{}],128:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11678,7 +8516,7 @@ bind.placeholder = {};
 
 module.exports = bind;
 
-},{"../array/slice":143,"../internal/basePartial":245,"../internal/createWrapper":269,"../internal/replaceHolders":284}],199:[function(require,module,exports){
+},{"../array/slice":73,"../internal/basePartial":175,"../internal/createWrapper":199,"../internal/replaceHolders":214}],129:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11750,7 +8588,7 @@ function bindAll(object) {
 
 module.exports = bindAll;
 
-},{"../internal/baseFlatten":235,"../internal/createWrapper":269,"../object/functions":329}],200:[function(require,module,exports){
+},{"../internal/baseFlatten":165,"../internal/createWrapper":199,"../object/functions":259}],130:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11818,7 +8656,7 @@ bindKey.placeholder = {};
 
 module.exports = bindKey;
 
-},{"../array/slice":143,"../internal/createWrapper":269,"../internal/replaceHolders":284}],201:[function(require,module,exports){
+},{"../array/slice":73,"../internal/createWrapper":199,"../internal/replaceHolders":214}],131:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11873,7 +8711,7 @@ curry.placeholder = {};
 
 module.exports = curry;
 
-},{"../internal/baseCurry":229}],202:[function(require,module,exports){
+},{"../internal/baseCurry":159}],132:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -11925,7 +8763,7 @@ curryRight.placeholder = {};
 
 module.exports = curryRight;
 
-},{"../internal/baseCurry":229}],203:[function(require,module,exports){
+},{"../internal/baseCurry":159}],133:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12122,7 +8960,7 @@ function debounce(func, wait, options) {
 
 module.exports = debounce;
 
-},{"../lang/isFunction":303,"../lang/isObject":310,"../utility/now":372}],204:[function(require,module,exports){
+},{"../lang/isFunction":233,"../lang/isObject":240,"../utility/now":302}],134:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12162,7 +9000,7 @@ function defer(func) {
 
 module.exports = defer;
 
-},{"../array/slice":143,"../lang/isFunction":303}],205:[function(require,module,exports){
+},{"../array/slice":73,"../lang/isFunction":233}],135:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12203,7 +9041,7 @@ function delay(func, wait) {
 
 module.exports = delay;
 
-},{"../array/slice":143,"../lang/isFunction":303}],206:[function(require,module,exports){
+},{"../array/slice":73,"../lang/isFunction":233}],136:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12265,7 +9103,7 @@ function flow() {
 
 module.exports = flow;
 
-},{"../internal/arrayEvery":220,"../lang/isFunction":303}],207:[function(require,module,exports){
+},{"../internal/arrayEvery":150,"../lang/isFunction":233}],137:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12327,7 +9165,7 @@ function flowRight() {
 
 module.exports = flowRight;
 
-},{"../internal/arrayEvery":220,"../lang/isFunction":303}],208:[function(require,module,exports){
+},{"../internal/arrayEvery":150,"../lang/isFunction":233}],138:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12402,7 +9240,7 @@ function memoize(func, resolver) {
 
 module.exports = memoize;
 
-},{"../lang/isFunction":303}],209:[function(require,module,exports){
+},{"../lang/isFunction":233}],139:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12446,7 +9284,7 @@ function negate(predicate) {
 
 module.exports = negate;
 
-},{"../lang/isFunction":303}],210:[function(require,module,exports){
+},{"../lang/isFunction":233}],140:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12480,7 +9318,7 @@ var once = partial(before, 2);
 
 module.exports = once;
 
-},{"./before":196,"./partial":211}],211:[function(require,module,exports){
+},{"./before":126,"./partial":141}],141:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12529,7 +9367,7 @@ partial.placeholder = {};
 
 module.exports = partial;
 
-},{"../array/slice":143,"../internal/basePartial":245,"../internal/replaceHolders":284}],212:[function(require,module,exports){
+},{"../array/slice":73,"../internal/basePartial":175,"../internal/replaceHolders":214}],142:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12588,7 +9426,7 @@ partialRight.placeholder = {};
 
 module.exports = partialRight;
 
-},{"../array/slice":143,"../internal/basePartial":245,"../internal/replaceHolders":284}],213:[function(require,module,exports){
+},{"../array/slice":73,"../internal/basePartial":175,"../internal/replaceHolders":214}],143:[function(require,module,exports){
 'use strict';
 
 /**
@@ -12633,7 +9471,7 @@ function quaternary(func)
 }
 
 module.exports = quaternary;
-},{}],214:[function(require,module,exports){
+},{}],144:[function(require,module,exports){
 'use strict';
 
 /**
@@ -12672,7 +9510,7 @@ function ternary (func)
 }
 
 module.exports = ternary;
-},{}],215:[function(require,module,exports){
+},{}],145:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12754,7 +9592,7 @@ function throttle(func, wait, options) {
 
 module.exports = throttle;
 
-},{"../lang/isFunction":303,"../lang/isObject":310,"./debounce":203}],216:[function(require,module,exports){
+},{"../lang/isFunction":233,"../lang/isObject":240,"./debounce":133}],146:[function(require,module,exports){
 'use strict';
 
 /**
@@ -12781,7 +9619,7 @@ function unary(func)
 }
 
 module.exports = unary;
-},{}],217:[function(require,module,exports){
+},{}],147:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -12822,7 +9660,7 @@ function wrap(value, wrapper) {
 
 module.exports = wrap;
 
-},{"../internal/basePartial":245}],218:[function(require,module,exports){
+},{"../internal/basePartial":175}],148:[function(require,module,exports){
 /**
  * @license
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -13138,7 +9976,7 @@ arrayEach(['concat', 'splice'], function(methodName) {
 
 module.exports = lodash;
 
-},{"./array":120,"./chain":157,"./chain/lodash":159,"./collection":164,"./function":194,"./internal/arrayEach":219,"./internal/baseAssign":223,"./internal/baseForOwn":238,"./internal/baseFunctions":241,"./internal/lodashWrapper":277,"./lang":290,"./lang/isObject":310,"./number":315,"./object":319,"./object/keys":332,"./string":342,"./support":362,"./utility":363,"./utility/mixin":369}],219:[function(require,module,exports){
+},{"./array":50,"./chain":87,"./chain/lodash":89,"./collection":94,"./function":124,"./internal/arrayEach":149,"./internal/baseAssign":153,"./internal/baseForOwn":168,"./internal/baseFunctions":171,"./internal/lodashWrapper":207,"./lang":220,"./lang/isObject":240,"./number":245,"./object":249,"./object/keys":262,"./string":272,"./support":292,"./utility":293,"./utility/mixin":299}],149:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13171,7 +10009,7 @@ function arrayEach(array, iteratee) {
 
 module.exports = arrayEach;
 
-},{}],220:[function(require,module,exports){
+},{}],150:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13205,7 +10043,7 @@ function arrayEvery(array, predicate) {
 
 module.exports = arrayEvery;
 
-},{}],221:[function(require,module,exports){
+},{}],151:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13241,7 +10079,7 @@ function arrayFilter(array, predicate) {
 
 module.exports = arrayFilter;
 
-},{}],222:[function(require,module,exports){
+},{}],152:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13273,7 +10111,7 @@ function arrayMap(array, iteratee) {
 
 module.exports = arrayMap;
 
-},{}],223:[function(require,module,exports){
+},{}],153:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13310,7 +10148,7 @@ function baseAssign(object, source, customizer) {
 
 module.exports = baseAssign;
 
-},{"../object/keys":332}],224:[function(require,module,exports){
+},{"../object/keys":262}],154:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13342,7 +10180,7 @@ function baseAt(collection, props) {
 
 module.exports = baseAt;
 
-},{}],225:[function(require,module,exports){
+},{}],155:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13437,7 +10275,7 @@ function baseCallback(func, thisArg, argCount) {
 
 module.exports = baseCallback;
 
-},{"../lang/isNative":305,"../support":362,"../utility/identity":367,"../utility/matches":368,"../utility/property":374,"./baseSetData":248,"./getData":271}],226:[function(require,module,exports){
+},{"../lang/isNative":235,"../support":292,"../utility/identity":297,"../utility/matches":298,"../utility/property":304,"./baseSetData":178,"./getData":201}],156:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13518,7 +10356,7 @@ function baseClone(value, isDeep, customizer, stackA, stackB) {
 
 module.exports = baseClone;
 
-},{"../lang/isArray":294,"../lang/isObject":310,"./arrayEach":219,"./baseForOwn":238,"./initArrayClone":272,"./initObjectClone":273}],227:[function(require,module,exports){
+},{"../lang/isArray":224,"../lang/isObject":240,"./arrayEach":149,"./baseForOwn":168,"./initArrayClone":202,"./initObjectClone":203}],157:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13551,7 +10389,7 @@ function baseCompareAscending(value, other) {
 
 module.exports = baseCompareAscending;
 
-},{}],228:[function(require,module,exports){
+},{}],158:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -13596,7 +10434,7 @@ if (!nativeCreate) {
 module.exports = baseCreate;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../lang/isNative":305,"../lang/isObject":310}],229:[function(require,module,exports){
+},{"../lang/isNative":235,"../lang/isObject":240}],159:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13629,7 +10467,7 @@ function baseCurry(func, bitmask, arity) {
 
 module.exports = baseCurry;
 
-},{"./createWrapper":269}],230:[function(require,module,exports){
+},{"./createWrapper":199}],160:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13690,7 +10528,7 @@ function baseDifference(array, values) {
 
 module.exports = baseDifference;
 
-},{"./baseIndexOf":242,"./cacheIndexOf":254,"./createCache":263}],231:[function(require,module,exports){
+},{"./baseIndexOf":172,"./cacheIndexOf":184,"./createCache":193}],161:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13736,7 +10574,7 @@ function baseEach(collection, iteratee) {
 
 module.exports = baseEach;
 
-},{"./baseForOwn":238,"./toIterable":286}],232:[function(require,module,exports){
+},{"./baseForOwn":168,"./toIterable":216}],162:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13780,7 +10618,7 @@ function baseEachRight(collection, iteratee) {
 
 module.exports = baseEachRight;
 
-},{"./baseForOwnRight":239,"./toIterable":286}],233:[function(require,module,exports){
+},{"./baseForOwnRight":169,"./toIterable":216}],163:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13813,7 +10651,7 @@ function baseFilter(collection, predicate) {
 
 module.exports = baseFilter;
 
-},{"./baseEach":231}],234:[function(require,module,exports){
+},{"./baseEach":161}],164:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13850,7 +10688,7 @@ function baseFind(collection, predicate, eachFunc, retKey) {
 
 module.exports = baseFind;
 
-},{}],235:[function(require,module,exports){
+},{}],165:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13904,7 +10742,7 @@ function baseFlatten(array, isDeep, isStrict, fromIndex) {
 
 module.exports = baseFlatten;
 
-},{"../lang/isArguments":293,"../lang/isArray":294}],236:[function(require,module,exports){
+},{"../lang/isArguments":223,"../lang/isArray":224}],166:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13942,7 +10780,7 @@ function baseFor(object, iteratee, keysFunc) {
 
 module.exports = baseFor;
 
-},{}],237:[function(require,module,exports){
+},{}],167:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13969,7 +10807,7 @@ function baseForIn(object, iteratee) {
 
 module.exports = baseForIn;
 
-},{"../object/keysIn":333,"./baseFor":236}],238:[function(require,module,exports){
+},{"../object/keysIn":263,"./baseFor":166}],168:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -13996,7 +10834,7 @@ function baseForOwn(object, iteratee) {
 
 module.exports = baseForOwn;
 
-},{"../object/keys":332,"./baseFor":236}],239:[function(require,module,exports){
+},{"../object/keys":262,"./baseFor":166}],169:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -14023,7 +10861,7 @@ function baseForOwnRight(object, iteratee) {
 
 module.exports = baseForOwnRight;
 
-},{"../object/keys":332,"./baseForRight":240}],240:[function(require,module,exports){
+},{"../object/keys":262,"./baseForRight":170}],170:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -14058,7 +10896,7 @@ function baseForRight(object, iteratee, keysFunc) {
 
 module.exports = baseForRight;
 
-},{}],241:[function(require,module,exports){
+},{}],171:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -14095,7 +10933,7 @@ function baseFunctions(object, props) {
 
 module.exports = baseFunctions;
 
-},{"../lang/isFunction":303}],242:[function(require,module,exports){
+},{"../lang/isFunction":233}],172:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -14130,7 +10968,7 @@ function baseIndexOf(array, value, fromIndex) {
 
 module.exports = baseIndexOf;
 
-},{}],243:[function(require,module,exports){
+},{}],173:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -14388,7 +11226,7 @@ function baseIsEqual(value, other, customizer, isWhere, stackA, stackB) {
 
 module.exports = baseIsEqual;
 
-},{"../lang/isFunction":303,"../object/keys":332}],244:[function(require,module,exports){
+},{"../lang/isFunction":233,"../object/keys":262}],174:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -14419,7 +11257,7 @@ function baseMap(collection, iteratee) {
 
 module.exports = baseMap;
 
-},{"./baseEach":231}],245:[function(require,module,exports){
+},{"./baseEach":161}],175:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -14463,7 +11301,7 @@ function basePartial(func, bitmask, args, holders, thisArg) {
 
 module.exports = basePartial;
 
-},{"./createWrapper":269,"./getData":271}],246:[function(require,module,exports){
+},{"./createWrapper":199,"./getData":201}],176:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -14494,7 +11332,7 @@ function baseRandom(min, max) {
 
 module.exports = baseRandom;
 
-},{}],247:[function(require,module,exports){
+},{}],177:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -14529,7 +11367,7 @@ function baseReduce(collection, iteratee, accumulator, initFromCollection, eachF
 
 module.exports = baseReduce;
 
-},{}],248:[function(require,module,exports){
+},{}],178:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -14556,7 +11394,7 @@ var baseSetData = !metaMap ? identity : function(func, data) {
 
 module.exports = baseSetData;
 
-},{"../utility/identity":367,"./metaMap":278}],249:[function(require,module,exports){
+},{"../utility/identity":297,"./metaMap":208}],179:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -14587,7 +11425,7 @@ function baseSlice(array) {
 
 module.exports = baseSlice;
 
-},{}],250:[function(require,module,exports){
+},{}],180:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -14639,7 +11477,7 @@ function baseSortedIndex(array, value, iteratee, retHighest) {
 
 module.exports = baseSortedIndex;
 
-},{"../lang/isFunction":303}],251:[function(require,module,exports){
+},{"../lang/isFunction":233}],181:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -14705,7 +11543,7 @@ function baseUniq(array, iteratee) {
 
 module.exports = baseUniq;
 
-},{"./baseIndexOf":242,"./cacheIndexOf":254,"./createCache":263}],252:[function(require,module,exports){
+},{"./baseIndexOf":172,"./cacheIndexOf":184,"./createCache":193}],182:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -14739,7 +11577,7 @@ function baseValues(object, keysFunc) {
 
 module.exports = baseValues;
 
-},{}],253:[function(require,module,exports){
+},{}],183:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -14806,7 +11644,7 @@ if (!bufferSlice) {
 module.exports = bufferClone;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../lang/isNative":305,"../utility/identity":367}],254:[function(require,module,exports){
+},{"../lang/isNative":235,"../utility/identity":297}],184:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -14831,7 +11669,7 @@ function cacheIndexOf(cache, value) {
 
 module.exports = cacheIndexOf;
 
-},{}],255:[function(require,module,exports){
+},{}],185:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -14855,7 +11693,7 @@ function charAtCallback(string) {
 
 module.exports = charAtCallback;
 
-},{}],256:[function(require,module,exports){
+},{}],186:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -14884,7 +11722,7 @@ function charsLeftIndex(string, chars) {
 
 module.exports = charsLeftIndex;
 
-},{}],257:[function(require,module,exports){
+},{}],187:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -14912,7 +11750,7 @@ function charsRightIndex(string, chars) {
 
 module.exports = charsRightIndex;
 
-},{}],258:[function(require,module,exports){
+},{}],188:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -14957,7 +11795,7 @@ function composeArgs(partialArgs, partialHolders, args) {
 
 module.exports = composeArgs;
 
-},{}],259:[function(require,module,exports){
+},{}],189:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -15004,7 +11842,7 @@ function composeArgsRight(partialRightArgs, partialRightHolders, args) {
 
 module.exports = composeArgsRight;
 
-},{}],260:[function(require,module,exports){
+},{}],190:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -15053,7 +11891,7 @@ function createAggregator(setter, initializer) {
 
 module.exports = createAggregator;
 
-},{"../lang/isArray":294,"./baseCallback":225,"./baseEach":231}],261:[function(require,module,exports){
+},{"../lang/isArray":224,"./baseCallback":155,"./baseEach":161}],191:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -15101,7 +11939,7 @@ function createAssigner(assigner) {
 
 module.exports = createAssigner;
 
-},{"./baseCallback":225}],262:[function(require,module,exports){
+},{"./baseCallback":155}],192:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -15132,7 +11970,7 @@ function createBindWrapper(func, thisArg) {
 
 module.exports = createBindWrapper;
 
-},{"./createCtorWrapper":265}],263:[function(require,module,exports){
+},{"./createCtorWrapper":195}],193:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -15168,7 +12006,7 @@ var createCache = Set && function(array) {
 module.exports = createCache;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../lang/isNative":305}],264:[function(require,module,exports){
+},{"../lang/isNative":235}],194:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -15209,7 +12047,7 @@ function createCompounder(callback) {
 
 module.exports = createCompounder;
 
-},{"./deburrLetter":270}],265:[function(require,module,exports){
+},{"./deburrLetter":200}],195:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -15242,7 +12080,7 @@ function createCtorWrapper(Ctor) {
 
 module.exports = createCtorWrapper;
 
-},{"../lang/isObject":310,"./baseCreate":228}],266:[function(require,module,exports){
+},{"../lang/isObject":240,"./baseCreate":158}],196:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -15342,7 +12180,7 @@ function createHybridWrapper(func, bitmask, arity, thisArg, partialArgs, partial
 
 module.exports = createHybridWrapper;
 
-},{"./composeArgs":258,"./composeArgsRight":259,"./createCtorWrapper":265,"./replaceHolders":284,"./setData":285}],267:[function(require,module,exports){
+},{"./composeArgs":188,"./composeArgsRight":189,"./createCtorWrapper":195,"./replaceHolders":214,"./setData":215}],197:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -15386,7 +12224,7 @@ function createPad(string, length, chars) {
 module.exports = createPad;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../string/repeat":352}],268:[function(require,module,exports){
+},{"../string/repeat":282}],198:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -15438,7 +12276,7 @@ function createPartialWrapper(func, bitmask, partialArgs, thisArg) {
 
 module.exports = createPartialWrapper;
 
-},{"./createCtorWrapper":265}],269:[function(require,module,exports){
+},{"./createCtorWrapper":195}],199:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -15565,7 +12403,7 @@ function createWrapper(func, bitmask, arity, thisArg, partialArgs, partialHolder
 
 module.exports = createWrapper;
 
-},{"../lang/isFunction":303,"./baseSetData":248,"./baseSlice":249,"./composeArgs":258,"./composeArgsRight":259,"./createBindWrapper":262,"./createHybridWrapper":266,"./createPartialWrapper":268,"./getData":271,"./replaceHolders":284,"./setData":285}],270:[function(require,module,exports){
+},{"../lang/isFunction":233,"./baseSetData":178,"./baseSlice":179,"./composeArgs":188,"./composeArgsRight":189,"./createBindWrapper":192,"./createHybridWrapper":196,"./createPartialWrapper":198,"./getData":201,"./replaceHolders":214,"./setData":215}],200:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -15614,7 +12452,7 @@ function deburrLetter(letter) {
 
 module.exports = deburrLetter;
 
-},{}],271:[function(require,module,exports){
+},{}],201:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -15639,7 +12477,7 @@ var getData = !metaMap ? noop : function(func) {
 
 module.exports = getData;
 
-},{"../utility/noop":371,"./metaMap":278}],272:[function(require,module,exports){
+},{"../utility/noop":301,"./metaMap":208}],202:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -15683,7 +12521,7 @@ function initArrayClone(array, isDeep) {
 
 module.exports = initArrayClone;
 
-},{}],273:[function(require,module,exports){
+},{}],203:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -15800,7 +12638,7 @@ function initObjectClone(object, isDeep) {
 
 module.exports = initObjectClone;
 
-},{"../lang/isFunction":303,"./baseAssign":223,"./bufferClone":253}],274:[function(require,module,exports){
+},{"../lang/isFunction":233,"./baseAssign":153,"./bufferClone":183}],204:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -15871,7 +12709,7 @@ function isArrayLike(value) {
 
 module.exports = isArrayLike;
 
-},{}],275:[function(require,module,exports){
+},{}],205:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -15896,7 +12734,7 @@ function isStrictComparable(value) {
 
 module.exports = isStrictComparable;
 
-},{"../lang/isObject":310}],276:[function(require,module,exports){
+},{"../lang/isObject":240}],206:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -15921,7 +12759,7 @@ function isWhitespace(charCode) {
 
 module.exports = isWhitespace;
 
-},{}],277:[function(require,module,exports){
+},{}],207:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -15946,7 +12784,7 @@ function lodashWrapper(value, chainAll) {
 
 module.exports = lodashWrapper;
 
-},{}],278:[function(require,module,exports){
+},{}],208:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -15967,7 +12805,7 @@ var metaMap = WeakMap && new WeakMap;
 module.exports = metaMap;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../lang/isNative":305}],279:[function(require,module,exports){
+},{"../lang/isNative":235}],209:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16002,7 +12840,7 @@ function pickByArray(object, props) {
 
 module.exports = pickByArray;
 
-},{}],280:[function(require,module,exports){
+},{}],210:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16035,7 +12873,7 @@ function pickByCallback(object, predicate) {
 
 module.exports = pickByCallback;
 
-},{"./baseForIn":237}],281:[function(require,module,exports){
+},{"./baseForIn":167}],211:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16050,7 +12888,7 @@ var reEscape = /<%-([\s\S]+?)%>/g;
 
 module.exports = reEscape;
 
-},{}],282:[function(require,module,exports){
+},{}],212:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16065,7 +12903,7 @@ var reEvaluate = /<%([\s\S]+?)%>/g;
 
 module.exports = reEvaluate;
 
-},{}],283:[function(require,module,exports){
+},{}],213:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16080,7 +12918,7 @@ var reInterpolate = /<%=([\s\S]+?)%>/g;
 
 module.exports = reInterpolate;
 
-},{}],284:[function(require,module,exports){
+},{}],214:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16119,7 +12957,7 @@ function replaceHolders(array, placeholder) {
 
 module.exports = replaceHolders;
 
-},{}],285:[function(require,module,exports){
+},{}],215:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16169,7 +13007,7 @@ var setData = (function() {
 
 module.exports = setData;
 
-},{"../utility/now":372,"./baseSetData":248}],286:[function(require,module,exports){
+},{"../utility/now":302,"./baseSetData":178}],216:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16209,7 +13047,7 @@ function toIterable(value) {
 
 module.exports = toIterable;
 
-},{"../object/values":340,"./toObject":287}],287:[function(require,module,exports){
+},{"../object/values":270,"./toObject":217}],217:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16233,7 +13071,7 @@ function toObject(value) {
 
 module.exports = toObject;
 
-},{"../lang/isObject":310}],288:[function(require,module,exports){
+},{"../lang/isObject":240}],218:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16262,7 +13100,7 @@ function trimmedLeftIndex(string) {
 
 module.exports = trimmedLeftIndex;
 
-},{"./isWhitespace":276}],289:[function(require,module,exports){
+},{"./isWhitespace":206}],219:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16290,7 +13128,7 @@ function trimmedRightIndex(string) {
 
 module.exports = trimmedRightIndex;
 
-},{"./isWhitespace":276}],290:[function(require,module,exports){
+},{"./isWhitespace":206}],220:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16327,7 +13165,7 @@ module.exports = {
   'isUndefined': require('./lang/isUndefined')
 };
 
-},{"./lang/clone":291,"./lang/cloneDeep":292,"./lang/isArguments":293,"./lang/isArray":294,"./lang/isBoolean":295,"./lang/isDate":296,"./lang/isElement":297,"./lang/isEmpty":298,"./lang/isEqual":299,"./lang/isError":300,"./lang/isFinite":301,"./lang/isFiniteLike":302,"./lang/isFunction":303,"./lang/isNaN":304,"./lang/isNative":305,"./lang/isNode":306,"./lang/isNull":307,"./lang/isNumber":308,"./lang/isNumberLike":309,"./lang/isObject":310,"./lang/isPlainObject":311,"./lang/isRegExp":312,"./lang/isString":313,"./lang/isUndefined":314}],291:[function(require,module,exports){
+},{"./lang/clone":221,"./lang/cloneDeep":222,"./lang/isArguments":223,"./lang/isArray":224,"./lang/isBoolean":225,"./lang/isDate":226,"./lang/isElement":227,"./lang/isEmpty":228,"./lang/isEqual":229,"./lang/isError":230,"./lang/isFinite":231,"./lang/isFiniteLike":232,"./lang/isFunction":233,"./lang/isNaN":234,"./lang/isNative":235,"./lang/isNode":236,"./lang/isNull":237,"./lang/isNumber":238,"./lang/isNumberLike":239,"./lang/isObject":240,"./lang/isPlainObject":241,"./lang/isRegExp":242,"./lang/isString":243,"./lang/isUndefined":244}],221:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16405,7 +13243,7 @@ function clone(value, isDeep, customizer, thisArg) {
 
 module.exports = clone;
 
-},{"../internal/baseCallback":225,"../internal/baseClone":226}],292:[function(require,module,exports){
+},{"../internal/baseCallback":155,"../internal/baseClone":156}],222:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16466,7 +13304,7 @@ function cloneDeep(value, customizer, thisArg) {
 
 module.exports = cloneDeep;
 
-},{"../internal/baseCallback":225,"../internal/baseClone":226}],293:[function(require,module,exports){
+},{"../internal/baseCallback":155,"../internal/baseClone":156}],223:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16516,7 +13354,7 @@ function isArguments(value) {
 
 module.exports = isArguments;
 
-},{}],294:[function(require,module,exports){
+},{}],224:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16562,7 +13400,7 @@ var isArray = nativeIsArray || function(value) {
 
 module.exports = isArray;
 
-},{"./isNative":305}],295:[function(require,module,exports){
+},{"./isNative":235}],225:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16604,7 +13442,7 @@ function isBoolean(value) {
 
 module.exports = isBoolean;
 
-},{}],296:[function(require,module,exports){
+},{}],226:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16645,7 +13483,7 @@ function isDate(value) {
 
 module.exports = isDate;
 
-},{}],297:[function(require,module,exports){
+},{}],227:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16693,7 +13531,7 @@ if (!support.dom) {
 
 module.exports = isElement;
 
-},{"../support":362,"./isPlainObject":311}],298:[function(require,module,exports){
+},{"../support":292,"./isPlainObject":241}],228:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16757,7 +13595,7 @@ function isEmpty(value) {
 
 module.exports = isEmpty;
 
-},{"../object/keys":332,"./isArguments":293,"./isArray":294,"./isFunction":303,"./isString":313}],299:[function(require,module,exports){
+},{"../object/keys":262,"./isArguments":223,"./isArray":224,"./isFunction":233,"./isString":243}],229:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16818,7 +13656,7 @@ function isEqual(value, other, customizer, thisArg) {
 
 module.exports = isEqual;
 
-},{"../internal/baseCallback":225,"../internal/baseIsEqual":243,"../internal/isStrictComparable":275}],300:[function(require,module,exports){
+},{"../internal/baseCallback":155,"../internal/baseIsEqual":173,"../internal/isStrictComparable":205}],230:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16860,7 +13698,7 @@ function isError(value) {
 
 module.exports = isError;
 
-},{}],301:[function(require,module,exports){
+},{}],231:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -16912,7 +13750,7 @@ var isFinite = nativeNumIsFinite || function(value) {
 module.exports = isFinite;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./isNative":305}],302:[function(require,module,exports){
+},{"./isNative":235}],232:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -16955,7 +13793,7 @@ function isFinite(value)
 
 module.exports = isFinite;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],303:[function(require,module,exports){
+},{}],233:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -16989,7 +13827,7 @@ function isFunction(value) {
 
 module.exports = isFunction;
 
-},{}],304:[function(require,module,exports){
+},{}],234:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -17034,7 +13872,7 @@ function isNaN(value) {
 
 module.exports = isNaN;
 
-},{"./isNumber":308}],305:[function(require,module,exports){
+},{"./isNumber":238}],235:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -17089,7 +13927,7 @@ function isNative(value) {
 
 module.exports = isNative;
 
-},{"../string/escapeRegExp":347,"./isFunction":303}],306:[function(require,module,exports){
+},{"../string/escapeRegExp":277,"./isFunction":233}],236:[function(require,module,exports){
 'use strict';
 
 
@@ -17107,7 +13945,7 @@ function isNode(value)
 } // ash.isNode
 
 module.exports = isNode;
-},{}],307:[function(require,module,exports){
+},{}],237:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -17139,7 +13977,7 @@ function isNull(value) {
 
 module.exports = isNull;
 
-},{}],308:[function(require,module,exports){
+},{}],238:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -17188,7 +14026,7 @@ function isNumber(value) {
 
 module.exports = isNumber;
 
-},{}],309:[function(require,module,exports){
+},{}],239:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -17212,7 +14050,7 @@ function isNumber(value)
 
 module.exports = isNumber;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],310:[function(require,module,exports){
+},{}],240:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -17253,7 +14091,7 @@ function isObject(value) {
 
 module.exports = isObject;
 
-},{}],311:[function(require,module,exports){
+},{}],241:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -17355,7 +14193,7 @@ var isPlainObject = !getPrototypeOf ? shimIsPlainObject : function(value) {
 
 module.exports = isPlainObject;
 
-},{"../internal/baseForIn":237,"./isFunction":303,"./isNative":305}],312:[function(require,module,exports){
+},{"../internal/baseForIn":167,"./isFunction":233,"./isNative":235}],242:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -17396,7 +14234,7 @@ function isRegExp(value) {
 
 module.exports = isRegExp;
 
-},{}],313:[function(require,module,exports){
+},{}],243:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -17438,7 +14276,7 @@ function isString(value) {
 
 module.exports = isString;
 
-},{}],314:[function(require,module,exports){
+},{}],244:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -17470,7 +14308,7 @@ function isUndefined(value) {
 
 module.exports = isUndefined;
 
-},{}],315:[function(require,module,exports){
+},{}],245:[function(require,module,exports){
 module.exports =
 {
 	'roundToMultiple': require('./number/roundToMultiple'),
@@ -17478,7 +14316,7 @@ module.exports =
 	'limit': require('./number/limit')
 };
 
-},{"./number/limit":316,"./number/roundToMultiple":317,"./number/sameDecimals":318}],316:[function(require,module,exports){
+},{"./number/limit":246,"./number/roundToMultiple":247,"./number/sameDecimals":248}],246:[function(require,module,exports){
 'use strict';
 
 /**
@@ -17490,7 +14328,7 @@ function limit(value, lowerBound, upperBound)
 }
 
 module.exports = limit;
-},{}],317:[function(require,module,exports){
+},{}],247:[function(require,module,exports){
 'use strict';
 
 /**
@@ -17520,7 +14358,7 @@ function roundToMultiple(value, base, round)
 } // roundToMultiple
 
 module.exports = roundToMultiple;
-},{}],318:[function(require,module,exports){
+},{}],248:[function(require,module,exports){
 'use strict';
 
 /**
@@ -17538,7 +14376,7 @@ function sameDecimals(value, number)
 }
 
 module.exports = sameDecimals;
-},{}],319:[function(require,module,exports){
+},{}],249:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -17575,7 +14413,7 @@ module.exports = {
   'valuesIn': require('./object/valuesIn')
 };
 
-},{"./object/assign":320,"./object/create":321,"./object/defaults":322,"./object/findKey":323,"./object/findLastKey":324,"./object/forIn":325,"./object/forInRight":326,"./object/forOwn":327,"./object/forOwnRight":328,"./object/functions":329,"./object/has":330,"./object/invert":331,"./object/keys":332,"./object/keysIn":333,"./object/mapValues":334,"./object/merge":335,"./object/omit":336,"./object/pairs":337,"./object/pick":338,"./object/transform":339,"./object/values":340,"./object/valuesIn":341}],320:[function(require,module,exports){
+},{"./object/assign":250,"./object/create":251,"./object/defaults":252,"./object/findKey":253,"./object/findLastKey":254,"./object/forIn":255,"./object/forInRight":256,"./object/forOwn":257,"./object/forOwnRight":258,"./object/functions":259,"./object/has":260,"./object/invert":261,"./object/keys":262,"./object/keysIn":263,"./object/mapValues":264,"./object/merge":265,"./object/omit":266,"./object/pairs":267,"./object/pick":268,"./object/transform":269,"./object/values":270,"./object/valuesIn":271}],250:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -17619,7 +14457,7 @@ var assign = createAssigner(baseAssign);
 
 module.exports = assign;
 
-},{"../internal/baseAssign":223,"../internal/createAssigner":261}],321:[function(require,module,exports){
+},{"../internal/baseAssign":153,"../internal/createAssigner":191}],251:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -17669,7 +14507,7 @@ function create(prototype, properties) {
 
 module.exports = create;
 
-},{"../internal/baseAssign":223,"../internal/baseCreate":228}],322:[function(require,module,exports){
+},{"../internal/baseAssign":153,"../internal/baseCreate":158}],252:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -17725,7 +14563,7 @@ function defaults(object) {
 
 module.exports = defaults;
 
-},{"../internal/baseSlice":249,"./assign":320}],323:[function(require,module,exports){
+},{"../internal/baseSlice":179,"./assign":250}],253:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -17786,7 +14624,7 @@ function findKey(object, predicate, thisArg) {
 
 module.exports = findKey;
 
-},{"../internal/baseCallback":225,"../internal/baseFind":234,"../internal/baseForOwn":238}],324:[function(require,module,exports){
+},{"../internal/baseCallback":155,"../internal/baseFind":164,"../internal/baseForOwn":168}],254:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -17847,7 +14685,7 @@ function findLastKey(object, predicate, thisArg) {
 
 module.exports = findLastKey;
 
-},{"../internal/baseCallback":225,"../internal/baseFind":234,"../internal/baseForOwnRight":239}],325:[function(require,module,exports){
+},{"../internal/baseCallback":155,"../internal/baseFind":164,"../internal/baseForOwnRight":169}],255:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -17896,7 +14734,7 @@ function forIn(object, iteratee, thisArg) {
 
 module.exports = forIn;
 
-},{"../internal/baseCallback":225,"../internal/baseFor":236,"./keysIn":333}],326:[function(require,module,exports){
+},{"../internal/baseCallback":155,"../internal/baseFor":166,"./keysIn":263}],256:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -17941,7 +14779,7 @@ function forInRight(object, iteratee, thisArg) {
 
 module.exports = forInRight;
 
-},{"../internal/baseCallback":225,"../internal/baseForRight":240,"./keysIn":333}],327:[function(require,module,exports){
+},{"../internal/baseCallback":155,"../internal/baseForRight":170,"./keysIn":263}],257:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -17982,7 +14820,7 @@ function forOwn(object, iteratee, thisArg) {
 
 module.exports = forOwn;
 
-},{"../internal/baseCallback":225,"../internal/baseForOwn":238}],328:[function(require,module,exports){
+},{"../internal/baseCallback":155,"../internal/baseForOwn":168}],258:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -18020,7 +14858,7 @@ function forOwnRight(object, iteratee, thisArg) {
 
 module.exports = forOwnRight;
 
-},{"../internal/baseCallback":225,"../internal/baseForRight":240,"./keys":332}],329:[function(require,module,exports){
+},{"../internal/baseCallback":155,"../internal/baseForRight":170,"./keys":262}],259:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -18053,7 +14891,7 @@ function functions(object) {
 
 module.exports = functions;
 
-},{"../internal/baseFunctions":241,"./keysIn":333}],330:[function(require,module,exports){
+},{"../internal/baseFunctions":171,"./keysIn":263}],260:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -18090,7 +14928,7 @@ function has(object, key) {
 
 module.exports = has;
 
-},{}],331:[function(require,module,exports){
+},{}],261:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -18158,7 +14996,7 @@ function invert(object, multiValue) {
 
 module.exports = invert;
 
-},{"./keys":332}],332:[function(require,module,exports){
+},{"./keys":262}],262:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -18248,7 +15086,7 @@ var keys = !nativeKeys ? shimKeys : function(object) {
 
 module.exports = keys;
 
-},{"../internal/toObject":287,"../lang/isArguments":293,"../lang/isArray":294,"../lang/isNative":305,"../support":362,"./keysIn":333}],333:[function(require,module,exports){
+},{"../internal/toObject":217,"../lang/isArguments":223,"../lang/isArray":224,"../lang/isNative":235,"../support":292,"./keysIn":263}],263:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -18314,7 +15152,7 @@ function keysIn(object) {
 
 module.exports = keysIn;
 
-},{"../internal/toObject":287,"../lang/isArguments":293,"../lang/isArray":294,"../support":362}],334:[function(require,module,exports){
+},{"../internal/toObject":217,"../lang/isArguments":223,"../lang/isArray":224,"../support":292}],264:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -18374,7 +15212,7 @@ function mapValues(object, iteratee, thisArg) {
 
 module.exports = mapValues;
 
-},{"../internal/baseCallback":225,"../internal/baseForOwn":238}],335:[function(require,module,exports){
+},{"../internal/baseCallback":155,"../internal/baseForOwn":168}],265:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -18509,7 +15347,7 @@ var merge = createAssigner(baseMerge);
 
 module.exports = merge;
 
-},{"../internal/arrayEach":219,"../internal/baseForOwn":238,"../internal/createAssigner":261,"../internal/isArrayLike":274,"../lang/isArray":294,"../lang/isPlainObject":311}],336:[function(require,module,exports){
+},{"../internal/arrayEach":149,"../internal/baseForOwn":168,"../internal/createAssigner":191,"../internal/isArrayLike":204,"../lang/isArray":224,"../lang/isPlainObject":241}],266:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -18571,7 +15409,7 @@ function omit(object, predicate, thisArg) {
 
 module.exports = omit;
 
-},{"../internal/arrayMap":222,"../internal/baseCallback":225,"../internal/baseDifference":230,"../internal/baseFlatten":235,"../internal/pickByArray":279,"../internal/pickByCallback":280,"../internal/toObject":287,"./keysIn":333}],337:[function(require,module,exports){
+},{"../internal/arrayMap":152,"../internal/baseCallback":155,"../internal/baseDifference":160,"../internal/baseFlatten":165,"../internal/pickByArray":209,"../internal/pickByCallback":210,"../internal/toObject":217,"./keysIn":263}],267:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -18611,7 +15449,7 @@ function pairs(object) {
 
 module.exports = pairs;
 
-},{"./keys":332}],338:[function(require,module,exports){
+},{"./keys":262}],268:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -18665,7 +15503,7 @@ function pick(object, predicate, thisArg) {
 
 module.exports = pick;
 
-},{"../internal/baseCallback":225,"../internal/baseFlatten":235,"../internal/pickByArray":279,"../internal/pickByCallback":280,"../internal/toObject":287}],339:[function(require,module,exports){
+},{"../internal/baseCallback":155,"../internal/baseFlatten":165,"../internal/pickByArray":209,"../internal/pickByCallback":210,"../internal/toObject":217}],269:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -18737,7 +15575,7 @@ function transform(object, iteratee, accumulator, thisArg) {
 
 module.exports = transform;
 
-},{"../internal/arrayEach":219,"../internal/baseCallback":225,"../internal/baseCreate":228,"../internal/baseForOwn":238,"../internal/isArrayLike":274,"../lang/isObject":310}],340:[function(require,module,exports){
+},{"../internal/arrayEach":149,"../internal/baseCallback":155,"../internal/baseCreate":158,"../internal/baseForOwn":168,"../internal/isArrayLike":204,"../lang/isObject":240}],270:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -18775,7 +15613,7 @@ function values(object) {
 
 module.exports = values;
 
-},{"../internal/baseValues":252,"./keys":332}],341:[function(require,module,exports){
+},{"../internal/baseValues":182,"./keys":262}],271:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -18814,7 +15652,7 @@ function valuesIn(object) {
 
 module.exports = valuesIn;
 
-},{"../internal/baseValues":252,"./keysIn":333}],342:[function(require,module,exports){
+},{"../internal/baseValues":182,"./keysIn":263}],272:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -18846,7 +15684,7 @@ module.exports = {
   'unescape': require('./string/unescape')
 };
 
-},{"./string/camelCase":343,"./string/capitalize":344,"./string/endsWith":345,"./string/escape":346,"./string/escapeRegExp":347,"./string/kebabCase":348,"./string/pad":349,"./string/padLeft":350,"./string/padRight":351,"./string/repeat":352,"./string/snakeCase":353,"./string/startsWith":354,"./string/template":355,"./string/templateSettings":356,"./string/trim":357,"./string/trimLeft":358,"./string/trimRight":359,"./string/trunc":360,"./string/unescape":361}],343:[function(require,module,exports){
+},{"./string/camelCase":273,"./string/capitalize":274,"./string/endsWith":275,"./string/escape":276,"./string/escapeRegExp":277,"./string/kebabCase":278,"./string/pad":279,"./string/padLeft":280,"./string/padRight":281,"./string/repeat":282,"./string/snakeCase":283,"./string/startsWith":284,"./string/template":285,"./string/templateSettings":286,"./string/trim":287,"./string/trimLeft":288,"./string/trimRight":289,"./string/trunc":290,"./string/unescape":291}],273:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -18889,7 +15727,7 @@ var camelCase = createCompounder(function(result, word, index) {
 
 module.exports = camelCase;
 
-},{"../internal/createCompounder":264}],344:[function(require,module,exports){
+},{"../internal/createCompounder":194}],274:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -18922,7 +15760,7 @@ function capitalize(string) {
 
 module.exports = capitalize;
 
-},{}],345:[function(require,module,exports){
+},{}],275:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -18968,7 +15806,7 @@ function endsWith(string, target, position) {
 
 module.exports = endsWith;
 
-},{}],346:[function(require,module,exports){
+},{}],276:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -19046,7 +15884,7 @@ function escape(string) {
 
 module.exports = escape;
 
-},{}],347:[function(require,module,exports){
+},{}],277:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -19086,7 +15924,7 @@ function escapeRegExp(string) {
 
 module.exports = escapeRegExp;
 
-},{}],348:[function(require,module,exports){
+},{}],278:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -19124,7 +15962,7 @@ var kebabCase = createCompounder(function(result, word, index) {
 
 module.exports = kebabCase;
 
-},{"../internal/createCompounder":264}],349:[function(require,module,exports){
+},{"../internal/createCompounder":194}],279:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -19185,7 +16023,7 @@ function pad(string, length, chars) {
 module.exports = pad;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../internal/createPad":267}],350:[function(require,module,exports){
+},{"../internal/createPad":197}],280:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -19226,7 +16064,7 @@ function padLeft(string, length, chars) {
 
 module.exports = padLeft;
 
-},{"../internal/createPad":267}],351:[function(require,module,exports){
+},{"../internal/createPad":197}],281:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -19267,7 +16105,7 @@ function padRight(string, length, chars) {
 
 module.exports = padRight;
 
-},{"../internal/createPad":267}],352:[function(require,module,exports){
+},{"../internal/createPad":197}],282:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -19329,7 +16167,7 @@ function repeat(string, n) {
 module.exports = repeat;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],353:[function(require,module,exports){
+},{}],283:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -19366,7 +16204,7 @@ var snakeCase = createCompounder(function(result, word, index) {
 
 module.exports = snakeCase;
 
-},{"../internal/createCompounder":264}],354:[function(require,module,exports){
+},{"../internal/createCompounder":194}],284:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -19409,7 +16247,7 @@ function startsWith(string, target, position) {
 
 module.exports = startsWith;
 
-},{}],355:[function(require,module,exports){
+},{}],285:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -19687,7 +16525,7 @@ function template(string, options, otherOptions) {
 
 module.exports = template;
 
-},{"../internal/reInterpolate":283,"../lang/isError":300,"../object/assign":320,"../object/keys":332,"../object/values":340,"../utility/attempt":364,"./escape":346,"./templateSettings":356}],356:[function(require,module,exports){
+},{"../internal/reInterpolate":213,"../lang/isError":230,"../object/assign":250,"../object/keys":262,"../object/values":270,"../utility/attempt":294,"./escape":276,"./templateSettings":286}],286:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -19764,7 +16602,7 @@ var templateSettings = {
 
 module.exports = templateSettings;
 
-},{"../internal/reEscape":281,"../internal/reEvaluate":282,"../internal/reInterpolate":283,"./escape":346}],357:[function(require,module,exports){
+},{"../internal/reEscape":211,"../internal/reEvaluate":212,"../internal/reInterpolate":213,"./escape":276}],287:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -19809,7 +16647,7 @@ function trim(string, chars) {
 
 module.exports = trim;
 
-},{"../internal/charsLeftIndex":256,"../internal/charsRightIndex":257,"../internal/trimmedLeftIndex":288,"../internal/trimmedRightIndex":289}],358:[function(require,module,exports){
+},{"../internal/charsLeftIndex":186,"../internal/charsRightIndex":187,"../internal/trimmedLeftIndex":218,"../internal/trimmedRightIndex":219}],288:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -19852,7 +16690,7 @@ function trimLeft(string, chars) {
 
 module.exports = trimLeft;
 
-},{"../internal/charsLeftIndex":256,"../internal/trimmedLeftIndex":288}],359:[function(require,module,exports){
+},{"../internal/charsLeftIndex":186,"../internal/trimmedLeftIndex":218}],289:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -19895,7 +16733,7 @@ function trimRight(string, chars) {
 
 module.exports = trimRight;
 
-},{"../internal/charsRightIndex":257,"../internal/trimmedRightIndex":289}],360:[function(require,module,exports){
+},{"../internal/charsRightIndex":187,"../internal/trimmedRightIndex":219}],290:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -19991,7 +16829,7 @@ function trunc(string, options) {
 
 module.exports = trunc;
 
-},{"../lang/isObject":310,"../lang/isRegExp":312}],361:[function(require,module,exports){
+},{"../lang/isObject":240,"../lang/isRegExp":242}],291:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -20052,7 +16890,7 @@ function unescape(string) {
 
 module.exports = unescape;
 
-},{}],362:[function(require,module,exports){
+},{}],292:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -20139,7 +16977,7 @@ var support = {};
 module.exports = support;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./lang/isNative":305}],363:[function(require,module,exports){
+},{"./lang/isNative":235}],293:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -20170,7 +17008,7 @@ module.exports = {
   'uuid': require('./utility/uuid')
 };
 
-},{"./utility/attempt":364,"./utility/callback":365,"./utility/constant":366,"./utility/identity":367,"./utility/matches":368,"./utility/mixin":369,"./utility/noConflict":370,"./utility/noop":371,"./utility/now":372,"./utility/parseInt":373,"./utility/property":374,"./utility/random":375,"./utility/range":376,"./utility/result":377,"./utility/times":378,"./utility/uniqueId":379,"./utility/uuid":380}],364:[function(require,module,exports){
+},{"./utility/attempt":294,"./utility/callback":295,"./utility/constant":296,"./utility/identity":297,"./utility/matches":298,"./utility/mixin":299,"./utility/noConflict":300,"./utility/noop":301,"./utility/now":302,"./utility/parseInt":303,"./utility/property":304,"./utility/random":305,"./utility/range":306,"./utility/result":307,"./utility/times":308,"./utility/uniqueId":309,"./utility/uuid":310}],294:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -20211,7 +17049,7 @@ function attempt(func) {
 
 module.exports = attempt;
 
-},{"../lang/isError":300}],365:[function(require,module,exports){
+},{"../lang/isError":230}],295:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -20262,7 +17100,7 @@ function callback(func, thisArg) {
 
 module.exports = callback;
 
-},{"../internal/baseCallback":225}],366:[function(require,module,exports){
+},{"../internal/baseCallback":155}],296:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -20295,7 +17133,7 @@ function constant(value) {
 
 module.exports = constant;
 
-},{}],367:[function(require,module,exports){
+},{}],297:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -20325,7 +17163,7 @@ function identity(value) {
 
 module.exports = identity;
 
-},{}],368:[function(require,module,exports){
+},{}],298:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -20417,7 +17255,7 @@ function matches(source) {
 
 module.exports = matches;
 
-},{"../internal/baseClone":226,"../internal/baseIsEqual":243,"../internal/isStrictComparable":275,"../object/keys":332}],369:[function(require,module,exports){
+},{"../internal/baseClone":156,"../internal/baseIsEqual":173,"../internal/isStrictComparable":205,"../object/keys":262}],299:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -20517,7 +17355,7 @@ function mixin(object, source, options) {
 
 module.exports = mixin;
 
-},{"../internal/baseFunctions":241,"../lang/isFunction":303,"../lang/isObject":310,"../object/keys":332}],370:[function(require,module,exports){
+},{"../internal/baseFunctions":171,"../lang/isFunction":233,"../lang/isObject":240,"../object/keys":262}],300:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -20551,7 +17389,7 @@ function noConflict() {
 module.exports = noConflict;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],371:[function(require,module,exports){
+},{}],301:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -20579,7 +17417,7 @@ function noop() {
 
 module.exports = noop;
 
-},{}],372:[function(require,module,exports){
+},{}],302:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -20611,7 +17449,7 @@ var now = nativeNow || function() {
 
 module.exports = now;
 
-},{"../lang/isNative":305}],373:[function(require,module,exports){
+},{"../lang/isNative":235}],303:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -20680,7 +17518,7 @@ if (nativeParseInt(whitespace + '08') != 8) {
 module.exports = parseInt;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../string/trim":357}],374:[function(require,module,exports){
+},{"../string/trim":287}],304:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -20722,7 +17560,7 @@ function property(key) {
 
 module.exports = property;
 
-},{}],375:[function(require,module,exports){
+},{}],305:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -20803,7 +17641,7 @@ function random(min, max, floating) {
 
 module.exports = random;
 
-},{"../internal/baseRandom":246}],376:[function(require,module,exports){
+},{"../internal/baseRandom":176}],306:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -20882,7 +17720,7 @@ function range(start, end, step) {
 
 module.exports = range;
 
-},{}],377:[function(require,module,exports){
+},{}],307:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -20936,7 +17774,7 @@ function result(object, key, defaultValue) {
 
 module.exports = result;
 
-},{"../lang/isFunction":303}],378:[function(require,module,exports){
+},{"../lang/isFunction":233}],308:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
@@ -20998,7 +17836,7 @@ function times(n, iteratee, thisArg) {
 module.exports = times;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../internal/baseCallback":225}],379:[function(require,module,exports){
+},{"../internal/baseCallback":155}],309:[function(require,module,exports){
 /**
  * Lo-Dash 3.0.0-pre (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="node" -o ./modern/`
@@ -21034,7 +17872,7 @@ function uniqueId(prefix) {
 
 module.exports = uniqueId;
 
-},{}],380:[function(require,module,exports){
+},{}],310:[function(require,module,exports){
 'use strict';
 
 var __cache = [];
@@ -21084,7 +17922,7 @@ function uuid()
 
 //return __uuid4;
 module.exports = e7;
-},{}],381:[function(require,module,exports){
+},{}],311:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -21149,4872 +17987,205 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],382:[function(require,module,exports){
+},{}],312:[function(require,module,exports){
 /**
- *  Copyright (c) 2014, Facebook, Inc.
- *  All rights reserved.
+ * This allows you to work with object hierarchies that have been frozen
+ * with Object.freeze().  "get" operations can use the normal JS syntax,
+ * but operations that modify the data will have to return partial copies of
+ * the structure. The portions of the structure that did not change will
+ * === their previous values.
  *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
+ * Inspired by clojure/mori and Immutable.js
  */
-(function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  global.Immutable = factory()
-}(this, function () { 'use strict';var SLICE$0 = Array.prototype.slice;
 
-  function createClass(ctor, superClass) {
-    if (superClass) {
-      ctor.prototype = Object.create(superClass.prototype);
+"use strict";
+
+var i = exports,
+  slice = [].slice;
+
+// we only care about objects or arrays for now
+function weCareAbout(val) {
+  return null !== val && (Array.isArray(val) || (typeof val === "object"));
+}
+// for testing
+exports._weCareAbout = weCareAbout;
+
+function arrayClone(arr) {
+  var index = 0,
+    length = arr.length,
+    result = Array(length);
+
+  for (; index < length; index += 1) {
+    result[index] = arr[index];
+  }
+  return result;
+}
+
+function objClone(obj) {
+  var index = 0,
+    keys = Object.keys(obj),
+    length = keys.length,
+    key,
+    result = {};
+
+  for (; index < length; index += 1) {
+    key = keys[index];
+    result[key] = obj[key];
+  }
+  return result;
+}
+
+function clone(coll) {
+  if (Array.isArray(coll)) {
+    return arrayClone(coll);
+  } else {
+    return objClone(coll);
+  }
+}
+
+function baseFreeze(coll, prevNodes) {
+  if (prevNodes.filter(function (node) { return node === coll; }).length > 0) {
+    throw new Error("object has a reference cycle");
+  }
+
+  Object.freeze(coll);
+  prevNodes.push(coll);
+  Object.keys(coll).forEach(function (key) {
+    var prop = coll[key];
+    if (weCareAbout(prop)) {
+      baseFreeze(prop, prevNodes);
     }
-    ctor.prototype.constructor = ctor;
+  });
+  prevNodes.pop();
+
+  return coll;
+}
+
+/**
+ * recrursively freeze an object and all its child objects
+ * @param  {Object|Array} coll
+ * @return {Object|Array}
+ */
+exports.freeze = function freeze(coll) {
+  return baseFreeze(coll, []);
+};
+
+/**
+ * set a value on an object or array
+ * @param  {Object|Array}  coll
+ * @param  {String|Number} key   Key or index
+ * @param  {Object}        value
+ * @return {Object|Array}        new object hierarchy with modifications
+ */
+exports.assoc = function assoc(coll, key, value) {
+  var newObj = clone(coll);
+
+  if (weCareAbout(value) && !Object.isFrozen(value)) {
+    value = baseFreeze(value, []);
   }
+  newObj[key] = value;
 
-  // Used for setting prototype methods that IE8 chokes on.
-  var DELETE = 'delete';
+  return Object.freeze(newObj);
 
-  // Constants describing the size of trie nodes.
-  var SHIFT = 5; // Resulted in best performance after ______?
-  var SIZE = 1 << SHIFT;
-  var MASK = SIZE - 1;
+};
 
-  // A consistent shared value representing "not set" which equals nothing other
-  // than itself, and nothing that could be provided externally.
-  var NOT_SET = {};
+/**
+ * un-set a value on an object or array
+ * @param  {Object|Array}  coll
+ * @param  {String|Number} key  Key or Index
+ * @return {Object|Array}       New object or array
+ */
+exports.dissoc = function dissoc(coll, key) {
+  var newObj = clone(coll);
 
-  // Boolean references, Rough equivalent of `bool &`.
-  var CHANGE_LENGTH = { value: false };
-  var DID_ALTER = { value: false };
+  delete newObj[key];
 
-  function MakeRef(ref) {
-    ref.value = false;
-    return ref;
+  return Object.freeze(newObj);
+};
+
+/**
+ * set a value deep in a hierarchical structure
+ * @param  {Object|Array} coll
+ * @param  {Array}        path    A list of keys to traverse
+ * @param  {Object}       value
+ * @return {Object|Array}       new object hierarchy with modifications
+ */
+exports.assocIn = function assocIn(coll, path, value) {
+  var key0 = path[0];
+  if (path.length === 1) {
+    // simplest case is a 1-element array.  Just a simple assoc.
+    return i.assoc(coll, key0, value);
+  } else {
+    // break the problem down.  Assoc this object with the first key
+    // and the result of assocIn with the rest of the keys
+    return i.assoc(coll, key0, assocIn(coll[key0], path.slice(1), value));
   }
+};
 
-  function SetRef(ref) {
-    ref && (ref.value = true);
-  }
+/**
+ * get an object from a hierachy based on an array of keys
+ * @param  {Object|Array} coll
+ * @param  {Array}        path    list of keys
+ * @return {Object}       value, or undefined
+ */
+function baseGet(coll, path) {
+  return (path || []).reduce(function (val, key) {
+    return val[key];
+  }, coll);
+}
 
-  // A function which returns a value representing an "owner" for transient writes
-  // to tries. The return value will only ever equal itself, and will not equal
-  // the return of any subsequent call of this function.
-  function OwnerID() {}
+exports.getIn = baseGet;
 
-  // http://jsperf.com/copy-array-inline
-  function arrCopy(arr, offset) {
-    offset = offset || 0;
-    var len = Math.max(0, arr.length - offset);
-    var newArr = new Array(len);
-    for (var ii = 0; ii < len; ii++) {
-      newArr[ii] = arr[ii + offset];
-    }
-    return newArr;
-  }
-
-  function ensureSize(iter) {
-    if (iter.size === undefined) {
-      iter.size = iter.__iterate(returnTrue);
-    }
-    return iter.size;
-  }
-
-  function wrapIndex(iter, index) {
-    return index >= 0 ? (+index) : ensureSize(iter) + (+index);
-  }
-
-  function returnTrue() {
-    return true;
-  }
-
-  function wholeSlice(begin, end, size) {
-    return (begin === 0 || (size !== undefined && begin <= -size)) &&
-      (end === undefined || (size !== undefined && end >= size));
-  }
-
-  function resolveBegin(begin, size) {
-    return resolveIndex(begin, size, 0);
-  }
-
-  function resolveEnd(end, size) {
-    return resolveIndex(end, size, size);
-  }
-
-  function resolveIndex(index, size, defaultIndex) {
-    return index === undefined ?
-      defaultIndex :
-      index < 0 ?
-        Math.max(0, size + index) :
-        size === undefined ?
-          index :
-          Math.min(size, index);
-  }
-
-  function Iterable(value) {
-      return isIterable(value) ? value : Seq(value);
-    }
+/**
+ * Update a value in a hierarchy
+ * @param  {Object|Array}   coll
+ * @param  {Array}          path     list of keys
+ * @param  {Function} callback The existing value with be passed to this.
+ *                             Return the new value to set
+ * @return {Object|Array}      new object hierarchy with modifications
+ */
+exports.updateIn = function updateIn(coll, path, callback) {
+  var existingVal = baseGet(coll, path);
+  return i.assocIn(coll, path, callback(existingVal));
+};
 
 
-  createClass(KeyedIterable, Iterable);
-    function KeyedIterable(value) {
-      return isKeyed(value) ? value : KeyedSeq(value);
-    }
+// generate wrappers for the mutative array methods
+["push", "unshift", "pop", "shift", "reverse", "sort"]
+.forEach(function (methodName) {
+  exports[methodName] = function (arr, val) {
+    var newArr = arrayClone(arr);
 
+    newArr[methodName](val);
 
-  createClass(IndexedIterable, Iterable);
-    function IndexedIterable(value) {
-      return isIndexed(value) ? value : IndexedSeq(value);
-    }
-
-
-  createClass(SetIterable, Iterable);
-    function SetIterable(value) {
-      return isIterable(value) && !isAssociative(value) ? value : SetSeq(value);
-    }
-
-
-
-  function isIterable(maybeIterable) {
-    return !!(maybeIterable && maybeIterable[IS_ITERABLE_SENTINEL]);
-  }
-
-  function isKeyed(maybeKeyed) {
-    return !!(maybeKeyed && maybeKeyed[IS_KEYED_SENTINEL]);
-  }
-
-  function isIndexed(maybeIndexed) {
-    return !!(maybeIndexed && maybeIndexed[IS_INDEXED_SENTINEL]);
-  }
-
-  function isAssociative(maybeAssociative) {
-    return isKeyed(maybeAssociative) || isIndexed(maybeAssociative);
-  }
-
-  function isOrdered(maybeOrdered) {
-    return !!(maybeOrdered && maybeOrdered[IS_ORDERED_SENTINEL]);
-  }
-
-  Iterable.isIterable = isIterable;
-  Iterable.isKeyed = isKeyed;
-  Iterable.isIndexed = isIndexed;
-  Iterable.isAssociative = isAssociative;
-  Iterable.isOrdered = isOrdered;
-
-  Iterable.Keyed = KeyedIterable;
-  Iterable.Indexed = IndexedIterable;
-  Iterable.Set = SetIterable;
-
-
-  var IS_ITERABLE_SENTINEL = '@@__IMMUTABLE_ITERABLE__@@';
-  var IS_KEYED_SENTINEL = '@@__IMMUTABLE_KEYED__@@';
-  var IS_INDEXED_SENTINEL = '@@__IMMUTABLE_INDEXED__@@';
-  var IS_ORDERED_SENTINEL = '@@__IMMUTABLE_ORDERED__@@';
-
-  /* global Symbol */
-
-  var ITERATE_KEYS = 0;
-  var ITERATE_VALUES = 1;
-  var ITERATE_ENTRIES = 2;
-
-  var REAL_ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
-  var FAUX_ITERATOR_SYMBOL = '@@iterator';
-
-  var ITERATOR_SYMBOL = REAL_ITERATOR_SYMBOL || FAUX_ITERATOR_SYMBOL;
-
-
-  function Iterator(next) {
-      this.next = next;
-    }
-
-    Iterator.prototype.toString = function() {
-      return '[Iterator]';
-    };
-
-
-  Iterator.KEYS = ITERATE_KEYS;
-  Iterator.VALUES = ITERATE_VALUES;
-  Iterator.ENTRIES = ITERATE_ENTRIES;
-
-  Iterator.prototype.inspect =
-  Iterator.prototype.toSource = function () { return this.toString(); }
-  Iterator.prototype[ITERATOR_SYMBOL] = function () {
-    return this;
+    return Object.freeze(newArr);
   };
 
+  exports[methodName].displayName = "icepick." + methodName;
+});
 
-  function iteratorValue(type, k, v, iteratorResult) {
-    var value = type === 0 ? k : type === 1 ? v : [k, v];
-    iteratorResult ? (iteratorResult.value = value) : (iteratorResult = {
-      value: value, done: false
-    });
-    return iteratorResult;
-  }
+// splice is special because it is variadic
+exports.splice = function splice(arr/*, args*/) {
+  var newArr = arrayClone(arr),
+    args = rest(arguments);
 
-  function iteratorDone() {
-    return { value: undefined, done: true };
-  }
+  newArr.splice.apply(newArr, args);
 
-  function hasIterator(maybeIterable) {
-    return !!getIteratorFn(maybeIterable);
-  }
+  return Object.freeze(newArr);
+};
 
-  function isIterator(maybeIterator) {
-    return maybeIterator && typeof maybeIterator.next === 'function';
-  }
+// slice is non-mutative
+exports.slice = function slice(arr, arg1, arg2) {
+  var newArr = arr.slice(arg1, arg2);
 
-  function getIterator(iterable) {
-    var iteratorFn = getIteratorFn(iterable);
-    return iteratorFn && iteratorFn.call(iterable);
-  }
+  return Object.freeze(newArr);
+};
 
-  function getIteratorFn(iterable) {
-    var iteratorFn = iterable && (
-      (REAL_ITERATOR_SYMBOL && iterable[REAL_ITERATOR_SYMBOL]) ||
-      iterable[FAUX_ITERATOR_SYMBOL]
-    );
-    if (typeof iteratorFn === 'function') {
-      return iteratorFn;
-    }
-  }
+function rest(args) {
+  return slice.call(args, 1);
+}
 
-  function isArrayLike(value) {
-    return value && typeof value.length === 'number';
-  }
-
-  createClass(Seq, Iterable);
-    function Seq(value) {
-      return value === null || value === undefined ? emptySequence() :
-        isIterable(value) ? value.toSeq() : seqFromValue(value);
-    }
-
-    Seq.of = function(/*...values*/) {
-      return Seq(arguments);
-    };
-
-    Seq.prototype.toSeq = function() {
-      return this;
-    };
-
-    Seq.prototype.toString = function() {
-      return this.__toString('Seq {', '}');
-    };
-
-    Seq.prototype.cacheResult = function() {
-      if (!this._cache && this.__iterateUncached) {
-        this._cache = this.entrySeq().toArray();
-        this.size = this._cache.length;
-      }
-      return this;
-    };
-
-    // abstract __iterateUncached(fn, reverse)
-
-    Seq.prototype.__iterate = function(fn, reverse) {
-      return seqIterate(this, fn, reverse, true);
-    };
-
-    // abstract __iteratorUncached(type, reverse)
-
-    Seq.prototype.__iterator = function(type, reverse) {
-      return seqIterator(this, type, reverse, true);
-    };
-
-
-
-  createClass(KeyedSeq, Seq);
-    function KeyedSeq(value) {
-      return value === null || value === undefined ?
-        emptySequence().toKeyedSeq() :
-        isIterable(value) ?
-          (isKeyed(value) ? value.toSeq() : value.fromEntrySeq()) :
-          keyedSeqFromValue(value);
-    }
-
-    KeyedSeq.of = function(/*...values*/) {
-      return KeyedSeq(arguments);
-    };
-
-    KeyedSeq.prototype.toKeyedSeq = function() {
-      return this;
-    };
-
-    KeyedSeq.prototype.toSeq = function() {
-      return this;
-    };
-
-
-
-  createClass(IndexedSeq, Seq);
-    function IndexedSeq(value) {
-      return value === null || value === undefined ? emptySequence() :
-        !isIterable(value) ? indexedSeqFromValue(value) :
-        isKeyed(value) ? value.entrySeq() : value.toIndexedSeq();
-    }
-
-    IndexedSeq.of = function(/*...values*/) {
-      return IndexedSeq(arguments);
-    };
-
-    IndexedSeq.prototype.toIndexedSeq = function() {
-      return this;
-    };
-
-    IndexedSeq.prototype.toString = function() {
-      return this.__toString('Seq [', ']');
-    };
-
-    IndexedSeq.prototype.__iterate = function(fn, reverse) {
-      return seqIterate(this, fn, reverse, false);
-    };
-
-    IndexedSeq.prototype.__iterator = function(type, reverse) {
-      return seqIterator(this, type, reverse, false);
-    };
-
-
-
-  createClass(SetSeq, Seq);
-    function SetSeq(value) {
-      return (
-        value === null || value === undefined ? emptySequence() :
-        !isIterable(value) ? indexedSeqFromValue(value) :
-        isKeyed(value) ? value.entrySeq() : value
-      ).toSetSeq();
-    }
-
-    SetSeq.of = function(/*...values*/) {
-      return SetSeq(arguments);
-    };
-
-    SetSeq.prototype.toSetSeq = function() {
-      return this;
-    };
-
-
-
-  Seq.isSeq = isSeq;
-  Seq.Keyed = KeyedSeq;
-  Seq.Set = SetSeq;
-  Seq.Indexed = IndexedSeq;
-
-  var IS_SEQ_SENTINEL = '@@__IMMUTABLE_SEQ__@@';
-
-  Seq.prototype[IS_SEQ_SENTINEL] = true;
-
-
-
-  // #pragma Root Sequences
-
-  createClass(ArraySeq, IndexedSeq);
-    function ArraySeq(array) {
-      this._array = array;
-      this.size = array.length;
-    }
-
-    ArraySeq.prototype.get = function(index, notSetValue) {
-      return this.has(index) ? this._array[wrapIndex(this, index)] : notSetValue;
-    };
-
-    ArraySeq.prototype.__iterate = function(fn, reverse) {
-      var array = this._array;
-      var maxIndex = array.length - 1;
-      for (var ii = 0; ii <= maxIndex; ii++) {
-        if (fn(array[reverse ? maxIndex - ii : ii], ii, this) === false) {
-          return ii + 1;
-        }
-      }
-      return ii;
-    };
-
-    ArraySeq.prototype.__iterator = function(type, reverse) {
-      var array = this._array;
-      var maxIndex = array.length - 1;
-      var ii = 0;
-      return new Iterator(function() 
-        {return ii > maxIndex ?
-          iteratorDone() :
-          iteratorValue(type, ii, array[reverse ? maxIndex - ii++ : ii++])}
-      );
-    };
-
-
-
-  createClass(ObjectSeq, KeyedSeq);
-    function ObjectSeq(object) {
-      var keys = Object.keys(object);
-      this._object = object;
-      this._keys = keys;
-      this.size = keys.length;
-    }
-
-    ObjectSeq.prototype.get = function(key, notSetValue) {
-      if (notSetValue !== undefined && !this.has(key)) {
-        return notSetValue;
-      }
-      return this._object[key];
-    };
-
-    ObjectSeq.prototype.has = function(key) {
-      return this._object.hasOwnProperty(key);
-    };
-
-    ObjectSeq.prototype.__iterate = function(fn, reverse) {
-      var object = this._object;
-      var keys = this._keys;
-      var maxIndex = keys.length - 1;
-      for (var ii = 0; ii <= maxIndex; ii++) {
-        var key = keys[reverse ? maxIndex - ii : ii];
-        if (fn(object[key], key, this) === false) {
-          return ii + 1;
-        }
-      }
-      return ii;
-    };
-
-    ObjectSeq.prototype.__iterator = function(type, reverse) {
-      var object = this._object;
-      var keys = this._keys;
-      var maxIndex = keys.length - 1;
-      var ii = 0;
-      return new Iterator(function()  {
-        var key = keys[reverse ? maxIndex - ii : ii];
-        return ii++ > maxIndex ?
-          iteratorDone() :
-          iteratorValue(type, key, object[key]);
-      });
-    };
-
-  ObjectSeq.prototype[IS_ORDERED_SENTINEL] = true;
-
-
-  createClass(IterableSeq, IndexedSeq);
-    function IterableSeq(iterable) {
-      this._iterable = iterable;
-      this.size = iterable.length || iterable.size;
-    }
-
-    IterableSeq.prototype.__iterateUncached = function(fn, reverse) {
-      if (reverse) {
-        return this.cacheResult().__iterate(fn, reverse);
-      }
-      var iterable = this._iterable;
-      var iterator = getIterator(iterable);
-      var iterations = 0;
-      if (isIterator(iterator)) {
-        var step;
-        while (!(step = iterator.next()).done) {
-          if (fn(step.value, iterations++, this) === false) {
-            break;
-          }
-        }
-      }
-      return iterations;
-    };
-
-    IterableSeq.prototype.__iteratorUncached = function(type, reverse) {
-      if (reverse) {
-        return this.cacheResult().__iterator(type, reverse);
-      }
-      var iterable = this._iterable;
-      var iterator = getIterator(iterable);
-      if (!isIterator(iterator)) {
-        return new Iterator(iteratorDone);
-      }
-      var iterations = 0;
-      return new Iterator(function()  {
-        var step = iterator.next();
-        return step.done ? step : iteratorValue(type, iterations++, step.value);
-      });
-    };
-
-
-
-  createClass(IteratorSeq, IndexedSeq);
-    function IteratorSeq(iterator) {
-      this._iterator = iterator;
-      this._iteratorCache = [];
-    }
-
-    IteratorSeq.prototype.__iterateUncached = function(fn, reverse) {
-      if (reverse) {
-        return this.cacheResult().__iterate(fn, reverse);
-      }
-      var iterator = this._iterator;
-      var cache = this._iteratorCache;
-      var iterations = 0;
-      while (iterations < cache.length) {
-        if (fn(cache[iterations], iterations++, this) === false) {
-          return iterations;
-        }
-      }
-      var step;
-      while (!(step = iterator.next()).done) {
-        var val = step.value;
-        cache[iterations] = val;
-        if (fn(val, iterations++, this) === false) {
-          break;
-        }
-      }
-      return iterations;
-    };
-
-    IteratorSeq.prototype.__iteratorUncached = function(type, reverse) {
-      if (reverse) {
-        return this.cacheResult().__iterator(type, reverse);
-      }
-      var iterator = this._iterator;
-      var cache = this._iteratorCache;
-      var iterations = 0;
-      return new Iterator(function()  {
-        if (iterations >= cache.length) {
-          var step = iterator.next();
-          if (step.done) {
-            return step;
-          }
-          cache[iterations] = step.value;
-        }
-        return iteratorValue(type, iterations, cache[iterations++]);
-      });
-    };
-
-
-
-
-  // # pragma Helper functions
-
-  function isSeq(maybeSeq) {
-    return !!(maybeSeq && maybeSeq[IS_SEQ_SENTINEL]);
-  }
-
-  var EMPTY_SEQ;
-
-  function emptySequence() {
-    return EMPTY_SEQ || (EMPTY_SEQ = new ArraySeq([]));
-  }
-
-  function keyedSeqFromValue(value) {
-    var seq =
-      Array.isArray(value) ? new ArraySeq(value).fromEntrySeq() :
-      isIterator(value) ? new IteratorSeq(value).fromEntrySeq() :
-      hasIterator(value) ? new IterableSeq(value).fromEntrySeq() :
-      typeof value === 'object' ? new ObjectSeq(value) :
-      undefined;
-    if (!seq) {
-      throw new TypeError(
-        'Expected Array or iterable object of [k, v] entries, '+
-        'or keyed object: ' + value
-      );
-    }
-    return seq;
-  }
-
-  function indexedSeqFromValue(value) {
-    var seq = maybeIndexedSeqFromValue(value);
-    if (!seq) {
-      throw new TypeError(
-        'Expected Array or iterable object of values: ' + value
-      );
-    }
-    return seq;
-  }
-
-  function seqFromValue(value) {
-    var seq = maybeIndexedSeqFromValue(value) ||
-      (typeof value === 'object' && new ObjectSeq(value));
-    if (!seq) {
-      throw new TypeError(
-        'Expected Array or iterable object of values, or keyed object: ' + value
-      );
-    }
-    return seq;
-  }
-
-  function maybeIndexedSeqFromValue(value) {
-    return (
-      isArrayLike(value) ? new ArraySeq(value) :
-      isIterator(value) ? new IteratorSeq(value) :
-      hasIterator(value) ? new IterableSeq(value) :
-      undefined
-    );
-  }
-
-  function seqIterate(seq, fn, reverse, useKeys) {
-    var cache = seq._cache;
-    if (cache) {
-      var maxIndex = cache.length - 1;
-      for (var ii = 0; ii <= maxIndex; ii++) {
-        var entry = cache[reverse ? maxIndex - ii : ii];
-        if (fn(entry[1], useKeys ? entry[0] : ii, seq) === false) {
-          return ii + 1;
-        }
-      }
-      return ii;
-    }
-    return seq.__iterateUncached(fn, reverse);
-  }
-
-  function seqIterator(seq, type, reverse, useKeys) {
-    var cache = seq._cache;
-    if (cache) {
-      var maxIndex = cache.length - 1;
-      var ii = 0;
-      return new Iterator(function()  {
-        var entry = cache[reverse ? maxIndex - ii : ii];
-        return ii++ > maxIndex ?
-          iteratorDone() :
-          iteratorValue(type, useKeys ? entry[0] : ii - 1, entry[1]);
-      });
-    }
-    return seq.__iteratorUncached(type, reverse);
-  }
-
-  createClass(Collection, Iterable);
-    function Collection() {
-      throw TypeError('Abstract');
-    }
-
-
-  createClass(KeyedCollection, Collection);function KeyedCollection() {}
-
-  createClass(IndexedCollection, Collection);function IndexedCollection() {}
-
-  createClass(SetCollection, Collection);function SetCollection() {}
-
-
-  Collection.Keyed = KeyedCollection;
-  Collection.Indexed = IndexedCollection;
-  Collection.Set = SetCollection;
-
-  /**
-   * An extension of the "same-value" algorithm as [described for use by ES6 Map
-   * and Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map#Key_equality)
-   *
-   * NaN is considered the same as NaN, however -0 and 0 are considered the same
-   * value, which is different from the algorithm described by
-   * [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is).
-   *
-   * This is extended further to allow Objects to describe the values they
-   * represent, by way of `valueOf` or `equals` (and `hashCode`).
-   *
-   * Note: because of this extension, the key equality of Immutable.Map and the
-   * value equality of Immutable.Set will differ from ES6 Map and Set.
-   *
-   * ### Defining custom values
-   *
-   * The easiest way to describe the value an object represents is by implementing
-   * `valueOf`. For example, `Date` represents a value by returning a unix
-   * timestamp for `valueOf`:
-   *
-   *     var date1 = new Date(1234567890000); // Fri Feb 13 2009 ...
-   *     var date2 = new Date(1234567890000);
-   *     date1.valueOf(); // 1234567890000
-   *     assert( date1 !== date2 );
-   *     assert( Immutable.is( date1, date2 ) );
-   *
-   * Note: overriding `valueOf` may have other implications if you use this object
-   * where JavaScript expects a primitive, such as implicit string coercion.
-   *
-   * For more complex types, especially collections, implementing `valueOf` may
-   * not be performant. An alternative is to implement `equals` and `hashCode`.
-   *
-   * `equals` takes another object, presumably of similar type, and returns true
-   * if the it is equal. Equality is symmetrical, so the same result should be
-   * returned if this and the argument are flipped.
-   *
-   *     assert( a.equals(b) === b.equals(a) );
-   *
-   * `hashCode` returns a 32bit integer number representing the object which will
-   * be used to determine how to store the value object in a Map or Set. You must
-   * provide both or neither methods, one must not exist without the other.
-   *
-   * Also, an important relationship between these methods must be upheld: if two
-   * values are equal, they *must* return the same hashCode. If the values are not
-   * equal, they might have the same hashCode; this is called a hash collision,
-   * and while undesirable for performance reasons, it is acceptable.
-   *
-   *     if (a.equals(b)) {
-   *       assert( a.hashCode() === b.hashCode() );
-   *     }
-   *
-   * All Immutable collections implement `equals` and `hashCode`.
-   *
-   */
-  function is(valueA, valueB) {
-    if (valueA === valueB || (valueA !== valueA && valueB !== valueB)) {
-      return true;
-    }
-    if (!valueA || !valueB) {
-      return false;
-    }
-    if (typeof valueA.valueOf === 'function' &&
-        typeof valueB.valueOf === 'function') {
-      valueA = valueA.valueOf();
-      valueB = valueB.valueOf();
-    }
-    return typeof valueA.equals === 'function' &&
-      typeof valueB.equals === 'function' ?
-        valueA.equals(valueB) :
-        valueA === valueB || (valueA !== valueA && valueB !== valueB);
-  }
-
-  function fromJS(json, converter) {
-    return converter ?
-      fromJSWith(converter, json, '', {'': json}) :
-      fromJSDefault(json);
-  }
-
-  function fromJSWith(converter, json, key, parentJSON) {
-    if (Array.isArray(json)) {
-      return converter.call(parentJSON, key, IndexedSeq(json).map(function(v, k)  {return fromJSWith(converter, v, k, json)}));
-    }
-    if (isPlainObj(json)) {
-      return converter.call(parentJSON, key, KeyedSeq(json).map(function(v, k)  {return fromJSWith(converter, v, k, json)}));
-    }
-    return json;
-  }
-
-  function fromJSDefault(json) {
-    if (Array.isArray(json)) {
-      return IndexedSeq(json).map(fromJSDefault).toList();
-    }
-    if (isPlainObj(json)) {
-      return KeyedSeq(json).map(fromJSDefault).toMap();
-    }
-    return json;
-  }
-
-  function isPlainObj(value) {
-    return value && value.constructor === Object;
-  }
-
-  var Math__imul =
-    typeof Math.imul === 'function' && Math.imul(0xffffffff, 2) === -2 ?
-    Math.imul :
-    function Math__imul(a, b) {
-      a = a | 0; // int
-      b = b | 0; // int
-      var c = a & 0xffff;
-      var d = b & 0xffff;
-      // Shift by 0 fixes the sign on the high part.
-      return (c * d) + ((((a >>> 16) * d + c * (b >>> 16)) << 16) >>> 0) | 0; // int
-    };
-
-  // v8 has an optimization for storing 31-bit signed numbers.
-  // Values which have either 00 or 11 as the high order bits qualify.
-  // This function drops the highest order bit in a signed number, maintaining
-  // the sign bit.
-  function smi(i32) {
-    return ((i32 >>> 1) & 0x40000000) | (i32 & 0xBFFFFFFF);
-  }
-
-  function hash(o) {
-    if (o === false || o === null || o === undefined) {
-      return 0;
-    }
-    if (typeof o.valueOf === 'function') {
-      o = o.valueOf();
-      if (o === false || o === null || o === undefined) {
-        return 0;
-      }
-    }
-    if (o === true) {
-      return 1;
-    }
-    var type = typeof o;
-    if (type === 'number') {
-      var h = o | 0;
-      if (h !== o) {
-        h ^= o * 0xFFFFFFFF;
-      }
-      while (o > 0xFFFFFFFF) {
-        o /= 0xFFFFFFFF;
-        h ^= o;
-      }
-      return smi(h);
-    }
-    if (type === 'string') {
-      return o.length > STRING_HASH_CACHE_MIN_STRLEN ? cachedHashString(o) : hashString(o);
-    }
-    if (typeof o.hashCode === 'function') {
-      return o.hashCode();
-    }
-    return hashJSObj(o);
-  }
-
-  function cachedHashString(string) {
-    var hash = stringHashCache[string];
-    if (hash === undefined) {
-      hash = hashString(string);
-      if (STRING_HASH_CACHE_SIZE === STRING_HASH_CACHE_MAX_SIZE) {
-        STRING_HASH_CACHE_SIZE = 0;
-        stringHashCache = {};
-      }
-      STRING_HASH_CACHE_SIZE++;
-      stringHashCache[string] = hash;
-    }
-    return hash;
-  }
-
-  // http://jsperf.com/hashing-strings
-  function hashString(string) {
-    // This is the hash from JVM
-    // The hash code for a string is computed as
-    // s[0] * 31 ^ (n - 1) + s[1] * 31 ^ (n - 2) + ... + s[n - 1],
-    // where s[i] is the ith character of the string and n is the length of
-    // the string. We "mod" the result to make it between 0 (inclusive) and 2^31
-    // (exclusive) by dropping high bits.
-    var hash = 0;
-    for (var ii = 0; ii < string.length; ii++) {
-      hash = 31 * hash + string.charCodeAt(ii) | 0;
-    }
-    return smi(hash);
-  }
-
-  function hashJSObj(obj) {
-    var hash = weakMap && weakMap.get(obj);
-    if (hash) return hash;
-
-    hash = obj[UID_HASH_KEY];
-    if (hash) return hash;
-
-    if (!canDefineProperty) {
-      hash = obj.propertyIsEnumerable && obj.propertyIsEnumerable[UID_HASH_KEY];
-      if (hash) return hash;
-
-      hash = getIENodeHash(obj);
-      if (hash) return hash;
-    }
-
-    if (Object.isExtensible && !Object.isExtensible(obj)) {
-      throw new Error('Non-extensible objects are not allowed as keys.');
-    }
-
-    hash = ++objHashUID;
-    if (objHashUID & 0x40000000) {
-      objHashUID = 0;
-    }
-
-    if (weakMap) {
-      weakMap.set(obj, hash);
-    } else if (canDefineProperty) {
-      Object.defineProperty(obj, UID_HASH_KEY, {
-        'enumerable': false,
-        'configurable': false,
-        'writable': false,
-        'value': hash
-      });
-    } else if (obj.propertyIsEnumerable &&
-               obj.propertyIsEnumerable === obj.constructor.prototype.propertyIsEnumerable) {
-      // Since we can't define a non-enumerable property on the object
-      // we'll hijack one of the less-used non-enumerable properties to
-      // save our hash on it. Since this is a function it will not show up in
-      // `JSON.stringify` which is what we want.
-      obj.propertyIsEnumerable = function() {
-        return this.constructor.prototype.propertyIsEnumerable.apply(this, arguments);
-      };
-      obj.propertyIsEnumerable[UID_HASH_KEY] = hash;
-    } else if (obj.nodeType) {
-      // At this point we couldn't get the IE `uniqueID` to use as a hash
-      // and we couldn't use a non-enumerable property to exploit the
-      // dontEnum bug so we simply add the `UID_HASH_KEY` on the node
-      // itself.
-      obj[UID_HASH_KEY] = hash;
-    } else {
-      throw new Error('Unable to set a non-enumerable property on object.');
-    }
-
-    return hash;
-  }
-
-  // True if Object.defineProperty works as expected. IE8 fails this test.
-  var canDefineProperty = (function() {
-    try {
-      Object.defineProperty({}, 'x', {});
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }());
-
-  // IE has a `uniqueID` property on DOM nodes. We can construct the hash from it
-  // and avoid memory leaks from the IE cloneNode bug.
-  function getIENodeHash(node) {
-    if (node && node.nodeType > 0) {
-      switch (node.nodeType) {
-        case 1: // Element
-          return node.uniqueID;
-        case 9: // Document
-          return node.documentElement && node.documentElement.uniqueID;
-      }
-    }
-  }
-
-  // If possible, use a WeakMap.
-  var weakMap = typeof WeakMap === 'function' && new WeakMap();
-
-  var objHashUID = 0;
-
-  var UID_HASH_KEY = '__immutablehash__';
-  if (typeof Symbol === 'function') {
-    UID_HASH_KEY = Symbol(UID_HASH_KEY);
-  }
-
-  var STRING_HASH_CACHE_MIN_STRLEN = 16;
-  var STRING_HASH_CACHE_MAX_SIZE = 255;
-  var STRING_HASH_CACHE_SIZE = 0;
-  var stringHashCache = {};
-
-  function invariant(condition, error) {
-    if (!condition) throw new Error(error);
-  }
-
-  function assertNotInfinite(size) {
-    invariant(
-      size !== Infinity,
-      'Cannot perform this action with an infinite size.'
-    );
-  }
-
-  createClass(ToKeyedSequence, KeyedSeq);
-    function ToKeyedSequence(indexed, useKeys) {
-      this._iter = indexed;
-      this._useKeys = useKeys;
-      this.size = indexed.size;
-    }
-
-    ToKeyedSequence.prototype.get = function(key, notSetValue) {
-      return this._iter.get(key, notSetValue);
-    };
-
-    ToKeyedSequence.prototype.has = function(key) {
-      return this._iter.has(key);
-    };
-
-    ToKeyedSequence.prototype.valueSeq = function() {
-      return this._iter.valueSeq();
-    };
-
-    ToKeyedSequence.prototype.reverse = function() {var this$0 = this;
-      var reversedSequence = reverseFactory(this, true);
-      if (!this._useKeys) {
-        reversedSequence.valueSeq = function()  {return this$0._iter.toSeq().reverse()};
-      }
-      return reversedSequence;
-    };
-
-    ToKeyedSequence.prototype.map = function(mapper, context) {var this$0 = this;
-      var mappedSequence = mapFactory(this, mapper, context);
-      if (!this._useKeys) {
-        mappedSequence.valueSeq = function()  {return this$0._iter.toSeq().map(mapper, context)};
-      }
-      return mappedSequence;
-    };
-
-    ToKeyedSequence.prototype.__iterate = function(fn, reverse) {var this$0 = this;
-      var ii;
-      return this._iter.__iterate(
-        this._useKeys ?
-          function(v, k)  {return fn(v, k, this$0)} :
-          ((ii = reverse ? resolveSize(this) : 0),
-            function(v ) {return fn(v, reverse ? --ii : ii++, this$0)}),
-        reverse
-      );
-    };
-
-    ToKeyedSequence.prototype.__iterator = function(type, reverse) {
-      if (this._useKeys) {
-        return this._iter.__iterator(type, reverse);
-      }
-      var iterator = this._iter.__iterator(ITERATE_VALUES, reverse);
-      var ii = reverse ? resolveSize(this) : 0;
-      return new Iterator(function()  {
-        var step = iterator.next();
-        return step.done ? step :
-          iteratorValue(type, reverse ? --ii : ii++, step.value, step);
-      });
-    };
-
-  ToKeyedSequence.prototype[IS_ORDERED_SENTINEL] = true;
-
-
-  createClass(ToIndexedSequence, IndexedSeq);
-    function ToIndexedSequence(iter) {
-      this._iter = iter;
-      this.size = iter.size;
-    }
-
-    ToIndexedSequence.prototype.contains = function(value) {
-      return this._iter.contains(value);
-    };
-
-    ToIndexedSequence.prototype.__iterate = function(fn, reverse) {var this$0 = this;
-      var iterations = 0;
-      return this._iter.__iterate(function(v ) {return fn(v, iterations++, this$0)}, reverse);
-    };
-
-    ToIndexedSequence.prototype.__iterator = function(type, reverse) {
-      var iterator = this._iter.__iterator(ITERATE_VALUES, reverse);
-      var iterations = 0;
-      return new Iterator(function()  {
-        var step = iterator.next();
-        return step.done ? step :
-          iteratorValue(type, iterations++, step.value, step)
-      });
-    };
-
-
-
-  createClass(ToSetSequence, SetSeq);
-    function ToSetSequence(iter) {
-      this._iter = iter;
-      this.size = iter.size;
-    }
-
-    ToSetSequence.prototype.has = function(key) {
-      return this._iter.contains(key);
-    };
-
-    ToSetSequence.prototype.__iterate = function(fn, reverse) {var this$0 = this;
-      return this._iter.__iterate(function(v ) {return fn(v, v, this$0)}, reverse);
-    };
-
-    ToSetSequence.prototype.__iterator = function(type, reverse) {
-      var iterator = this._iter.__iterator(ITERATE_VALUES, reverse);
-      return new Iterator(function()  {
-        var step = iterator.next();
-        return step.done ? step :
-          iteratorValue(type, step.value, step.value, step);
-      });
-    };
-
-
-
-  createClass(FromEntriesSequence, KeyedSeq);
-    function FromEntriesSequence(entries) {
-      this._iter = entries;
-      this.size = entries.size;
-    }
-
-    FromEntriesSequence.prototype.entrySeq = function() {
-      return this._iter.toSeq();
-    };
-
-    FromEntriesSequence.prototype.__iterate = function(fn, reverse) {var this$0 = this;
-      return this._iter.__iterate(function(entry ) {
-        // Check if entry exists first so array access doesn't throw for holes
-        // in the parent iteration.
-        if (entry) {
-          validateEntry(entry);
-          return fn(entry[1], entry[0], this$0);
-        }
-      }, reverse);
-    };
-
-    FromEntriesSequence.prototype.__iterator = function(type, reverse) {
-      var iterator = this._iter.__iterator(ITERATE_VALUES, reverse);
-      return new Iterator(function()  {
-        while (true) {
-          var step = iterator.next();
-          if (step.done) {
-            return step;
-          }
-          var entry = step.value;
-          // Check if entry exists first so array access doesn't throw for holes
-          // in the parent iteration.
-          if (entry) {
-            validateEntry(entry);
-            return type === ITERATE_ENTRIES ? step :
-              iteratorValue(type, entry[0], entry[1], step);
-          }
-        }
-      });
-    };
-
-
-  ToIndexedSequence.prototype.cacheResult =
-  ToKeyedSequence.prototype.cacheResult =
-  ToSetSequence.prototype.cacheResult =
-  FromEntriesSequence.prototype.cacheResult =
-    cacheResultThrough;
-
-
-  function flipFactory(iterable) {
-    var flipSequence = makeSequence(iterable);
-    flipSequence._iter = iterable;
-    flipSequence.size = iterable.size;
-    flipSequence.flip = function()  {return iterable};
-    flipSequence.reverse = function () {
-      var reversedSequence = iterable.reverse.apply(this); // super.reverse()
-      reversedSequence.flip = function()  {return iterable.reverse()};
-      return reversedSequence;
-    };
-    flipSequence.has = function(key ) {return iterable.contains(key)};
-    flipSequence.contains = function(key ) {return iterable.has(key)};
-    flipSequence.cacheResult = cacheResultThrough;
-    flipSequence.__iterateUncached = function (fn, reverse) {var this$0 = this;
-      return iterable.__iterate(function(v, k)  {return fn(k, v, this$0) !== false}, reverse);
-    }
-    flipSequence.__iteratorUncached = function(type, reverse) {
-      if (type === ITERATE_ENTRIES) {
-        var iterator = iterable.__iterator(type, reverse);
-        return new Iterator(function()  {
-          var step = iterator.next();
-          if (!step.done) {
-            var k = step.value[0];
-            step.value[0] = step.value[1];
-            step.value[1] = k;
-          }
-          return step;
-        });
-      }
-      return iterable.__iterator(
-        type === ITERATE_VALUES ? ITERATE_KEYS : ITERATE_VALUES,
-        reverse
-      );
-    }
-    return flipSequence;
-  }
-
-
-  function mapFactory(iterable, mapper, context) {
-    var mappedSequence = makeSequence(iterable);
-    mappedSequence.size = iterable.size;
-    mappedSequence.has = function(key ) {return iterable.has(key)};
-    mappedSequence.get = function(key, notSetValue)  {
-      var v = iterable.get(key, NOT_SET);
-      return v === NOT_SET ?
-        notSetValue :
-        mapper.call(context, v, key, iterable);
-    };
-    mappedSequence.__iterateUncached = function (fn, reverse) {var this$0 = this;
-      return iterable.__iterate(
-        function(v, k, c)  {return fn(mapper.call(context, v, k, c), k, this$0) !== false},
-        reverse
-      );
-    }
-    mappedSequence.__iteratorUncached = function (type, reverse) {
-      var iterator = iterable.__iterator(ITERATE_ENTRIES, reverse);
-      return new Iterator(function()  {
-        var step = iterator.next();
-        if (step.done) {
-          return step;
-        }
-        var entry = step.value;
-        var key = entry[0];
-        return iteratorValue(
-          type,
-          key,
-          mapper.call(context, entry[1], key, iterable),
-          step
-        );
-      });
-    }
-    return mappedSequence;
-  }
-
-
-  function reverseFactory(iterable, useKeys) {
-    var reversedSequence = makeSequence(iterable);
-    reversedSequence._iter = iterable;
-    reversedSequence.size = iterable.size;
-    reversedSequence.reverse = function()  {return iterable};
-    if (iterable.flip) {
-      reversedSequence.flip = function () {
-        var flipSequence = flipFactory(iterable);
-        flipSequence.reverse = function()  {return iterable.flip()};
-        return flipSequence;
-      };
-    }
-    reversedSequence.get = function(key, notSetValue) 
-      {return iterable.get(useKeys ? key : -1 - key, notSetValue)};
-    reversedSequence.has = function(key )
-      {return iterable.has(useKeys ? key : -1 - key)};
-    reversedSequence.contains = function(value ) {return iterable.contains(value)};
-    reversedSequence.cacheResult = cacheResultThrough;
-    reversedSequence.__iterate = function (fn, reverse) {var this$0 = this;
-      return iterable.__iterate(function(v, k)  {return fn(v, k, this$0)}, !reverse);
-    };
-    reversedSequence.__iterator =
-      function(type, reverse)  {return iterable.__iterator(type, !reverse)};
-    return reversedSequence;
-  }
-
-
-  function filterFactory(iterable, predicate, context, useKeys) {
-    var filterSequence = makeSequence(iterable);
-    if (useKeys) {
-      filterSequence.has = function(key ) {
-        var v = iterable.get(key, NOT_SET);
-        return v !== NOT_SET && !!predicate.call(context, v, key, iterable);
-      };
-      filterSequence.get = function(key, notSetValue)  {
-        var v = iterable.get(key, NOT_SET);
-        return v !== NOT_SET && predicate.call(context, v, key, iterable) ?
-          v : notSetValue;
-      };
-    }
-    filterSequence.__iterateUncached = function (fn, reverse) {var this$0 = this;
-      var iterations = 0;
-      iterable.__iterate(function(v, k, c)  {
-        if (predicate.call(context, v, k, c)) {
-          iterations++;
-          return fn(v, useKeys ? k : iterations - 1, this$0);
-        }
-      }, reverse);
-      return iterations;
-    };
-    filterSequence.__iteratorUncached = function (type, reverse) {
-      var iterator = iterable.__iterator(ITERATE_ENTRIES, reverse);
-      var iterations = 0;
-      return new Iterator(function()  {
-        while (true) {
-          var step = iterator.next();
-          if (step.done) {
-            return step;
-          }
-          var entry = step.value;
-          var key = entry[0];
-          var value = entry[1];
-          if (predicate.call(context, value, key, iterable)) {
-            return iteratorValue(type, useKeys ? key : iterations++, value, step);
-          }
-        }
-      });
-    }
-    return filterSequence;
-  }
-
-
-  function countByFactory(iterable, grouper, context) {
-    var groups = Map().asMutable();
-    iterable.__iterate(function(v, k)  {
-      groups.update(
-        grouper.call(context, v, k, iterable),
-        0,
-        function(a ) {return a + 1}
-      );
-    });
-    return groups.asImmutable();
-  }
-
-
-  function groupByFactory(iterable, grouper, context) {
-    var isKeyedIter = isKeyed(iterable);
-    var groups = (isOrdered(iterable) ? OrderedMap() : Map()).asMutable();
-    iterable.__iterate(function(v, k)  {
-      groups.update(
-        grouper.call(context, v, k, iterable),
-        function(a ) {return (a = a || [], a.push(isKeyedIter ? [k, v] : v), a)}
-      );
-    });
-    var coerce = iterableClass(iterable);
-    return groups.map(function(arr ) {return reify(iterable, coerce(arr))});
-  }
-
-
-  function sliceFactory(iterable, begin, end, useKeys) {
-    var originalSize = iterable.size;
-
-    if (wholeSlice(begin, end, originalSize)) {
-      return iterable;
-    }
-
-    var resolvedBegin = resolveBegin(begin, originalSize);
-    var resolvedEnd = resolveEnd(end, originalSize);
-
-    // begin or end will be NaN if they were provided as negative numbers and
-    // this iterable's size is unknown. In that case, cache first so there is
-    // a known size.
-    if (resolvedBegin !== resolvedBegin || resolvedEnd !== resolvedEnd) {
-      return sliceFactory(iterable.toSeq().cacheResult(), begin, end, useKeys);
-    }
-
-    var sliceSize = resolvedEnd - resolvedBegin;
-    if (sliceSize < 0) {
-      sliceSize = 0;
-    }
-
-    var sliceSeq = makeSequence(iterable);
-
-    sliceSeq.size = sliceSize === 0 ? sliceSize : iterable.size && sliceSize || undefined;
-
-    if (!useKeys && isSeq(iterable) && sliceSize >= 0) {
-      sliceSeq.get = function (index, notSetValue) {
-        index = wrapIndex(this, index);
-        return index >= 0 && index < sliceSize ?
-          iterable.get(index + resolvedBegin, notSetValue) :
-          notSetValue;
-      }
-    }
-
-    sliceSeq.__iterateUncached = function(fn, reverse) {var this$0 = this;
-      if (sliceSize === 0) {
-        return 0;
-      }
-      if (reverse) {
-        return this.cacheResult().__iterate(fn, reverse);
-      }
-      var skipped = 0;
-      var isSkipping = true;
-      var iterations = 0;
-      iterable.__iterate(function(v, k)  {
-        if (!(isSkipping && (isSkipping = skipped++ < resolvedBegin))) {
-          iterations++;
-          return fn(v, useKeys ? k : iterations - 1, this$0) !== false &&
-                 iterations !== sliceSize;
-        }
-      });
-      return iterations;
-    };
-
-    sliceSeq.__iteratorUncached = function(type, reverse) {
-      if (sliceSize && reverse) {
-        return this.cacheResult().__iterator(type, reverse);
-      }
-      // Don't bother instantiating parent iterator if taking 0.
-      var iterator = sliceSize && iterable.__iterator(type, reverse);
-      var skipped = 0;
-      var iterations = 0;
-      return new Iterator(function()  {
-        while (skipped++ !== resolvedBegin) {
-          iterator.next();
-        }
-        if (++iterations > sliceSize) {
-          return iteratorDone();
-        }
-        var step = iterator.next();
-        if (useKeys || type === ITERATE_VALUES) {
-          return step;
-        } else if (type === ITERATE_KEYS) {
-          return iteratorValue(type, iterations - 1, undefined, step);
-        } else {
-          return iteratorValue(type, iterations - 1, step.value[1], step);
-        }
-      });
-    }
-
-    return sliceSeq;
-  }
-
-
-  function takeWhileFactory(iterable, predicate, context) {
-    var takeSequence = makeSequence(iterable);
-    takeSequence.__iterateUncached = function(fn, reverse) {var this$0 = this;
-      if (reverse) {
-        return this.cacheResult().__iterate(fn, reverse);
-      }
-      var iterations = 0;
-      iterable.__iterate(function(v, k, c) 
-        {return predicate.call(context, v, k, c) && ++iterations && fn(v, k, this$0)}
-      );
-      return iterations;
-    };
-    takeSequence.__iteratorUncached = function(type, reverse) {var this$0 = this;
-      if (reverse) {
-        return this.cacheResult().__iterator(type, reverse);
-      }
-      var iterator = iterable.__iterator(ITERATE_ENTRIES, reverse);
-      var iterating = true;
-      return new Iterator(function()  {
-        if (!iterating) {
-          return iteratorDone();
-        }
-        var step = iterator.next();
-        if (step.done) {
-          return step;
-        }
-        var entry = step.value;
-        var k = entry[0];
-        var v = entry[1];
-        if (!predicate.call(context, v, k, this$0)) {
-          iterating = false;
-          return iteratorDone();
-        }
-        return type === ITERATE_ENTRIES ? step :
-          iteratorValue(type, k, v, step);
-      });
-    };
-    return takeSequence;
-  }
-
-
-  function skipWhileFactory(iterable, predicate, context, useKeys) {
-    var skipSequence = makeSequence(iterable);
-    skipSequence.__iterateUncached = function (fn, reverse) {var this$0 = this;
-      if (reverse) {
-        return this.cacheResult().__iterate(fn, reverse);
-      }
-      var isSkipping = true;
-      var iterations = 0;
-      iterable.__iterate(function(v, k, c)  {
-        if (!(isSkipping && (isSkipping = predicate.call(context, v, k, c)))) {
-          iterations++;
-          return fn(v, useKeys ? k : iterations - 1, this$0);
-        }
-      });
-      return iterations;
-    };
-    skipSequence.__iteratorUncached = function(type, reverse) {var this$0 = this;
-      if (reverse) {
-        return this.cacheResult().__iterator(type, reverse);
-      }
-      var iterator = iterable.__iterator(ITERATE_ENTRIES, reverse);
-      var skipping = true;
-      var iterations = 0;
-      return new Iterator(function()  {
-        var step, k, v;
-        do {
-          step = iterator.next();
-          if (step.done) {
-            if (useKeys || type === ITERATE_VALUES) {
-              return step;
-            } else if (type === ITERATE_KEYS) {
-              return iteratorValue(type, iterations++, undefined, step);
-            } else {
-              return iteratorValue(type, iterations++, step.value[1], step);
-            }
-          }
-          var entry = step.value;
-          k = entry[0];
-          v = entry[1];
-          skipping && (skipping = predicate.call(context, v, k, this$0));
-        } while (skipping);
-        return type === ITERATE_ENTRIES ? step :
-          iteratorValue(type, k, v, step);
-      });
-    };
-    return skipSequence;
-  }
-
-
-  function concatFactory(iterable, values) {
-    var isKeyedIterable = isKeyed(iterable);
-    var iters = [iterable].concat(values).map(function(v ) {
-      if (!isIterable(v)) {
-        v = isKeyedIterable ?
-          keyedSeqFromValue(v) :
-          indexedSeqFromValue(Array.isArray(v) ? v : [v]);
-      } else if (isKeyedIterable) {
-        v = KeyedIterable(v);
-      }
-      return v;
-    }).filter(function(v ) {return v.size !== 0});
-
-    if (iters.length === 0) {
-      return iterable;
-    }
-
-    if (iters.length === 1) {
-      var singleton = iters[0];
-      if (singleton === iterable ||
-          isKeyedIterable && isKeyed(singleton) ||
-          isIndexed(iterable) && isIndexed(singleton)) {
-        return singleton;
-      }
-    }
-
-    var concatSeq = new ArraySeq(iters);
-    if (isKeyedIterable) {
-      concatSeq = concatSeq.toKeyedSeq();
-    } else if (!isIndexed(iterable)) {
-      concatSeq = concatSeq.toSetSeq();
-    }
-    concatSeq = concatSeq.flatten(true);
-    concatSeq.size = iters.reduce(
-      function(sum, seq)  {
-        if (sum !== undefined) {
-          var size = seq.size;
-          if (size !== undefined) {
-            return sum + size;
-          }
-        }
-      },
-      0
-    );
-    return concatSeq;
-  }
-
-
-  function flattenFactory(iterable, depth, useKeys) {
-    var flatSequence = makeSequence(iterable);
-    flatSequence.__iterateUncached = function(fn, reverse) {
-      var iterations = 0;
-      var stopped = false;
-      function flatDeep(iter, currentDepth) {var this$0 = this;
-        iter.__iterate(function(v, k)  {
-          if ((!depth || currentDepth < depth) && isIterable(v)) {
-            flatDeep(v, currentDepth + 1);
-          } else if (fn(v, useKeys ? k : iterations++, this$0) === false) {
-            stopped = true;
-          }
-          return !stopped;
-        }, reverse);
-      }
-      flatDeep(iterable, 0);
-      return iterations;
-    }
-    flatSequence.__iteratorUncached = function(type, reverse) {
-      var iterator = iterable.__iterator(type, reverse);
-      var stack = [];
-      var iterations = 0;
-      return new Iterator(function()  {
-        while (iterator) {
-          var step = iterator.next();
-          if (step.done !== false) {
-            iterator = stack.pop();
-            continue;
-          }
-          var v = step.value;
-          if (type === ITERATE_ENTRIES) {
-            v = v[1];
-          }
-          if ((!depth || stack.length < depth) && isIterable(v)) {
-            stack.push(iterator);
-            iterator = v.__iterator(type, reverse);
-          } else {
-            return useKeys ? step : iteratorValue(type, iterations++, v, step);
-          }
-        }
-        return iteratorDone();
-      });
-    }
-    return flatSequence;
-  }
-
-
-  function flatMapFactory(iterable, mapper, context) {
-    var coerce = iterableClass(iterable);
-    return iterable.toSeq().map(
-      function(v, k)  {return coerce(mapper.call(context, v, k, iterable))}
-    ).flatten(true);
-  }
-
-
-  function interposeFactory(iterable, separator) {
-    var interposedSequence = makeSequence(iterable);
-    interposedSequence.size = iterable.size && iterable.size * 2 -1;
-    interposedSequence.__iterateUncached = function(fn, reverse) {var this$0 = this;
-      var iterations = 0;
-      iterable.__iterate(function(v, k) 
-        {return (!iterations || fn(separator, iterations++, this$0) !== false) &&
-        fn(v, iterations++, this$0) !== false},
-        reverse
-      );
-      return iterations;
-    };
-    interposedSequence.__iteratorUncached = function(type, reverse) {
-      var iterator = iterable.__iterator(ITERATE_VALUES, reverse);
-      var iterations = 0;
-      var step;
-      return new Iterator(function()  {
-        if (!step || iterations % 2) {
-          step = iterator.next();
-          if (step.done) {
-            return step;
-          }
-        }
-        return iterations % 2 ?
-          iteratorValue(type, iterations++, separator) :
-          iteratorValue(type, iterations++, step.value, step);
-      });
-    };
-    return interposedSequence;
-  }
-
-
-  function sortFactory(iterable, comparator, mapper) {
-    if (!comparator) {
-      comparator = defaultComparator;
-    }
-    var isKeyedIterable = isKeyed(iterable);
-    var index = 0;
-    var entries = iterable.toSeq().map(
-      function(v, k)  {return [k, v, index++, mapper ? mapper(v, k, iterable) : v]}
-    ).toArray();
-    entries.sort(function(a, b)  {return comparator(a[3], b[3]) || a[2] - b[2]}).forEach(
-      isKeyedIterable ?
-      function(v, i)  { entries[i].length = 2; } :
-      function(v, i)  { entries[i] = v[1]; }
-    );
-    return isKeyedIterable ? KeyedSeq(entries) :
-      isIndexed(iterable) ? IndexedSeq(entries) :
-      SetSeq(entries);
-  }
-
-
-  function maxFactory(iterable, comparator, mapper) {
-    if (!comparator) {
-      comparator = defaultComparator;
-    }
-    if (mapper) {
-      var entry = iterable.toSeq()
-        .map(function(v, k)  {return [v, mapper(v, k, iterable)]})
-        .reduce(function(a, b)  {return maxCompare(comparator, a[1], b[1]) ? b : a});
-      return entry && entry[0];
-    } else {
-      return iterable.reduce(function(a, b)  {return maxCompare(comparator, a, b) ? b : a});
-    }
-  }
-
-  function maxCompare(comparator, a, b) {
-    var comp = comparator(b, a);
-    // b is considered the new max if the comparator declares them equal, but
-    // they are not equal and b is in fact a nullish value.
-    return (comp === 0 && b !== a && (b === undefined || b === null || b !== b)) || comp > 0;
-  }
-
-
-  function zipWithFactory(keyIter, zipper, iters) {
-    var zipSequence = makeSequence(keyIter);
-    zipSequence.size = new ArraySeq(iters).map(function(i ) {return i.size}).min();
-    // Note: this a generic base implementation of __iterate in terms of
-    // __iterator which may be more generically useful in the future.
-    zipSequence.__iterate = function(fn, reverse) {
-      /* generic:
-      var iterator = this.__iterator(ITERATE_ENTRIES, reverse);
-      var step;
-      var iterations = 0;
-      while (!(step = iterator.next()).done) {
-        iterations++;
-        if (fn(step.value[1], step.value[0], this) === false) {
-          break;
-        }
-      }
-      return iterations;
-      */
-      // indexed:
-      var iterator = this.__iterator(ITERATE_VALUES, reverse);
-      var step;
-      var iterations = 0;
-      while (!(step = iterator.next()).done) {
-        if (fn(step.value, iterations++, this) === false) {
-          break;
-        }
-      }
-      return iterations;
-    };
-    zipSequence.__iteratorUncached = function(type, reverse) {
-      var iterators = iters.map(function(i )
-        {return (i = Iterable(i), getIterator(reverse ? i.reverse() : i))}
-      );
-      var iterations = 0;
-      var isDone = false;
-      return new Iterator(function()  {
-        var steps;
-        if (!isDone) {
-          steps = iterators.map(function(i ) {return i.next()});
-          isDone = steps.some(function(s ) {return s.done});
-        }
-        if (isDone) {
-          return iteratorDone();
-        }
-        return iteratorValue(
-          type,
-          iterations++,
-          zipper.apply(null, steps.map(function(s ) {return s.value}))
-        );
-      });
-    };
-    return zipSequence
-  }
-
-
-  // #pragma Helper Functions
-
-  function reify(iter, seq) {
-    return isSeq(iter) ? seq : iter.constructor(seq);
-  }
-
-  function validateEntry(entry) {
-    if (entry !== Object(entry)) {
-      throw new TypeError('Expected [K, V] tuple: ' + entry);
-    }
-  }
-
-  function resolveSize(iter) {
-    assertNotInfinite(iter.size);
-    return ensureSize(iter);
-  }
-
-  function iterableClass(iterable) {
-    return isKeyed(iterable) ? KeyedIterable :
-      isIndexed(iterable) ? IndexedIterable :
-      SetIterable;
-  }
-
-  function makeSequence(iterable) {
-    return Object.create(
-      (
-        isKeyed(iterable) ? KeyedSeq :
-        isIndexed(iterable) ? IndexedSeq :
-        SetSeq
-      ).prototype
-    );
-  }
-
-  function cacheResultThrough() {
-    if (this._iter.cacheResult) {
-      this._iter.cacheResult();
-      this.size = this._iter.size;
-      return this;
-    } else {
-      return Seq.prototype.cacheResult.call(this);
-    }
-  }
-
-  function defaultComparator(a, b) {
-    return a > b ? 1 : a < b ? -1 : 0;
-  }
-
-  function forceIterator(keyPath) {
-    var iter = getIterator(keyPath);
-    if (!iter) {
-      // Array might not be iterable in this environment, so we need a fallback
-      // to our wrapped type.
-      if (!isArrayLike(keyPath)) {
-        throw new TypeError('Expected iterable or array-like: ' + keyPath);
-      }
-      iter = getIterator(Iterable(keyPath));
-    }
-    return iter;
-  }
-
-  createClass(Map, KeyedCollection);
-
-    // @pragma Construction
-
-    function Map(value) {
-      return value === null || value === undefined ? emptyMap() :
-        isMap(value) ? value :
-        emptyMap().withMutations(function(map ) {
-          var iter = KeyedIterable(value);
-          assertNotInfinite(iter.size);
-          iter.forEach(function(v, k)  {return map.set(k, v)});
-        });
-    }
-
-    Map.prototype.toString = function() {
-      return this.__toString('Map {', '}');
-    };
-
-    // @pragma Access
-
-    Map.prototype.get = function(k, notSetValue) {
-      return this._root ?
-        this._root.get(0, undefined, k, notSetValue) :
-        notSetValue;
-    };
-
-    // @pragma Modification
-
-    Map.prototype.set = function(k, v) {
-      return updateMap(this, k, v);
-    };
-
-    Map.prototype.setIn = function(keyPath, v) {
-      return this.updateIn(keyPath, NOT_SET, function()  {return v});
-    };
-
-    Map.prototype.remove = function(k) {
-      return updateMap(this, k, NOT_SET);
-    };
-
-    Map.prototype.deleteIn = function(keyPath) {
-      return this.updateIn(keyPath, function()  {return NOT_SET});
-    };
-
-    Map.prototype.update = function(k, notSetValue, updater) {
-      return arguments.length === 1 ?
-        k(this) :
-        this.updateIn([k], notSetValue, updater);
-    };
-
-    Map.prototype.updateIn = function(keyPath, notSetValue, updater) {
-      if (!updater) {
-        updater = notSetValue;
-        notSetValue = undefined;
-      }
-      var updatedValue = updateInDeepMap(
-        this,
-        forceIterator(keyPath),
-        notSetValue,
-        updater
-      );
-      return updatedValue === NOT_SET ? undefined : updatedValue;
-    };
-
-    Map.prototype.clear = function() {
-      if (this.size === 0) {
-        return this;
-      }
-      if (this.__ownerID) {
-        this.size = 0;
-        this._root = null;
-        this.__hash = undefined;
-        this.__altered = true;
-        return this;
-      }
-      return emptyMap();
-    };
-
-    // @pragma Composition
-
-    Map.prototype.merge = function(/*...iters*/) {
-      return mergeIntoMapWith(this, undefined, arguments);
-    };
-
-    Map.prototype.mergeWith = function(merger) {var iters = SLICE$0.call(arguments, 1);
-      return mergeIntoMapWith(this, merger, iters);
-    };
-
-    Map.prototype.mergeIn = function(keyPath) {var iters = SLICE$0.call(arguments, 1);
-      return this.updateIn(keyPath, emptyMap(), function(m ) {return m.merge.apply(m, iters)});
-    };
-
-    Map.prototype.mergeDeep = function(/*...iters*/) {
-      return mergeIntoMapWith(this, deepMerger(undefined), arguments);
-    };
-
-    Map.prototype.mergeDeepWith = function(merger) {var iters = SLICE$0.call(arguments, 1);
-      return mergeIntoMapWith(this, deepMerger(merger), iters);
-    };
-
-    Map.prototype.mergeDeepIn = function(keyPath) {var iters = SLICE$0.call(arguments, 1);
-      return this.updateIn(keyPath, emptyMap(), function(m ) {return m.mergeDeep.apply(m, iters)});
-    };
-
-    Map.prototype.sort = function(comparator) {
-      // Late binding
-      return OrderedMap(sortFactory(this, comparator));
-    };
-
-    Map.prototype.sortBy = function(mapper, comparator) {
-      // Late binding
-      return OrderedMap(sortFactory(this, comparator, mapper));
-    };
-
-    // @pragma Mutability
-
-    Map.prototype.withMutations = function(fn) {
-      var mutable = this.asMutable();
-      fn(mutable);
-      return mutable.wasAltered() ? mutable.__ensureOwner(this.__ownerID) : this;
-    };
-
-    Map.prototype.asMutable = function() {
-      return this.__ownerID ? this : this.__ensureOwner(new OwnerID());
-    };
-
-    Map.prototype.asImmutable = function() {
-      return this.__ensureOwner();
-    };
-
-    Map.prototype.wasAltered = function() {
-      return this.__altered;
-    };
-
-    Map.prototype.__iterator = function(type, reverse) {
-      return new MapIterator(this, type, reverse);
-    };
-
-    Map.prototype.__iterate = function(fn, reverse) {var this$0 = this;
-      var iterations = 0;
-      this._root && this._root.iterate(function(entry ) {
-        iterations++;
-        return fn(entry[1], entry[0], this$0);
-      }, reverse);
-      return iterations;
-    };
-
-    Map.prototype.__ensureOwner = function(ownerID) {
-      if (ownerID === this.__ownerID) {
-        return this;
-      }
-      if (!ownerID) {
-        this.__ownerID = ownerID;
-        this.__altered = false;
-        return this;
-      }
-      return makeMap(this.size, this._root, ownerID, this.__hash);
-    };
-
-
-  function isMap(maybeMap) {
-    return !!(maybeMap && maybeMap[IS_MAP_SENTINEL]);
-  }
-
-  Map.isMap = isMap;
-
-  var IS_MAP_SENTINEL = '@@__IMMUTABLE_MAP__@@';
-
-  var MapPrototype = Map.prototype;
-  MapPrototype[IS_MAP_SENTINEL] = true;
-  MapPrototype[DELETE] = MapPrototype.remove;
-  MapPrototype.removeIn = MapPrototype.deleteIn;
-
-
-  // #pragma Trie Nodes
-
-
-
-    function ArrayMapNode(ownerID, entries) {
-      this.ownerID = ownerID;
-      this.entries = entries;
-    }
-
-    ArrayMapNode.prototype.get = function(shift, keyHash, key, notSetValue) {
-      var entries = this.entries;
-      for (var ii = 0, len = entries.length; ii < len; ii++) {
-        if (is(key, entries[ii][0])) {
-          return entries[ii][1];
-        }
-      }
-      return notSetValue;
-    };
-
-    ArrayMapNode.prototype.update = function(ownerID, shift, keyHash, key, value, didChangeSize, didAlter) {
-      var removed = value === NOT_SET;
-
-      var entries = this.entries;
-      var idx = 0;
-      for (var len = entries.length; idx < len; idx++) {
-        if (is(key, entries[idx][0])) {
-          break;
-        }
-      }
-      var exists = idx < len;
-
-      if (exists ? entries[idx][1] === value : removed) {
-        return this;
-      }
-
-      SetRef(didAlter);
-      (removed || !exists) && SetRef(didChangeSize);
-
-      if (removed && entries.length === 1) {
-        return; // undefined
-      }
-
-      if (!exists && !removed && entries.length >= MAX_ARRAY_MAP_SIZE) {
-        return createNodes(ownerID, entries, key, value);
-      }
-
-      var isEditable = ownerID && ownerID === this.ownerID;
-      var newEntries = isEditable ? entries : arrCopy(entries);
-
-      if (exists) {
-        if (removed) {
-          idx === len - 1 ? newEntries.pop() : (newEntries[idx] = newEntries.pop());
-        } else {
-          newEntries[idx] = [key, value];
-        }
-      } else {
-        newEntries.push([key, value]);
-      }
-
-      if (isEditable) {
-        this.entries = newEntries;
-        return this;
-      }
-
-      return new ArrayMapNode(ownerID, newEntries);
-    };
-
-
-
-
-    function BitmapIndexedNode(ownerID, bitmap, nodes) {
-      this.ownerID = ownerID;
-      this.bitmap = bitmap;
-      this.nodes = nodes;
-    }
-
-    BitmapIndexedNode.prototype.get = function(shift, keyHash, key, notSetValue) {
-      if (keyHash === undefined) {
-        keyHash = hash(key);
-      }
-      var bit = (1 << ((shift === 0 ? keyHash : keyHash >>> shift) & MASK));
-      var bitmap = this.bitmap;
-      return (bitmap & bit) === 0 ? notSetValue :
-        this.nodes[popCount(bitmap & (bit - 1))].get(shift + SHIFT, keyHash, key, notSetValue);
-    };
-
-    BitmapIndexedNode.prototype.update = function(ownerID, shift, keyHash, key, value, didChangeSize, didAlter) {
-      if (keyHash === undefined) {
-        keyHash = hash(key);
-      }
-      var keyHashFrag = (shift === 0 ? keyHash : keyHash >>> shift) & MASK;
-      var bit = 1 << keyHashFrag;
-      var bitmap = this.bitmap;
-      var exists = (bitmap & bit) !== 0;
-
-      if (!exists && value === NOT_SET) {
-        return this;
-      }
-
-      var idx = popCount(bitmap & (bit - 1));
-      var nodes = this.nodes;
-      var node = exists ? nodes[idx] : undefined;
-      var newNode = updateNode(node, ownerID, shift + SHIFT, keyHash, key, value, didChangeSize, didAlter);
-
-      if (newNode === node) {
-        return this;
-      }
-
-      if (!exists && newNode && nodes.length >= MAX_BITMAP_INDEXED_SIZE) {
-        return expandNodes(ownerID, nodes, bitmap, keyHashFrag, newNode);
-      }
-
-      if (exists && !newNode && nodes.length === 2 && isLeafNode(nodes[idx ^ 1])) {
-        return nodes[idx ^ 1];
-      }
-
-      if (exists && newNode && nodes.length === 1 && isLeafNode(newNode)) {
-        return newNode;
-      }
-
-      var isEditable = ownerID && ownerID === this.ownerID;
-      var newBitmap = exists ? newNode ? bitmap : bitmap ^ bit : bitmap | bit;
-      var newNodes = exists ? newNode ?
-        setIn(nodes, idx, newNode, isEditable) :
-        spliceOut(nodes, idx, isEditable) :
-        spliceIn(nodes, idx, newNode, isEditable);
-
-      if (isEditable) {
-        this.bitmap = newBitmap;
-        this.nodes = newNodes;
-        return this;
-      }
-
-      return new BitmapIndexedNode(ownerID, newBitmap, newNodes);
-    };
-
-
-
-
-    function HashArrayMapNode(ownerID, count, nodes) {
-      this.ownerID = ownerID;
-      this.count = count;
-      this.nodes = nodes;
-    }
-
-    HashArrayMapNode.prototype.get = function(shift, keyHash, key, notSetValue) {
-      if (keyHash === undefined) {
-        keyHash = hash(key);
-      }
-      var idx = (shift === 0 ? keyHash : keyHash >>> shift) & MASK;
-      var node = this.nodes[idx];
-      return node ? node.get(shift + SHIFT, keyHash, key, notSetValue) : notSetValue;
-    };
-
-    HashArrayMapNode.prototype.update = function(ownerID, shift, keyHash, key, value, didChangeSize, didAlter) {
-      if (keyHash === undefined) {
-        keyHash = hash(key);
-      }
-      var idx = (shift === 0 ? keyHash : keyHash >>> shift) & MASK;
-      var removed = value === NOT_SET;
-      var nodes = this.nodes;
-      var node = nodes[idx];
-
-      if (removed && !node) {
-        return this;
-      }
-
-      var newNode = updateNode(node, ownerID, shift + SHIFT, keyHash, key, value, didChangeSize, didAlter);
-      if (newNode === node) {
-        return this;
-      }
-
-      var newCount = this.count;
-      if (!node) {
-        newCount++;
-      } else if (!newNode) {
-        newCount--;
-        if (newCount < MIN_HASH_ARRAY_MAP_SIZE) {
-          return packNodes(ownerID, nodes, newCount, idx);
-        }
-      }
-
-      var isEditable = ownerID && ownerID === this.ownerID;
-      var newNodes = setIn(nodes, idx, newNode, isEditable);
-
-      if (isEditable) {
-        this.count = newCount;
-        this.nodes = newNodes;
-        return this;
-      }
-
-      return new HashArrayMapNode(ownerID, newCount, newNodes);
-    };
-
-
-
-
-    function HashCollisionNode(ownerID, keyHash, entries) {
-      this.ownerID = ownerID;
-      this.keyHash = keyHash;
-      this.entries = entries;
-    }
-
-    HashCollisionNode.prototype.get = function(shift, keyHash, key, notSetValue) {
-      var entries = this.entries;
-      for (var ii = 0, len = entries.length; ii < len; ii++) {
-        if (is(key, entries[ii][0])) {
-          return entries[ii][1];
-        }
-      }
-      return notSetValue;
-    };
-
-    HashCollisionNode.prototype.update = function(ownerID, shift, keyHash, key, value, didChangeSize, didAlter) {
-      if (keyHash === undefined) {
-        keyHash = hash(key);
-      }
-
-      var removed = value === NOT_SET;
-
-      if (keyHash !== this.keyHash) {
-        if (removed) {
-          return this;
-        }
-        SetRef(didAlter);
-        SetRef(didChangeSize);
-        return mergeIntoNode(this, ownerID, shift, keyHash, [key, value]);
-      }
-
-      var entries = this.entries;
-      var idx = 0;
-      for (var len = entries.length; idx < len; idx++) {
-        if (is(key, entries[idx][0])) {
-          break;
-        }
-      }
-      var exists = idx < len;
-
-      if (exists ? entries[idx][1] === value : removed) {
-        return this;
-      }
-
-      SetRef(didAlter);
-      (removed || !exists) && SetRef(didChangeSize);
-
-      if (removed && len === 2) {
-        return new ValueNode(ownerID, this.keyHash, entries[idx ^ 1]);
-      }
-
-      var isEditable = ownerID && ownerID === this.ownerID;
-      var newEntries = isEditable ? entries : arrCopy(entries);
-
-      if (exists) {
-        if (removed) {
-          idx === len - 1 ? newEntries.pop() : (newEntries[idx] = newEntries.pop());
-        } else {
-          newEntries[idx] = [key, value];
-        }
-      } else {
-        newEntries.push([key, value]);
-      }
-
-      if (isEditable) {
-        this.entries = newEntries;
-        return this;
-      }
-
-      return new HashCollisionNode(ownerID, this.keyHash, newEntries);
-    };
-
-
-
-
-    function ValueNode(ownerID, keyHash, entry) {
-      this.ownerID = ownerID;
-      this.keyHash = keyHash;
-      this.entry = entry;
-    }
-
-    ValueNode.prototype.get = function(shift, keyHash, key, notSetValue) {
-      return is(key, this.entry[0]) ? this.entry[1] : notSetValue;
-    };
-
-    ValueNode.prototype.update = function(ownerID, shift, keyHash, key, value, didChangeSize, didAlter) {
-      var removed = value === NOT_SET;
-      var keyMatch = is(key, this.entry[0]);
-      if (keyMatch ? value === this.entry[1] : removed) {
-        return this;
-      }
-
-      SetRef(didAlter);
-
-      if (removed) {
-        SetRef(didChangeSize);
-        return; // undefined
-      }
-
-      if (keyMatch) {
-        if (ownerID && ownerID === this.ownerID) {
-          this.entry[1] = value;
-          return this;
-        }
-        return new ValueNode(ownerID, this.keyHash, [key, value]);
-      }
-
-      SetRef(didChangeSize);
-      return mergeIntoNode(this, ownerID, shift, hash(key), [key, value]);
-    };
-
-
-
-  // #pragma Iterators
-
-  ArrayMapNode.prototype.iterate =
-  HashCollisionNode.prototype.iterate = function (fn, reverse) {
-    var entries = this.entries;
-    for (var ii = 0, maxIndex = entries.length - 1; ii <= maxIndex; ii++) {
-      if (fn(entries[reverse ? maxIndex - ii : ii]) === false) {
-        return false;
-      }
-    }
-  }
-
-  BitmapIndexedNode.prototype.iterate =
-  HashArrayMapNode.prototype.iterate = function (fn, reverse) {
-    var nodes = this.nodes;
-    for (var ii = 0, maxIndex = nodes.length - 1; ii <= maxIndex; ii++) {
-      var node = nodes[reverse ? maxIndex - ii : ii];
-      if (node && node.iterate(fn, reverse) === false) {
-        return false;
-      }
-    }
-  }
-
-  ValueNode.prototype.iterate = function (fn, reverse) {
-    return fn(this.entry);
-  }
-
-  createClass(MapIterator, Iterator);
-
-    function MapIterator(map, type, reverse) {
-      this._type = type;
-      this._reverse = reverse;
-      this._stack = map._root && mapIteratorFrame(map._root);
-    }
-
-    MapIterator.prototype.next = function() {
-      var type = this._type;
-      var stack = this._stack;
-      while (stack) {
-        var node = stack.node;
-        var index = stack.index++;
-        var maxIndex;
-        if (node.entry) {
-          if (index === 0) {
-            return mapIteratorValue(type, node.entry);
-          }
-        } else if (node.entries) {
-          maxIndex = node.entries.length - 1;
-          if (index <= maxIndex) {
-            return mapIteratorValue(type, node.entries[this._reverse ? maxIndex - index : index]);
-          }
-        } else {
-          maxIndex = node.nodes.length - 1;
-          if (index <= maxIndex) {
-            var subNode = node.nodes[this._reverse ? maxIndex - index : index];
-            if (subNode) {
-              if (subNode.entry) {
-                return mapIteratorValue(type, subNode.entry);
-              }
-              stack = this._stack = mapIteratorFrame(subNode, stack);
-            }
-            continue;
-          }
-        }
-        stack = this._stack = this._stack.__prev;
-      }
-      return iteratorDone();
-    };
-
-
-  function mapIteratorValue(type, entry) {
-    return iteratorValue(type, entry[0], entry[1]);
-  }
-
-  function mapIteratorFrame(node, prev) {
-    return {
-      node: node,
-      index: 0,
-      __prev: prev
-    };
-  }
-
-  function makeMap(size, root, ownerID, hash) {
-    var map = Object.create(MapPrototype);
-    map.size = size;
-    map._root = root;
-    map.__ownerID = ownerID;
-    map.__hash = hash;
-    map.__altered = false;
-    return map;
-  }
-
-  var EMPTY_MAP;
-  function emptyMap() {
-    return EMPTY_MAP || (EMPTY_MAP = makeMap(0));
-  }
-
-  function updateMap(map, k, v) {
-    var newRoot;
-    var newSize;
-    if (!map._root) {
-      if (v === NOT_SET) {
-        return map;
-      }
-      newSize = 1;
-      newRoot = new ArrayMapNode(map.__ownerID, [[k, v]]);
-    } else {
-      var didChangeSize = MakeRef(CHANGE_LENGTH);
-      var didAlter = MakeRef(DID_ALTER);
-      newRoot = updateNode(map._root, map.__ownerID, 0, undefined, k, v, didChangeSize, didAlter);
-      if (!didAlter.value) {
-        return map;
-      }
-      newSize = map.size + (didChangeSize.value ? v === NOT_SET ? -1 : 1 : 0);
-    }
-    if (map.__ownerID) {
-      map.size = newSize;
-      map._root = newRoot;
-      map.__hash = undefined;
-      map.__altered = true;
-      return map;
-    }
-    return newRoot ? makeMap(newSize, newRoot) : emptyMap();
-  }
-
-  function updateNode(node, ownerID, shift, keyHash, key, value, didChangeSize, didAlter) {
-    if (!node) {
-      if (value === NOT_SET) {
-        return node;
-      }
-      SetRef(didAlter);
-      SetRef(didChangeSize);
-      return new ValueNode(ownerID, keyHash, [key, value]);
-    }
-    return node.update(ownerID, shift, keyHash, key, value, didChangeSize, didAlter);
-  }
-
-  function isLeafNode(node) {
-    return node.constructor === ValueNode || node.constructor === HashCollisionNode;
-  }
-
-  function mergeIntoNode(node, ownerID, shift, keyHash, entry) {
-    if (node.keyHash === keyHash) {
-      return new HashCollisionNode(ownerID, keyHash, [node.entry, entry]);
-    }
-
-    var idx1 = (shift === 0 ? node.keyHash : node.keyHash >>> shift) & MASK;
-    var idx2 = (shift === 0 ? keyHash : keyHash >>> shift) & MASK;
-
-    var newNode;
-    var nodes = idx1 === idx2 ?
-      [mergeIntoNode(node, ownerID, shift + SHIFT, keyHash, entry)] :
-      ((newNode = new ValueNode(ownerID, keyHash, entry)), idx1 < idx2 ? [node, newNode] : [newNode, node]);
-
-    return new BitmapIndexedNode(ownerID, (1 << idx1) | (1 << idx2), nodes);
-  }
-
-  function createNodes(ownerID, entries, key, value) {
-    if (!ownerID) {
-      ownerID = new OwnerID();
-    }
-    var node = new ValueNode(ownerID, hash(key), [key, value]);
-    for (var ii = 0; ii < entries.length; ii++) {
-      var entry = entries[ii];
-      node = node.update(ownerID, 0, undefined, entry[0], entry[1]);
-    }
-    return node;
-  }
-
-  function packNodes(ownerID, nodes, count, excluding) {
-    var bitmap = 0;
-    var packedII = 0;
-    var packedNodes = new Array(count);
-    for (var ii = 0, bit = 1, len = nodes.length; ii < len; ii++, bit <<= 1) {
-      var node = nodes[ii];
-      if (node !== undefined && ii !== excluding) {
-        bitmap |= bit;
-        packedNodes[packedII++] = node;
-      }
-    }
-    return new BitmapIndexedNode(ownerID, bitmap, packedNodes);
-  }
-
-  function expandNodes(ownerID, nodes, bitmap, including, node) {
-    var count = 0;
-    var expandedNodes = new Array(SIZE);
-    for (var ii = 0; bitmap !== 0; ii++, bitmap >>>= 1) {
-      expandedNodes[ii] = bitmap & 1 ? nodes[count++] : undefined;
-    }
-    expandedNodes[including] = node;
-    return new HashArrayMapNode(ownerID, count + 1, expandedNodes);
-  }
-
-  function mergeIntoMapWith(map, merger, iterables) {
-    var iters = [];
-    for (var ii = 0; ii < iterables.length; ii++) {
-      var value = iterables[ii];
-      var iter = KeyedIterable(value);
-      if (!isIterable(value)) {
-        iter = iter.map(function(v ) {return fromJS(v)});
-      }
-      iters.push(iter);
-    }
-    return mergeIntoCollectionWith(map, merger, iters);
-  }
-
-  function deepMerger(merger) {
-    return function(existing, value) 
-      {return existing && existing.mergeDeepWith && isIterable(value) ?
-        existing.mergeDeepWith(merger, value) :
-        merger ? merger(existing, value) : value};
-  }
-
-  function mergeIntoCollectionWith(collection, merger, iters) {
-    iters = iters.filter(function(x ) {return x.size !== 0});
-    if (iters.length === 0) {
-      return collection;
-    }
-    if (collection.size === 0 && iters.length === 1) {
-      return collection.constructor(iters[0]);
-    }
-    return collection.withMutations(function(collection ) {
-      var mergeIntoMap = merger ?
-        function(value, key)  {
-          collection.update(key, NOT_SET, function(existing )
-            {return existing === NOT_SET ? value : merger(existing, value)}
-          );
-        } :
-        function(value, key)  {
-          collection.set(key, value);
-        }
-      for (var ii = 0; ii < iters.length; ii++) {
-        iters[ii].forEach(mergeIntoMap);
-      }
-    });
-  }
-
-  function updateInDeepMap(existing, keyPathIter, notSetValue, updater) {
-    var isNotSet = existing === NOT_SET;
-    var step = keyPathIter.next();
-    if (step.done) {
-      var existingValue = isNotSet ? notSetValue : existing;
-      var newValue = updater(existingValue);
-      return newValue === existingValue ? existing : newValue;
-    }
-    invariant(
-      isNotSet || (existing && existing.set),
-      'invalid keyPath'
-    );
-    var key = step.value;
-    var nextExisting = isNotSet ? NOT_SET : existing.get(key, NOT_SET);
-    var nextUpdated = updateInDeepMap(
-      nextExisting,
-      keyPathIter,
-      notSetValue,
-      updater
-    );
-    return nextUpdated === nextExisting ? existing :
-      nextUpdated === NOT_SET ? existing.remove(key) :
-      (isNotSet ? emptyMap() : existing).set(key, nextUpdated);
-  }
-
-  function popCount(x) {
-    x = x - ((x >> 1) & 0x55555555);
-    x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
-    x = (x + (x >> 4)) & 0x0f0f0f0f;
-    x = x + (x >> 8);
-    x = x + (x >> 16);
-    return x & 0x7f;
-  }
-
-  function setIn(array, idx, val, canEdit) {
-    var newArray = canEdit ? array : arrCopy(array);
-    newArray[idx] = val;
-    return newArray;
-  }
-
-  function spliceIn(array, idx, val, canEdit) {
-    var newLen = array.length + 1;
-    if (canEdit && idx + 1 === newLen) {
-      array[idx] = val;
-      return array;
-    }
-    var newArray = new Array(newLen);
-    var after = 0;
-    for (var ii = 0; ii < newLen; ii++) {
-      if (ii === idx) {
-        newArray[ii] = val;
-        after = -1;
-      } else {
-        newArray[ii] = array[ii + after];
-      }
-    }
-    return newArray;
-  }
-
-  function spliceOut(array, idx, canEdit) {
-    var newLen = array.length - 1;
-    if (canEdit && idx === newLen) {
-      array.pop();
-      return array;
-    }
-    var newArray = new Array(newLen);
-    var after = 0;
-    for (var ii = 0; ii < newLen; ii++) {
-      if (ii === idx) {
-        after = 1;
-      }
-      newArray[ii] = array[ii + after];
-    }
-    return newArray;
-  }
-
-  var MAX_ARRAY_MAP_SIZE = SIZE / 4;
-  var MAX_BITMAP_INDEXED_SIZE = SIZE / 2;
-  var MIN_HASH_ARRAY_MAP_SIZE = SIZE / 4;
-
-  createClass(List, IndexedCollection);
-
-    // @pragma Construction
-
-    function List(value) {
-      var empty = emptyList();
-      if (value === null || value === undefined) {
-        return empty;
-      }
-      if (isList(value)) {
-        return value;
-      }
-      var iter = IndexedIterable(value);
-      var size = iter.size;
-      if (size === 0) {
-        return empty;
-      }
-      assertNotInfinite(size);
-      if (size > 0 && size < SIZE) {
-        return makeList(0, size, SHIFT, null, new VNode(iter.toArray()));
-      }
-      return empty.withMutations(function(list ) {
-        list.setSize(size);
-        iter.forEach(function(v, i)  {return list.set(i, v)});
-      });
-    }
-
-    List.of = function(/*...values*/) {
-      return this(arguments);
-    };
-
-    List.prototype.toString = function() {
-      return this.__toString('List [', ']');
-    };
-
-    // @pragma Access
-
-    List.prototype.get = function(index, notSetValue) {
-      index = wrapIndex(this, index);
-      if (index < 0 || index >= this.size) {
-        return notSetValue;
-      }
-      index += this._origin;
-      var node = listNodeFor(this, index);
-      return node && node.array[index & MASK];
-    };
-
-    // @pragma Modification
-
-    List.prototype.set = function(index, value) {
-      return updateList(this, index, value);
-    };
-
-    List.prototype.remove = function(index) {
-      return !this.has(index) ? this :
-        index === 0 ? this.shift() :
-        index === this.size - 1 ? this.pop() :
-        this.splice(index, 1);
-    };
-
-    List.prototype.clear = function() {
-      if (this.size === 0) {
-        return this;
-      }
-      if (this.__ownerID) {
-        this.size = this._origin = this._capacity = 0;
-        this._level = SHIFT;
-        this._root = this._tail = null;
-        this.__hash = undefined;
-        this.__altered = true;
-        return this;
-      }
-      return emptyList();
-    };
-
-    List.prototype.push = function(/*...values*/) {
-      var values = arguments;
-      var oldSize = this.size;
-      return this.withMutations(function(list ) {
-        setListBounds(list, 0, oldSize + values.length);
-        for (var ii = 0; ii < values.length; ii++) {
-          list.set(oldSize + ii, values[ii]);
-        }
-      });
-    };
-
-    List.prototype.pop = function() {
-      return setListBounds(this, 0, -1);
-    };
-
-    List.prototype.unshift = function(/*...values*/) {
-      var values = arguments;
-      return this.withMutations(function(list ) {
-        setListBounds(list, -values.length);
-        for (var ii = 0; ii < values.length; ii++) {
-          list.set(ii, values[ii]);
-        }
-      });
-    };
-
-    List.prototype.shift = function() {
-      return setListBounds(this, 1);
-    };
-
-    // @pragma Composition
-
-    List.prototype.merge = function(/*...iters*/) {
-      return mergeIntoListWith(this, undefined, arguments);
-    };
-
-    List.prototype.mergeWith = function(merger) {var iters = SLICE$0.call(arguments, 1);
-      return mergeIntoListWith(this, merger, iters);
-    };
-
-    List.prototype.mergeDeep = function(/*...iters*/) {
-      return mergeIntoListWith(this, deepMerger(undefined), arguments);
-    };
-
-    List.prototype.mergeDeepWith = function(merger) {var iters = SLICE$0.call(arguments, 1);
-      return mergeIntoListWith(this, deepMerger(merger), iters);
-    };
-
-    List.prototype.setSize = function(size) {
-      return setListBounds(this, 0, size);
-    };
-
-    // @pragma Iteration
-
-    List.prototype.slice = function(begin, end) {
-      var size = this.size;
-      if (wholeSlice(begin, end, size)) {
-        return this;
-      }
-      return setListBounds(
-        this,
-        resolveBegin(begin, size),
-        resolveEnd(end, size)
-      );
-    };
-
-    List.prototype.__iterator = function(type, reverse) {
-      var index = 0;
-      var values = iterateList(this, reverse);
-      return new Iterator(function()  {
-        var value = values();
-        return value === DONE ?
-          iteratorDone() :
-          iteratorValue(type, index++, value);
-      });
-    };
-
-    List.prototype.__iterate = function(fn, reverse) {
-      var index = 0;
-      var values = iterateList(this, reverse);
-      var value;
-      while ((value = values()) !== DONE) {
-        if (fn(value, index++, this) === false) {
-          break;
-        }
-      }
-      return index;
-    };
-
-    List.prototype.__ensureOwner = function(ownerID) {
-      if (ownerID === this.__ownerID) {
-        return this;
-      }
-      if (!ownerID) {
-        this.__ownerID = ownerID;
-        return this;
-      }
-      return makeList(this._origin, this._capacity, this._level, this._root, this._tail, ownerID, this.__hash);
-    };
-
-
-  function isList(maybeList) {
-    return !!(maybeList && maybeList[IS_LIST_SENTINEL]);
-  }
-
-  List.isList = isList;
-
-  var IS_LIST_SENTINEL = '@@__IMMUTABLE_LIST__@@';
-
-  var ListPrototype = List.prototype;
-  ListPrototype[IS_LIST_SENTINEL] = true;
-  ListPrototype[DELETE] = ListPrototype.remove;
-  ListPrototype.setIn = MapPrototype.setIn;
-  ListPrototype.deleteIn =
-  ListPrototype.removeIn = MapPrototype.removeIn;
-  ListPrototype.update = MapPrototype.update;
-  ListPrototype.updateIn = MapPrototype.updateIn;
-  ListPrototype.mergeIn = MapPrototype.mergeIn;
-  ListPrototype.mergeDeepIn = MapPrototype.mergeDeepIn;
-  ListPrototype.withMutations = MapPrototype.withMutations;
-  ListPrototype.asMutable = MapPrototype.asMutable;
-  ListPrototype.asImmutable = MapPrototype.asImmutable;
-  ListPrototype.wasAltered = MapPrototype.wasAltered;
-
-
-
-    function VNode(array, ownerID) {
-      this.array = array;
-      this.ownerID = ownerID;
-    }
-
-    // TODO: seems like these methods are very similar
-
-    VNode.prototype.removeBefore = function(ownerID, level, index) {
-      if (index === level ? 1 << level : 0 || this.array.length === 0) {
-        return this;
-      }
-      var originIndex = (index >>> level) & MASK;
-      if (originIndex >= this.array.length) {
-        return new VNode([], ownerID);
-      }
-      var removingFirst = originIndex === 0;
-      var newChild;
-      if (level > 0) {
-        var oldChild = this.array[originIndex];
-        newChild = oldChild && oldChild.removeBefore(ownerID, level - SHIFT, index);
-        if (newChild === oldChild && removingFirst) {
-          return this;
-        }
-      }
-      if (removingFirst && !newChild) {
-        return this;
-      }
-      var editable = editableVNode(this, ownerID);
-      if (!removingFirst) {
-        for (var ii = 0; ii < originIndex; ii++) {
-          editable.array[ii] = undefined;
-        }
-      }
-      if (newChild) {
-        editable.array[originIndex] = newChild;
-      }
-      return editable;
-    };
-
-    VNode.prototype.removeAfter = function(ownerID, level, index) {
-      if (index === level ? 1 << level : 0 || this.array.length === 0) {
-        return this;
-      }
-      var sizeIndex = ((index - 1) >>> level) & MASK;
-      if (sizeIndex >= this.array.length) {
-        return this;
-      }
-      var removingLast = sizeIndex === this.array.length - 1;
-      var newChild;
-      if (level > 0) {
-        var oldChild = this.array[sizeIndex];
-        newChild = oldChild && oldChild.removeAfter(ownerID, level - SHIFT, index);
-        if (newChild === oldChild && removingLast) {
-          return this;
-        }
-      }
-      if (removingLast && !newChild) {
-        return this;
-      }
-      var editable = editableVNode(this, ownerID);
-      if (!removingLast) {
-        editable.array.pop();
-      }
-      if (newChild) {
-        editable.array[sizeIndex] = newChild;
-      }
-      return editable;
-    };
-
-
-
-  var DONE = {};
-
-  function iterateList(list, reverse) {
-    var left = list._origin;
-    var right = list._capacity;
-    var tailPos = getTailOffset(right);
-    var tail = list._tail;
-
-    return iterateNodeOrLeaf(list._root, list._level, 0);
-
-    function iterateNodeOrLeaf(node, level, offset) {
-      return level === 0 ?
-        iterateLeaf(node, offset) :
-        iterateNode(node, level, offset);
-    }
-
-    function iterateLeaf(node, offset) {
-      var array = offset === tailPos ? tail && tail.array : node && node.array;
-      var from = offset > left ? 0 : left - offset;
-      var to = right - offset;
-      if (to > SIZE) {
-        to = SIZE;
-      }
-      return function()  {
-        if (from === to) {
-          return DONE;
-        }
-        var idx = reverse ? --to : from++;
-        return array && array[idx];
-      };
-    }
-
-    function iterateNode(node, level, offset) {
-      var values;
-      var array = node && node.array;
-      var from = offset > left ? 0 : (left - offset) >> level;
-      var to = ((right - offset) >> level) + 1;
-      if (to > SIZE) {
-        to = SIZE;
-      }
-      return function()  {
-        do {
-          if (values) {
-            var value = values();
-            if (value !== DONE) {
-              return value;
-            }
-            values = null;
-          }
-          if (from === to) {
-            return DONE;
-          }
-          var idx = reverse ? --to : from++;
-          values = iterateNodeOrLeaf(
-            array && array[idx], level - SHIFT, offset + (idx << level)
-          );
-        } while (true);
-      };
-    }
-  }
-
-  function makeList(origin, capacity, level, root, tail, ownerID, hash) {
-    var list = Object.create(ListPrototype);
-    list.size = capacity - origin;
-    list._origin = origin;
-    list._capacity = capacity;
-    list._level = level;
-    list._root = root;
-    list._tail = tail;
-    list.__ownerID = ownerID;
-    list.__hash = hash;
-    list.__altered = false;
-    return list;
-  }
-
-  var EMPTY_LIST;
-  function emptyList() {
-    return EMPTY_LIST || (EMPTY_LIST = makeList(0, 0, SHIFT));
-  }
-
-  function updateList(list, index, value) {
-    index = wrapIndex(list, index);
-
-    if (index >= list.size || index < 0) {
-      return list.withMutations(function(list ) {
-        index < 0 ?
-          setListBounds(list, index).set(0, value) :
-          setListBounds(list, 0, index + 1).set(index, value)
-      });
-    }
-
-    index += list._origin;
-
-    var newTail = list._tail;
-    var newRoot = list._root;
-    var didAlter = MakeRef(DID_ALTER);
-    if (index >= getTailOffset(list._capacity)) {
-      newTail = updateVNode(newTail, list.__ownerID, 0, index, value, didAlter);
-    } else {
-      newRoot = updateVNode(newRoot, list.__ownerID, list._level, index, value, didAlter);
-    }
-
-    if (!didAlter.value) {
-      return list;
-    }
-
-    if (list.__ownerID) {
-      list._root = newRoot;
-      list._tail = newTail;
-      list.__hash = undefined;
-      list.__altered = true;
-      return list;
-    }
-    return makeList(list._origin, list._capacity, list._level, newRoot, newTail);
-  }
-
-  function updateVNode(node, ownerID, level, index, value, didAlter) {
-    var idx = (index >>> level) & MASK;
-    var nodeHas = node && idx < node.array.length;
-    if (!nodeHas && value === undefined) {
-      return node;
-    }
-
-    var newNode;
-
-    if (level > 0) {
-      var lowerNode = node && node.array[idx];
-      var newLowerNode = updateVNode(lowerNode, ownerID, level - SHIFT, index, value, didAlter);
-      if (newLowerNode === lowerNode) {
-        return node;
-      }
-      newNode = editableVNode(node, ownerID);
-      newNode.array[idx] = newLowerNode;
-      return newNode;
-    }
-
-    if (nodeHas && node.array[idx] === value) {
-      return node;
-    }
-
-    SetRef(didAlter);
-
-    newNode = editableVNode(node, ownerID);
-    if (value === undefined && idx === newNode.array.length - 1) {
-      newNode.array.pop();
-    } else {
-      newNode.array[idx] = value;
-    }
-    return newNode;
-  }
-
-  function editableVNode(node, ownerID) {
-    if (ownerID && node && ownerID === node.ownerID) {
-      return node;
-    }
-    return new VNode(node ? node.array.slice() : [], ownerID);
-  }
-
-  function listNodeFor(list, rawIndex) {
-    if (rawIndex >= getTailOffset(list._capacity)) {
-      return list._tail;
-    }
-    if (rawIndex < 1 << (list._level + SHIFT)) {
-      var node = list._root;
-      var level = list._level;
-      while (node && level > 0) {
-        node = node.array[(rawIndex >>> level) & MASK];
-        level -= SHIFT;
-      }
-      return node;
-    }
-  }
-
-  function setListBounds(list, begin, end) {
-    var owner = list.__ownerID || new OwnerID();
-    var oldOrigin = list._origin;
-    var oldCapacity = list._capacity;
-    var newOrigin = oldOrigin + begin;
-    var newCapacity = end === undefined ? oldCapacity : end < 0 ? oldCapacity + end : oldOrigin + end;
-    if (newOrigin === oldOrigin && newCapacity === oldCapacity) {
-      return list;
-    }
-
-    // If it's going to end after it starts, it's empty.
-    if (newOrigin >= newCapacity) {
-      return list.clear();
-    }
-
-    var newLevel = list._level;
-    var newRoot = list._root;
-
-    // New origin might require creating a higher root.
-    var offsetShift = 0;
-    while (newOrigin + offsetShift < 0) {
-      newRoot = new VNode(newRoot && newRoot.array.length ? [undefined, newRoot] : [], owner);
-      newLevel += SHIFT;
-      offsetShift += 1 << newLevel;
-    }
-    if (offsetShift) {
-      newOrigin += offsetShift;
-      oldOrigin += offsetShift;
-      newCapacity += offsetShift;
-      oldCapacity += offsetShift;
-    }
-
-    var oldTailOffset = getTailOffset(oldCapacity);
-    var newTailOffset = getTailOffset(newCapacity);
-
-    // New size might require creating a higher root.
-    while (newTailOffset >= 1 << (newLevel + SHIFT)) {
-      newRoot = new VNode(newRoot && newRoot.array.length ? [newRoot] : [], owner);
-      newLevel += SHIFT;
-    }
-
-    // Locate or create the new tail.
-    var oldTail = list._tail;
-    var newTail = newTailOffset < oldTailOffset ?
-      listNodeFor(list, newCapacity - 1) :
-      newTailOffset > oldTailOffset ? new VNode([], owner) : oldTail;
-
-    // Merge Tail into tree.
-    if (oldTail && newTailOffset > oldTailOffset && newOrigin < oldCapacity && oldTail.array.length) {
-      newRoot = editableVNode(newRoot, owner);
-      var node = newRoot;
-      for (var level = newLevel; level > SHIFT; level -= SHIFT) {
-        var idx = (oldTailOffset >>> level) & MASK;
-        node = node.array[idx] = editableVNode(node.array[idx], owner);
-      }
-      node.array[(oldTailOffset >>> SHIFT) & MASK] = oldTail;
-    }
-
-    // If the size has been reduced, there's a chance the tail needs to be trimmed.
-    if (newCapacity < oldCapacity) {
-      newTail = newTail && newTail.removeAfter(owner, 0, newCapacity);
-    }
-
-    // If the new origin is within the tail, then we do not need a root.
-    if (newOrigin >= newTailOffset) {
-      newOrigin -= newTailOffset;
-      newCapacity -= newTailOffset;
-      newLevel = SHIFT;
-      newRoot = null;
-      newTail = newTail && newTail.removeBefore(owner, 0, newOrigin);
-
-    // Otherwise, if the root has been trimmed, garbage collect.
-    } else if (newOrigin > oldOrigin || newTailOffset < oldTailOffset) {
-      offsetShift = 0;
-
-      // Identify the new top root node of the subtree of the old root.
-      while (newRoot) {
-        var beginIndex = (newOrigin >>> newLevel) & MASK;
-        if (beginIndex !== (newTailOffset >>> newLevel) & MASK) {
-          break;
-        }
-        if (beginIndex) {
-          offsetShift += (1 << newLevel) * beginIndex;
-        }
-        newLevel -= SHIFT;
-        newRoot = newRoot.array[beginIndex];
-      }
-
-      // Trim the new sides of the new root.
-      if (newRoot && newOrigin > oldOrigin) {
-        newRoot = newRoot.removeBefore(owner, newLevel, newOrigin - offsetShift);
-      }
-      if (newRoot && newTailOffset < oldTailOffset) {
-        newRoot = newRoot.removeAfter(owner, newLevel, newTailOffset - offsetShift);
-      }
-      if (offsetShift) {
-        newOrigin -= offsetShift;
-        newCapacity -= offsetShift;
-      }
-    }
-
-    if (list.__ownerID) {
-      list.size = newCapacity - newOrigin;
-      list._origin = newOrigin;
-      list._capacity = newCapacity;
-      list._level = newLevel;
-      list._root = newRoot;
-      list._tail = newTail;
-      list.__hash = undefined;
-      list.__altered = true;
-      return list;
-    }
-    return makeList(newOrigin, newCapacity, newLevel, newRoot, newTail);
-  }
-
-  function mergeIntoListWith(list, merger, iterables) {
-    var iters = [];
-    var maxSize = 0;
-    for (var ii = 0; ii < iterables.length; ii++) {
-      var value = iterables[ii];
-      var iter = IndexedIterable(value);
-      if (iter.size > maxSize) {
-        maxSize = iter.size;
-      }
-      if (!isIterable(value)) {
-        iter = iter.map(function(v ) {return fromJS(v)});
-      }
-      iters.push(iter);
-    }
-    if (maxSize > list.size) {
-      list = list.setSize(maxSize);
-    }
-    return mergeIntoCollectionWith(list, merger, iters);
-  }
-
-  function getTailOffset(size) {
-    return size < SIZE ? 0 : (((size - 1) >>> SHIFT) << SHIFT);
-  }
-
-  createClass(OrderedMap, Map);
-
-    // @pragma Construction
-
-    function OrderedMap(value) {
-      return value === null || value === undefined ? emptyOrderedMap() :
-        isOrderedMap(value) ? value :
-        emptyOrderedMap().withMutations(function(map ) {
-          var iter = KeyedIterable(value);
-          assertNotInfinite(iter.size);
-          iter.forEach(function(v, k)  {return map.set(k, v)});
-        });
-    }
-
-    OrderedMap.of = function(/*...values*/) {
-      return this(arguments);
-    };
-
-    OrderedMap.prototype.toString = function() {
-      return this.__toString('OrderedMap {', '}');
-    };
-
-    // @pragma Access
-
-    OrderedMap.prototype.get = function(k, notSetValue) {
-      var index = this._map.get(k);
-      return index !== undefined ? this._list.get(index)[1] : notSetValue;
-    };
-
-    // @pragma Modification
-
-    OrderedMap.prototype.clear = function() {
-      if (this.size === 0) {
-        return this;
-      }
-      if (this.__ownerID) {
-        this.size = 0;
-        this._map.clear();
-        this._list.clear();
-        return this;
-      }
-      return emptyOrderedMap();
-    };
-
-    OrderedMap.prototype.set = function(k, v) {
-      return updateOrderedMap(this, k, v);
-    };
-
-    OrderedMap.prototype.remove = function(k) {
-      return updateOrderedMap(this, k, NOT_SET);
-    };
-
-    OrderedMap.prototype.wasAltered = function() {
-      return this._map.wasAltered() || this._list.wasAltered();
-    };
-
-    OrderedMap.prototype.__iterate = function(fn, reverse) {var this$0 = this;
-      return this._list.__iterate(
-        function(entry ) {return entry && fn(entry[1], entry[0], this$0)},
-        reverse
-      );
-    };
-
-    OrderedMap.prototype.__iterator = function(type, reverse) {
-      return this._list.fromEntrySeq().__iterator(type, reverse);
-    };
-
-    OrderedMap.prototype.__ensureOwner = function(ownerID) {
-      if (ownerID === this.__ownerID) {
-        return this;
-      }
-      var newMap = this._map.__ensureOwner(ownerID);
-      var newList = this._list.__ensureOwner(ownerID);
-      if (!ownerID) {
-        this.__ownerID = ownerID;
-        this._map = newMap;
-        this._list = newList;
-        return this;
-      }
-      return makeOrderedMap(newMap, newList, ownerID, this.__hash);
-    };
-
-
-  function isOrderedMap(maybeOrderedMap) {
-    return isMap(maybeOrderedMap) && isOrdered(maybeOrderedMap);
-  }
-
-  OrderedMap.isOrderedMap = isOrderedMap;
-
-  OrderedMap.prototype[IS_ORDERED_SENTINEL] = true;
-  OrderedMap.prototype[DELETE] = OrderedMap.prototype.remove;
-
-
-
-  function makeOrderedMap(map, list, ownerID, hash) {
-    var omap = Object.create(OrderedMap.prototype);
-    omap.size = map ? map.size : 0;
-    omap._map = map;
-    omap._list = list;
-    omap.__ownerID = ownerID;
-    omap.__hash = hash;
-    return omap;
-  }
-
-  var EMPTY_ORDERED_MAP;
-  function emptyOrderedMap() {
-    return EMPTY_ORDERED_MAP || (EMPTY_ORDERED_MAP = makeOrderedMap(emptyMap(), emptyList()));
-  }
-
-  function updateOrderedMap(omap, k, v) {
-    var map = omap._map;
-    var list = omap._list;
-    var i = map.get(k);
-    var has = i !== undefined;
-    var newMap;
-    var newList;
-    if (v === NOT_SET) { // removed
-      if (!has) {
-        return omap;
-      }
-      if (list.size >= SIZE && list.size >= map.size * 2) {
-        newList = list.filter(function(entry, idx)  {return entry !== undefined && i !== idx});
-        newMap = newList.toKeyedSeq().map(function(entry ) {return entry[0]}).flip().toMap();
-        if (omap.__ownerID) {
-          newMap.__ownerID = newList.__ownerID = omap.__ownerID;
-        }
-      } else {
-        newMap = map.remove(k);
-        newList = i === list.size - 1 ? list.pop() : list.set(i, undefined);
-      }
-    } else {
-      if (has) {
-        if (v === list.get(i)[1]) {
-          return omap;
-        }
-        newMap = map;
-        newList = list.set(i, [k, v]);
-      } else {
-        newMap = map.set(k, list.size);
-        newList = list.set(list.size, [k, v]);
-      }
-    }
-    if (omap.__ownerID) {
-      omap.size = newMap.size;
-      omap._map = newMap;
-      omap._list = newList;
-      omap.__hash = undefined;
-      return omap;
-    }
-    return makeOrderedMap(newMap, newList);
-  }
-
-  createClass(Stack, IndexedCollection);
-
-    // @pragma Construction
-
-    function Stack(value) {
-      return value === null || value === undefined ? emptyStack() :
-        isStack(value) ? value :
-        emptyStack().unshiftAll(value);
-    }
-
-    Stack.of = function(/*...values*/) {
-      return this(arguments);
-    };
-
-    Stack.prototype.toString = function() {
-      return this.__toString('Stack [', ']');
-    };
-
-    // @pragma Access
-
-    Stack.prototype.get = function(index, notSetValue) {
-      var head = this._head;
-      while (head && index--) {
-        head = head.next;
-      }
-      return head ? head.value : notSetValue;
-    };
-
-    Stack.prototype.peek = function() {
-      return this._head && this._head.value;
-    };
-
-    // @pragma Modification
-
-    Stack.prototype.push = function(/*...values*/) {
-      if (arguments.length === 0) {
-        return this;
-      }
-      var newSize = this.size + arguments.length;
-      var head = this._head;
-      for (var ii = arguments.length - 1; ii >= 0; ii--) {
-        head = {
-          value: arguments[ii],
-          next: head
-        };
-      }
-      if (this.__ownerID) {
-        this.size = newSize;
-        this._head = head;
-        this.__hash = undefined;
-        this.__altered = true;
-        return this;
-      }
-      return makeStack(newSize, head);
-    };
-
-    Stack.prototype.pushAll = function(iter) {
-      iter = IndexedIterable(iter);
-      if (iter.size === 0) {
-        return this;
-      }
-      assertNotInfinite(iter.size);
-      var newSize = this.size;
-      var head = this._head;
-      iter.reverse().forEach(function(value ) {
-        newSize++;
-        head = {
-          value: value,
-          next: head
-        };
-      });
-      if (this.__ownerID) {
-        this.size = newSize;
-        this._head = head;
-        this.__hash = undefined;
-        this.__altered = true;
-        return this;
-      }
-      return makeStack(newSize, head);
-    };
-
-    Stack.prototype.pop = function() {
-      return this.slice(1);
-    };
-
-    Stack.prototype.unshift = function(/*...values*/) {
-      return this.push.apply(this, arguments);
-    };
-
-    Stack.prototype.unshiftAll = function(iter) {
-      return this.pushAll(iter);
-    };
-
-    Stack.prototype.shift = function() {
-      return this.pop.apply(this, arguments);
-    };
-
-    Stack.prototype.clear = function() {
-      if (this.size === 0) {
-        return this;
-      }
-      if (this.__ownerID) {
-        this.size = 0;
-        this._head = undefined;
-        this.__hash = undefined;
-        this.__altered = true;
-        return this;
-      }
-      return emptyStack();
-    };
-
-    Stack.prototype.slice = function(begin, end) {
-      if (wholeSlice(begin, end, this.size)) {
-        return this;
-      }
-      var resolvedBegin = resolveBegin(begin, this.size);
-      var resolvedEnd = resolveEnd(end, this.size);
-      if (resolvedEnd !== this.size) {
-        // super.slice(begin, end);
-        return IndexedCollection.prototype.slice.call(this, begin, end);
-      }
-      var newSize = this.size - resolvedBegin;
-      var head = this._head;
-      while (resolvedBegin--) {
-        head = head.next;
-      }
-      if (this.__ownerID) {
-        this.size = newSize;
-        this._head = head;
-        this.__hash = undefined;
-        this.__altered = true;
-        return this;
-      }
-      return makeStack(newSize, head);
-    };
-
-    // @pragma Mutability
-
-    Stack.prototype.__ensureOwner = function(ownerID) {
-      if (ownerID === this.__ownerID) {
-        return this;
-      }
-      if (!ownerID) {
-        this.__ownerID = ownerID;
-        this.__altered = false;
-        return this;
-      }
-      return makeStack(this.size, this._head, ownerID, this.__hash);
-    };
-
-    // @pragma Iteration
-
-    Stack.prototype.__iterate = function(fn, reverse) {
-      if (reverse) {
-        return this.toSeq().cacheResult.__iterate(fn, reverse);
-      }
-      var iterations = 0;
-      var node = this._head;
-      while (node) {
-        if (fn(node.value, iterations++, this) === false) {
-          break;
-        }
-        node = node.next;
-      }
-      return iterations;
-    };
-
-    Stack.prototype.__iterator = function(type, reverse) {
-      if (reverse) {
-        return this.toSeq().cacheResult().__iterator(type, reverse);
-      }
-      var iterations = 0;
-      var node = this._head;
-      return new Iterator(function()  {
-        if (node) {
-          var value = node.value;
-          node = node.next;
-          return iteratorValue(type, iterations++, value);
-        }
-        return iteratorDone();
-      });
-    };
-
-
-  function isStack(maybeStack) {
-    return !!(maybeStack && maybeStack[IS_STACK_SENTINEL]);
-  }
-
-  Stack.isStack = isStack;
-
-  var IS_STACK_SENTINEL = '@@__IMMUTABLE_STACK__@@';
-
-  var StackPrototype = Stack.prototype;
-  StackPrototype[IS_STACK_SENTINEL] = true;
-  StackPrototype.withMutations = MapPrototype.withMutations;
-  StackPrototype.asMutable = MapPrototype.asMutable;
-  StackPrototype.asImmutable = MapPrototype.asImmutable;
-  StackPrototype.wasAltered = MapPrototype.wasAltered;
-
-
-  function makeStack(size, head, ownerID, hash) {
-    var map = Object.create(StackPrototype);
-    map.size = size;
-    map._head = head;
-    map.__ownerID = ownerID;
-    map.__hash = hash;
-    map.__altered = false;
-    return map;
-  }
-
-  var EMPTY_STACK;
-  function emptyStack() {
-    return EMPTY_STACK || (EMPTY_STACK = makeStack(0));
-  }
-
-  createClass(Set, SetCollection);
-
-    // @pragma Construction
-
-    function Set(value) {
-      return value === null || value === undefined ? emptySet() :
-        isSet(value) ? value :
-        emptySet().withMutations(function(set ) {
-          var iter = SetIterable(value);
-          assertNotInfinite(iter.size);
-          iter.forEach(function(v ) {return set.add(v)});
-        });
-    }
-
-    Set.of = function(/*...values*/) {
-      return this(arguments);
-    };
-
-    Set.fromKeys = function(value) {
-      return this(KeyedIterable(value).keySeq());
-    };
-
-    Set.prototype.toString = function() {
-      return this.__toString('Set {', '}');
-    };
-
-    // @pragma Access
-
-    Set.prototype.has = function(value) {
-      return this._map.has(value);
-    };
-
-    // @pragma Modification
-
-    Set.prototype.add = function(value) {
-      return updateSet(this, this._map.set(value, true));
-    };
-
-    Set.prototype.remove = function(value) {
-      return updateSet(this, this._map.remove(value));
-    };
-
-    Set.prototype.clear = function() {
-      return updateSet(this, this._map.clear());
-    };
-
-    // @pragma Composition
-
-    Set.prototype.union = function() {var iters = SLICE$0.call(arguments, 0);
-      iters = iters.filter(function(x ) {return x.size !== 0});
-      if (iters.length === 0) {
-        return this;
-      }
-      if (this.size === 0 && iters.length === 1) {
-        return this.constructor(iters[0]);
-      }
-      return this.withMutations(function(set ) {
-        for (var ii = 0; ii < iters.length; ii++) {
-          SetIterable(iters[ii]).forEach(function(value ) {return set.add(value)});
-        }
-      });
-    };
-
-    Set.prototype.intersect = function() {var iters = SLICE$0.call(arguments, 0);
-      if (iters.length === 0) {
-        return this;
-      }
-      iters = iters.map(function(iter ) {return SetIterable(iter)});
-      var originalSet = this;
-      return this.withMutations(function(set ) {
-        originalSet.forEach(function(value ) {
-          if (!iters.every(function(iter ) {return iter.contains(value)})) {
-            set.remove(value);
-          }
-        });
-      });
-    };
-
-    Set.prototype.subtract = function() {var iters = SLICE$0.call(arguments, 0);
-      if (iters.length === 0) {
-        return this;
-      }
-      iters = iters.map(function(iter ) {return SetIterable(iter)});
-      var originalSet = this;
-      return this.withMutations(function(set ) {
-        originalSet.forEach(function(value ) {
-          if (iters.some(function(iter ) {return iter.contains(value)})) {
-            set.remove(value);
-          }
-        });
-      });
-    };
-
-    Set.prototype.merge = function() {
-      return this.union.apply(this, arguments);
-    };
-
-    Set.prototype.mergeWith = function(merger) {var iters = SLICE$0.call(arguments, 1);
-      return this.union.apply(this, iters);
-    };
-
-    Set.prototype.sort = function(comparator) {
-      // Late binding
-      return OrderedSet(sortFactory(this, comparator));
-    };
-
-    Set.prototype.sortBy = function(mapper, comparator) {
-      // Late binding
-      return OrderedSet(sortFactory(this, comparator, mapper));
-    };
-
-    Set.prototype.wasAltered = function() {
-      return this._map.wasAltered();
-    };
-
-    Set.prototype.__iterate = function(fn, reverse) {var this$0 = this;
-      return this._map.__iterate(function(_, k)  {return fn(k, k, this$0)}, reverse);
-    };
-
-    Set.prototype.__iterator = function(type, reverse) {
-      return this._map.map(function(_, k)  {return k}).__iterator(type, reverse);
-    };
-
-    Set.prototype.__ensureOwner = function(ownerID) {
-      if (ownerID === this.__ownerID) {
-        return this;
-      }
-      var newMap = this._map.__ensureOwner(ownerID);
-      if (!ownerID) {
-        this.__ownerID = ownerID;
-        this._map = newMap;
-        return this;
-      }
-      return this.__make(newMap, ownerID);
-    };
-
-
-  function isSet(maybeSet) {
-    return !!(maybeSet && maybeSet[IS_SET_SENTINEL]);
-  }
-
-  Set.isSet = isSet;
-
-  var IS_SET_SENTINEL = '@@__IMMUTABLE_SET__@@';
-
-  var SetPrototype = Set.prototype;
-  SetPrototype[IS_SET_SENTINEL] = true;
-  SetPrototype[DELETE] = SetPrototype.remove;
-  SetPrototype.mergeDeep = SetPrototype.merge;
-  SetPrototype.mergeDeepWith = SetPrototype.mergeWith;
-  SetPrototype.withMutations = MapPrototype.withMutations;
-  SetPrototype.asMutable = MapPrototype.asMutable;
-  SetPrototype.asImmutable = MapPrototype.asImmutable;
-
-  SetPrototype.__empty = emptySet;
-  SetPrototype.__make = makeSet;
-
-  function updateSet(set, newMap) {
-    if (set.__ownerID) {
-      set.size = newMap.size;
-      set._map = newMap;
-      return set;
-    }
-    return newMap === set._map ? set :
-      newMap.size === 0 ? set.__empty() :
-      set.__make(newMap);
-  }
-
-  function makeSet(map, ownerID) {
-    var set = Object.create(SetPrototype);
-    set.size = map ? map.size : 0;
-    set._map = map;
-    set.__ownerID = ownerID;
-    return set;
-  }
-
-  var EMPTY_SET;
-  function emptySet() {
-    return EMPTY_SET || (EMPTY_SET = makeSet(emptyMap()));
-  }
-
-  createClass(OrderedSet, Set);
-
-    // @pragma Construction
-
-    function OrderedSet(value) {
-      return value === null || value === undefined ? emptyOrderedSet() :
-        isOrderedSet(value) ? value :
-        emptyOrderedSet().withMutations(function(set ) {
-          var iter = SetIterable(value);
-          assertNotInfinite(iter.size);
-          iter.forEach(function(v ) {return set.add(v)});
-        });
-    }
-
-    OrderedSet.of = function(/*...values*/) {
-      return this(arguments);
-    };
-
-    OrderedSet.fromKeys = function(value) {
-      return this(KeyedIterable(value).keySeq());
-    };
-
-    OrderedSet.prototype.toString = function() {
-      return this.__toString('OrderedSet {', '}');
-    };
-
-
-  function isOrderedSet(maybeOrderedSet) {
-    return isSet(maybeOrderedSet) && isOrdered(maybeOrderedSet);
-  }
-
-  OrderedSet.isOrderedSet = isOrderedSet;
-
-  var OrderedSetPrototype = OrderedSet.prototype;
-  OrderedSetPrototype[IS_ORDERED_SENTINEL] = true;
-
-  OrderedSetPrototype.__empty = emptyOrderedSet;
-  OrderedSetPrototype.__make = makeOrderedSet;
-
-  function makeOrderedSet(map, ownerID) {
-    var set = Object.create(OrderedSetPrototype);
-    set.size = map ? map.size : 0;
-    set._map = map;
-    set.__ownerID = ownerID;
-    return set;
-  }
-
-  var EMPTY_ORDERED_SET;
-  function emptyOrderedSet() {
-    return EMPTY_ORDERED_SET || (EMPTY_ORDERED_SET = makeOrderedSet(emptyOrderedMap()));
-  }
-
-  createClass(Record, KeyedCollection);
-
-    function Record(defaultValues, name) {
-      var RecordType = function Record(values) {
-        if (!(this instanceof RecordType)) {
-          return new RecordType(values);
-        }
-        this._map = Map(values);
-      };
-
-      var keys = Object.keys(defaultValues);
-
-      var RecordTypePrototype = RecordType.prototype = Object.create(RecordPrototype);
-      RecordTypePrototype.constructor = RecordType;
-      name && (RecordTypePrototype._name = name);
-      RecordTypePrototype._defaultValues = defaultValues;
-      RecordTypePrototype._keys = keys;
-      RecordTypePrototype.size = keys.length;
-
-      try {
-        keys.forEach(function(key ) {
-          Object.defineProperty(RecordType.prototype, key, {
-            get: function() {
-              return this.get(key);
-            },
-            set: function(value) {
-              invariant(this.__ownerID, 'Cannot set on an immutable record.');
-              this.set(key, value);
-            }
-          });
-        });
-      } catch (error) {
-        // Object.defineProperty failed. Probably IE8.
-      }
-
-      return RecordType;
-    }
-
-    Record.prototype.toString = function() {
-      return this.__toString(recordName(this) + ' {', '}');
-    };
-
-    // @pragma Access
-
-    Record.prototype.has = function(k) {
-      return this._defaultValues.hasOwnProperty(k);
-    };
-
-    Record.prototype.get = function(k, notSetValue) {
-      if (!this.has(k)) {
-        return notSetValue;
-      }
-      var defaultVal = this._defaultValues[k];
-      return this._map ? this._map.get(k, defaultVal) : defaultVal;
-    };
-
-    // @pragma Modification
-
-    Record.prototype.clear = function() {
-      if (this.__ownerID) {
-        this._map && this._map.clear();
-        return this;
-      }
-      var SuperRecord = Object.getPrototypeOf(this).constructor;
-      return SuperRecord._empty || (SuperRecord._empty = makeRecord(this, emptyMap()));
-    };
-
-    Record.prototype.set = function(k, v) {
-      if (!this.has(k)) {
-        throw new Error('Cannot set unknown key "' + k + '" on ' + recordName(this));
-      }
-      var newMap = this._map && this._map.set(k, v);
-      if (this.__ownerID || newMap === this._map) {
-        return this;
-      }
-      return makeRecord(this, newMap);
-    };
-
-    Record.prototype.remove = function(k) {
-      if (!this.has(k)) {
-        return this;
-      }
-      var newMap = this._map && this._map.remove(k);
-      if (this.__ownerID || newMap === this._map) {
-        return this;
-      }
-      return makeRecord(this, newMap);
-    };
-
-    Record.prototype.wasAltered = function() {
-      return this._map.wasAltered();
-    };
-
-    Record.prototype.__iterator = function(type, reverse) {var this$0 = this;
-      return KeyedIterable(this._defaultValues).map(function(_, k)  {return this$0.get(k)}).__iterator(type, reverse);
-    };
-
-    Record.prototype.__iterate = function(fn, reverse) {var this$0 = this;
-      return KeyedIterable(this._defaultValues).map(function(_, k)  {return this$0.get(k)}).__iterate(fn, reverse);
-    };
-
-    Record.prototype.__ensureOwner = function(ownerID) {
-      if (ownerID === this.__ownerID) {
-        return this;
-      }
-      var newMap = this._map && this._map.__ensureOwner(ownerID);
-      if (!ownerID) {
-        this.__ownerID = ownerID;
-        this._map = newMap;
-        return this;
-      }
-      return makeRecord(this, newMap, ownerID);
-    };
-
-
-  var RecordPrototype = Record.prototype;
-  RecordPrototype[DELETE] = RecordPrototype.remove;
-  RecordPrototype.deleteIn =
-  RecordPrototype.removeIn = MapPrototype.removeIn;
-  RecordPrototype.merge = MapPrototype.merge;
-  RecordPrototype.mergeWith = MapPrototype.mergeWith;
-  RecordPrototype.mergeIn = MapPrototype.mergeIn;
-  RecordPrototype.mergeDeep = MapPrototype.mergeDeep;
-  RecordPrototype.mergeDeepWith = MapPrototype.mergeDeepWith;
-  RecordPrototype.mergeDeepIn = MapPrototype.mergeDeepIn;
-  RecordPrototype.setIn = MapPrototype.setIn;
-  RecordPrototype.update = MapPrototype.update;
-  RecordPrototype.updateIn = MapPrototype.updateIn;
-  RecordPrototype.withMutations = MapPrototype.withMutations;
-  RecordPrototype.asMutable = MapPrototype.asMutable;
-  RecordPrototype.asImmutable = MapPrototype.asImmutable;
-
-
-  function makeRecord(likeRecord, map, ownerID) {
-    var record = Object.create(Object.getPrototypeOf(likeRecord));
-    record._map = map;
-    record.__ownerID = ownerID;
-    return record;
-  }
-
-  function recordName(record) {
-    return record._name || record.constructor.name;
-  }
-
-  function deepEqual(a, b) {
-    if (a === b) {
-      return true;
-    }
-
-    if (
-      !isIterable(b) ||
-      a.size !== undefined && b.size !== undefined && a.size !== b.size ||
-      a.__hash !== undefined && b.__hash !== undefined && a.__hash !== b.__hash ||
-      isKeyed(a) !== isKeyed(b) ||
-      isIndexed(a) !== isIndexed(b) ||
-      isOrdered(a) !== isOrdered(b)
-    ) {
-      return false;
-    }
-
-    if (a.size === 0 && b.size === 0) {
-      return true;
-    }
-
-    var notAssociative = !isAssociative(a);
-
-    if (isOrdered(a)) {
-      var entries = a.entries();
-      return b.every(function(v, k)  {
-        var entry = entries.next().value;
-        return entry && is(entry[1], v) && (notAssociative || is(entry[0], k));
-      }) && entries.next().done;
-    }
-
-    var flipped = false;
-
-    if (a.size === undefined) {
-      if (b.size === undefined) {
-        a.cacheResult();
-      } else {
-        flipped = true;
-        var _ = a;
-        a = b;
-        b = _;
-      }
-    }
-
-    var allEqual = true;
-    var bSize = b.__iterate(function(v, k)  {
-      if (notAssociative ? !a.has(v) :
-          flipped ? !is(v, a.get(k, NOT_SET)) : !is(a.get(k, NOT_SET), v)) {
-        allEqual = false;
-        return false;
-      }
-    });
-
-    return allEqual && a.size === bSize;
-  }
-
-  createClass(Range, IndexedSeq);
-
-    function Range(start, end, step) {
-      if (!(this instanceof Range)) {
-        return new Range(start, end, step);
-      }
-      invariant(step !== 0, 'Cannot step a Range by 0');
-      start = start || 0;
-      if (end === undefined) {
-        end = Infinity;
-      }
-      step = step === undefined ? 1 : Math.abs(step);
-      if (end < start) {
-        step = -step;
-      }
-      this._start = start;
-      this._end = end;
-      this._step = step;
-      this.size = Math.max(0, Math.ceil((end - start) / step - 1) + 1);
-      if (this.size === 0) {
-        if (EMPTY_RANGE) {
-          return EMPTY_RANGE;
-        }
-        EMPTY_RANGE = this;
-      }
-    }
-
-    Range.prototype.toString = function() {
-      if (this.size === 0) {
-        return 'Range []';
-      }
-      return 'Range [ ' +
-        this._start + '...' + this._end +
-        (this._step > 1 ? ' by ' + this._step : '') +
-      ' ]';
-    };
-
-    Range.prototype.get = function(index, notSetValue) {
-      return this.has(index) ?
-        this._start + wrapIndex(this, index) * this._step :
-        notSetValue;
-    };
-
-    Range.prototype.contains = function(searchValue) {
-      var possibleIndex = (searchValue - this._start) / this._step;
-      return possibleIndex >= 0 &&
-        possibleIndex < this.size &&
-        possibleIndex === Math.floor(possibleIndex);
-    };
-
-    Range.prototype.slice = function(begin, end) {
-      if (wholeSlice(begin, end, this.size)) {
-        return this;
-      }
-      begin = resolveBegin(begin, this.size);
-      end = resolveEnd(end, this.size);
-      if (end <= begin) {
-        return new Range(0, 0);
-      }
-      return new Range(this.get(begin, this._end), this.get(end, this._end), this._step);
-    };
-
-    Range.prototype.indexOf = function(searchValue) {
-      var offsetValue = searchValue - this._start;
-      if (offsetValue % this._step === 0) {
-        var index = offsetValue / this._step;
-        if (index >= 0 && index < this.size) {
-          return index
-        }
-      }
-      return -1;
-    };
-
-    Range.prototype.lastIndexOf = function(searchValue) {
-      return this.indexOf(searchValue);
-    };
-
-    Range.prototype.__iterate = function(fn, reverse) {
-      var maxIndex = this.size - 1;
-      var step = this._step;
-      var value = reverse ? this._start + maxIndex * step : this._start;
-      for (var ii = 0; ii <= maxIndex; ii++) {
-        if (fn(value, ii, this) === false) {
-          return ii + 1;
-        }
-        value += reverse ? -step : step;
-      }
-      return ii;
-    };
-
-    Range.prototype.__iterator = function(type, reverse) {
-      var maxIndex = this.size - 1;
-      var step = this._step;
-      var value = reverse ? this._start + maxIndex * step : this._start;
-      var ii = 0;
-      return new Iterator(function()  {
-        var v = value;
-        value += reverse ? -step : step;
-        return ii > maxIndex ? iteratorDone() : iteratorValue(type, ii++, v);
-      });
-    };
-
-    Range.prototype.equals = function(other) {
-      return other instanceof Range ?
-        this._start === other._start &&
-        this._end === other._end &&
-        this._step === other._step :
-        deepEqual(this, other);
-    };
-
-
-  var EMPTY_RANGE;
-
-  createClass(Repeat, IndexedSeq);
-
-    function Repeat(value, times) {
-      if (!(this instanceof Repeat)) {
-        return new Repeat(value, times);
-      }
-      this._value = value;
-      this.size = times === undefined ? Infinity : Math.max(0, times);
-      if (this.size === 0) {
-        if (EMPTY_REPEAT) {
-          return EMPTY_REPEAT;
-        }
-        EMPTY_REPEAT = this;
-      }
-    }
-
-    Repeat.prototype.toString = function() {
-      if (this.size === 0) {
-        return 'Repeat []';
-      }
-      return 'Repeat [ ' + this._value + ' ' + this.size + ' times ]';
-    };
-
-    Repeat.prototype.get = function(index, notSetValue) {
-      return this.has(index) ? this._value : notSetValue;
-    };
-
-    Repeat.prototype.contains = function(searchValue) {
-      return is(this._value, searchValue);
-    };
-
-    Repeat.prototype.slice = function(begin, end) {
-      var size = this.size;
-      return wholeSlice(begin, end, size) ? this :
-        new Repeat(this._value, resolveEnd(end, size) - resolveBegin(begin, size));
-    };
-
-    Repeat.prototype.reverse = function() {
-      return this;
-    };
-
-    Repeat.prototype.indexOf = function(searchValue) {
-      if (is(this._value, searchValue)) {
-        return 0;
-      }
-      return -1;
-    };
-
-    Repeat.prototype.lastIndexOf = function(searchValue) {
-      if (is(this._value, searchValue)) {
-        return this.size;
-      }
-      return -1;
-    };
-
-    Repeat.prototype.__iterate = function(fn, reverse) {
-      for (var ii = 0; ii < this.size; ii++) {
-        if (fn(this._value, ii, this) === false) {
-          return ii + 1;
-        }
-      }
-      return ii;
-    };
-
-    Repeat.prototype.__iterator = function(type, reverse) {var this$0 = this;
-      var ii = 0;
-      return new Iterator(function() 
-        {return ii < this$0.size ? iteratorValue(type, ii++, this$0._value) : iteratorDone()}
-      );
-    };
-
-    Repeat.prototype.equals = function(other) {
-      return other instanceof Repeat ?
-        is(this._value, other._value) :
-        deepEqual(other);
-    };
-
-
-  var EMPTY_REPEAT;
-
-  /**
-   * Contributes additional methods to a constructor
-   */
-  function mixin(ctor, methods) {
-    var keyCopier = function(key ) { ctor.prototype[key] = methods[key]; };
-    Object.keys(methods).forEach(keyCopier);
-    Object.getOwnPropertySymbols &&
-      Object.getOwnPropertySymbols(methods).forEach(keyCopier);
-    return ctor;
-  }
-
-  Iterable.Iterator = Iterator;
-
-  mixin(Iterable, {
-
-    // ### Conversion to other types
-
-    toArray: function() {
-      assertNotInfinite(this.size);
-      var array = new Array(this.size || 0);
-      this.valueSeq().__iterate(function(v, i)  { array[i] = v; });
-      return array;
-    },
-
-    toIndexedSeq: function() {
-      return new ToIndexedSequence(this);
-    },
-
-    toJS: function() {
-      return this.toSeq().map(
-        function(value ) {return value && typeof value.toJS === 'function' ? value.toJS() : value}
-      ).__toJS();
-    },
-
-    toJSON: function() {
-      return this.toSeq().map(
-        function(value ) {return value && typeof value.toJSON === 'function' ? value.toJSON() : value}
-      ).__toJS();
-    },
-
-    toKeyedSeq: function() {
-      return new ToKeyedSequence(this, true);
-    },
-
-    toMap: function() {
-      // Use Late Binding here to solve the circular dependency.
-      return Map(this.toKeyedSeq());
-    },
-
-    toObject: function() {
-      assertNotInfinite(this.size);
-      var object = {};
-      this.__iterate(function(v, k)  { object[k] = v; });
-      return object;
-    },
-
-    toOrderedMap: function() {
-      // Use Late Binding here to solve the circular dependency.
-      return OrderedMap(this.toKeyedSeq());
-    },
-
-    toOrderedSet: function() {
-      // Use Late Binding here to solve the circular dependency.
-      return OrderedSet(isKeyed(this) ? this.valueSeq() : this);
-    },
-
-    toSet: function() {
-      // Use Late Binding here to solve the circular dependency.
-      return Set(isKeyed(this) ? this.valueSeq() : this);
-    },
-
-    toSetSeq: function() {
-      return new ToSetSequence(this);
-    },
-
-    toSeq: function() {
-      return isIndexed(this) ? this.toIndexedSeq() :
-        isKeyed(this) ? this.toKeyedSeq() :
-        this.toSetSeq();
-    },
-
-    toStack: function() {
-      // Use Late Binding here to solve the circular dependency.
-      return Stack(isKeyed(this) ? this.valueSeq() : this);
-    },
-
-    toList: function() {
-      // Use Late Binding here to solve the circular dependency.
-      return List(isKeyed(this) ? this.valueSeq() : this);
-    },
-
-
-    // ### Common JavaScript methods and properties
-
-    toString: function() {
-      return '[Iterable]';
-    },
-
-    __toString: function(head, tail) {
-      if (this.size === 0) {
-        return head + tail;
-      }
-      return head + ' ' + this.toSeq().map(this.__toStringMapper).join(', ') + ' ' + tail;
-    },
-
-
-    // ### ES6 Collection methods (ES6 Array and Map)
-
-    concat: function() {var values = SLICE$0.call(arguments, 0);
-      return reify(this, concatFactory(this, values));
-    },
-
-    contains: function(searchValue) {
-      return this.some(function(value ) {return is(value, searchValue)});
-    },
-
-    entries: function() {
-      return this.__iterator(ITERATE_ENTRIES);
-    },
-
-    every: function(predicate, context) {
-      assertNotInfinite(this.size);
-      var returnValue = true;
-      this.__iterate(function(v, k, c)  {
-        if (!predicate.call(context, v, k, c)) {
-          returnValue = false;
-          return false;
-        }
-      });
-      return returnValue;
-    },
-
-    filter: function(predicate, context) {
-      return reify(this, filterFactory(this, predicate, context, true));
-    },
-
-    find: function(predicate, context, notSetValue) {
-      var entry = this.findEntry(predicate, context);
-      return entry ? entry[1] : notSetValue;
-    },
-
-    findEntry: function(predicate, context) {
-      var found;
-      this.__iterate(function(v, k, c)  {
-        if (predicate.call(context, v, k, c)) {
-          found = [k, v];
-          return false;
-        }
-      });
-      return found;
-    },
-
-    findLastEntry: function(predicate, context) {
-      return this.toSeq().reverse().findEntry(predicate, context);
-    },
-
-    forEach: function(sideEffect, context) {
-      assertNotInfinite(this.size);
-      return this.__iterate(context ? sideEffect.bind(context) : sideEffect);
-    },
-
-    join: function(separator) {
-      assertNotInfinite(this.size);
-      separator = separator !== undefined ? '' + separator : ',';
-      var joined = '';
-      var isFirst = true;
-      this.__iterate(function(v ) {
-        isFirst ? (isFirst = false) : (joined += separator);
-        joined += v !== null && v !== undefined ? v : '';
-      });
-      return joined;
-    },
-
-    keys: function() {
-      return this.__iterator(ITERATE_KEYS);
-    },
-
-    map: function(mapper, context) {
-      return reify(this, mapFactory(this, mapper, context));
-    },
-
-    reduce: function(reducer, initialReduction, context) {
-      assertNotInfinite(this.size);
-      var reduction;
-      var useFirst;
-      if (arguments.length < 2) {
-        useFirst = true;
-      } else {
-        reduction = initialReduction;
-      }
-      this.__iterate(function(v, k, c)  {
-        if (useFirst) {
-          useFirst = false;
-          reduction = v;
-        } else {
-          reduction = reducer.call(context, reduction, v, k, c);
-        }
-      });
-      return reduction;
-    },
-
-    reduceRight: function(reducer, initialReduction, context) {
-      var reversed = this.toKeyedSeq().reverse();
-      return reversed.reduce.apply(reversed, arguments);
-    },
-
-    reverse: function() {
-      return reify(this, reverseFactory(this, true));
-    },
-
-    slice: function(begin, end) {
-      return reify(this, sliceFactory(this, begin, end, true));
-    },
-
-    some: function(predicate, context) {
-      return !this.every(not(predicate), context);
-    },
-
-    sort: function(comparator) {
-      return reify(this, sortFactory(this, comparator));
-    },
-
-    values: function() {
-      return this.__iterator(ITERATE_VALUES);
-    },
-
-
-    // ### More sequential methods
-
-    butLast: function() {
-      return this.slice(0, -1);
-    },
-
-    isEmpty: function() {
-      return this.size !== undefined ? this.size === 0 : !this.some(function()  {return true});
-    },
-
-    count: function(predicate, context) {
-      return ensureSize(
-        predicate ? this.toSeq().filter(predicate, context) : this
-      );
-    },
-
-    countBy: function(grouper, context) {
-      return countByFactory(this, grouper, context);
-    },
-
-    equals: function(other) {
-      return deepEqual(this, other);
-    },
-
-    entrySeq: function() {
-      var iterable = this;
-      if (iterable._cache) {
-        // We cache as an entries array, so we can just return the cache!
-        return new ArraySeq(iterable._cache);
-      }
-      var entriesSequence = iterable.toSeq().map(entryMapper).toIndexedSeq();
-      entriesSequence.fromEntrySeq = function()  {return iterable.toSeq()};
-      return entriesSequence;
-    },
-
-    filterNot: function(predicate, context) {
-      return this.filter(not(predicate), context);
-    },
-
-    findLast: function(predicate, context, notSetValue) {
-      return this.toKeyedSeq().reverse().find(predicate, context, notSetValue);
-    },
-
-    first: function() {
-      return this.find(returnTrue);
-    },
-
-    flatMap: function(mapper, context) {
-      return reify(this, flatMapFactory(this, mapper, context));
-    },
-
-    flatten: function(depth) {
-      return reify(this, flattenFactory(this, depth, true));
-    },
-
-    fromEntrySeq: function() {
-      return new FromEntriesSequence(this);
-    },
-
-    get: function(searchKey, notSetValue) {
-      return this.find(function(_, key)  {return is(key, searchKey)}, undefined, notSetValue);
-    },
-
-    getIn: function(searchKeyPath, notSetValue) {
-      var nested = this;
-      // Note: in an ES6 environment, we would prefer:
-      // for (var key of searchKeyPath) {
-      var iter = forceIterator(searchKeyPath);
-      var step;
-      while (!(step = iter.next()).done) {
-        var key = step.value;
-        nested = nested && nested.get ? nested.get(key, NOT_SET) : NOT_SET;
-        if (nested === NOT_SET) {
-          return notSetValue;
-        }
-      }
-      return nested;
-    },
-
-    groupBy: function(grouper, context) {
-      return groupByFactory(this, grouper, context);
-    },
-
-    has: function(searchKey) {
-      return this.get(searchKey, NOT_SET) !== NOT_SET;
-    },
-
-    hasIn: function(searchKeyPath) {
-      return this.getIn(searchKeyPath, NOT_SET) !== NOT_SET;
-    },
-
-    isSubset: function(iter) {
-      iter = typeof iter.contains === 'function' ? iter : Iterable(iter);
-      return this.every(function(value ) {return iter.contains(value)});
-    },
-
-    isSuperset: function(iter) {
-      return iter.isSubset(this);
-    },
-
-    keySeq: function() {
-      return this.toSeq().map(keyMapper).toIndexedSeq();
-    },
-
-    last: function() {
-      return this.toSeq().reverse().first();
-    },
-
-    max: function(comparator) {
-      return maxFactory(this, comparator);
-    },
-
-    maxBy: function(mapper, comparator) {
-      return maxFactory(this, comparator, mapper);
-    },
-
-    min: function(comparator) {
-      return maxFactory(this, comparator ? neg(comparator) : defaultNegComparator);
-    },
-
-    minBy: function(mapper, comparator) {
-      return maxFactory(this, comparator ? neg(comparator) : defaultNegComparator, mapper);
-    },
-
-    rest: function() {
-      return this.slice(1);
-    },
-
-    skip: function(amount) {
-      return this.slice(Math.max(0, amount));
-    },
-
-    skipLast: function(amount) {
-      return reify(this, this.toSeq().reverse().skip(amount).reverse());
-    },
-
-    skipWhile: function(predicate, context) {
-      return reify(this, skipWhileFactory(this, predicate, context, true));
-    },
-
-    skipUntil: function(predicate, context) {
-      return this.skipWhile(not(predicate), context);
-    },
-
-    sortBy: function(mapper, comparator) {
-      return reify(this, sortFactory(this, comparator, mapper));
-    },
-
-    take: function(amount) {
-      return this.slice(0, Math.max(0, amount));
-    },
-
-    takeLast: function(amount) {
-      return reify(this, this.toSeq().reverse().take(amount).reverse());
-    },
-
-    takeWhile: function(predicate, context) {
-      return reify(this, takeWhileFactory(this, predicate, context));
-    },
-
-    takeUntil: function(predicate, context) {
-      return this.takeWhile(not(predicate), context);
-    },
-
-    valueSeq: function() {
-      return this.toIndexedSeq();
-    },
-
-
-    // ### Hashable Object
-
-    hashCode: function() {
-      return this.__hash || (this.__hash = hashIterable(this));
-    },
-
-
-    // ### Internal
-
-    // abstract __iterate(fn, reverse)
-
-    // abstract __iterator(type, reverse)
-  });
-
-  // var IS_ITERABLE_SENTINEL = '@@__IMMUTABLE_ITERABLE__@@';
-  // var IS_KEYED_SENTINEL = '@@__IMMUTABLE_KEYED__@@';
-  // var IS_INDEXED_SENTINEL = '@@__IMMUTABLE_INDEXED__@@';
-  // var IS_ORDERED_SENTINEL = '@@__IMMUTABLE_ORDERED__@@';
-
-  var IterablePrototype = Iterable.prototype;
-  IterablePrototype[IS_ITERABLE_SENTINEL] = true;
-  IterablePrototype[ITERATOR_SYMBOL] = IterablePrototype.values;
-  IterablePrototype.__toJS = IterablePrototype.toArray;
-  IterablePrototype.__toStringMapper = quoteString;
-  IterablePrototype.inspect =
-  IterablePrototype.toSource = function() { return this.toString(); };
-  IterablePrototype.chain = IterablePrototype.flatMap;
-
-  // Temporary warning about using length
-  (function () {
-    try {
-      Object.defineProperty(IterablePrototype, 'length', {
-        get: function () {
-          if (!Iterable.noLengthWarning) {
-            var stack;
-            try {
-              throw new Error();
-            } catch (error) {
-              stack = error.stack;
-            }
-            if (stack.indexOf('_wrapObject') === -1) {
-              console && console.warn && console.warn(
-                'iterable.length has been deprecated, '+
-                'use iterable.size or iterable.count(). '+
-                'This warning will become a silent error in a future version. ' +
-                stack
-              );
-              return this.size;
-            }
-          }
-        }
-      });
-    } catch (e) {}
-  })();
-
-
-
-  mixin(KeyedIterable, {
-
-    // ### More sequential methods
-
-    flip: function() {
-      return reify(this, flipFactory(this));
-    },
-
-    findKey: function(predicate, context) {
-      var entry = this.findEntry(predicate, context);
-      return entry && entry[0];
-    },
-
-    findLastKey: function(predicate, context) {
-      return this.toSeq().reverse().findKey(predicate, context);
-    },
-
-    keyOf: function(searchValue) {
-      return this.findKey(function(value ) {return is(value, searchValue)});
-    },
-
-    lastKeyOf: function(searchValue) {
-      return this.findLastKey(function(value ) {return is(value, searchValue)});
-    },
-
-    mapEntries: function(mapper, context) {var this$0 = this;
-      var iterations = 0;
-      return reify(this,
-        this.toSeq().map(
-          function(v, k)  {return mapper.call(context, [k, v], iterations++, this$0)}
-        ).fromEntrySeq()
-      );
-    },
-
-    mapKeys: function(mapper, context) {var this$0 = this;
-      return reify(this,
-        this.toSeq().flip().map(
-          function(k, v)  {return mapper.call(context, k, v, this$0)}
-        ).flip()
-      );
-    },
-
-  });
-
-  var KeyedIterablePrototype = KeyedIterable.prototype;
-  KeyedIterablePrototype[IS_KEYED_SENTINEL] = true;
-  KeyedIterablePrototype[ITERATOR_SYMBOL] = IterablePrototype.entries;
-  KeyedIterablePrototype.__toJS = IterablePrototype.toObject;
-  KeyedIterablePrototype.__toStringMapper = function(v, k)  {return k + ': ' + quoteString(v)};
-
-
-
-  mixin(IndexedIterable, {
-
-    // ### Conversion to other types
-
-    toKeyedSeq: function() {
-      return new ToKeyedSequence(this, false);
-    },
-
-
-    // ### ES6 Collection methods (ES6 Array and Map)
-
-    filter: function(predicate, context) {
-      return reify(this, filterFactory(this, predicate, context, false));
-    },
-
-    findIndex: function(predicate, context) {
-      var entry = this.findEntry(predicate, context);
-      return entry ? entry[0] : -1;
-    },
-
-    indexOf: function(searchValue) {
-      var key = this.toKeyedSeq().keyOf(searchValue);
-      return key === undefined ? -1 : key;
-    },
-
-    lastIndexOf: function(searchValue) {
-      return this.toSeq().reverse().indexOf(searchValue);
-    },
-
-    reverse: function() {
-      return reify(this, reverseFactory(this, false));
-    },
-
-    slice: function(begin, end) {
-      return reify(this, sliceFactory(this, begin, end, false));
-    },
-
-    splice: function(index, removeNum /*, ...values*/) {
-      var numArgs = arguments.length;
-      removeNum = Math.max(removeNum | 0, 0);
-      if (numArgs === 0 || (numArgs === 2 && !removeNum)) {
-        return this;
-      }
-      index = resolveBegin(index, this.size);
-      var spliced = this.slice(0, index);
-      return reify(
-        this,
-        numArgs === 1 ?
-          spliced :
-          spliced.concat(arrCopy(arguments, 2), this.slice(index + removeNum))
-      );
-    },
-
-
-    // ### More collection methods
-
-    findLastIndex: function(predicate, context) {
-      var key = this.toKeyedSeq().findLastKey(predicate, context);
-      return key === undefined ? -1 : key;
-    },
-
-    first: function() {
-      return this.get(0);
-    },
-
-    flatten: function(depth) {
-      return reify(this, flattenFactory(this, depth, false));
-    },
-
-    get: function(index, notSetValue) {
-      index = wrapIndex(this, index);
-      return (index < 0 || (this.size === Infinity ||
-          (this.size !== undefined && index > this.size))) ?
-        notSetValue :
-        this.find(function(_, key)  {return key === index}, undefined, notSetValue);
-    },
-
-    has: function(index) {
-      index = wrapIndex(this, index);
-      return index >= 0 && (this.size !== undefined ?
-        this.size === Infinity || index < this.size :
-        this.indexOf(index) !== -1
-      );
-    },
-
-    interpose: function(separator) {
-      return reify(this, interposeFactory(this, separator));
-    },
-
-    interleave: function(/*...iterables*/) {
-      var iterables = [this].concat(arrCopy(arguments));
-      var zipped = zipWithFactory(this.toSeq(), IndexedSeq.of, iterables);
-      var interleaved = zipped.flatten(true);
-      if (zipped.size) {
-        interleaved.size = zipped.size * iterables.length;
-      }
-      return reify(this, interleaved);
-    },
-
-    last: function() {
-      return this.get(-1);
-    },
-
-    skipWhile: function(predicate, context) {
-      return reify(this, skipWhileFactory(this, predicate, context, false));
-    },
-
-    zip: function(/*, ...iterables */) {
-      var iterables = [this].concat(arrCopy(arguments));
-      return reify(this, zipWithFactory(this, defaultZipper, iterables));
-    },
-
-    zipWith: function(zipper/*, ...iterables */) {
-      var iterables = arrCopy(arguments);
-      iterables[0] = this;
-      return reify(this, zipWithFactory(this, zipper, iterables));
-    },
-
-  });
-
-  IndexedIterable.prototype[IS_INDEXED_SENTINEL] = true;
-  IndexedIterable.prototype[IS_ORDERED_SENTINEL] = true;
-
-
-
-  mixin(SetIterable, {
-
-    // ### ES6 Collection methods (ES6 Array and Map)
-
-    get: function(value, notSetValue) {
-      return this.has(value) ? value : notSetValue;
-    },
-
-    contains: function(value) {
-      return this.has(value);
-    },
-
-
-    // ### More sequential methods
-
-    keySeq: function() {
-      return this.valueSeq();
-    },
-
-  });
-
-  SetIterable.prototype.has = IterablePrototype.contains;
-
-
-  // Mixin subclasses
-
-  mixin(KeyedSeq, KeyedIterable.prototype);
-  mixin(IndexedSeq, IndexedIterable.prototype);
-  mixin(SetSeq, SetIterable.prototype);
-
-  mixin(KeyedCollection, KeyedIterable.prototype);
-  mixin(IndexedCollection, IndexedIterable.prototype);
-  mixin(SetCollection, SetIterable.prototype);
-
-
-  // #pragma Helper functions
-
-  function keyMapper(v, k) {
-    return k;
-  }
-
-  function entryMapper(v, k) {
-    return [k, v];
-  }
-
-  function not(predicate) {
-    return function() {
-      return !predicate.apply(this, arguments);
-    }
-  }
-
-  function neg(predicate) {
-    return function() {
-      return -predicate.apply(this, arguments);
-    }
-  }
-
-  function quoteString(value) {
-    return typeof value === 'string' ? JSON.stringify(value) : value;
-  }
-
-  function defaultZipper() {
-    return arrCopy(arguments);
-  }
-
-  function defaultNegComparator(a, b) {
-    return a < b ? 1 : a > b ? -1 : 0;
-  }
-
-  function hashIterable(iterable) {
-    if (iterable.size === Infinity) {
-      return 0;
-    }
-    var ordered = isOrdered(iterable);
-    var keyed = isKeyed(iterable);
-    var h = ordered ? 1 : 0;
-    var size = iterable.__iterate(
-      keyed ?
-        ordered ?
-          function(v, k)  { h = 31 * h + hashMerge(hash(v), hash(k)) | 0; } :
-          function(v, k)  { h = h + hashMerge(hash(v), hash(k)) | 0; } :
-        ordered ?
-          function(v ) { h = 31 * h + hash(v) | 0; } :
-          function(v ) { h = h + hash(v) | 0; }
-    );
-    return murmurHashOfSize(size, h);
-  }
-
-  function murmurHashOfSize(size, h) {
-    h = Math__imul(h, 0xCC9E2D51);
-    h = Math__imul(h << 15 | h >>> -15, 0x1B873593);
-    h = Math__imul(h << 13 | h >>> -13, 5);
-    h = (h + 0xE6546B64 | 0) ^ size;
-    h = Math__imul(h ^ h >>> 16, 0x85EBCA6B);
-    h = Math__imul(h ^ h >>> 13, 0xC2B2AE35);
-    h = smi(h ^ h >>> 16);
-    return h;
-  }
-
-  function hashMerge(a, b) {
-    return a ^ b + 0x9E3779B9 + (a << 6) + (a >> 2) | 0; // int
-  }
-
-  var Immutable = {
-
-    Iterable: Iterable,
-
-    Seq: Seq,
-    Collection: Collection,
-    Map: Map,
-    OrderedMap: OrderedMap,
-    List: List,
-    Stack: Stack,
-    Set: Set,
-    OrderedSet: OrderedSet,
-
-    Record: Record,
-    Range: Range,
-    Repeat: Repeat,
-
-    is: is,
-    fromJS: fromJS,
-
-  };
-
-  return Immutable;
-
-}));
-},{}],383:[function(require,module,exports){
+},{}],313:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.1
  * http://jquery.com/
@@ -35206,773 +27377,4 @@ return jQuery;
 
 }));
 
-},{}],384:[function(require,module,exports){
-(function(definition){if(typeof exports==="object"){module.exports=definition();}else if(typeof define==="function"&&define.amd){define(definition);}else{mori=definition();}})(function(){return function(){
-if(typeof Math.imul == "undefined" || (Math.imul(0xffffffff,5) == 0)) {
-    Math.imul = function (a, b) {
-        var ah  = (a >>> 16) & 0xffff;
-        var al = a & 0xffff;
-        var bh  = (b >>> 16) & 0xffff;
-        var bl = b & 0xffff;
-        // the shift by 0 fixes the sign on the high part
-        // the final |0 converts the unsigned value into a signed value
-        return ((al * bl) + (((ah * bl + al * bh) << 16) >>> 0)|0);
-    }
-}
-
-var k,aa=this;
-function n(a){var b=typeof a;if("object"==b)if(a){if(a instanceof Array)return"array";if(a instanceof Object)return b;var c=Object.prototype.toString.call(a);if("[object Window]"==c)return"object";if("[object Array]"==c||"number"==typeof a.length&&"undefined"!=typeof a.splice&&"undefined"!=typeof a.propertyIsEnumerable&&!a.propertyIsEnumerable("splice"))return"array";if("[object Function]"==c||"undefined"!=typeof a.call&&"undefined"!=typeof a.propertyIsEnumerable&&!a.propertyIsEnumerable("call"))return"function"}else return"null";else if("function"==
-b&&"undefined"==typeof a.call)return"object";return b}var ba="closure_uid_"+(1E9*Math.random()>>>0),ca=0;function r(a,b){var c=a.split("."),d=aa;c[0]in d||!d.execScript||d.execScript("var "+c[0]);for(var e;c.length&&(e=c.shift());)c.length||void 0===b?d=d[e]?d[e]:d[e]={}:d[e]=b};function da(a){return Array.prototype.join.call(arguments,"")};function ea(a,b){for(var c in a)b.call(void 0,a[c],c,a)};function fa(a,b){null!=a&&this.append.apply(this,arguments)}fa.prototype.Za="";fa.prototype.append=function(a,b,c){this.Za+=a;if(null!=b)for(var d=1;d<arguments.length;d++)this.Za+=arguments[d];return this};fa.prototype.clear=function(){this.Za=""};fa.prototype.toString=function(){return this.Za};function ga(a,b){a.sort(b||ha)}function ia(a,b){for(var c=0;c<a.length;c++)a[c]={index:c,value:a[c]};var d=b||ha;ga(a,function(a,b){return d(a.value,b.value)||a.index-b.index});for(c=0;c<a.length;c++)a[c]=a[c].value}function ha(a,b){return a>b?1:a<b?-1:0};var ja;if("undefined"===typeof ka)var ka=function(){throw Error("No *print-fn* fn set for evaluation environment");};var la=null,ma=null;if("undefined"===typeof na)var na=null;function oa(){return new pa(null,5,[sa,!0,ua,!0,wa,!1,ya,!1,za,la],null)}function t(a){return null!=a&&!1!==a}function Aa(a){return t(a)?!1:!0}function w(a,b){return a[n(null==b?null:b)]?!0:a._?!0:!1}function Ba(a){return null==a?null:a.constructor}
-function x(a,b){var c=Ba(b),c=t(t(c)?c.Yb:c)?c.Xb:n(b);return Error(["No protocol method ",a," defined for type ",c,": ",b].join(""))}function Da(a){var b=a.Xb;return t(b)?b:""+z(a)}var Ea="undefined"!==typeof Symbol&&"function"===n(Symbol)?Symbol.Cc:"@@iterator";function Fa(a){for(var b=a.length,c=Array(b),d=0;;)if(d<b)c[d]=a[d],d+=1;else break;return c}function Ha(a){for(var b=Array(arguments.length),c=0;;)if(c<b.length)b[c]=arguments[c],c+=1;else return b}
-var Ia=function(){function a(a,b){function c(a,b){a.push(b);return a}var g=[];return A.c?A.c(c,g,b):A.call(null,c,g,b)}function b(a){return c.a(null,a)}var c=null,c=function(d,c){switch(arguments.length){case 1:return b.call(this,d);case 2:return a.call(this,0,c)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}(),Ja={},La={};function Ma(a){if(a?a.L:a)return a.L(a);var b;b=Ma[n(null==a?null:a)];if(!b&&(b=Ma._,!b))throw x("ICounted.-count",a);return b.call(null,a)}
-function Na(a){if(a?a.J:a)return a.J(a);var b;b=Na[n(null==a?null:a)];if(!b&&(b=Na._,!b))throw x("IEmptyableCollection.-empty",a);return b.call(null,a)}var Qa={};function Ra(a,b){if(a?a.G:a)return a.G(a,b);var c;c=Ra[n(null==a?null:a)];if(!c&&(c=Ra._,!c))throw x("ICollection.-conj",a);return c.call(null,a,b)}
-var Ta={},C=function(){function a(a,b,c){if(a?a.$:a)return a.$(a,b,c);var g;g=C[n(null==a?null:a)];if(!g&&(g=C._,!g))throw x("IIndexed.-nth",a);return g.call(null,a,b,c)}function b(a,b){if(a?a.Q:a)return a.Q(a,b);var c;c=C[n(null==a?null:a)];if(!c&&(c=C._,!c))throw x("IIndexed.-nth",a);return c.call(null,a,b)}var c=null,c=function(d,c,f){switch(arguments.length){case 2:return b.call(this,d,c);case 3:return a.call(this,d,c,f)}throw Error("Invalid arity: "+arguments.length);};c.a=b;c.c=a;return c}(),
-Ua={};function Va(a){if(a?a.N:a)return a.N(a);var b;b=Va[n(null==a?null:a)];if(!b&&(b=Va._,!b))throw x("ISeq.-first",a);return b.call(null,a)}function Wa(a){if(a?a.S:a)return a.S(a);var b;b=Wa[n(null==a?null:a)];if(!b&&(b=Wa._,!b))throw x("ISeq.-rest",a);return b.call(null,a)}
-var Xa={},Za={},$a=function(){function a(a,b,c){if(a?a.s:a)return a.s(a,b,c);var g;g=$a[n(null==a?null:a)];if(!g&&(g=$a._,!g))throw x("ILookup.-lookup",a);return g.call(null,a,b,c)}function b(a,b){if(a?a.t:a)return a.t(a,b);var c;c=$a[n(null==a?null:a)];if(!c&&(c=$a._,!c))throw x("ILookup.-lookup",a);return c.call(null,a,b)}var c=null,c=function(c,e,f){switch(arguments.length){case 2:return b.call(this,c,e);case 3:return a.call(this,c,e,f)}throw Error("Invalid arity: "+arguments.length);};c.a=b;c.c=
-a;return c}(),ab={};function bb(a,b){if(a?a.rb:a)return a.rb(a,b);var c;c=bb[n(null==a?null:a)];if(!c&&(c=bb._,!c))throw x("IAssociative.-contains-key?",a);return c.call(null,a,b)}function cb(a,b,c){if(a?a.Ka:a)return a.Ka(a,b,c);var d;d=cb[n(null==a?null:a)];if(!d&&(d=cb._,!d))throw x("IAssociative.-assoc",a);return d.call(null,a,b,c)}var db={};function eb(a,b){if(a?a.wb:a)return a.wb(a,b);var c;c=eb[n(null==a?null:a)];if(!c&&(c=eb._,!c))throw x("IMap.-dissoc",a);return c.call(null,a,b)}var fb={};
-function hb(a){if(a?a.hb:a)return a.hb(a);var b;b=hb[n(null==a?null:a)];if(!b&&(b=hb._,!b))throw x("IMapEntry.-key",a);return b.call(null,a)}function ib(a){if(a?a.ib:a)return a.ib(a);var b;b=ib[n(null==a?null:a)];if(!b&&(b=ib._,!b))throw x("IMapEntry.-val",a);return b.call(null,a)}var jb={};function kb(a,b){if(a?a.Eb:a)return a.Eb(a,b);var c;c=kb[n(null==a?null:a)];if(!c&&(c=kb._,!c))throw x("ISet.-disjoin",a);return c.call(null,a,b)}
-function lb(a){if(a?a.La:a)return a.La(a);var b;b=lb[n(null==a?null:a)];if(!b&&(b=lb._,!b))throw x("IStack.-peek",a);return b.call(null,a)}function mb(a){if(a?a.Ma:a)return a.Ma(a);var b;b=mb[n(null==a?null:a)];if(!b&&(b=mb._,!b))throw x("IStack.-pop",a);return b.call(null,a)}var nb={};function pb(a,b,c){if(a?a.Ua:a)return a.Ua(a,b,c);var d;d=pb[n(null==a?null:a)];if(!d&&(d=pb._,!d))throw x("IVector.-assoc-n",a);return d.call(null,a,b,c)}
-function qb(a){if(a?a.Ra:a)return a.Ra(a);var b;b=qb[n(null==a?null:a)];if(!b&&(b=qb._,!b))throw x("IDeref.-deref",a);return b.call(null,a)}var rb={};function sb(a){if(a?a.H:a)return a.H(a);var b;b=sb[n(null==a?null:a)];if(!b&&(b=sb._,!b))throw x("IMeta.-meta",a);return b.call(null,a)}var tb={};function ub(a,b){if(a?a.F:a)return a.F(a,b);var c;c=ub[n(null==a?null:a)];if(!c&&(c=ub._,!c))throw x("IWithMeta.-with-meta",a);return c.call(null,a,b)}
-var vb={},wb=function(){function a(a,b,c){if(a?a.O:a)return a.O(a,b,c);var g;g=wb[n(null==a?null:a)];if(!g&&(g=wb._,!g))throw x("IReduce.-reduce",a);return g.call(null,a,b,c)}function b(a,b){if(a?a.R:a)return a.R(a,b);var c;c=wb[n(null==a?null:a)];if(!c&&(c=wb._,!c))throw x("IReduce.-reduce",a);return c.call(null,a,b)}var c=null,c=function(c,e,f){switch(arguments.length){case 2:return b.call(this,c,e);case 3:return a.call(this,c,e,f)}throw Error("Invalid arity: "+arguments.length);};c.a=b;c.c=a;return c}();
-function xb(a,b,c){if(a?a.gb:a)return a.gb(a,b,c);var d;d=xb[n(null==a?null:a)];if(!d&&(d=xb._,!d))throw x("IKVReduce.-kv-reduce",a);return d.call(null,a,b,c)}function yb(a,b){if(a?a.A:a)return a.A(a,b);var c;c=yb[n(null==a?null:a)];if(!c&&(c=yb._,!c))throw x("IEquiv.-equiv",a);return c.call(null,a,b)}function zb(a){if(a?a.B:a)return a.B(a);var b;b=zb[n(null==a?null:a)];if(!b&&(b=zb._,!b))throw x("IHash.-hash",a);return b.call(null,a)}var Bb={};
-function Cb(a){if(a?a.D:a)return a.D(a);var b;b=Cb[n(null==a?null:a)];if(!b&&(b=Cb._,!b))throw x("ISeqable.-seq",a);return b.call(null,a)}var Db={},Eb={},Fb={};function Gb(a){if(a?a.ab:a)return a.ab(a);var b;b=Gb[n(null==a?null:a)];if(!b&&(b=Gb._,!b))throw x("IReversible.-rseq",a);return b.call(null,a)}function Hb(a,b){if(a?a.Hb:a)return a.Hb(a,b);var c;c=Hb[n(null==a?null:a)];if(!c&&(c=Hb._,!c))throw x("ISorted.-sorted-seq",a);return c.call(null,a,b)}
-function Ib(a,b,c){if(a?a.Ib:a)return a.Ib(a,b,c);var d;d=Ib[n(null==a?null:a)];if(!d&&(d=Ib._,!d))throw x("ISorted.-sorted-seq-from",a);return d.call(null,a,b,c)}function Jb(a,b){if(a?a.Gb:a)return a.Gb(a,b);var c;c=Jb[n(null==a?null:a)];if(!c&&(c=Jb._,!c))throw x("ISorted.-entry-key",a);return c.call(null,a,b)}function Kb(a){if(a?a.Fb:a)return a.Fb(a);var b;b=Kb[n(null==a?null:a)];if(!b&&(b=Kb._,!b))throw x("ISorted.-comparator",a);return b.call(null,a)}
-function Lb(a,b){if(a?a.Wb:a)return a.Wb(0,b);var c;c=Lb[n(null==a?null:a)];if(!c&&(c=Lb._,!c))throw x("IWriter.-write",a);return c.call(null,a,b)}var Mb={};function Nb(a,b,c){if(a?a.v:a)return a.v(a,b,c);var d;d=Nb[n(null==a?null:a)];if(!d&&(d=Nb._,!d))throw x("IPrintWithWriter.-pr-writer",a);return d.call(null,a,b,c)}function Ob(a){if(a?a.$a:a)return a.$a(a);var b;b=Ob[n(null==a?null:a)];if(!b&&(b=Ob._,!b))throw x("IEditableCollection.-as-transient",a);return b.call(null,a)}
-function Pb(a,b){if(a?a.Sa:a)return a.Sa(a,b);var c;c=Pb[n(null==a?null:a)];if(!c&&(c=Pb._,!c))throw x("ITransientCollection.-conj!",a);return c.call(null,a,b)}function Qb(a){if(a?a.Ta:a)return a.Ta(a);var b;b=Qb[n(null==a?null:a)];if(!b&&(b=Qb._,!b))throw x("ITransientCollection.-persistent!",a);return b.call(null,a)}function Rb(a,b,c){if(a?a.kb:a)return a.kb(a,b,c);var d;d=Rb[n(null==a?null:a)];if(!d&&(d=Rb._,!d))throw x("ITransientAssociative.-assoc!",a);return d.call(null,a,b,c)}
-function Sb(a,b){if(a?a.Jb:a)return a.Jb(a,b);var c;c=Sb[n(null==a?null:a)];if(!c&&(c=Sb._,!c))throw x("ITransientMap.-dissoc!",a);return c.call(null,a,b)}function Tb(a,b,c){if(a?a.Ub:a)return a.Ub(0,b,c);var d;d=Tb[n(null==a?null:a)];if(!d&&(d=Tb._,!d))throw x("ITransientVector.-assoc-n!",a);return d.call(null,a,b,c)}function Ub(a){if(a?a.Vb:a)return a.Vb();var b;b=Ub[n(null==a?null:a)];if(!b&&(b=Ub._,!b))throw x("ITransientVector.-pop!",a);return b.call(null,a)}
-function Vb(a,b){if(a?a.Tb:a)return a.Tb(0,b);var c;c=Vb[n(null==a?null:a)];if(!c&&(c=Vb._,!c))throw x("ITransientSet.-disjoin!",a);return c.call(null,a,b)}function Xb(a){if(a?a.Pb:a)return a.Pb();var b;b=Xb[n(null==a?null:a)];if(!b&&(b=Xb._,!b))throw x("IChunk.-drop-first",a);return b.call(null,a)}function Yb(a){if(a?a.Cb:a)return a.Cb(a);var b;b=Yb[n(null==a?null:a)];if(!b&&(b=Yb._,!b))throw x("IChunkedSeq.-chunked-first",a);return b.call(null,a)}
-function Zb(a){if(a?a.Db:a)return a.Db(a);var b;b=Zb[n(null==a?null:a)];if(!b&&(b=Zb._,!b))throw x("IChunkedSeq.-chunked-rest",a);return b.call(null,a)}function $b(a){if(a?a.Bb:a)return a.Bb(a);var b;b=$b[n(null==a?null:a)];if(!b&&(b=$b._,!b))throw x("IChunkedNext.-chunked-next",a);return b.call(null,a)}function ac(a,b){if(a?a.bb:a)return a.bb(0,b);var c;c=ac[n(null==a?null:a)];if(!c&&(c=ac._,!c))throw x("IVolatile.-vreset!",a);return c.call(null,a,b)}var bc={};
-function cc(a){if(a?a.fb:a)return a.fb(a);var b;b=cc[n(null==a?null:a)];if(!b&&(b=cc._,!b))throw x("IIterable.-iterator",a);return b.call(null,a)}function dc(a){this.qc=a;this.q=0;this.j=1073741824}dc.prototype.Wb=function(a,b){return this.qc.append(b)};function ec(a){var b=new fa;a.v(null,new dc(b),oa());return""+z(b)}
-var fc="undefined"!==typeof Math.imul&&0!==(Math.imul.a?Math.imul.a(4294967295,5):Math.imul.call(null,4294967295,5))?function(a,b){return Math.imul.a?Math.imul.a(a,b):Math.imul.call(null,a,b)}:function(a,b){var c=a&65535,d=b&65535;return c*d+((a>>>16&65535)*d+c*(b>>>16&65535)<<16>>>0)|0};function gc(a){a=fc(a,3432918353);return fc(a<<15|a>>>-15,461845907)}function hc(a,b){var c=a^b;return fc(c<<13|c>>>-13,5)+3864292196}
-function ic(a,b){var c=a^b,c=fc(c^c>>>16,2246822507),c=fc(c^c>>>13,3266489909);return c^c>>>16}var kc={},lc=0;function mc(a){255<lc&&(kc={},lc=0);var b=kc[a];if("number"!==typeof b){a:if(null!=a)if(b=a.length,0<b){for(var c=0,d=0;;)if(c<b)var e=c+1,d=fc(31,d)+a.charCodeAt(c),c=e;else{b=d;break a}b=void 0}else b=0;else b=0;kc[a]=b;lc+=1}return a=b}
-function nc(a){a&&(a.j&4194304||a.vc)?a=a.B(null):"number"===typeof a?a=(Math.floor.b?Math.floor.b(a):Math.floor.call(null,a))%2147483647:!0===a?a=1:!1===a?a=0:"string"===typeof a?(a=mc(a),0!==a&&(a=gc(a),a=hc(0,a),a=ic(a,4))):a=a instanceof Date?a.valueOf():null==a?0:zb(a);return a}
-function oc(a){var b;b=a.name;var c;a:{c=1;for(var d=0;;)if(c<b.length){var e=c+2,d=hc(d,gc(b.charCodeAt(c-1)|b.charCodeAt(c)<<16));c=e}else{c=d;break a}c=void 0}c=1===(b.length&1)?c^gc(b.charCodeAt(b.length-1)):c;b=ic(c,fc(2,b.length));a=mc(a.ba);return b^a+2654435769+(b<<6)+(b>>2)}function pc(a,b){if(a.ta===b.ta)return 0;var c=Aa(a.ba);if(t(c?b.ba:c))return-1;if(t(a.ba)){if(Aa(b.ba))return 1;c=ha(a.ba,b.ba);return 0===c?ha(a.name,b.name):c}return ha(a.name,b.name)}
-function qc(a,b,c,d,e){this.ba=a;this.name=b;this.ta=c;this.Ya=d;this.Z=e;this.j=2154168321;this.q=4096}k=qc.prototype;k.v=function(a,b){return Lb(b,this.ta)};k.B=function(){var a=this.Ya;return null!=a?a:this.Ya=a=oc(this)};k.F=function(a,b){return new qc(this.ba,this.name,this.ta,this.Ya,b)};k.H=function(){return this.Z};
-k.call=function(){var a=null,a=function(a,c,d){switch(arguments.length){case 2:return $a.c(c,this,null);case 3:return $a.c(c,this,d)}throw Error("Invalid arity: "+arguments.length);};a.a=function(a,c){return $a.c(c,this,null)};a.c=function(a,c,d){return $a.c(c,this,d)};return a}();k.apply=function(a,b){return this.call.apply(this,[this].concat(Fa(b)))};k.b=function(a){return $a.c(a,this,null)};k.a=function(a,b){return $a.c(a,this,b)};k.A=function(a,b){return b instanceof qc?this.ta===b.ta:!1};
-k.toString=function(){return this.ta};var rc=function(){function a(a,b){var c=null!=a?[z(a),z("/"),z(b)].join(""):b;return new qc(a,b,c,null,null)}function b(a){return a instanceof qc?a:c.a(null,a)}var c=null,c=function(c,e){switch(arguments.length){case 1:return b.call(this,c);case 2:return a.call(this,c,e)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}();
-function D(a){if(null==a)return null;if(a&&(a.j&8388608||a.mc))return a.D(null);if(a instanceof Array||"string"===typeof a)return 0===a.length?null:new F(a,0);if(w(Bb,a))return Cb(a);throw Error([z(a),z(" is not ISeqable")].join(""));}function G(a){if(null==a)return null;if(a&&(a.j&64||a.jb))return a.N(null);a=D(a);return null==a?null:Va(a)}function H(a){return null!=a?a&&(a.j&64||a.jb)?a.S(null):(a=D(a))?Wa(a):J:J}function K(a){return null==a?null:a&&(a.j&128||a.xb)?a.T(null):D(H(a))}
-var sc=function(){function a(a,b){return null==a?null==b:a===b||yb(a,b)}var b=null,c=function(){function a(b,d,h){var l=null;if(2<arguments.length){for(var l=0,m=Array(arguments.length-2);l<m.length;)m[l]=arguments[l+2],++l;l=new F(m,0)}return c.call(this,b,d,l)}function c(a,d,e){for(;;)if(b.a(a,d))if(K(e))a=d,d=G(e),e=K(e);else return b.a(d,G(e));else return!1}a.i=2;a.f=function(a){var b=G(a);a=K(a);var d=G(a);a=H(a);return c(b,d,a)};a.d=c;return a}(),b=function(b,e,f){switch(arguments.length){case 1:return!0;
-case 2:return a.call(this,b,e);default:var g=null;if(2<arguments.length){for(var g=0,h=Array(arguments.length-2);g<h.length;)h[g]=arguments[g+2],++g;g=new F(h,0)}return c.d(b,e,g)}throw Error("Invalid arity: "+arguments.length);};b.i=2;b.f=c.f;b.b=function(){return!0};b.a=a;b.d=c.d;return b}();function tc(a){this.C=a}tc.prototype.next=function(){if(null!=this.C){var a=G(this.C);this.C=K(this.C);return{done:!1,value:a}}return{done:!0,value:null}};function uc(a){return new tc(D(a))}
-function vc(a,b){var c=gc(a),c=hc(0,c);return ic(c,b)}function wc(a){var b=0,c=1;for(a=D(a);;)if(null!=a)b+=1,c=fc(31,c)+nc(G(a))|0,a=K(a);else return vc(c,b)}function xc(a){var b=0,c=0;for(a=D(a);;)if(null!=a)b+=1,c=c+nc(G(a))|0,a=K(a);else return vc(c,b)}La["null"]=!0;Ma["null"]=function(){return 0};Date.prototype.A=function(a,b){return b instanceof Date&&this.toString()===b.toString()};yb.number=function(a,b){return a===b};rb["function"]=!0;sb["function"]=function(){return null};
-Ja["function"]=!0;zb._=function(a){return a[ba]||(a[ba]=++ca)};function yc(a){this.o=a;this.q=0;this.j=32768}yc.prototype.Ra=function(){return this.o};function Ac(a){return a instanceof yc}function Bc(a){return Ac(a)?L.b?L.b(a):L.call(null,a):a}function L(a){return qb(a)}
-var Cc=function(){function a(a,b,c,d){for(var l=Ma(a);;)if(d<l){var m=C.a(a,d);c=b.a?b.a(c,m):b.call(null,c,m);if(Ac(c))return qb(c);d+=1}else return c}function b(a,b,c){var d=Ma(a),l=c;for(c=0;;)if(c<d){var m=C.a(a,c),l=b.a?b.a(l,m):b.call(null,l,m);if(Ac(l))return qb(l);c+=1}else return l}function c(a,b){var c=Ma(a);if(0===c)return b.l?b.l():b.call(null);for(var d=C.a(a,0),l=1;;)if(l<c){var m=C.a(a,l),d=b.a?b.a(d,m):b.call(null,d,m);if(Ac(d))return qb(d);l+=1}else return d}var d=null,d=function(d,
-f,g,h){switch(arguments.length){case 2:return c.call(this,d,f);case 3:return b.call(this,d,f,g);case 4:return a.call(this,d,f,g,h)}throw Error("Invalid arity: "+arguments.length);};d.a=c;d.c=b;d.n=a;return d}(),Dc=function(){function a(a,b,c,d){for(var l=a.length;;)if(d<l){var m=a[d];c=b.a?b.a(c,m):b.call(null,c,m);if(Ac(c))return qb(c);d+=1}else return c}function b(a,b,c){var d=a.length,l=c;for(c=0;;)if(c<d){var m=a[c],l=b.a?b.a(l,m):b.call(null,l,m);if(Ac(l))return qb(l);c+=1}else return l}function c(a,
-b){var c=a.length;if(0===a.length)return b.l?b.l():b.call(null);for(var d=a[0],l=1;;)if(l<c){var m=a[l],d=b.a?b.a(d,m):b.call(null,d,m);if(Ac(d))return qb(d);l+=1}else return d}var d=null,d=function(d,f,g,h){switch(arguments.length){case 2:return c.call(this,d,f);case 3:return b.call(this,d,f,g);case 4:return a.call(this,d,f,g,h)}throw Error("Invalid arity: "+arguments.length);};d.a=c;d.c=b;d.n=a;return d}();function Ec(a){return a?a.j&2||a.cc?!0:a.j?!1:w(La,a):w(La,a)}
-function Fc(a){return a?a.j&16||a.Qb?!0:a.j?!1:w(Ta,a):w(Ta,a)}function Gc(a,b){this.e=a;this.m=b}Gc.prototype.ga=function(){return this.m<this.e.length};Gc.prototype.next=function(){var a=this.e[this.m];this.m+=1;return a};function F(a,b){this.e=a;this.m=b;this.j=166199550;this.q=8192}k=F.prototype;k.toString=function(){return ec(this)};k.Q=function(a,b){var c=b+this.m;return c<this.e.length?this.e[c]:null};k.$=function(a,b,c){a=b+this.m;return a<this.e.length?this.e[a]:c};k.vb=!0;
-k.fb=function(){return new Gc(this.e,this.m)};k.T=function(){return this.m+1<this.e.length?new F(this.e,this.m+1):null};k.L=function(){return this.e.length-this.m};k.ab=function(){var a=Ma(this);return 0<a?new Hc(this,a-1,null):null};k.B=function(){return wc(this)};k.A=function(a,b){return Ic.a?Ic.a(this,b):Ic.call(null,this,b)};k.J=function(){return J};k.R=function(a,b){return Dc.n(this.e,b,this.e[this.m],this.m+1)};k.O=function(a,b,c){return Dc.n(this.e,b,c,this.m)};k.N=function(){return this.e[this.m]};
-k.S=function(){return this.m+1<this.e.length?new F(this.e,this.m+1):J};k.D=function(){return this};k.G=function(a,b){return M.a?M.a(b,this):M.call(null,b,this)};F.prototype[Ea]=function(){return uc(this)};
-var Jc=function(){function a(a,b){return b<a.length?new F(a,b):null}function b(a){return c.a(a,0)}var c=null,c=function(c,e){switch(arguments.length){case 1:return b.call(this,c);case 2:return a.call(this,c,e)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}(),Kc=function(){function a(a,b){return Jc.a(a,b)}function b(a){return Jc.a(a,0)}var c=null,c=function(c,e){switch(arguments.length){case 1:return b.call(this,c);case 2:return a.call(this,c,e)}throw Error("Invalid arity: "+
-arguments.length);};c.b=b;c.a=a;return c}();function Hc(a,b,c){this.qb=a;this.m=b;this.k=c;this.j=32374990;this.q=8192}k=Hc.prototype;k.toString=function(){return ec(this)};k.H=function(){return this.k};k.T=function(){return 0<this.m?new Hc(this.qb,this.m-1,null):null};k.L=function(){return this.m+1};k.B=function(){return wc(this)};k.A=function(a,b){return Ic.a?Ic.a(this,b):Ic.call(null,this,b)};k.J=function(){var a=this.k;return O.a?O.a(J,a):O.call(null,J,a)};
-k.R=function(a,b){return P.a?P.a(b,this):P.call(null,b,this)};k.O=function(a,b,c){return P.c?P.c(b,c,this):P.call(null,b,c,this)};k.N=function(){return C.a(this.qb,this.m)};k.S=function(){return 0<this.m?new Hc(this.qb,this.m-1,null):J};k.D=function(){return this};k.F=function(a,b){return new Hc(this.qb,this.m,b)};k.G=function(a,b){return M.a?M.a(b,this):M.call(null,b,this)};Hc.prototype[Ea]=function(){return uc(this)};function Lc(a){return G(K(a))}yb._=function(a,b){return a===b};
-var Nc=function(){function a(a,b){return null!=a?Ra(a,b):Ra(J,b)}var b=null,c=function(){function a(b,d,h){var l=null;if(2<arguments.length){for(var l=0,m=Array(arguments.length-2);l<m.length;)m[l]=arguments[l+2],++l;l=new F(m,0)}return c.call(this,b,d,l)}function c(a,d,e){for(;;)if(t(e))a=b.a(a,d),d=G(e),e=K(e);else return b.a(a,d)}a.i=2;a.f=function(a){var b=G(a);a=K(a);var d=G(a);a=H(a);return c(b,d,a)};a.d=c;return a}(),b=function(b,e,f){switch(arguments.length){case 0:return Mc;case 1:return b;
-case 2:return a.call(this,b,e);default:var g=null;if(2<arguments.length){for(var g=0,h=Array(arguments.length-2);g<h.length;)h[g]=arguments[g+2],++g;g=new F(h,0)}return c.d(b,e,g)}throw Error("Invalid arity: "+arguments.length);};b.i=2;b.f=c.f;b.l=function(){return Mc};b.b=function(a){return a};b.a=a;b.d=c.d;return b}();function Oc(a){return null==a?null:Na(a)}
-function Q(a){if(null!=a)if(a&&(a.j&2||a.cc))a=a.L(null);else if(a instanceof Array)a=a.length;else if("string"===typeof a)a=a.length;else if(w(La,a))a=Ma(a);else a:{a=D(a);for(var b=0;;){if(Ec(a)){a=b+Ma(a);break a}a=K(a);b+=1}a=void 0}else a=0;return a}
-var Pc=function(){function a(a,b,c){for(;;){if(null==a)return c;if(0===b)return D(a)?G(a):c;if(Fc(a))return C.c(a,b,c);if(D(a))a=K(a),b-=1;else return c}}function b(a,b){for(;;){if(null==a)throw Error("Index out of bounds");if(0===b){if(D(a))return G(a);throw Error("Index out of bounds");}if(Fc(a))return C.a(a,b);if(D(a)){var c=K(a),g=b-1;a=c;b=g}else throw Error("Index out of bounds");}}var c=null,c=function(c,e,f){switch(arguments.length){case 2:return b.call(this,c,e);case 3:return a.call(this,
-c,e,f)}throw Error("Invalid arity: "+arguments.length);};c.a=b;c.c=a;return c}(),R=function(){function a(a,b,c){if("number"!==typeof b)throw Error("index argument to nth must be a number.");if(null==a)return c;if(a&&(a.j&16||a.Qb))return a.$(null,b,c);if(a instanceof Array||"string"===typeof a)return b<a.length?a[b]:c;if(w(Ta,a))return C.a(a,b);if(a?a.j&64||a.jb||(a.j?0:w(Ua,a)):w(Ua,a))return Pc.c(a,b,c);throw Error([z("nth not supported on this type "),z(Da(Ba(a)))].join(""));}function b(a,b){if("number"!==
-typeof b)throw Error("index argument to nth must be a number");if(null==a)return a;if(a&&(a.j&16||a.Qb))return a.Q(null,b);if(a instanceof Array||"string"===typeof a)return b<a.length?a[b]:null;if(w(Ta,a))return C.a(a,b);if(a?a.j&64||a.jb||(a.j?0:w(Ua,a)):w(Ua,a))return Pc.a(a,b);throw Error([z("nth not supported on this type "),z(Da(Ba(a)))].join(""));}var c=null,c=function(c,e,f){switch(arguments.length){case 2:return b.call(this,c,e);case 3:return a.call(this,c,e,f)}throw Error("Invalid arity: "+
-arguments.length);};c.a=b;c.c=a;return c}(),S=function(){function a(a,b,c){return null!=a?a&&(a.j&256||a.Rb)?a.s(null,b,c):a instanceof Array?b<a.length?a[b]:c:"string"===typeof a?b<a.length?a[b]:c:w(Za,a)?$a.c(a,b,c):c:c}function b(a,b){return null==a?null:a&&(a.j&256||a.Rb)?a.t(null,b):a instanceof Array?b<a.length?a[b]:null:"string"===typeof a?b<a.length?a[b]:null:w(Za,a)?$a.a(a,b):null}var c=null,c=function(c,e,f){switch(arguments.length){case 2:return b.call(this,c,e);case 3:return a.call(this,
-c,e,f)}throw Error("Invalid arity: "+arguments.length);};c.a=b;c.c=a;return c}(),Rc=function(){function a(a,b,c){if(null!=a)a=cb(a,b,c);else a:{a=[b];c=[c];b=a.length;for(var g=0,h=Ob(Qc);;)if(g<b)var l=g+1,h=h.kb(null,a[g],c[g]),g=l;else{a=Qb(h);break a}a=void 0}return a}var b=null,c=function(){function a(b,d,h,l){var m=null;if(3<arguments.length){for(var m=0,p=Array(arguments.length-3);m<p.length;)p[m]=arguments[m+3],++m;m=new F(p,0)}return c.call(this,b,d,h,m)}function c(a,d,e,l){for(;;)if(a=b.c(a,
-d,e),t(l))d=G(l),e=Lc(l),l=K(K(l));else return a}a.i=3;a.f=function(a){var b=G(a);a=K(a);var d=G(a);a=K(a);var l=G(a);a=H(a);return c(b,d,l,a)};a.d=c;return a}(),b=function(b,e,f,g){switch(arguments.length){case 3:return a.call(this,b,e,f);default:var h=null;if(3<arguments.length){for(var h=0,l=Array(arguments.length-3);h<l.length;)l[h]=arguments[h+3],++h;h=new F(l,0)}return c.d(b,e,f,h)}throw Error("Invalid arity: "+arguments.length);};b.i=3;b.f=c.f;b.c=a;b.d=c.d;return b}(),Sc=function(){function a(a,
-b){return null==a?null:eb(a,b)}var b=null,c=function(){function a(b,d,h){var l=null;if(2<arguments.length){for(var l=0,m=Array(arguments.length-2);l<m.length;)m[l]=arguments[l+2],++l;l=new F(m,0)}return c.call(this,b,d,l)}function c(a,d,e){for(;;){if(null==a)return null;a=b.a(a,d);if(t(e))d=G(e),e=K(e);else return a}}a.i=2;a.f=function(a){var b=G(a);a=K(a);var d=G(a);a=H(a);return c(b,d,a)};a.d=c;return a}(),b=function(b,e,f){switch(arguments.length){case 1:return b;case 2:return a.call(this,b,e);
-default:var g=null;if(2<arguments.length){for(var g=0,h=Array(arguments.length-2);g<h.length;)h[g]=arguments[g+2],++g;g=new F(h,0)}return c.d(b,e,g)}throw Error("Invalid arity: "+arguments.length);};b.i=2;b.f=c.f;b.b=function(a){return a};b.a=a;b.d=c.d;return b}();function Tc(a){var b="function"==n(a);return t(b)?b:a?t(t(null)?null:a.bc)?!0:a.yb?!1:w(Ja,a):w(Ja,a)}function Uc(a,b){this.h=a;this.k=b;this.q=0;this.j=393217}k=Uc.prototype;
-k.call=function(){function a(a,b,c,d,e,f,g,h,l,m,p,q,u,s,v,y,B,E,N,Y,ra,I){a=this.h;return T.ub?T.ub(a,b,c,d,e,f,g,h,l,m,p,q,u,s,v,y,B,E,N,Y,ra,I):T.call(null,a,b,c,d,e,f,g,h,l,m,p,q,u,s,v,y,B,E,N,Y,ra,I)}function b(a,b,c,d,e,f,g,h,l,m,p,q,u,s,v,y,B,E,N,Y,ra){a=this;return a.h.Fa?a.h.Fa(b,c,d,e,f,g,h,l,m,p,q,u,s,v,y,B,E,N,Y,ra):a.h.call(null,b,c,d,e,f,g,h,l,m,p,q,u,s,v,y,B,E,N,Y,ra)}function c(a,b,c,d,e,f,g,h,l,m,p,q,u,s,v,y,B,E,N,Y){a=this;return a.h.Ea?a.h.Ea(b,c,d,e,f,g,h,l,m,p,q,u,s,v,y,B,E,N,
-Y):a.h.call(null,b,c,d,e,f,g,h,l,m,p,q,u,s,v,y,B,E,N,Y)}function d(a,b,c,d,e,f,g,h,l,m,p,q,u,s,v,y,B,E,N){a=this;return a.h.Da?a.h.Da(b,c,d,e,f,g,h,l,m,p,q,u,s,v,y,B,E,N):a.h.call(null,b,c,d,e,f,g,h,l,m,p,q,u,s,v,y,B,E,N)}function e(a,b,c,d,e,f,g,h,l,m,p,q,u,s,v,y,B,E){a=this;return a.h.Ca?a.h.Ca(b,c,d,e,f,g,h,l,m,p,q,u,s,v,y,B,E):a.h.call(null,b,c,d,e,f,g,h,l,m,p,q,u,s,v,y,B,E)}function f(a,b,c,d,e,f,g,h,l,m,p,q,u,s,v,y,B){a=this;return a.h.Ba?a.h.Ba(b,c,d,e,f,g,h,l,m,p,q,u,s,v,y,B):a.h.call(null,
-b,c,d,e,f,g,h,l,m,p,q,u,s,v,y,B)}function g(a,b,c,d,e,f,g,h,l,m,p,q,u,s,v,y){a=this;return a.h.Aa?a.h.Aa(b,c,d,e,f,g,h,l,m,p,q,u,s,v,y):a.h.call(null,b,c,d,e,f,g,h,l,m,p,q,u,s,v,y)}function h(a,b,c,d,e,f,g,h,l,m,p,q,u,s,v){a=this;return a.h.za?a.h.za(b,c,d,e,f,g,h,l,m,p,q,u,s,v):a.h.call(null,b,c,d,e,f,g,h,l,m,p,q,u,s,v)}function l(a,b,c,d,e,f,g,h,l,m,p,q,u,s){a=this;return a.h.ya?a.h.ya(b,c,d,e,f,g,h,l,m,p,q,u,s):a.h.call(null,b,c,d,e,f,g,h,l,m,p,q,u,s)}function m(a,b,c,d,e,f,g,h,l,m,p,q,u){a=this;
-return a.h.xa?a.h.xa(b,c,d,e,f,g,h,l,m,p,q,u):a.h.call(null,b,c,d,e,f,g,h,l,m,p,q,u)}function p(a,b,c,d,e,f,g,h,l,m,p,q){a=this;return a.h.wa?a.h.wa(b,c,d,e,f,g,h,l,m,p,q):a.h.call(null,b,c,d,e,f,g,h,l,m,p,q)}function q(a,b,c,d,e,f,g,h,l,m,p){a=this;return a.h.va?a.h.va(b,c,d,e,f,g,h,l,m,p):a.h.call(null,b,c,d,e,f,g,h,l,m,p)}function s(a,b,c,d,e,f,g,h,l,m){a=this;return a.h.Ha?a.h.Ha(b,c,d,e,f,g,h,l,m):a.h.call(null,b,c,d,e,f,g,h,l,m)}function u(a,b,c,d,e,f,g,h,l){a=this;return a.h.Ga?a.h.Ga(b,c,
-d,e,f,g,h,l):a.h.call(null,b,c,d,e,f,g,h,l)}function v(a,b,c,d,e,f,g,h){a=this;return a.h.ia?a.h.ia(b,c,d,e,f,g,h):a.h.call(null,b,c,d,e,f,g,h)}function y(a,b,c,d,e,f,g){a=this;return a.h.P?a.h.P(b,c,d,e,f,g):a.h.call(null,b,c,d,e,f,g)}function B(a,b,c,d,e,f){a=this;return a.h.r?a.h.r(b,c,d,e,f):a.h.call(null,b,c,d,e,f)}function E(a,b,c,d,e){a=this;return a.h.n?a.h.n(b,c,d,e):a.h.call(null,b,c,d,e)}function N(a,b,c,d){a=this;return a.h.c?a.h.c(b,c,d):a.h.call(null,b,c,d)}function Y(a,b,c){a=this;
-return a.h.a?a.h.a(b,c):a.h.call(null,b,c)}function ra(a,b){a=this;return a.h.b?a.h.b(b):a.h.call(null,b)}function Pa(a){a=this;return a.h.l?a.h.l():a.h.call(null)}var I=null,I=function(I,qa,ta,va,xa,Ca,Ga,Ka,Oa,Sa,Ya,gb,ob,Ab,Wb,jc,zc,Zc,Gd,De,Wf,dh){switch(arguments.length){case 1:return Pa.call(this,I);case 2:return ra.call(this,I,qa);case 3:return Y.call(this,I,qa,ta);case 4:return N.call(this,I,qa,ta,va);case 5:return E.call(this,I,qa,ta,va,xa);case 6:return B.call(this,I,qa,ta,va,xa,Ca);case 7:return y.call(this,
-I,qa,ta,va,xa,Ca,Ga);case 8:return v.call(this,I,qa,ta,va,xa,Ca,Ga,Ka);case 9:return u.call(this,I,qa,ta,va,xa,Ca,Ga,Ka,Oa);case 10:return s.call(this,I,qa,ta,va,xa,Ca,Ga,Ka,Oa,Sa);case 11:return q.call(this,I,qa,ta,va,xa,Ca,Ga,Ka,Oa,Sa,Ya);case 12:return p.call(this,I,qa,ta,va,xa,Ca,Ga,Ka,Oa,Sa,Ya,gb);case 13:return m.call(this,I,qa,ta,va,xa,Ca,Ga,Ka,Oa,Sa,Ya,gb,ob);case 14:return l.call(this,I,qa,ta,va,xa,Ca,Ga,Ka,Oa,Sa,Ya,gb,ob,Ab);case 15:return h.call(this,I,qa,ta,va,xa,Ca,Ga,Ka,Oa,Sa,Ya,gb,
-ob,Ab,Wb);case 16:return g.call(this,I,qa,ta,va,xa,Ca,Ga,Ka,Oa,Sa,Ya,gb,ob,Ab,Wb,jc);case 17:return f.call(this,I,qa,ta,va,xa,Ca,Ga,Ka,Oa,Sa,Ya,gb,ob,Ab,Wb,jc,zc);case 18:return e.call(this,I,qa,ta,va,xa,Ca,Ga,Ka,Oa,Sa,Ya,gb,ob,Ab,Wb,jc,zc,Zc);case 19:return d.call(this,I,qa,ta,va,xa,Ca,Ga,Ka,Oa,Sa,Ya,gb,ob,Ab,Wb,jc,zc,Zc,Gd);case 20:return c.call(this,I,qa,ta,va,xa,Ca,Ga,Ka,Oa,Sa,Ya,gb,ob,Ab,Wb,jc,zc,Zc,Gd,De);case 21:return b.call(this,I,qa,ta,va,xa,Ca,Ga,Ka,Oa,Sa,Ya,gb,ob,Ab,Wb,jc,zc,Zc,Gd,De,
-Wf);case 22:return a.call(this,I,qa,ta,va,xa,Ca,Ga,Ka,Oa,Sa,Ya,gb,ob,Ab,Wb,jc,zc,Zc,Gd,De,Wf,dh)}throw Error("Invalid arity: "+arguments.length);};I.b=Pa;I.a=ra;I.c=Y;I.n=N;I.r=E;I.P=B;I.ia=y;I.Ga=v;I.Ha=u;I.va=s;I.wa=q;I.xa=p;I.ya=m;I.za=l;I.Aa=h;I.Ba=g;I.Ca=f;I.Da=e;I.Ea=d;I.Fa=c;I.hc=b;I.ub=a;return I}();k.apply=function(a,b){return this.call.apply(this,[this].concat(Fa(b)))};k.l=function(){return this.h.l?this.h.l():this.h.call(null)};
-k.b=function(a){return this.h.b?this.h.b(a):this.h.call(null,a)};k.a=function(a,b){return this.h.a?this.h.a(a,b):this.h.call(null,a,b)};k.c=function(a,b,c){return this.h.c?this.h.c(a,b,c):this.h.call(null,a,b,c)};k.n=function(a,b,c,d){return this.h.n?this.h.n(a,b,c,d):this.h.call(null,a,b,c,d)};k.r=function(a,b,c,d,e){return this.h.r?this.h.r(a,b,c,d,e):this.h.call(null,a,b,c,d,e)};k.P=function(a,b,c,d,e,f){return this.h.P?this.h.P(a,b,c,d,e,f):this.h.call(null,a,b,c,d,e,f)};
-k.ia=function(a,b,c,d,e,f,g){return this.h.ia?this.h.ia(a,b,c,d,e,f,g):this.h.call(null,a,b,c,d,e,f,g)};k.Ga=function(a,b,c,d,e,f,g,h){return this.h.Ga?this.h.Ga(a,b,c,d,e,f,g,h):this.h.call(null,a,b,c,d,e,f,g,h)};k.Ha=function(a,b,c,d,e,f,g,h,l){return this.h.Ha?this.h.Ha(a,b,c,d,e,f,g,h,l):this.h.call(null,a,b,c,d,e,f,g,h,l)};k.va=function(a,b,c,d,e,f,g,h,l,m){return this.h.va?this.h.va(a,b,c,d,e,f,g,h,l,m):this.h.call(null,a,b,c,d,e,f,g,h,l,m)};
-k.wa=function(a,b,c,d,e,f,g,h,l,m,p){return this.h.wa?this.h.wa(a,b,c,d,e,f,g,h,l,m,p):this.h.call(null,a,b,c,d,e,f,g,h,l,m,p)};k.xa=function(a,b,c,d,e,f,g,h,l,m,p,q){return this.h.xa?this.h.xa(a,b,c,d,e,f,g,h,l,m,p,q):this.h.call(null,a,b,c,d,e,f,g,h,l,m,p,q)};k.ya=function(a,b,c,d,e,f,g,h,l,m,p,q,s){return this.h.ya?this.h.ya(a,b,c,d,e,f,g,h,l,m,p,q,s):this.h.call(null,a,b,c,d,e,f,g,h,l,m,p,q,s)};
-k.za=function(a,b,c,d,e,f,g,h,l,m,p,q,s,u){return this.h.za?this.h.za(a,b,c,d,e,f,g,h,l,m,p,q,s,u):this.h.call(null,a,b,c,d,e,f,g,h,l,m,p,q,s,u)};k.Aa=function(a,b,c,d,e,f,g,h,l,m,p,q,s,u,v){return this.h.Aa?this.h.Aa(a,b,c,d,e,f,g,h,l,m,p,q,s,u,v):this.h.call(null,a,b,c,d,e,f,g,h,l,m,p,q,s,u,v)};k.Ba=function(a,b,c,d,e,f,g,h,l,m,p,q,s,u,v,y){return this.h.Ba?this.h.Ba(a,b,c,d,e,f,g,h,l,m,p,q,s,u,v,y):this.h.call(null,a,b,c,d,e,f,g,h,l,m,p,q,s,u,v,y)};
-k.Ca=function(a,b,c,d,e,f,g,h,l,m,p,q,s,u,v,y,B){return this.h.Ca?this.h.Ca(a,b,c,d,e,f,g,h,l,m,p,q,s,u,v,y,B):this.h.call(null,a,b,c,d,e,f,g,h,l,m,p,q,s,u,v,y,B)};k.Da=function(a,b,c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E){return this.h.Da?this.h.Da(a,b,c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E):this.h.call(null,a,b,c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E)};
-k.Ea=function(a,b,c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E,N){return this.h.Ea?this.h.Ea(a,b,c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E,N):this.h.call(null,a,b,c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E,N)};k.Fa=function(a,b,c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E,N,Y){return this.h.Fa?this.h.Fa(a,b,c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E,N,Y):this.h.call(null,a,b,c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E,N,Y)};
-k.hc=function(a,b,c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E,N,Y,ra){var Pa=this.h;return T.ub?T.ub(Pa,a,b,c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E,N,Y,ra):T.call(null,Pa,a,b,c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E,N,Y,ra)};k.bc=!0;k.F=function(a,b){return new Uc(this.h,b)};k.H=function(){return this.k};function O(a,b){return Tc(a)&&!(a?a.j&262144||a.Bc||(a.j?0:w(tb,a)):w(tb,a))?new Uc(a,b):null==a?null:ub(a,b)}function Vc(a){var b=null!=a;return(b?a?a.j&131072||a.kc||(a.j?0:w(rb,a)):w(rb,a):b)?sb(a):null}
-function Wc(a){return null==a?null:lb(a)}
-var Xc=function(){function a(a,b){return null==a?null:kb(a,b)}var b=null,c=function(){function a(b,d,h){var l=null;if(2<arguments.length){for(var l=0,m=Array(arguments.length-2);l<m.length;)m[l]=arguments[l+2],++l;l=new F(m,0)}return c.call(this,b,d,l)}function c(a,d,e){for(;;){if(null==a)return null;a=b.a(a,d);if(t(e))d=G(e),e=K(e);else return a}}a.i=2;a.f=function(a){var b=G(a);a=K(a);var d=G(a);a=H(a);return c(b,d,a)};a.d=c;return a}(),b=function(b,e,f){switch(arguments.length){case 1:return b;case 2:return a.call(this,
-b,e);default:var g=null;if(2<arguments.length){for(var g=0,h=Array(arguments.length-2);g<h.length;)h[g]=arguments[g+2],++g;g=new F(h,0)}return c.d(b,e,g)}throw Error("Invalid arity: "+arguments.length);};b.i=2;b.f=c.f;b.b=function(a){return a};b.a=a;b.d=c.d;return b}();function Yc(a){return null==a||Aa(D(a))}function $c(a){return null==a?!1:a?a.j&8||a.tc?!0:a.j?!1:w(Qa,a):w(Qa,a)}function ad(a){return null==a?!1:a?a.j&4096||a.zc?!0:a.j?!1:w(jb,a):w(jb,a)}
-function bd(a){return a?a.j&512||a.rc?!0:a.j?!1:w(ab,a):w(ab,a)}function cd(a){return a?a.j&16777216||a.yc?!0:a.j?!1:w(Db,a):w(Db,a)}function dd(a){return null==a?!1:a?a.j&1024||a.ic?!0:a.j?!1:w(db,a):w(db,a)}function ed(a){return a?a.j&16384||a.Ac?!0:a.j?!1:w(nb,a):w(nb,a)}function fd(a){return a?a.q&512||a.sc?!0:!1:!1}function gd(a){var b=[];ea(a,function(a,b){return function(a,c){return b.push(c)}}(a,b));return b}function hd(a,b,c,d,e){for(;0!==e;)c[d]=a[b],d+=1,e-=1,b+=1}
-function id(a,b,c,d,e){b+=e-1;for(d+=e-1;0!==e;)c[d]=a[b],d-=1,e-=1,b-=1}var jd={};function kd(a){return null==a?!1:a?a.j&64||a.jb?!0:a.j?!1:w(Ua,a):w(Ua,a)}function ld(a){return a?a.j&8388608||a.mc?!0:a.j?!1:w(Bb,a):w(Bb,a)}function md(a){return t(a)?!0:!1}function nd(a,b){return S.c(a,b,jd)===jd?!1:!0}
-function od(a,b){if(a===b)return 0;if(null==a)return-1;if(null==b)return 1;if(Ba(a)===Ba(b))return a&&(a.q&2048||a.sb)?a.tb(null,b):ha(a,b);throw Error("compare on non-nil objects of different types");}
-var pd=function(){function a(a,b,c,g){for(;;){var h=od(R.a(a,g),R.a(b,g));if(0===h&&g+1<c)g+=1;else return h}}function b(a,b){var f=Q(a),g=Q(b);return f<g?-1:f>g?1:c.n(a,b,f,0)}var c=null,c=function(c,e,f,g){switch(arguments.length){case 2:return b.call(this,c,e);case 4:return a.call(this,c,e,f,g)}throw Error("Invalid arity: "+arguments.length);};c.a=b;c.n=a;return c}();
-function qd(a){return sc.a(a,od)?od:function(b,c){var d=a.a?a.a(b,c):a.call(null,b,c);return"number"===typeof d?d:t(d)?-1:t(a.a?a.a(c,b):a.call(null,c,b))?1:0}}
-var sd=function(){function a(a,b){if(D(b)){var c=rd.b?rd.b(b):rd.call(null,b),g=qd(a);ia(c,g);return D(c)}return J}function b(a){return c.a(od,a)}var c=null,c=function(c,e){switch(arguments.length){case 1:return b.call(this,c);case 2:return a.call(this,c,e)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}(),td=function(){function a(a,b,c){return sd.a(function(c,f){return qd(b).call(null,a.b?a.b(c):a.call(null,c),a.b?a.b(f):a.call(null,f))},c)}function b(a,b){return c.c(a,od,
-b)}var c=null,c=function(c,e,f){switch(arguments.length){case 2:return b.call(this,c,e);case 3:return a.call(this,c,e,f)}throw Error("Invalid arity: "+arguments.length);};c.a=b;c.c=a;return c}(),P=function(){function a(a,b,c){for(c=D(c);;)if(c){var g=G(c);b=a.a?a.a(b,g):a.call(null,b,g);if(Ac(b))return qb(b);c=K(c)}else return b}function b(a,b){var c=D(b);if(c){var g=G(c),c=K(c);return A.c?A.c(a,g,c):A.call(null,a,g,c)}return a.l?a.l():a.call(null)}var c=null,c=function(c,e,f){switch(arguments.length){case 2:return b.call(this,
-c,e);case 3:return a.call(this,c,e,f)}throw Error("Invalid arity: "+arguments.length);};c.a=b;c.c=a;return c}(),A=function(){function a(a,b,c){return c&&(c.j&524288||c.Sb)?c.O(null,a,b):c instanceof Array?Dc.c(c,a,b):"string"===typeof c?Dc.c(c,a,b):w(vb,c)?wb.c(c,a,b):P.c(a,b,c)}function b(a,b){return b&&(b.j&524288||b.Sb)?b.R(null,a):b instanceof Array?Dc.a(b,a):"string"===typeof b?Dc.a(b,a):w(vb,b)?wb.a(b,a):P.a(a,b)}var c=null,c=function(c,e,f){switch(arguments.length){case 2:return b.call(this,
-c,e);case 3:return a.call(this,c,e,f)}throw Error("Invalid arity: "+arguments.length);};c.a=b;c.c=a;return c}();function ud(a){return a}
-var vd=function(){function a(a,b){return function(){function c(b,e){return a.a?a.a(b,e):a.call(null,b,e)}function g(a){return b.b?b.b(a):b.call(null,a)}function h(){return a.l?a.l():a.call(null)}var l=null,l=function(a,b){switch(arguments.length){case 0:return h.call(this);case 1:return g.call(this,a);case 2:return c.call(this,a,b)}throw Error("Invalid arity: "+arguments.length);};l.l=h;l.b=g;l.a=c;return l}()}function b(a){return c.a(a,ud)}var c=null,c=function(c,e){switch(arguments.length){case 1:return b.call(this,
-c);case 2:return a.call(this,c,e)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}(),wd=function(){function a(a,b,c,g){a=a.b?a.b(b):a.call(null,b);c=A.c(a,c,g);return a.b?a.b(c):a.call(null,c)}function b(a,b,f){return c.n(a,b,b.l?b.l():b.call(null),f)}var c=null,c=function(c,e,f,g){switch(arguments.length){case 3:return b.call(this,c,e,f);case 4:return a.call(this,c,e,f,g)}throw Error("Invalid arity: "+arguments.length);};c.c=b;c.n=a;return c}(),xd=function(){var a=null,b=function(){function b(a,
-c,g){var h=null;if(2<arguments.length){for(var h=0,l=Array(arguments.length-2);h<l.length;)l[h]=arguments[h+2],++h;h=new F(l,0)}return d.call(this,a,c,h)}function d(b,c,d){return A.c(a,b+c,d)}b.i=2;b.f=function(a){var b=G(a);a=K(a);var c=G(a);a=H(a);return d(b,c,a)};b.d=d;return b}(),a=function(a,d,e){switch(arguments.length){case 0:return 0;case 1:return a;case 2:return a+d;default:var f=null;if(2<arguments.length){for(var f=0,g=Array(arguments.length-2);f<g.length;)g[f]=arguments[f+2],++f;f=new F(g,
-0)}return b.d(a,d,f)}throw Error("Invalid arity: "+arguments.length);};a.i=2;a.f=b.f;a.l=function(){return 0};a.b=function(a){return a};a.a=function(a,b){return a+b};a.d=b.d;return a}(),yd=function(){var a=null,b=function(){function a(c,f,g){var h=null;if(2<arguments.length){for(var h=0,l=Array(arguments.length-2);h<l.length;)l[h]=arguments[h+2],++h;h=new F(l,0)}return b.call(this,c,f,h)}function b(a,c,d){for(;;)if(a<c)if(K(d))a=c,c=G(d),d=K(d);else return c<G(d);else return!1}a.i=2;a.f=function(a){var c=
-G(a);a=K(a);var g=G(a);a=H(a);return b(c,g,a)};a.d=b;return a}(),a=function(a,d,e){switch(arguments.length){case 1:return!0;case 2:return a<d;default:var f=null;if(2<arguments.length){for(var f=0,g=Array(arguments.length-2);f<g.length;)g[f]=arguments[f+2],++f;f=new F(g,0)}return b.d(a,d,f)}throw Error("Invalid arity: "+arguments.length);};a.i=2;a.f=b.f;a.b=function(){return!0};a.a=function(a,b){return a<b};a.d=b.d;return a}(),zd=function(){var a=null,b=function(){function a(c,f,g){var h=null;if(2<
-arguments.length){for(var h=0,l=Array(arguments.length-2);h<l.length;)l[h]=arguments[h+2],++h;h=new F(l,0)}return b.call(this,c,f,h)}function b(a,c,d){for(;;)if(a<=c)if(K(d))a=c,c=G(d),d=K(d);else return c<=G(d);else return!1}a.i=2;a.f=function(a){var c=G(a);a=K(a);var g=G(a);a=H(a);return b(c,g,a)};a.d=b;return a}(),a=function(a,d,e){switch(arguments.length){case 1:return!0;case 2:return a<=d;default:var f=null;if(2<arguments.length){for(var f=0,g=Array(arguments.length-2);f<g.length;)g[f]=arguments[f+
-2],++f;f=new F(g,0)}return b.d(a,d,f)}throw Error("Invalid arity: "+arguments.length);};a.i=2;a.f=b.f;a.b=function(){return!0};a.a=function(a,b){return a<=b};a.d=b.d;return a}(),Ad=function(){var a=null,b=function(){function a(c,f,g){var h=null;if(2<arguments.length){for(var h=0,l=Array(arguments.length-2);h<l.length;)l[h]=arguments[h+2],++h;h=new F(l,0)}return b.call(this,c,f,h)}function b(a,c,d){for(;;)if(a>c)if(K(d))a=c,c=G(d),d=K(d);else return c>G(d);else return!1}a.i=2;a.f=function(a){var c=
-G(a);a=K(a);var g=G(a);a=H(a);return b(c,g,a)};a.d=b;return a}(),a=function(a,d,e){switch(arguments.length){case 1:return!0;case 2:return a>d;default:var f=null;if(2<arguments.length){for(var f=0,g=Array(arguments.length-2);f<g.length;)g[f]=arguments[f+2],++f;f=new F(g,0)}return b.d(a,d,f)}throw Error("Invalid arity: "+arguments.length);};a.i=2;a.f=b.f;a.b=function(){return!0};a.a=function(a,b){return a>b};a.d=b.d;return a}(),Bd=function(){var a=null,b=function(){function a(c,f,g){var h=null;if(2<
-arguments.length){for(var h=0,l=Array(arguments.length-2);h<l.length;)l[h]=arguments[h+2],++h;h=new F(l,0)}return b.call(this,c,f,h)}function b(a,c,d){for(;;)if(a>=c)if(K(d))a=c,c=G(d),d=K(d);else return c>=G(d);else return!1}a.i=2;a.f=function(a){var c=G(a);a=K(a);var g=G(a);a=H(a);return b(c,g,a)};a.d=b;return a}(),a=function(a,d,e){switch(arguments.length){case 1:return!0;case 2:return a>=d;default:var f=null;if(2<arguments.length){for(var f=0,g=Array(arguments.length-2);f<g.length;)g[f]=arguments[f+
-2],++f;f=new F(g,0)}return b.d(a,d,f)}throw Error("Invalid arity: "+arguments.length);};a.i=2;a.f=b.f;a.b=function(){return!0};a.a=function(a,b){return a>=b};a.d=b.d;return a}();function Cd(a,b){var c=(a-a%b)/b;return 0<=c?Math.floor.b?Math.floor.b(c):Math.floor.call(null,c):Math.ceil.b?Math.ceil.b(c):Math.ceil.call(null,c)}function Dd(a){a-=a>>1&1431655765;a=(a&858993459)+(a>>2&858993459);return 16843009*(a+(a>>4)&252645135)>>24}
-function Ed(a){var b=1;for(a=D(a);;)if(a&&0<b)b-=1,a=K(a);else return a}
-var z=function(){function a(a){return null==a?"":da(a)}var b=null,c=function(){function a(b,d){var h=null;if(1<arguments.length){for(var h=0,l=Array(arguments.length-1);h<l.length;)l[h]=arguments[h+1],++h;h=new F(l,0)}return c.call(this,b,h)}function c(a,d){for(var e=new fa(b.b(a)),l=d;;)if(t(l))e=e.append(b.b(G(l))),l=K(l);else return e.toString()}a.i=1;a.f=function(a){var b=G(a);a=H(a);return c(b,a)};a.d=c;return a}(),b=function(b,e){switch(arguments.length){case 0:return"";case 1:return a.call(this,
-b);default:var f=null;if(1<arguments.length){for(var f=0,g=Array(arguments.length-1);f<g.length;)g[f]=arguments[f+1],++f;f=new F(g,0)}return c.d(b,f)}throw Error("Invalid arity: "+arguments.length);};b.i=1;b.f=c.f;b.l=function(){return""};b.b=a;b.d=c.d;return b}();function Ic(a,b){var c;if(cd(b))if(Ec(a)&&Ec(b)&&Q(a)!==Q(b))c=!1;else a:{c=D(a);for(var d=D(b);;){if(null==c){c=null==d;break a}if(null!=d&&sc.a(G(c),G(d)))c=K(c),d=K(d);else{c=!1;break a}}c=void 0}else c=null;return md(c)}
-function Fd(a,b,c,d,e){this.k=a;this.first=b;this.M=c;this.count=d;this.p=e;this.j=65937646;this.q=8192}k=Fd.prototype;k.toString=function(){return ec(this)};k.H=function(){return this.k};k.T=function(){return 1===this.count?null:this.M};k.L=function(){return this.count};k.La=function(){return this.first};k.Ma=function(){return Wa(this)};k.B=function(){var a=this.p;return null!=a?a:this.p=a=wc(this)};k.A=function(a,b){return Ic(this,b)};k.J=function(){return ub(J,this.k)};
-k.R=function(a,b){return P.a(b,this)};k.O=function(a,b,c){return P.c(b,c,this)};k.N=function(){return this.first};k.S=function(){return 1===this.count?J:this.M};k.D=function(){return this};k.F=function(a,b){return new Fd(b,this.first,this.M,this.count,this.p)};k.G=function(a,b){return new Fd(this.k,b,this,this.count+1,null)};Fd.prototype[Ea]=function(){return uc(this)};function Hd(a){this.k=a;this.j=65937614;this.q=8192}k=Hd.prototype;k.toString=function(){return ec(this)};k.H=function(){return this.k};
-k.T=function(){return null};k.L=function(){return 0};k.La=function(){return null};k.Ma=function(){throw Error("Can't pop empty list");};k.B=function(){return 0};k.A=function(a,b){return Ic(this,b)};k.J=function(){return this};k.R=function(a,b){return P.a(b,this)};k.O=function(a,b,c){return P.c(b,c,this)};k.N=function(){return null};k.S=function(){return J};k.D=function(){return null};k.F=function(a,b){return new Hd(b)};k.G=function(a,b){return new Fd(this.k,b,null,1,null)};var J=new Hd(null);
-Hd.prototype[Ea]=function(){return uc(this)};function Id(a){return a?a.j&134217728||a.xc?!0:a.j?!1:w(Fb,a):w(Fb,a)}function Jd(a){return Id(a)?Gb(a):A.c(Nc,J,a)}
-var Kd=function(){function a(a){var d=null;if(0<arguments.length){for(var d=0,e=Array(arguments.length-0);d<e.length;)e[d]=arguments[d+0],++d;d=new F(e,0)}return b.call(this,d)}function b(a){var b;if(a instanceof F&&0===a.m)b=a.e;else a:{for(b=[];;)if(null!=a)b.push(a.N(null)),a=a.T(null);else break a;b=void 0}a=b.length;for(var e=J;;)if(0<a){var f=a-1,e=e.G(null,b[a-1]);a=f}else return e}a.i=0;a.f=function(a){a=D(a);return b(a)};a.d=b;return a}();
-function Ld(a,b,c,d){this.k=a;this.first=b;this.M=c;this.p=d;this.j=65929452;this.q=8192}k=Ld.prototype;k.toString=function(){return ec(this)};k.H=function(){return this.k};k.T=function(){return null==this.M?null:D(this.M)};k.B=function(){var a=this.p;return null!=a?a:this.p=a=wc(this)};k.A=function(a,b){return Ic(this,b)};k.J=function(){return O(J,this.k)};k.R=function(a,b){return P.a(b,this)};k.O=function(a,b,c){return P.c(b,c,this)};k.N=function(){return this.first};
-k.S=function(){return null==this.M?J:this.M};k.D=function(){return this};k.F=function(a,b){return new Ld(b,this.first,this.M,this.p)};k.G=function(a,b){return new Ld(null,b,this,this.p)};Ld.prototype[Ea]=function(){return uc(this)};function M(a,b){var c=null==b;return(c?c:b&&(b.j&64||b.jb))?new Ld(null,a,b,null):new Ld(null,a,D(b),null)}
-function Md(a,b){if(a.pa===b.pa)return 0;var c=Aa(a.ba);if(t(c?b.ba:c))return-1;if(t(a.ba)){if(Aa(b.ba))return 1;c=ha(a.ba,b.ba);return 0===c?ha(a.name,b.name):c}return ha(a.name,b.name)}function U(a,b,c,d){this.ba=a;this.name=b;this.pa=c;this.Ya=d;this.j=2153775105;this.q=4096}k=U.prototype;k.v=function(a,b){return Lb(b,[z(":"),z(this.pa)].join(""))};k.B=function(){var a=this.Ya;return null!=a?a:this.Ya=a=oc(this)+2654435769|0};
-k.call=function(){var a=null,a=function(a,c,d){switch(arguments.length){case 2:return S.a(c,this);case 3:return S.c(c,this,d)}throw Error("Invalid arity: "+arguments.length);};a.a=function(a,c){return S.a(c,this)};a.c=function(a,c,d){return S.c(c,this,d)};return a}();k.apply=function(a,b){return this.call.apply(this,[this].concat(Fa(b)))};k.b=function(a){return S.a(a,this)};k.a=function(a,b){return S.c(a,this,b)};k.A=function(a,b){return b instanceof U?this.pa===b.pa:!1};
-k.toString=function(){return[z(":"),z(this.pa)].join("")};function Nd(a,b){return a===b?!0:a instanceof U&&b instanceof U?a.pa===b.pa:!1}
-var Pd=function(){function a(a,b){return new U(a,b,[z(t(a)?[z(a),z("/")].join(""):null),z(b)].join(""),null)}function b(a){if(a instanceof U)return a;if(a instanceof qc){var b;if(a&&(a.q&4096||a.lc))b=a.ba;else throw Error([z("Doesn't support namespace: "),z(a)].join(""));return new U(b,Od.b?Od.b(a):Od.call(null,a),a.ta,null)}return"string"===typeof a?(b=a.split("/"),2===b.length?new U(b[0],b[1],a,null):new U(null,b[0],a,null)):null}var c=null,c=function(c,e){switch(arguments.length){case 1:return b.call(this,
-c);case 2:return a.call(this,c,e)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}();function V(a,b,c,d){this.k=a;this.cb=b;this.C=c;this.p=d;this.q=0;this.j=32374988}k=V.prototype;k.toString=function(){return ec(this)};function Qd(a){null!=a.cb&&(a.C=a.cb.l?a.cb.l():a.cb.call(null),a.cb=null);return a.C}k.H=function(){return this.k};k.T=function(){Cb(this);return null==this.C?null:K(this.C)};k.B=function(){var a=this.p;return null!=a?a:this.p=a=wc(this)};
-k.A=function(a,b){return Ic(this,b)};k.J=function(){return O(J,this.k)};k.R=function(a,b){return P.a(b,this)};k.O=function(a,b,c){return P.c(b,c,this)};k.N=function(){Cb(this);return null==this.C?null:G(this.C)};k.S=function(){Cb(this);return null!=this.C?H(this.C):J};k.D=function(){Qd(this);if(null==this.C)return null;for(var a=this.C;;)if(a instanceof V)a=Qd(a);else return this.C=a,D(this.C)};k.F=function(a,b){return new V(b,this.cb,this.C,this.p)};k.G=function(a,b){return M(b,this)};
-V.prototype[Ea]=function(){return uc(this)};function Rd(a,b){this.Ab=a;this.end=b;this.q=0;this.j=2}Rd.prototype.L=function(){return this.end};Rd.prototype.add=function(a){this.Ab[this.end]=a;return this.end+=1};Rd.prototype.ca=function(){var a=new Sd(this.Ab,0,this.end);this.Ab=null;return a};function Td(a){return new Rd(Array(a),0)}function Sd(a,b,c){this.e=a;this.V=b;this.end=c;this.q=0;this.j=524306}k=Sd.prototype;k.R=function(a,b){return Dc.n(this.e,b,this.e[this.V],this.V+1)};
-k.O=function(a,b,c){return Dc.n(this.e,b,c,this.V)};k.Pb=function(){if(this.V===this.end)throw Error("-drop-first of empty chunk");return new Sd(this.e,this.V+1,this.end)};k.Q=function(a,b){return this.e[this.V+b]};k.$=function(a,b,c){return 0<=b&&b<this.end-this.V?this.e[this.V+b]:c};k.L=function(){return this.end-this.V};
-var Ud=function(){function a(a,b,c){return new Sd(a,b,c)}function b(a,b){return new Sd(a,b,a.length)}function c(a){return new Sd(a,0,a.length)}var d=null,d=function(d,f,g){switch(arguments.length){case 1:return c.call(this,d);case 2:return b.call(this,d,f);case 3:return a.call(this,d,f,g)}throw Error("Invalid arity: "+arguments.length);};d.b=c;d.a=b;d.c=a;return d}();function Vd(a,b,c,d){this.ca=a;this.ra=b;this.k=c;this.p=d;this.j=31850732;this.q=1536}k=Vd.prototype;k.toString=function(){return ec(this)};
-k.H=function(){return this.k};k.T=function(){if(1<Ma(this.ca))return new Vd(Xb(this.ca),this.ra,this.k,null);var a=Cb(this.ra);return null==a?null:a};k.B=function(){var a=this.p;return null!=a?a:this.p=a=wc(this)};k.A=function(a,b){return Ic(this,b)};k.J=function(){return O(J,this.k)};k.N=function(){return C.a(this.ca,0)};k.S=function(){return 1<Ma(this.ca)?new Vd(Xb(this.ca),this.ra,this.k,null):null==this.ra?J:this.ra};k.D=function(){return this};k.Cb=function(){return this.ca};
-k.Db=function(){return null==this.ra?J:this.ra};k.F=function(a,b){return new Vd(this.ca,this.ra,b,this.p)};k.G=function(a,b){return M(b,this)};k.Bb=function(){return null==this.ra?null:this.ra};Vd.prototype[Ea]=function(){return uc(this)};function Wd(a,b){return 0===Ma(a)?b:new Vd(a,b,null,null)}function Xd(a,b){a.add(b)}function rd(a){for(var b=[];;)if(D(a))b.push(G(a)),a=K(a);else return b}function Yd(a,b){if(Ec(a))return Q(a);for(var c=a,d=b,e=0;;)if(0<d&&D(c))c=K(c),d-=1,e+=1;else return e}
-var $d=function Zd(b){return null==b?null:null==K(b)?D(G(b)):M(G(b),Zd(K(b)))},ae=function(){function a(a,b){return new V(null,function(){var c=D(a);return c?fd(c)?Wd(Yb(c),d.a(Zb(c),b)):M(G(c),d.a(H(c),b)):b},null,null)}function b(a){return new V(null,function(){return a},null,null)}function c(){return new V(null,function(){return null},null,null)}var d=null,e=function(){function a(c,d,e){var f=null;if(2<arguments.length){for(var f=0,q=Array(arguments.length-2);f<q.length;)q[f]=arguments[f+2],++f;
-f=new F(q,0)}return b.call(this,c,d,f)}function b(a,c,e){return function q(a,b){return new V(null,function(){var c=D(a);return c?fd(c)?Wd(Yb(c),q(Zb(c),b)):M(G(c),q(H(c),b)):t(b)?q(G(b),K(b)):null},null,null)}(d.a(a,c),e)}a.i=2;a.f=function(a){var c=G(a);a=K(a);var d=G(a);a=H(a);return b(c,d,a)};a.d=b;return a}(),d=function(d,g,h){switch(arguments.length){case 0:return c.call(this);case 1:return b.call(this,d);case 2:return a.call(this,d,g);default:var l=null;if(2<arguments.length){for(var l=0,m=
-Array(arguments.length-2);l<m.length;)m[l]=arguments[l+2],++l;l=new F(m,0)}return e.d(d,g,l)}throw Error("Invalid arity: "+arguments.length);};d.i=2;d.f=e.f;d.l=c;d.b=b;d.a=a;d.d=e.d;return d}(),be=function(){function a(a,b,c,d){return M(a,M(b,M(c,d)))}function b(a,b,c){return M(a,M(b,c))}var c=null,d=function(){function a(c,d,e,m,p){var q=null;if(4<arguments.length){for(var q=0,s=Array(arguments.length-4);q<s.length;)s[q]=arguments[q+4],++q;q=new F(s,0)}return b.call(this,c,d,e,m,q)}function b(a,
-c,d,e,f){return M(a,M(c,M(d,M(e,$d(f)))))}a.i=4;a.f=function(a){var c=G(a);a=K(a);var d=G(a);a=K(a);var e=G(a);a=K(a);var p=G(a);a=H(a);return b(c,d,e,p,a)};a.d=b;return a}(),c=function(c,f,g,h,l){switch(arguments.length){case 1:return D(c);case 2:return M(c,f);case 3:return b.call(this,c,f,g);case 4:return a.call(this,c,f,g,h);default:var m=null;if(4<arguments.length){for(var m=0,p=Array(arguments.length-4);m<p.length;)p[m]=arguments[m+4],++m;m=new F(p,0)}return d.d(c,f,g,h,m)}throw Error("Invalid arity: "+
-arguments.length);};c.i=4;c.f=d.f;c.b=function(a){return D(a)};c.a=function(a,b){return M(a,b)};c.c=b;c.n=a;c.d=d.d;return c}();function ce(a){return Qb(a)}
-var de=function(){function a(){return Ob(Mc)}var b=null,c=function(){function a(c,d,h){var l=null;if(2<arguments.length){for(var l=0,m=Array(arguments.length-2);l<m.length;)m[l]=arguments[l+2],++l;l=new F(m,0)}return b.call(this,c,d,l)}function b(a,c,d){for(;;)if(a=Pb(a,c),t(d))c=G(d),d=K(d);else return a}a.i=2;a.f=function(a){var c=G(a);a=K(a);var d=G(a);a=H(a);return b(c,d,a)};a.d=b;return a}(),b=function(b,e,f){switch(arguments.length){case 0:return a.call(this);case 1:return b;case 2:return Pb(b,
-e);default:var g=null;if(2<arguments.length){for(var g=0,h=Array(arguments.length-2);g<h.length;)h[g]=arguments[g+2],++g;g=new F(h,0)}return c.d(b,e,g)}throw Error("Invalid arity: "+arguments.length);};b.i=2;b.f=c.f;b.l=a;b.b=function(a){return a};b.a=function(a,b){return Pb(a,b)};b.d=c.d;return b}(),ee=function(){var a=null,b=function(){function a(c,f,g,h){var l=null;if(3<arguments.length){for(var l=0,m=Array(arguments.length-3);l<m.length;)m[l]=arguments[l+3],++l;l=new F(m,0)}return b.call(this,
-c,f,g,l)}function b(a,c,d,h){for(;;)if(a=Rb(a,c,d),t(h))c=G(h),d=Lc(h),h=K(K(h));else return a}a.i=3;a.f=function(a){var c=G(a);a=K(a);var g=G(a);a=K(a);var h=G(a);a=H(a);return b(c,g,h,a)};a.d=b;return a}(),a=function(a,d,e,f){switch(arguments.length){case 3:return Rb(a,d,e);default:var g=null;if(3<arguments.length){for(var g=0,h=Array(arguments.length-3);g<h.length;)h[g]=arguments[g+3],++g;g=new F(h,0)}return b.d(a,d,e,g)}throw Error("Invalid arity: "+arguments.length);};a.i=3;a.f=b.f;a.c=function(a,
-b,e){return Rb(a,b,e)};a.d=b.d;return a}(),fe=function(){var a=null,b=function(){function a(c,f,g){var h=null;if(2<arguments.length){for(var h=0,l=Array(arguments.length-2);h<l.length;)l[h]=arguments[h+2],++h;h=new F(l,0)}return b.call(this,c,f,h)}function b(a,c,d){for(;;)if(a=Sb(a,c),t(d))c=G(d),d=K(d);else return a}a.i=2;a.f=function(a){var c=G(a);a=K(a);var g=G(a);a=H(a);return b(c,g,a)};a.d=b;return a}(),a=function(a,d,e){switch(arguments.length){case 2:return Sb(a,d);default:var f=null;if(2<
-arguments.length){for(var f=0,g=Array(arguments.length-2);f<g.length;)g[f]=arguments[f+2],++f;f=new F(g,0)}return b.d(a,d,f)}throw Error("Invalid arity: "+arguments.length);};a.i=2;a.f=b.f;a.a=function(a,b){return Sb(a,b)};a.d=b.d;return a}(),ge=function(){var a=null,b=function(){function a(c,f,g){var h=null;if(2<arguments.length){for(var h=0,l=Array(arguments.length-2);h<l.length;)l[h]=arguments[h+2],++h;h=new F(l,0)}return b.call(this,c,f,h)}function b(a,c,d){for(;;)if(a=Vb(a,c),t(d))c=G(d),d=K(d);
-else return a}a.i=2;a.f=function(a){var c=G(a);a=K(a);var g=G(a);a=H(a);return b(c,g,a)};a.d=b;return a}(),a=function(a,d,e){switch(arguments.length){case 2:return Vb(a,d);default:var f=null;if(2<arguments.length){for(var f=0,g=Array(arguments.length-2);f<g.length;)g[f]=arguments[f+2],++f;f=new F(g,0)}return b.d(a,d,f)}throw Error("Invalid arity: "+arguments.length);};a.i=2;a.f=b.f;a.a=function(a,b){return Vb(a,b)};a.d=b.d;return a}();
-function he(a,b,c){var d=D(c);if(0===b)return a.l?a.l():a.call(null);c=Va(d);var e=Wa(d);if(1===b)return a.b?a.b(c):a.b?a.b(c):a.call(null,c);var d=Va(e),f=Wa(e);if(2===b)return a.a?a.a(c,d):a.a?a.a(c,d):a.call(null,c,d);var e=Va(f),g=Wa(f);if(3===b)return a.c?a.c(c,d,e):a.c?a.c(c,d,e):a.call(null,c,d,e);var f=Va(g),h=Wa(g);if(4===b)return a.n?a.n(c,d,e,f):a.n?a.n(c,d,e,f):a.call(null,c,d,e,f);var g=Va(h),l=Wa(h);if(5===b)return a.r?a.r(c,d,e,f,g):a.r?a.r(c,d,e,f,g):a.call(null,c,d,e,f,g);var h=Va(l),
-m=Wa(l);if(6===b)return a.P?a.P(c,d,e,f,g,h):a.P?a.P(c,d,e,f,g,h):a.call(null,c,d,e,f,g,h);var l=Va(m),p=Wa(m);if(7===b)return a.ia?a.ia(c,d,e,f,g,h,l):a.ia?a.ia(c,d,e,f,g,h,l):a.call(null,c,d,e,f,g,h,l);var m=Va(p),q=Wa(p);if(8===b)return a.Ga?a.Ga(c,d,e,f,g,h,l,m):a.Ga?a.Ga(c,d,e,f,g,h,l,m):a.call(null,c,d,e,f,g,h,l,m);var p=Va(q),s=Wa(q);if(9===b)return a.Ha?a.Ha(c,d,e,f,g,h,l,m,p):a.Ha?a.Ha(c,d,e,f,g,h,l,m,p):a.call(null,c,d,e,f,g,h,l,m,p);var q=Va(s),u=Wa(s);if(10===b)return a.va?a.va(c,d,e,
-f,g,h,l,m,p,q):a.va?a.va(c,d,e,f,g,h,l,m,p,q):a.call(null,c,d,e,f,g,h,l,m,p,q);var s=Va(u),v=Wa(u);if(11===b)return a.wa?a.wa(c,d,e,f,g,h,l,m,p,q,s):a.wa?a.wa(c,d,e,f,g,h,l,m,p,q,s):a.call(null,c,d,e,f,g,h,l,m,p,q,s);var u=Va(v),y=Wa(v);if(12===b)return a.xa?a.xa(c,d,e,f,g,h,l,m,p,q,s,u):a.xa?a.xa(c,d,e,f,g,h,l,m,p,q,s,u):a.call(null,c,d,e,f,g,h,l,m,p,q,s,u);var v=Va(y),B=Wa(y);if(13===b)return a.ya?a.ya(c,d,e,f,g,h,l,m,p,q,s,u,v):a.ya?a.ya(c,d,e,f,g,h,l,m,p,q,s,u,v):a.call(null,c,d,e,f,g,h,l,m,p,
-q,s,u,v);var y=Va(B),E=Wa(B);if(14===b)return a.za?a.za(c,d,e,f,g,h,l,m,p,q,s,u,v,y):a.za?a.za(c,d,e,f,g,h,l,m,p,q,s,u,v,y):a.call(null,c,d,e,f,g,h,l,m,p,q,s,u,v,y);var B=Va(E),N=Wa(E);if(15===b)return a.Aa?a.Aa(c,d,e,f,g,h,l,m,p,q,s,u,v,y,B):a.Aa?a.Aa(c,d,e,f,g,h,l,m,p,q,s,u,v,y,B):a.call(null,c,d,e,f,g,h,l,m,p,q,s,u,v,y,B);var E=Va(N),Y=Wa(N);if(16===b)return a.Ba?a.Ba(c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E):a.Ba?a.Ba(c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E):a.call(null,c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E);var N=
-Va(Y),ra=Wa(Y);if(17===b)return a.Ca?a.Ca(c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E,N):a.Ca?a.Ca(c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E,N):a.call(null,c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E,N);var Y=Va(ra),Pa=Wa(ra);if(18===b)return a.Da?a.Da(c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E,N,Y):a.Da?a.Da(c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E,N,Y):a.call(null,c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E,N,Y);ra=Va(Pa);Pa=Wa(Pa);if(19===b)return a.Ea?a.Ea(c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E,N,Y,ra):a.Ea?a.Ea(c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E,N,Y,ra):a.call(null,
-c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E,N,Y,ra);var I=Va(Pa);Wa(Pa);if(20===b)return a.Fa?a.Fa(c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E,N,Y,ra,I):a.Fa?a.Fa(c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E,N,Y,ra,I):a.call(null,c,d,e,f,g,h,l,m,p,q,s,u,v,y,B,E,N,Y,ra,I);throw Error("Only up to 20 arguments supported on functions");}
-var T=function(){function a(a,b,c,d,e){b=be.n(b,c,d,e);c=a.i;return a.f?(d=Yd(b,c+1),d<=c?he(a,d,b):a.f(b)):a.apply(a,rd(b))}function b(a,b,c,d){b=be.c(b,c,d);c=a.i;return a.f?(d=Yd(b,c+1),d<=c?he(a,d,b):a.f(b)):a.apply(a,rd(b))}function c(a,b,c){b=be.a(b,c);c=a.i;if(a.f){var d=Yd(b,c+1);return d<=c?he(a,d,b):a.f(b)}return a.apply(a,rd(b))}function d(a,b){var c=a.i;if(a.f){var d=Yd(b,c+1);return d<=c?he(a,d,b):a.f(b)}return a.apply(a,rd(b))}var e=null,f=function(){function a(c,d,e,f,g,u){var v=null;
-if(5<arguments.length){for(var v=0,y=Array(arguments.length-5);v<y.length;)y[v]=arguments[v+5],++v;v=new F(y,0)}return b.call(this,c,d,e,f,g,v)}function b(a,c,d,e,f,g){c=M(c,M(d,M(e,M(f,$d(g)))));d=a.i;return a.f?(e=Yd(c,d+1),e<=d?he(a,e,c):a.f(c)):a.apply(a,rd(c))}a.i=5;a.f=function(a){var c=G(a);a=K(a);var d=G(a);a=K(a);var e=G(a);a=K(a);var f=G(a);a=K(a);var g=G(a);a=H(a);return b(c,d,e,f,g,a)};a.d=b;return a}(),e=function(e,h,l,m,p,q){switch(arguments.length){case 2:return d.call(this,e,h);case 3:return c.call(this,
-e,h,l);case 4:return b.call(this,e,h,l,m);case 5:return a.call(this,e,h,l,m,p);default:var s=null;if(5<arguments.length){for(var s=0,u=Array(arguments.length-5);s<u.length;)u[s]=arguments[s+5],++s;s=new F(u,0)}return f.d(e,h,l,m,p,s)}throw Error("Invalid arity: "+arguments.length);};e.i=5;e.f=f.f;e.a=d;e.c=c;e.n=b;e.r=a;e.d=f.d;return e}(),ie=function(){function a(a,b,c,d,e,f){var g=O,v=Vc(a);b=b.r?b.r(v,c,d,e,f):b.call(null,v,c,d,e,f);return g(a,b)}function b(a,b,c,d,e){var f=O,g=Vc(a);b=b.n?b.n(g,
-c,d,e):b.call(null,g,c,d,e);return f(a,b)}function c(a,b,c,d){var e=O,f=Vc(a);b=b.c?b.c(f,c,d):b.call(null,f,c,d);return e(a,b)}function d(a,b,c){var d=O,e=Vc(a);b=b.a?b.a(e,c):b.call(null,e,c);return d(a,b)}function e(a,b){var c=O,d;d=Vc(a);d=b.b?b.b(d):b.call(null,d);return c(a,d)}var f=null,g=function(){function a(c,d,e,f,g,h,y){var B=null;if(6<arguments.length){for(var B=0,E=Array(arguments.length-6);B<E.length;)E[B]=arguments[B+6],++B;B=new F(E,0)}return b.call(this,c,d,e,f,g,h,B)}function b(a,
-c,d,e,f,g,h){return O(a,T.d(c,Vc(a),d,e,f,Kc([g,h],0)))}a.i=6;a.f=function(a){var c=G(a);a=K(a);var d=G(a);a=K(a);var e=G(a);a=K(a);var f=G(a);a=K(a);var g=G(a);a=K(a);var h=G(a);a=H(a);return b(c,d,e,f,g,h,a)};a.d=b;return a}(),f=function(f,l,m,p,q,s,u){switch(arguments.length){case 2:return e.call(this,f,l);case 3:return d.call(this,f,l,m);case 4:return c.call(this,f,l,m,p);case 5:return b.call(this,f,l,m,p,q);case 6:return a.call(this,f,l,m,p,q,s);default:var v=null;if(6<arguments.length){for(var v=
-0,y=Array(arguments.length-6);v<y.length;)y[v]=arguments[v+6],++v;v=new F(y,0)}return g.d(f,l,m,p,q,s,v)}throw Error("Invalid arity: "+arguments.length);};f.i=6;f.f=g.f;f.a=e;f.c=d;f.n=c;f.r=b;f.P=a;f.d=g.d;return f}(),je=function(){function a(a,b){return!sc.a(a,b)}var b=null,c=function(){function a(c,d,h){var l=null;if(2<arguments.length){for(var l=0,m=Array(arguments.length-2);l<m.length;)m[l]=arguments[l+2],++l;l=new F(m,0)}return b.call(this,c,d,l)}function b(a,c,d){return Aa(T.n(sc,a,c,d))}a.i=
-2;a.f=function(a){var c=G(a);a=K(a);var d=G(a);a=H(a);return b(c,d,a)};a.d=b;return a}(),b=function(b,e,f){switch(arguments.length){case 1:return!1;case 2:return a.call(this,b,e);default:var g=null;if(2<arguments.length){for(var g=0,h=Array(arguments.length-2);g<h.length;)h[g]=arguments[g+2],++g;g=new F(h,0)}return c.d(b,e,g)}throw Error("Invalid arity: "+arguments.length);};b.i=2;b.f=c.f;b.b=function(){return!1};b.a=a;b.d=c.d;return b}(),qe=function ke(){"undefined"===typeof ja&&(ja=function(b,c){this.pc=
-b;this.oc=c;this.q=0;this.j=393216},ja.prototype.ga=function(){return!1},ja.prototype.next=function(){return Error("No such element")},ja.prototype.H=function(){return this.oc},ja.prototype.F=function(b,c){return new ja(this.pc,c)},ja.Yb=!0,ja.Xb="cljs.core/t12660",ja.nc=function(b){return Lb(b,"cljs.core/t12660")});return new ja(ke,new pa(null,5,[le,54,me,2998,ne,3,oe,2994,pe,"/Users/davidnolen/development/clojure/mori/out-mori-adv/cljs/core.cljs"],null))};function re(a,b){this.C=a;this.m=b}
-re.prototype.ga=function(){return this.m<this.C.length};re.prototype.next=function(){var a=this.C.charAt(this.m);this.m+=1;return a};function se(a,b){this.e=a;this.m=b}se.prototype.ga=function(){return this.m<this.e.length};se.prototype.next=function(){var a=this.e[this.m];this.m+=1;return a};var te={},ue={};function ve(a,b){this.eb=a;this.Qa=b}ve.prototype.ga=function(){this.eb===te?(this.eb=ue,this.Qa=D(this.Qa)):this.eb===this.Qa&&(this.Qa=K(this.eb));return null!=this.Qa};
-ve.prototype.next=function(){if(Aa(this.ga()))throw Error("No such element");this.eb=this.Qa;return G(this.Qa)};function we(a){if(null==a)return qe();if("string"===typeof a)return new re(a,0);if(a instanceof Array)return new se(a,0);if(a?t(t(null)?null:a.vb)||(a.yb?0:w(bc,a)):w(bc,a))return cc(a);if(ld(a))return new ve(te,a);throw Error([z("Cannot create iterator from "),z(a)].join(""));}function xe(a,b){this.fa=a;this.$b=b}
-xe.prototype.step=function(a){for(var b=this;;){if(t(function(){var c=null!=a.X;return c?b.$b.ga():c}()))if(Ac(function(){var c=b.$b.next();return b.fa.a?b.fa.a(a,c):b.fa.call(null,a,c)}()))null!=a.M&&(a.M.X=null);else continue;break}return null==a.X?null:b.fa.b?b.fa.b(a):b.fa.call(null,a)};
-function ye(a,b){var c=function(){function a(b,c){b.first=c;b.M=new ze(b.X,null,null,null);b.X=null;return b.M}function b(a){(Ac(a)?qb(a):a).X=null;return a}var c=null,c=function(c,f){switch(arguments.length){case 1:return b.call(this,c);case 2:return a.call(this,c,f)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}();return new xe(a.b?a.b(c):a.call(null,c),b)}function Ae(a,b,c){this.fa=a;this.Kb=b;this.ac=c}
-Ae.prototype.ga=function(){for(var a=D(this.Kb);;)if(null!=a){var b=G(a);if(Aa(b.ga()))return!1;a=K(a)}else return!0};Ae.prototype.next=function(){for(var a=this.Kb.length,b=0;;)if(b<a)this.ac[b]=this.Kb[b].next(),b+=1;else break;return Jc.a(this.ac,0)};Ae.prototype.step=function(a){for(;;){var b;b=(b=null!=a.X)?this.ga():b;if(t(b))if(Ac(T.a(this.fa,M(a,this.next()))))null!=a.M&&(a.M.X=null);else continue;break}return null==a.X?null:this.fa.b?this.fa.b(a):this.fa.call(null,a)};
-var Be=function(){function a(a,b,c){var g=function(){function a(b,c){b.first=c;b.M=new ze(b.X,null,null,null);b.X=null;return b.M}function b(a){a=Ac(a)?qb(a):a;a.X=null;return a}var c=null,c=function(c,d){switch(arguments.length){case 1:return b.call(this,c);case 2:return a.call(this,c,d)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}();return new Ae(a.b?a.b(g):a.call(null,g),b,c)}function b(a,b){return c.c(a,b,Array(b.length))}var c=null,c=function(c,e,f){switch(arguments.length){case 2:return b.call(this,
-c,e);case 3:return a.call(this,c,e,f)}throw Error("Invalid arity: "+arguments.length);};c.a=b;c.c=a;return c}();function ze(a,b,c,d){this.X=a;this.first=b;this.M=c;this.k=d;this.q=0;this.j=31719628}k=ze.prototype;k.T=function(){null!=this.X&&Cb(this);return null==this.M?null:Cb(this.M)};k.N=function(){null!=this.X&&Cb(this);return null==this.M?null:this.first};k.S=function(){null!=this.X&&Cb(this);return null==this.M?J:this.M};
-k.D=function(){null!=this.X&&this.X.step(this);return null==this.M?null:this};k.B=function(){return wc(this)};k.A=function(a,b){return null!=Cb(this)?Ic(this,b):cd(b)&&null==D(b)};k.J=function(){return J};k.G=function(a,b){return M(b,Cb(this))};k.F=function(a,b){return new ze(this.X,this.first,this.M,b)};ze.prototype[Ea]=function(){return uc(this)};
-var Ce=function(){function a(a){return kd(a)?a:(a=D(a))?a:J}var b=null,c=function(){function a(c,d,h){var l=null;if(2<arguments.length){for(var l=0,m=Array(arguments.length-2);l<m.length;)m[l]=arguments[l+2],++l;l=new F(m,0)}return b.call(this,c,d,l)}function b(a,c,d){d=rd(M(c,d));c=[];d=D(d);for(var e=null,m=0,p=0;;)if(p<m){var q=e.Q(null,p);c.push(we(q));p+=1}else if(d=D(d))e=d,fd(e)?(d=Yb(e),p=Zb(e),e=d,m=Q(d),d=p):(d=G(e),c.push(we(d)),d=K(e),e=null,m=0),p=0;else break;return new ze(Be.c(a,c,
-Array(c.length)),null,null,null)}a.i=2;a.f=function(a){var c=G(a);a=K(a);var d=G(a);a=H(a);return b(c,d,a)};a.d=b;return a}(),b=function(b,e,f){switch(arguments.length){case 1:return a.call(this,b);case 2:return new ze(ye(b,we(e)),null,null,null);default:var g=null;if(2<arguments.length){for(var g=0,h=Array(arguments.length-2);g<h.length;)h[g]=arguments[g+2],++g;g=new F(h,0)}return c.d(b,e,g)}throw Error("Invalid arity: "+arguments.length);};b.i=2;b.f=c.f;b.b=a;b.a=function(a,b){return new ze(ye(a,
-we(b)),null,null,null)};b.d=c.d;return b}();function Ee(a,b){for(;;){if(null==D(b))return!0;var c;c=G(b);c=a.b?a.b(c):a.call(null,c);if(t(c)){c=a;var d=K(b);a=c;b=d}else return!1}}function Fe(a,b){for(;;)if(D(b)){var c;c=G(b);c=a.b?a.b(c):a.call(null,c);if(t(c))return c;c=a;var d=K(b);a=c;b=d}else return null}function Ge(a){if("number"===typeof a&&Aa(isNaN(a))&&Infinity!==a&&parseFloat(a)===parseInt(a,10))return 0===(a&1);throw Error([z("Argument must be an integer: "),z(a)].join(""));}
-function He(a){return function(){function b(b,c){return Aa(a.a?a.a(b,c):a.call(null,b,c))}function c(b){return Aa(a.b?a.b(b):a.call(null,b))}function d(){return Aa(a.l?a.l():a.call(null))}var e=null,f=function(){function b(a,d,e){var f=null;if(2<arguments.length){for(var f=0,g=Array(arguments.length-2);f<g.length;)g[f]=arguments[f+2],++f;f=new F(g,0)}return c.call(this,a,d,f)}function c(b,d,e){return Aa(T.n(a,b,d,e))}b.i=2;b.f=function(a){var b=G(a);a=K(a);var d=G(a);a=H(a);return c(b,d,a)};b.d=c;
-return b}(),e=function(a,e,l){switch(arguments.length){case 0:return d.call(this);case 1:return c.call(this,a);case 2:return b.call(this,a,e);default:var m=null;if(2<arguments.length){for(var m=0,p=Array(arguments.length-2);m<p.length;)p[m]=arguments[m+2],++m;m=new F(p,0)}return f.d(a,e,m)}throw Error("Invalid arity: "+arguments.length);};e.i=2;e.f=f.f;e.l=d;e.b=c;e.a=b;e.d=f.d;return e}()}
-var Ie=function(){function a(a,b,c){return function(){function d(h,l,m){h=c.c?c.c(h,l,m):c.call(null,h,l,m);h=b.b?b.b(h):b.call(null,h);return a.b?a.b(h):a.call(null,h)}function l(d,h){var l;l=c.a?c.a(d,h):c.call(null,d,h);l=b.b?b.b(l):b.call(null,l);return a.b?a.b(l):a.call(null,l)}function m(d){d=c.b?c.b(d):c.call(null,d);d=b.b?b.b(d):b.call(null,d);return a.b?a.b(d):a.call(null,d)}function p(){var d;d=c.l?c.l():c.call(null);d=b.b?b.b(d):b.call(null,d);return a.b?a.b(d):a.call(null,d)}var q=null,
-s=function(){function d(a,b,c,e){var f=null;if(3<arguments.length){for(var f=0,g=Array(arguments.length-3);f<g.length;)g[f]=arguments[f+3],++f;f=new F(g,0)}return h.call(this,a,b,c,f)}function h(d,l,m,p){d=T.r(c,d,l,m,p);d=b.b?b.b(d):b.call(null,d);return a.b?a.b(d):a.call(null,d)}d.i=3;d.f=function(a){var b=G(a);a=K(a);var c=G(a);a=K(a);var d=G(a);a=H(a);return h(b,c,d,a)};d.d=h;return d}(),q=function(a,b,c,e){switch(arguments.length){case 0:return p.call(this);case 1:return m.call(this,a);case 2:return l.call(this,
-a,b);case 3:return d.call(this,a,b,c);default:var f=null;if(3<arguments.length){for(var f=0,g=Array(arguments.length-3);f<g.length;)g[f]=arguments[f+3],++f;f=new F(g,0)}return s.d(a,b,c,f)}throw Error("Invalid arity: "+arguments.length);};q.i=3;q.f=s.f;q.l=p;q.b=m;q.a=l;q.c=d;q.d=s.d;return q}()}function b(a,b){return function(){function c(d,g,h){d=b.c?b.c(d,g,h):b.call(null,d,g,h);return a.b?a.b(d):a.call(null,d)}function d(c,g){var h=b.a?b.a(c,g):b.call(null,c,g);return a.b?a.b(h):a.call(null,h)}
-function l(c){c=b.b?b.b(c):b.call(null,c);return a.b?a.b(c):a.call(null,c)}function m(){var c=b.l?b.l():b.call(null);return a.b?a.b(c):a.call(null,c)}var p=null,q=function(){function c(a,b,e,f){var g=null;if(3<arguments.length){for(var g=0,h=Array(arguments.length-3);g<h.length;)h[g]=arguments[g+3],++g;g=new F(h,0)}return d.call(this,a,b,e,g)}function d(c,g,h,l){c=T.r(b,c,g,h,l);return a.b?a.b(c):a.call(null,c)}c.i=3;c.f=function(a){var b=G(a);a=K(a);var c=G(a);a=K(a);var e=G(a);a=H(a);return d(b,
-c,e,a)};c.d=d;return c}(),p=function(a,b,e,f){switch(arguments.length){case 0:return m.call(this);case 1:return l.call(this,a);case 2:return d.call(this,a,b);case 3:return c.call(this,a,b,e);default:var p=null;if(3<arguments.length){for(var p=0,E=Array(arguments.length-3);p<E.length;)E[p]=arguments[p+3],++p;p=new F(E,0)}return q.d(a,b,e,p)}throw Error("Invalid arity: "+arguments.length);};p.i=3;p.f=q.f;p.l=m;p.b=l;p.a=d;p.c=c;p.d=q.d;return p}()}var c=null,d=function(){function a(c,d,e,m){var p=null;
-if(3<arguments.length){for(var p=0,q=Array(arguments.length-3);p<q.length;)q[p]=arguments[p+3],++p;p=new F(q,0)}return b.call(this,c,d,e,p)}function b(a,c,d,e){return function(a){return function(){function b(a){var d=null;if(0<arguments.length){for(var d=0,e=Array(arguments.length-0);d<e.length;)e[d]=arguments[d+0],++d;d=new F(e,0)}return c.call(this,d)}function c(b){b=T.a(G(a),b);for(var d=K(a);;)if(d)b=G(d).call(null,b),d=K(d);else return b}b.i=0;b.f=function(a){a=D(a);return c(a)};b.d=c;return b}()}(Jd(be.n(a,
-c,d,e)))}a.i=3;a.f=function(a){var c=G(a);a=K(a);var d=G(a);a=K(a);var e=G(a);a=H(a);return b(c,d,e,a)};a.d=b;return a}(),c=function(c,f,g,h){switch(arguments.length){case 0:return ud;case 1:return c;case 2:return b.call(this,c,f);case 3:return a.call(this,c,f,g);default:var l=null;if(3<arguments.length){for(var l=0,m=Array(arguments.length-3);l<m.length;)m[l]=arguments[l+3],++l;l=new F(m,0)}return d.d(c,f,g,l)}throw Error("Invalid arity: "+arguments.length);};c.i=3;c.f=d.f;c.l=function(){return ud};
-c.b=function(a){return a};c.a=b;c.c=a;c.d=d.d;return c}(),Je=function(){function a(a,b,c,d){return function(){function e(m,p,q){return a.P?a.P(b,c,d,m,p,q):a.call(null,b,c,d,m,p,q)}function p(e,m){return a.r?a.r(b,c,d,e,m):a.call(null,b,c,d,e,m)}function q(e){return a.n?a.n(b,c,d,e):a.call(null,b,c,d,e)}function s(){return a.c?a.c(b,c,d):a.call(null,b,c,d)}var u=null,v=function(){function e(a,b,c,d){var f=null;if(3<arguments.length){for(var f=0,g=Array(arguments.length-3);f<g.length;)g[f]=arguments[f+
-3],++f;f=new F(g,0)}return m.call(this,a,b,c,f)}function m(e,p,q,s){return T.d(a,b,c,d,e,Kc([p,q,s],0))}e.i=3;e.f=function(a){var b=G(a);a=K(a);var c=G(a);a=K(a);var d=G(a);a=H(a);return m(b,c,d,a)};e.d=m;return e}(),u=function(a,b,c,d){switch(arguments.length){case 0:return s.call(this);case 1:return q.call(this,a);case 2:return p.call(this,a,b);case 3:return e.call(this,a,b,c);default:var f=null;if(3<arguments.length){for(var f=0,g=Array(arguments.length-3);f<g.length;)g[f]=arguments[f+3],++f;f=
-new F(g,0)}return v.d(a,b,c,f)}throw Error("Invalid arity: "+arguments.length);};u.i=3;u.f=v.f;u.l=s;u.b=q;u.a=p;u.c=e;u.d=v.d;return u}()}function b(a,b,c){return function(){function d(e,l,m){return a.r?a.r(b,c,e,l,m):a.call(null,b,c,e,l,m)}function e(d,l){return a.n?a.n(b,c,d,l):a.call(null,b,c,d,l)}function p(d){return a.c?a.c(b,c,d):a.call(null,b,c,d)}function q(){return a.a?a.a(b,c):a.call(null,b,c)}var s=null,u=function(){function d(a,b,c,f){var g=null;if(3<arguments.length){for(var g=0,h=Array(arguments.length-
-3);g<h.length;)h[g]=arguments[g+3],++g;g=new F(h,0)}return e.call(this,a,b,c,g)}function e(d,l,m,p){return T.d(a,b,c,d,l,Kc([m,p],0))}d.i=3;d.f=function(a){var b=G(a);a=K(a);var c=G(a);a=K(a);var d=G(a);a=H(a);return e(b,c,d,a)};d.d=e;return d}(),s=function(a,b,c,f){switch(arguments.length){case 0:return q.call(this);case 1:return p.call(this,a);case 2:return e.call(this,a,b);case 3:return d.call(this,a,b,c);default:var g=null;if(3<arguments.length){for(var g=0,h=Array(arguments.length-3);g<h.length;)h[g]=
-arguments[g+3],++g;g=new F(h,0)}return u.d(a,b,c,g)}throw Error("Invalid arity: "+arguments.length);};s.i=3;s.f=u.f;s.l=q;s.b=p;s.a=e;s.c=d;s.d=u.d;return s}()}function c(a,b){return function(){function c(d,e,h){return a.n?a.n(b,d,e,h):a.call(null,b,d,e,h)}function d(c,e){return a.c?a.c(b,c,e):a.call(null,b,c,e)}function e(c){return a.a?a.a(b,c):a.call(null,b,c)}function p(){return a.b?a.b(b):a.call(null,b)}var q=null,s=function(){function c(a,b,e,f){var g=null;if(3<arguments.length){for(var g=0,
-h=Array(arguments.length-3);g<h.length;)h[g]=arguments[g+3],++g;g=new F(h,0)}return d.call(this,a,b,e,g)}function d(c,e,h,l){return T.d(a,b,c,e,h,Kc([l],0))}c.i=3;c.f=function(a){var b=G(a);a=K(a);var c=G(a);a=K(a);var e=G(a);a=H(a);return d(b,c,e,a)};c.d=d;return c}(),q=function(a,b,f,g){switch(arguments.length){case 0:return p.call(this);case 1:return e.call(this,a);case 2:return d.call(this,a,b);case 3:return c.call(this,a,b,f);default:var q=null;if(3<arguments.length){for(var q=0,N=Array(arguments.length-
-3);q<N.length;)N[q]=arguments[q+3],++q;q=new F(N,0)}return s.d(a,b,f,q)}throw Error("Invalid arity: "+arguments.length);};q.i=3;q.f=s.f;q.l=p;q.b=e;q.a=d;q.c=c;q.d=s.d;return q}()}var d=null,e=function(){function a(c,d,e,f,q){var s=null;if(4<arguments.length){for(var s=0,u=Array(arguments.length-4);s<u.length;)u[s]=arguments[s+4],++s;s=new F(u,0)}return b.call(this,c,d,e,f,s)}function b(a,c,d,e,f){return function(){function b(a){var c=null;if(0<arguments.length){for(var c=0,d=Array(arguments.length-
-0);c<d.length;)d[c]=arguments[c+0],++c;c=new F(d,0)}return g.call(this,c)}function g(b){return T.r(a,c,d,e,ae.a(f,b))}b.i=0;b.f=function(a){a=D(a);return g(a)};b.d=g;return b}()}a.i=4;a.f=function(a){var c=G(a);a=K(a);var d=G(a);a=K(a);var e=G(a);a=K(a);var f=G(a);a=H(a);return b(c,d,e,f,a)};a.d=b;return a}(),d=function(d,g,h,l,m){switch(arguments.length){case 1:return d;case 2:return c.call(this,d,g);case 3:return b.call(this,d,g,h);case 4:return a.call(this,d,g,h,l);default:var p=null;if(4<arguments.length){for(var p=
-0,q=Array(arguments.length-4);p<q.length;)q[p]=arguments[p+4],++p;p=new F(q,0)}return e.d(d,g,h,l,p)}throw Error("Invalid arity: "+arguments.length);};d.i=4;d.f=e.f;d.b=function(a){return a};d.a=c;d.c=b;d.n=a;d.d=e.d;return d}(),Ke=function(){function a(a,b,c,d){return function(){function l(l,m,p){l=null==l?b:l;m=null==m?c:m;p=null==p?d:p;return a.c?a.c(l,m,p):a.call(null,l,m,p)}function m(d,h){var l=null==d?b:d,m=null==h?c:h;return a.a?a.a(l,m):a.call(null,l,m)}var p=null,q=function(){function l(a,
-b,c,d){var e=null;if(3<arguments.length){for(var e=0,f=Array(arguments.length-3);e<f.length;)f[e]=arguments[e+3],++e;e=new F(f,0)}return m.call(this,a,b,c,e)}function m(l,p,q,s){return T.r(a,null==l?b:l,null==p?c:p,null==q?d:q,s)}l.i=3;l.f=function(a){var b=G(a);a=K(a);var c=G(a);a=K(a);var d=G(a);a=H(a);return m(b,c,d,a)};l.d=m;return l}(),p=function(a,b,c,d){switch(arguments.length){case 2:return m.call(this,a,b);case 3:return l.call(this,a,b,c);default:var e=null;if(3<arguments.length){for(var e=
-0,f=Array(arguments.length-3);e<f.length;)f[e]=arguments[e+3],++e;e=new F(f,0)}return q.d(a,b,c,e)}throw Error("Invalid arity: "+arguments.length);};p.i=3;p.f=q.f;p.a=m;p.c=l;p.d=q.d;return p}()}function b(a,b,c){return function(){function d(h,l,m){h=null==h?b:h;l=null==l?c:l;return a.c?a.c(h,l,m):a.call(null,h,l,m)}function l(d,h){var l=null==d?b:d,m=null==h?c:h;return a.a?a.a(l,m):a.call(null,l,m)}var m=null,p=function(){function d(a,b,c,e){var f=null;if(3<arguments.length){for(var f=0,g=Array(arguments.length-
-3);f<g.length;)g[f]=arguments[f+3],++f;f=new F(g,0)}return h.call(this,a,b,c,f)}function h(d,l,m,p){return T.r(a,null==d?b:d,null==l?c:l,m,p)}d.i=3;d.f=function(a){var b=G(a);a=K(a);var c=G(a);a=K(a);var d=G(a);a=H(a);return h(b,c,d,a)};d.d=h;return d}(),m=function(a,b,c,e){switch(arguments.length){case 2:return l.call(this,a,b);case 3:return d.call(this,a,b,c);default:var f=null;if(3<arguments.length){for(var f=0,g=Array(arguments.length-3);f<g.length;)g[f]=arguments[f+3],++f;f=new F(g,0)}return p.d(a,
-b,c,f)}throw Error("Invalid arity: "+arguments.length);};m.i=3;m.f=p.f;m.a=l;m.c=d;m.d=p.d;return m}()}function c(a,b){return function(){function c(d,g,h){d=null==d?b:d;return a.c?a.c(d,g,h):a.call(null,d,g,h)}function d(c,g){var h=null==c?b:c;return a.a?a.a(h,g):a.call(null,h,g)}function l(c){c=null==c?b:c;return a.b?a.b(c):a.call(null,c)}var m=null,p=function(){function c(a,b,e,f){var g=null;if(3<arguments.length){for(var g=0,h=Array(arguments.length-3);g<h.length;)h[g]=arguments[g+3],++g;g=new F(h,
-0)}return d.call(this,a,b,e,g)}function d(c,g,h,l){return T.r(a,null==c?b:c,g,h,l)}c.i=3;c.f=function(a){var b=G(a);a=K(a);var c=G(a);a=K(a);var e=G(a);a=H(a);return d(b,c,e,a)};c.d=d;return c}(),m=function(a,b,e,f){switch(arguments.length){case 1:return l.call(this,a);case 2:return d.call(this,a,b);case 3:return c.call(this,a,b,e);default:var m=null;if(3<arguments.length){for(var m=0,B=Array(arguments.length-3);m<B.length;)B[m]=arguments[m+3],++m;m=new F(B,0)}return p.d(a,b,e,m)}throw Error("Invalid arity: "+
-arguments.length);};m.i=3;m.f=p.f;m.b=l;m.a=d;m.c=c;m.d=p.d;return m}()}var d=null,d=function(d,f,g,h){switch(arguments.length){case 2:return c.call(this,d,f);case 3:return b.call(this,d,f,g);case 4:return a.call(this,d,f,g,h)}throw Error("Invalid arity: "+arguments.length);};d.a=c;d.c=b;d.n=a;return d}(),Le=function(){function a(a,b){return new V(null,function(){var f=D(b);if(f){if(fd(f)){for(var g=Yb(f),h=Q(g),l=Td(h),m=0;;)if(m<h){var p=function(){var b=C.a(g,m);return a.b?a.b(b):a.call(null,b)}();
-null!=p&&l.add(p);m+=1}else break;return Wd(l.ca(),c.a(a,Zb(f)))}h=function(){var b=G(f);return a.b?a.b(b):a.call(null,b)}();return null==h?c.a(a,H(f)):M(h,c.a(a,H(f)))}return null},null,null)}function b(a){return function(b){return function(){function c(f,g){var h=a.b?a.b(g):a.call(null,g);return null==h?f:b.a?b.a(f,h):b.call(null,f,h)}function g(a){return b.b?b.b(a):b.call(null,a)}function h(){return b.l?b.l():b.call(null)}var l=null,l=function(a,b){switch(arguments.length){case 0:return h.call(this);
-case 1:return g.call(this,a);case 2:return c.call(this,a,b)}throw Error("Invalid arity: "+arguments.length);};l.l=h;l.b=g;l.a=c;return l}()}}var c=null,c=function(c,e){switch(arguments.length){case 1:return b.call(this,c);case 2:return a.call(this,c,e)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}();function Me(a){this.state=a;this.q=0;this.j=32768}Me.prototype.Ra=function(){return this.state};Me.prototype.bb=function(a,b){return this.state=b};
-var Ne=function(){function a(a,b){return function g(b,c){return new V(null,function(){var e=D(c);if(e){if(fd(e)){for(var p=Yb(e),q=Q(p),s=Td(q),u=0;;)if(u<q){var v=function(){var c=b+u,e=C.a(p,u);return a.a?a.a(c,e):a.call(null,c,e)}();null!=v&&s.add(v);u+=1}else break;return Wd(s.ca(),g(b+q,Zb(e)))}q=function(){var c=G(e);return a.a?a.a(b,c):a.call(null,b,c)}();return null==q?g(b+1,H(e)):M(q,g(b+1,H(e)))}return null},null,null)}(0,b)}function b(a){return function(b){return function(c){return function(){function g(g,
-h){var l=c.bb(0,c.Ra(null)+1),l=a.a?a.a(l,h):a.call(null,l,h);return null==l?g:b.a?b.a(g,l):b.call(null,g,l)}function h(a){return b.b?b.b(a):b.call(null,a)}function l(){return b.l?b.l():b.call(null)}var m=null,m=function(a,b){switch(arguments.length){case 0:return l.call(this);case 1:return h.call(this,a);case 2:return g.call(this,a,b)}throw Error("Invalid arity: "+arguments.length);};m.l=l;m.b=h;m.a=g;return m}()}(new Me(-1))}}var c=null,c=function(c,e){switch(arguments.length){case 1:return b.call(this,
-c);case 2:return a.call(this,c,e)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}(),Oe=function(){function a(a,b,c,d){return new V(null,function(){var f=D(b),q=D(c),s=D(d);if(f&&q&&s){var u=M,v;v=G(f);var y=G(q),B=G(s);v=a.c?a.c(v,y,B):a.call(null,v,y,B);f=u(v,e.n(a,H(f),H(q),H(s)))}else f=null;return f},null,null)}function b(a,b,c){return new V(null,function(){var d=D(b),f=D(c);if(d&&f){var q=M,s;s=G(d);var u=G(f);s=a.a?a.a(s,u):a.call(null,s,u);d=q(s,e.c(a,H(d),H(f)))}else d=
-null;return d},null,null)}function c(a,b){return new V(null,function(){var c=D(b);if(c){if(fd(c)){for(var d=Yb(c),f=Q(d),q=Td(f),s=0;;)if(s<f)Xd(q,function(){var b=C.a(d,s);return a.b?a.b(b):a.call(null,b)}()),s+=1;else break;return Wd(q.ca(),e.a(a,Zb(c)))}return M(function(){var b=G(c);return a.b?a.b(b):a.call(null,b)}(),e.a(a,H(c)))}return null},null,null)}function d(a){return function(b){return function(){function c(d,e){var f=a.b?a.b(e):a.call(null,e);return b.a?b.a(d,f):b.call(null,d,f)}function d(a){return b.b?
-b.b(a):b.call(null,a)}function e(){return b.l?b.l():b.call(null)}var f=null,s=function(){function c(a,b,e){var f=null;if(2<arguments.length){for(var f=0,g=Array(arguments.length-2);f<g.length;)g[f]=arguments[f+2],++f;f=new F(g,0)}return d.call(this,a,b,f)}function d(c,e,f){e=T.c(a,e,f);return b.a?b.a(c,e):b.call(null,c,e)}c.i=2;c.f=function(a){var b=G(a);a=K(a);var c=G(a);a=H(a);return d(b,c,a)};c.d=d;return c}(),f=function(a,b,f){switch(arguments.length){case 0:return e.call(this);case 1:return d.call(this,
-a);case 2:return c.call(this,a,b);default:var g=null;if(2<arguments.length){for(var g=0,h=Array(arguments.length-2);g<h.length;)h[g]=arguments[g+2],++g;g=new F(h,0)}return s.d(a,b,g)}throw Error("Invalid arity: "+arguments.length);};f.i=2;f.f=s.f;f.l=e;f.b=d;f.a=c;f.d=s.d;return f}()}}var e=null,f=function(){function a(c,d,e,f,g){var u=null;if(4<arguments.length){for(var u=0,v=Array(arguments.length-4);u<v.length;)v[u]=arguments[u+4],++u;u=new F(v,0)}return b.call(this,c,d,e,f,u)}function b(a,c,d,
-f,g){var h=function y(a){return new V(null,function(){var b=e.a(D,a);return Ee(ud,b)?M(e.a(G,b),y(e.a(H,b))):null},null,null)};return e.a(function(){return function(b){return T.a(a,b)}}(h),h(Nc.d(g,f,Kc([d,c],0))))}a.i=4;a.f=function(a){var c=G(a);a=K(a);var d=G(a);a=K(a);var e=G(a);a=K(a);var f=G(a);a=H(a);return b(c,d,e,f,a)};a.d=b;return a}(),e=function(e,h,l,m,p){switch(arguments.length){case 1:return d.call(this,e);case 2:return c.call(this,e,h);case 3:return b.call(this,e,h,l);case 4:return a.call(this,
-e,h,l,m);default:var q=null;if(4<arguments.length){for(var q=0,s=Array(arguments.length-4);q<s.length;)s[q]=arguments[q+4],++q;q=new F(s,0)}return f.d(e,h,l,m,q)}throw Error("Invalid arity: "+arguments.length);};e.i=4;e.f=f.f;e.b=d;e.a=c;e.c=b;e.n=a;e.d=f.d;return e}(),Pe=function(){function a(a,b){return new V(null,function(){if(0<a){var f=D(b);return f?M(G(f),c.a(a-1,H(f))):null}return null},null,null)}function b(a){return function(b){return function(a){return function(){function c(d,g){var h=qb(a),
-l=a.bb(0,a.Ra(null)-1),h=0<h?b.a?b.a(d,g):b.call(null,d,g):d;return 0<l?h:Ac(h)?h:new yc(h)}function d(a){return b.b?b.b(a):b.call(null,a)}function l(){return b.l?b.l():b.call(null)}var m=null,m=function(a,b){switch(arguments.length){case 0:return l.call(this);case 1:return d.call(this,a);case 2:return c.call(this,a,b)}throw Error("Invalid arity: "+arguments.length);};m.l=l;m.b=d;m.a=c;return m}()}(new Me(a))}}var c=null,c=function(c,e){switch(arguments.length){case 1:return b.call(this,c);case 2:return a.call(this,
-c,e)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}(),Qe=function(){function a(a,b){return new V(null,function(c){return function(){return c(a,b)}}(function(a,b){for(;;){var c=D(b);if(0<a&&c){var d=a-1,c=H(c);a=d;b=c}else return c}}),null,null)}function b(a){return function(b){return function(a){return function(){function c(d,g){var h=qb(a);a.bb(0,a.Ra(null)-1);return 0<h?d:b.a?b.a(d,g):b.call(null,d,g)}function d(a){return b.b?b.b(a):b.call(null,a)}function l(){return b.l?
-b.l():b.call(null)}var m=null,m=function(a,b){switch(arguments.length){case 0:return l.call(this);case 1:return d.call(this,a);case 2:return c.call(this,a,b)}throw Error("Invalid arity: "+arguments.length);};m.l=l;m.b=d;m.a=c;return m}()}(new Me(a))}}var c=null,c=function(c,e){switch(arguments.length){case 1:return b.call(this,c);case 2:return a.call(this,c,e)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}(),Re=function(){function a(a,b){return new V(null,function(c){return function(){return c(a,
-b)}}(function(a,b){for(;;){var c=D(b),d;if(d=c)d=G(c),d=a.b?a.b(d):a.call(null,d);if(t(d))d=a,c=H(c),a=d,b=c;else return c}}),null,null)}function b(a){return function(b){return function(c){return function(){function g(g,h){var l=qb(c);if(t(t(l)?a.b?a.b(h):a.call(null,h):l))return g;ac(c,null);return b.a?b.a(g,h):b.call(null,g,h)}function h(a){return b.b?b.b(a):b.call(null,a)}function l(){return b.l?b.l():b.call(null)}var m=null,m=function(a,b){switch(arguments.length){case 0:return l.call(this);case 1:return h.call(this,
-a);case 2:return g.call(this,a,b)}throw Error("Invalid arity: "+arguments.length);};m.l=l;m.b=h;m.a=g;return m}()}(new Me(!0))}}var c=null,c=function(c,e){switch(arguments.length){case 1:return b.call(this,c);case 2:return a.call(this,c,e)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}(),Se=function(){function a(a,b){return Pe.a(a,c.b(b))}function b(a){return new V(null,function(){return M(a,c.b(a))},null,null)}var c=null,c=function(c,e){switch(arguments.length){case 1:return b.call(this,
-c);case 2:return a.call(this,c,e)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}(),Te=function(){function a(a,b){return Pe.a(a,c.b(b))}function b(a){return new V(null,function(){return M(a.l?a.l():a.call(null),c.b(a))},null,null)}var c=null,c=function(c,e){switch(arguments.length){case 1:return b.call(this,c);case 2:return a.call(this,c,e)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}(),Ue=function(){function a(a,c){return new V(null,function(){var f=
-D(a),g=D(c);return f&&g?M(G(f),M(G(g),b.a(H(f),H(g)))):null},null,null)}var b=null,c=function(){function a(b,d,h){var l=null;if(2<arguments.length){for(var l=0,m=Array(arguments.length-2);l<m.length;)m[l]=arguments[l+2],++l;l=new F(m,0)}return c.call(this,b,d,l)}function c(a,d,e){return new V(null,function(){var c=Oe.a(D,Nc.d(e,d,Kc([a],0)));return Ee(ud,c)?ae.a(Oe.a(G,c),T.a(b,Oe.a(H,c))):null},null,null)}a.i=2;a.f=function(a){var b=G(a);a=K(a);var d=G(a);a=H(a);return c(b,d,a)};a.d=c;return a}(),
-b=function(b,e,f){switch(arguments.length){case 2:return a.call(this,b,e);default:var g=null;if(2<arguments.length){for(var g=0,h=Array(arguments.length-2);g<h.length;)h[g]=arguments[g+2],++g;g=new F(h,0)}return c.d(b,e,g)}throw Error("Invalid arity: "+arguments.length);};b.i=2;b.f=c.f;b.a=a;b.d=c.d;return b}(),We=function(){function a(a){return Ie.a(Oe.b(a),Ve)}var b=null,c=function(){function a(c,d){var h=null;if(1<arguments.length){for(var h=0,l=Array(arguments.length-1);h<l.length;)l[h]=arguments[h+
-1],++h;h=new F(l,0)}return b.call(this,c,h)}function b(a,c){return T.a(ae,T.c(Oe,a,c))}a.i=1;a.f=function(a){var c=G(a);a=H(a);return b(c,a)};a.d=b;return a}(),b=function(b,e){switch(arguments.length){case 1:return a.call(this,b);default:var f=null;if(1<arguments.length){for(var f=0,g=Array(arguments.length-1);f<g.length;)g[f]=arguments[f+1],++f;f=new F(g,0)}return c.d(b,f)}throw Error("Invalid arity: "+arguments.length);};b.i=1;b.f=c.f;b.b=a;b.d=c.d;return b}(),Xe=function(){function a(a,b){return new V(null,
-function(){var f=D(b);if(f){if(fd(f)){for(var g=Yb(f),h=Q(g),l=Td(h),m=0;;)if(m<h){var p;p=C.a(g,m);p=a.b?a.b(p):a.call(null,p);t(p)&&(p=C.a(g,m),l.add(p));m+=1}else break;return Wd(l.ca(),c.a(a,Zb(f)))}g=G(f);f=H(f);return t(a.b?a.b(g):a.call(null,g))?M(g,c.a(a,f)):c.a(a,f)}return null},null,null)}function b(a){return function(b){return function(){function c(f,g){return t(a.b?a.b(g):a.call(null,g))?b.a?b.a(f,g):b.call(null,f,g):f}function g(a){return b.b?b.b(a):b.call(null,a)}function h(){return b.l?
-b.l():b.call(null)}var l=null,l=function(a,b){switch(arguments.length){case 0:return h.call(this);case 1:return g.call(this,a);case 2:return c.call(this,a,b)}throw Error("Invalid arity: "+arguments.length);};l.l=h;l.b=g;l.a=c;return l}()}}var c=null,c=function(c,e){switch(arguments.length){case 1:return b.call(this,c);case 2:return a.call(this,c,e)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}(),Ye=function(){function a(a,b){return Xe.a(He(a),b)}function b(a){return Xe.b(He(a))}
-var c=null,c=function(c,e){switch(arguments.length){case 1:return b.call(this,c);case 2:return a.call(this,c,e)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}();function Ze(a){var b=$e;return function d(a){return new V(null,function(){return M(a,t(b.b?b.b(a):b.call(null,a))?We.d(d,Kc([D.b?D.b(a):D.call(null,a)],0)):null)},null,null)}(a)}
-var af=function(){function a(a,b,c){return a&&(a.q&4||a.dc)?O(ce(wd.n(b,de,Ob(a),c)),Vc(a)):wd.n(b,Nc,a,c)}function b(a,b){return null!=a?a&&(a.q&4||a.dc)?O(ce(A.c(Pb,Ob(a),b)),Vc(a)):A.c(Ra,a,b):A.c(Nc,J,b)}var c=null,c=function(c,e,f){switch(arguments.length){case 2:return b.call(this,c,e);case 3:return a.call(this,c,e,f)}throw Error("Invalid arity: "+arguments.length);};c.a=b;c.c=a;return c}(),bf=function(){function a(a,b,c,h){return new V(null,function(){var l=D(h);if(l){var m=Pe.a(a,l);return a===
-Q(m)?M(m,d.n(a,b,c,Qe.a(b,l))):Ra(J,Pe.a(a,ae.a(m,c)))}return null},null,null)}function b(a,b,c){return new V(null,function(){var h=D(c);if(h){var l=Pe.a(a,h);return a===Q(l)?M(l,d.c(a,b,Qe.a(b,h))):null}return null},null,null)}function c(a,b){return d.c(a,a,b)}var d=null,d=function(d,f,g,h){switch(arguments.length){case 2:return c.call(this,d,f);case 3:return b.call(this,d,f,g);case 4:return a.call(this,d,f,g,h)}throw Error("Invalid arity: "+arguments.length);};d.a=c;d.c=b;d.n=a;return d}(),cf=function(){function a(a,
-b,c){var g=jd;for(b=D(b);;)if(b){var h=a;if(h?h.j&256||h.Rb||(h.j?0:w(Za,h)):w(Za,h)){a=S.c(a,G(b),g);if(g===a)return c;b=K(b)}else return c}else return a}function b(a,b){return c.c(a,b,null)}var c=null,c=function(c,e,f){switch(arguments.length){case 2:return b.call(this,c,e);case 3:return a.call(this,c,e,f)}throw Error("Invalid arity: "+arguments.length);};c.a=b;c.c=a;return c}(),df=function(){function a(a,b,c,d,f,q){var s=R.c(b,0,null);return(b=Ed(b))?Rc.c(a,s,e.P(S.a(a,s),b,c,d,f,q)):Rc.c(a,s,
-function(){var b=S.a(a,s);return c.n?c.n(b,d,f,q):c.call(null,b,d,f,q)}())}function b(a,b,c,d,f){var q=R.c(b,0,null);return(b=Ed(b))?Rc.c(a,q,e.r(S.a(a,q),b,c,d,f)):Rc.c(a,q,function(){var b=S.a(a,q);return c.c?c.c(b,d,f):c.call(null,b,d,f)}())}function c(a,b,c,d){var f=R.c(b,0,null);return(b=Ed(b))?Rc.c(a,f,e.n(S.a(a,f),b,c,d)):Rc.c(a,f,function(){var b=S.a(a,f);return c.a?c.a(b,d):c.call(null,b,d)}())}function d(a,b,c){var d=R.c(b,0,null);return(b=Ed(b))?Rc.c(a,d,e.c(S.a(a,d),b,c)):Rc.c(a,d,function(){var b=
-S.a(a,d);return c.b?c.b(b):c.call(null,b)}())}var e=null,f=function(){function a(c,d,e,f,g,u,v){var y=null;if(6<arguments.length){for(var y=0,B=Array(arguments.length-6);y<B.length;)B[y]=arguments[y+6],++y;y=new F(B,0)}return b.call(this,c,d,e,f,g,u,y)}function b(a,c,d,f,g,h,v){var y=R.c(c,0,null);return(c=Ed(c))?Rc.c(a,y,T.d(e,S.a(a,y),c,d,f,Kc([g,h,v],0))):Rc.c(a,y,T.d(d,S.a(a,y),f,g,h,Kc([v],0)))}a.i=6;a.f=function(a){var c=G(a);a=K(a);var d=G(a);a=K(a);var e=G(a);a=K(a);var f=G(a);a=K(a);var g=
-G(a);a=K(a);var v=G(a);a=H(a);return b(c,d,e,f,g,v,a)};a.d=b;return a}(),e=function(e,h,l,m,p,q,s){switch(arguments.length){case 3:return d.call(this,e,h,l);case 4:return c.call(this,e,h,l,m);case 5:return b.call(this,e,h,l,m,p);case 6:return a.call(this,e,h,l,m,p,q);default:var u=null;if(6<arguments.length){for(var u=0,v=Array(arguments.length-6);u<v.length;)v[u]=arguments[u+6],++u;u=new F(v,0)}return f.d(e,h,l,m,p,q,u)}throw Error("Invalid arity: "+arguments.length);};e.i=6;e.f=f.f;e.c=d;e.n=c;
-e.r=b;e.P=a;e.d=f.d;return e}();function ef(a,b){this.u=a;this.e=b}function ff(a){return new ef(a,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null])}function gf(a){return new ef(a.u,Fa(a.e))}function hf(a){a=a.g;return 32>a?0:a-1>>>5<<5}function jf(a,b,c){for(;;){if(0===b)return c;var d=ff(a);d.e[0]=c;c=d;b-=5}}
-var lf=function kf(b,c,d,e){var f=gf(d),g=b.g-1>>>c&31;5===c?f.e[g]=e:(d=d.e[g],b=null!=d?kf(b,c-5,d,e):jf(null,c-5,e),f.e[g]=b);return f};function mf(a,b){throw Error([z("No item "),z(a),z(" in vector of length "),z(b)].join(""));}function nf(a,b){if(b>=hf(a))return a.W;for(var c=a.root,d=a.shift;;)if(0<d)var e=d-5,c=c.e[b>>>d&31],d=e;else return c.e}function of(a,b){return 0<=b&&b<a.g?nf(a,b):mf(b,a.g)}
-var qf=function pf(b,c,d,e,f){var g=gf(d);if(0===c)g.e[e&31]=f;else{var h=e>>>c&31;b=pf(b,c-5,d.e[h],e,f);g.e[h]=b}return g},sf=function rf(b,c,d){var e=b.g-2>>>c&31;if(5<c){b=rf(b,c-5,d.e[e]);if(null==b&&0===e)return null;d=gf(d);d.e[e]=b;return d}if(0===e)return null;d=gf(d);d.e[e]=null;return d};function tf(a,b,c,d,e,f){this.m=a;this.zb=b;this.e=c;this.oa=d;this.start=e;this.end=f}tf.prototype.ga=function(){return this.m<this.end};
-tf.prototype.next=function(){32===this.m-this.zb&&(this.e=nf(this.oa,this.m),this.zb+=32);var a=this.e[this.m&31];this.m+=1;return a};function W(a,b,c,d,e,f){this.k=a;this.g=b;this.shift=c;this.root=d;this.W=e;this.p=f;this.j=167668511;this.q=8196}k=W.prototype;k.toString=function(){return ec(this)};k.t=function(a,b){return $a.c(this,b,null)};k.s=function(a,b,c){return"number"===typeof b?C.c(this,b,c):c};
-k.gb=function(a,b,c){a=0;for(var d=c;;)if(a<this.g){var e=nf(this,a);c=e.length;a:{for(var f=0;;)if(f<c){var g=f+a,h=e[f],d=b.c?b.c(d,g,h):b.call(null,d,g,h);if(Ac(d)){e=d;break a}f+=1}else{e=d;break a}e=void 0}if(Ac(e))return b=e,L.b?L.b(b):L.call(null,b);a+=c;d=e}else return d};k.Q=function(a,b){return of(this,b)[b&31]};k.$=function(a,b,c){return 0<=b&&b<this.g?nf(this,b)[b&31]:c};
-k.Ua=function(a,b,c){if(0<=b&&b<this.g)return hf(this)<=b?(a=Fa(this.W),a[b&31]=c,new W(this.k,this.g,this.shift,this.root,a,null)):new W(this.k,this.g,this.shift,qf(this,this.shift,this.root,b,c),this.W,null);if(b===this.g)return Ra(this,c);throw Error([z("Index "),z(b),z(" out of bounds  [0,"),z(this.g),z("]")].join(""));};k.vb=!0;k.fb=function(){var a=this.g;return new tf(0,0,0<Q(this)?nf(this,0):null,this,0,a)};k.H=function(){return this.k};k.L=function(){return this.g};
-k.hb=function(){return C.a(this,0)};k.ib=function(){return C.a(this,1)};k.La=function(){return 0<this.g?C.a(this,this.g-1):null};
-k.Ma=function(){if(0===this.g)throw Error("Can't pop empty vector");if(1===this.g)return ub(Mc,this.k);if(1<this.g-hf(this))return new W(this.k,this.g-1,this.shift,this.root,this.W.slice(0,-1),null);var a=nf(this,this.g-2),b=sf(this,this.shift,this.root),b=null==b?uf:b,c=this.g-1;return 5<this.shift&&null==b.e[1]?new W(this.k,c,this.shift-5,b.e[0],a,null):new W(this.k,c,this.shift,b,a,null)};k.ab=function(){return 0<this.g?new Hc(this,this.g-1,null):null};
-k.B=function(){var a=this.p;return null!=a?a:this.p=a=wc(this)};k.A=function(a,b){if(b instanceof W)if(this.g===Q(b))for(var c=cc(this),d=cc(b);;)if(t(c.ga())){var e=c.next(),f=d.next();if(!sc.a(e,f))return!1}else return!0;else return!1;else return Ic(this,b)};k.$a=function(){var a=this;return new vf(a.g,a.shift,function(){var b=a.root;return wf.b?wf.b(b):wf.call(null,b)}(),function(){var b=a.W;return xf.b?xf.b(b):xf.call(null,b)}())};k.J=function(){return O(Mc,this.k)};
-k.R=function(a,b){return Cc.a(this,b)};k.O=function(a,b,c){a=0;for(var d=c;;)if(a<this.g){var e=nf(this,a);c=e.length;a:{for(var f=0;;)if(f<c){var g=e[f],d=b.a?b.a(d,g):b.call(null,d,g);if(Ac(d)){e=d;break a}f+=1}else{e=d;break a}e=void 0}if(Ac(e))return b=e,L.b?L.b(b):L.call(null,b);a+=c;d=e}else return d};k.Ka=function(a,b,c){if("number"===typeof b)return pb(this,b,c);throw Error("Vector's key for assoc must be a number.");};
-k.D=function(){if(0===this.g)return null;if(32>=this.g)return new F(this.W,0);var a;a:{a=this.root;for(var b=this.shift;;)if(0<b)b-=5,a=a.e[0];else{a=a.e;break a}a=void 0}return yf.n?yf.n(this,a,0,0):yf.call(null,this,a,0,0)};k.F=function(a,b){return new W(b,this.g,this.shift,this.root,this.W,this.p)};
-k.G=function(a,b){if(32>this.g-hf(this)){for(var c=this.W.length,d=Array(c+1),e=0;;)if(e<c)d[e]=this.W[e],e+=1;else break;d[c]=b;return new W(this.k,this.g+1,this.shift,this.root,d,null)}c=(d=this.g>>>5>1<<this.shift)?this.shift+5:this.shift;d?(d=ff(null),d.e[0]=this.root,e=jf(null,this.shift,new ef(null,this.W)),d.e[1]=e):d=lf(this,this.shift,this.root,new ef(null,this.W));return new W(this.k,this.g+1,c,d,[b],null)};
-k.call=function(){var a=null,a=function(a,c,d){switch(arguments.length){case 2:return this.Q(null,c);case 3:return this.$(null,c,d)}throw Error("Invalid arity: "+arguments.length);};a.a=function(a,c){return this.Q(null,c)};a.c=function(a,c,d){return this.$(null,c,d)};return a}();k.apply=function(a,b){return this.call.apply(this,[this].concat(Fa(b)))};k.b=function(a){return this.Q(null,a)};k.a=function(a,b){return this.$(null,a,b)};
-var uf=new ef(null,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]),Mc=new W(null,0,5,uf,[],0);W.prototype[Ea]=function(){return uc(this)};function zf(a){return Qb(A.c(Pb,Ob(Mc),a))}
-var Af=function(){function a(a){var d=null;if(0<arguments.length){for(var d=0,e=Array(arguments.length-0);d<e.length;)e[d]=arguments[d+0],++d;d=new F(e,0)}return b.call(this,d)}function b(a){if(a instanceof F&&0===a.m)a:{a=a.e;var b=a.length;if(32>b)a=new W(null,b,5,uf,a,null);else{for(var e=32,f=(new W(null,32,5,uf,a.slice(0,32),null)).$a(null);;)if(e<b)var g=e+1,f=de.a(f,a[e]),e=g;else{a=Qb(f);break a}a=void 0}}else a=zf(a);return a}a.i=0;a.f=function(a){a=D(a);return b(a)};a.d=b;return a}();
-function Bf(a,b,c,d,e,f){this.ha=a;this.Ja=b;this.m=c;this.V=d;this.k=e;this.p=f;this.j=32375020;this.q=1536}k=Bf.prototype;k.toString=function(){return ec(this)};k.H=function(){return this.k};k.T=function(){if(this.V+1<this.Ja.length){var a;a=this.ha;var b=this.Ja,c=this.m,d=this.V+1;a=yf.n?yf.n(a,b,c,d):yf.call(null,a,b,c,d);return null==a?null:a}return $b(this)};k.B=function(){var a=this.p;return null!=a?a:this.p=a=wc(this)};k.A=function(a,b){return Ic(this,b)};k.J=function(){return O(Mc,this.k)};
-k.R=function(a,b){var c=this;return Cc.a(function(){var a=c.ha,b=c.m+c.V,f=Q(c.ha);return Cf.c?Cf.c(a,b,f):Cf.call(null,a,b,f)}(),b)};k.O=function(a,b,c){var d=this;return Cc.c(function(){var a=d.ha,b=d.m+d.V,c=Q(d.ha);return Cf.c?Cf.c(a,b,c):Cf.call(null,a,b,c)}(),b,c)};k.N=function(){return this.Ja[this.V]};k.S=function(){if(this.V+1<this.Ja.length){var a;a=this.ha;var b=this.Ja,c=this.m,d=this.V+1;a=yf.n?yf.n(a,b,c,d):yf.call(null,a,b,c,d);return null==a?J:a}return Zb(this)};k.D=function(){return this};
-k.Cb=function(){return Ud.a(this.Ja,this.V)};k.Db=function(){var a=this.m+this.Ja.length;if(a<Ma(this.ha)){var b=this.ha,c=nf(this.ha,a);return yf.n?yf.n(b,c,a,0):yf.call(null,b,c,a,0)}return J};k.F=function(a,b){var c=this.ha,d=this.Ja,e=this.m,f=this.V;return yf.r?yf.r(c,d,e,f,b):yf.call(null,c,d,e,f,b)};k.G=function(a,b){return M(b,this)};k.Bb=function(){var a=this.m+this.Ja.length;if(a<Ma(this.ha)){var b=this.ha,c=nf(this.ha,a);return yf.n?yf.n(b,c,a,0):yf.call(null,b,c,a,0)}return null};
-Bf.prototype[Ea]=function(){return uc(this)};var yf=function(){function a(a,b,c,d,l){return new Bf(a,b,c,d,l,null)}function b(a,b,c,d){return new Bf(a,b,c,d,null,null)}function c(a,b,c){return new Bf(a,of(a,b),b,c,null,null)}var d=null,d=function(d,f,g,h,l){switch(arguments.length){case 3:return c.call(this,d,f,g);case 4:return b.call(this,d,f,g,h);case 5:return a.call(this,d,f,g,h,l)}throw Error("Invalid arity: "+arguments.length);};d.c=c;d.n=b;d.r=a;return d}();
-function Df(a,b,c,d,e){this.k=a;this.oa=b;this.start=c;this.end=d;this.p=e;this.j=166617887;this.q=8192}k=Df.prototype;k.toString=function(){return ec(this)};k.t=function(a,b){return $a.c(this,b,null)};k.s=function(a,b,c){return"number"===typeof b?C.c(this,b,c):c};k.Q=function(a,b){return 0>b||this.end<=this.start+b?mf(b,this.end-this.start):C.a(this.oa,this.start+b)};k.$=function(a,b,c){return 0>b||this.end<=this.start+b?c:C.c(this.oa,this.start+b,c)};
-k.Ua=function(a,b,c){var d=this.start+b;a=this.k;c=Rc.c(this.oa,d,c);b=this.start;var e=this.end,d=d+1,d=e>d?e:d;return Ef.r?Ef.r(a,c,b,d,null):Ef.call(null,a,c,b,d,null)};k.H=function(){return this.k};k.L=function(){return this.end-this.start};k.La=function(){return C.a(this.oa,this.end-1)};k.Ma=function(){if(this.start===this.end)throw Error("Can't pop empty vector");var a=this.k,b=this.oa,c=this.start,d=this.end-1;return Ef.r?Ef.r(a,b,c,d,null):Ef.call(null,a,b,c,d,null)};
-k.ab=function(){return this.start!==this.end?new Hc(this,this.end-this.start-1,null):null};k.B=function(){var a=this.p;return null!=a?a:this.p=a=wc(this)};k.A=function(a,b){return Ic(this,b)};k.J=function(){return O(Mc,this.k)};k.R=function(a,b){return Cc.a(this,b)};k.O=function(a,b,c){return Cc.c(this,b,c)};k.Ka=function(a,b,c){if("number"===typeof b)return pb(this,b,c);throw Error("Subvec's key for assoc must be a number.");};
-k.D=function(){var a=this;return function(b){return function d(e){return e===a.end?null:M(C.a(a.oa,e),new V(null,function(){return function(){return d(e+1)}}(b),null,null))}}(this)(a.start)};k.F=function(a,b){var c=this.oa,d=this.start,e=this.end,f=this.p;return Ef.r?Ef.r(b,c,d,e,f):Ef.call(null,b,c,d,e,f)};k.G=function(a,b){var c=this.k,d=pb(this.oa,this.end,b),e=this.start,f=this.end+1;return Ef.r?Ef.r(c,d,e,f,null):Ef.call(null,c,d,e,f,null)};
-k.call=function(){var a=null,a=function(a,c,d){switch(arguments.length){case 2:return this.Q(null,c);case 3:return this.$(null,c,d)}throw Error("Invalid arity: "+arguments.length);};a.a=function(a,c){return this.Q(null,c)};a.c=function(a,c,d){return this.$(null,c,d)};return a}();k.apply=function(a,b){return this.call.apply(this,[this].concat(Fa(b)))};k.b=function(a){return this.Q(null,a)};k.a=function(a,b){return this.$(null,a,b)};Df.prototype[Ea]=function(){return uc(this)};
-function Ef(a,b,c,d,e){for(;;)if(b instanceof Df)c=b.start+c,d=b.start+d,b=b.oa;else{var f=Q(b);if(0>c||0>d||c>f||d>f)throw Error("Index out of bounds");return new Df(a,b,c,d,e)}}var Cf=function(){function a(a,b,c){return Ef(null,a,b,c,null)}function b(a,b){return c.c(a,b,Q(a))}var c=null,c=function(c,e,f){switch(arguments.length){case 2:return b.call(this,c,e);case 3:return a.call(this,c,e,f)}throw Error("Invalid arity: "+arguments.length);};c.a=b;c.c=a;return c}();
-function Ff(a,b){return a===b.u?b:new ef(a,Fa(b.e))}function wf(a){return new ef({},Fa(a.e))}function xf(a){var b=[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];hd(a,0,b,0,a.length);return b}
-var Hf=function Gf(b,c,d,e){d=Ff(b.root.u,d);var f=b.g-1>>>c&31;if(5===c)b=e;else{var g=d.e[f];b=null!=g?Gf(b,c-5,g,e):jf(b.root.u,c-5,e)}d.e[f]=b;return d},Jf=function If(b,c,d){d=Ff(b.root.u,d);var e=b.g-2>>>c&31;if(5<c){b=If(b,c-5,d.e[e]);if(null==b&&0===e)return null;d.e[e]=b;return d}if(0===e)return null;d.e[e]=null;return d};function vf(a,b,c,d){this.g=a;this.shift=b;this.root=c;this.W=d;this.j=275;this.q=88}k=vf.prototype;
-k.call=function(){var a=null,a=function(a,c,d){switch(arguments.length){case 2:return this.t(null,c);case 3:return this.s(null,c,d)}throw Error("Invalid arity: "+arguments.length);};a.a=function(a,c){return this.t(null,c)};a.c=function(a,c,d){return this.s(null,c,d)};return a}();k.apply=function(a,b){return this.call.apply(this,[this].concat(Fa(b)))};k.b=function(a){return this.t(null,a)};k.a=function(a,b){return this.s(null,a,b)};k.t=function(a,b){return $a.c(this,b,null)};
-k.s=function(a,b,c){return"number"===typeof b?C.c(this,b,c):c};k.Q=function(a,b){if(this.root.u)return of(this,b)[b&31];throw Error("nth after persistent!");};k.$=function(a,b,c){return 0<=b&&b<this.g?C.a(this,b):c};k.L=function(){if(this.root.u)return this.g;throw Error("count after persistent!");};
-k.Ub=function(a,b,c){var d=this;if(d.root.u){if(0<=b&&b<d.g)return hf(this)<=b?d.W[b&31]=c:(a=function(){return function f(a,h){var l=Ff(d.root.u,h);if(0===a)l.e[b&31]=c;else{var m=b>>>a&31,p=f(a-5,l.e[m]);l.e[m]=p}return l}}(this).call(null,d.shift,d.root),d.root=a),this;if(b===d.g)return Pb(this,c);throw Error([z("Index "),z(b),z(" out of bounds for TransientVector of length"),z(d.g)].join(""));}throw Error("assoc! after persistent!");};
-k.Vb=function(){if(this.root.u){if(0===this.g)throw Error("Can't pop empty vector");if(1===this.g)this.g=0;else if(0<(this.g-1&31))this.g-=1;else{var a;a:if(a=this.g-2,a>=hf(this))a=this.W;else{for(var b=this.root,c=b,d=this.shift;;)if(0<d)c=Ff(b.u,c.e[a>>>d&31]),d-=5;else{a=c.e;break a}a=void 0}b=Jf(this,this.shift,this.root);b=null!=b?b:new ef(this.root.u,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
-null,null,null,null]);5<this.shift&&null==b.e[1]?(this.root=Ff(this.root.u,b.e[0]),this.shift-=5):this.root=b;this.g-=1;this.W=a}return this}throw Error("pop! after persistent!");};k.kb=function(a,b,c){if("number"===typeof b)return Tb(this,b,c);throw Error("TransientVector's key for assoc! must be a number.");};
-k.Sa=function(a,b){if(this.root.u){if(32>this.g-hf(this))this.W[this.g&31]=b;else{var c=new ef(this.root.u,this.W),d=[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];d[0]=b;this.W=d;if(this.g>>>5>1<<this.shift){var d=[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],e=this.shift+
-5;d[0]=this.root;d[1]=jf(this.root.u,this.shift,c);this.root=new ef(this.root.u,d);this.shift=e}else this.root=Hf(this,this.shift,this.root,c)}this.g+=1;return this}throw Error("conj! after persistent!");};k.Ta=function(){if(this.root.u){this.root.u=null;var a=this.g-hf(this),b=Array(a);hd(this.W,0,b,0,a);return new W(null,this.g,this.shift,this.root,b,null)}throw Error("persistent! called twice");};function Kf(a,b,c,d){this.k=a;this.ea=b;this.sa=c;this.p=d;this.q=0;this.j=31850572}k=Kf.prototype;
-k.toString=function(){return ec(this)};k.H=function(){return this.k};k.B=function(){var a=this.p;return null!=a?a:this.p=a=wc(this)};k.A=function(a,b){return Ic(this,b)};k.J=function(){return O(J,this.k)};k.N=function(){return G(this.ea)};k.S=function(){var a=K(this.ea);return a?new Kf(this.k,a,this.sa,null):null==this.sa?Na(this):new Kf(this.k,this.sa,null,null)};k.D=function(){return this};k.F=function(a,b){return new Kf(b,this.ea,this.sa,this.p)};k.G=function(a,b){return M(b,this)};
-Kf.prototype[Ea]=function(){return uc(this)};function Lf(a,b,c,d,e){this.k=a;this.count=b;this.ea=c;this.sa=d;this.p=e;this.j=31858766;this.q=8192}k=Lf.prototype;k.toString=function(){return ec(this)};k.H=function(){return this.k};k.L=function(){return this.count};k.La=function(){return G(this.ea)};k.Ma=function(){if(t(this.ea)){var a=K(this.ea);return a?new Lf(this.k,this.count-1,a,this.sa,null):new Lf(this.k,this.count-1,D(this.sa),Mc,null)}return this};
-k.B=function(){var a=this.p;return null!=a?a:this.p=a=wc(this)};k.A=function(a,b){return Ic(this,b)};k.J=function(){return O(Mf,this.k)};k.N=function(){return G(this.ea)};k.S=function(){return H(D(this))};k.D=function(){var a=D(this.sa),b=this.ea;return t(t(b)?b:a)?new Kf(null,this.ea,D(a),null):null};k.F=function(a,b){return new Lf(b,this.count,this.ea,this.sa,this.p)};
-k.G=function(a,b){var c;t(this.ea)?(c=this.sa,c=new Lf(this.k,this.count+1,this.ea,Nc.a(t(c)?c:Mc,b),null)):c=new Lf(this.k,this.count+1,Nc.a(this.ea,b),Mc,null);return c};var Mf=new Lf(null,0,null,Mc,0);Lf.prototype[Ea]=function(){return uc(this)};function Nf(){this.q=0;this.j=2097152}Nf.prototype.A=function(){return!1};var Of=new Nf;function Pf(a,b){return md(dd(b)?Q(a)===Q(b)?Ee(ud,Oe.a(function(a){return sc.a(S.c(b,G(a),Of),Lc(a))},a)):null:null)}
-function Qf(a,b){var c=a.e;if(b instanceof U)a:{for(var d=c.length,e=b.pa,f=0;;){if(d<=f){c=-1;break a}var g=c[f];if(g instanceof U&&e===g.pa){c=f;break a}f+=2}c=void 0}else if(d="string"==typeof b,t(t(d)?d:"number"===typeof b))a:{d=c.length;for(e=0;;){if(d<=e){c=-1;break a}if(b===c[e]){c=e;break a}e+=2}c=void 0}else if(b instanceof qc)a:{d=c.length;e=b.ta;for(f=0;;){if(d<=f){c=-1;break a}g=c[f];if(g instanceof qc&&e===g.ta){c=f;break a}f+=2}c=void 0}else if(null==b)a:{d=c.length;for(e=0;;){if(d<=
-e){c=-1;break a}if(null==c[e]){c=e;break a}e+=2}c=void 0}else a:{d=c.length;for(e=0;;){if(d<=e){c=-1;break a}if(sc.a(b,c[e])){c=e;break a}e+=2}c=void 0}return c}function Rf(a,b,c){this.e=a;this.m=b;this.Z=c;this.q=0;this.j=32374990}k=Rf.prototype;k.toString=function(){return ec(this)};k.H=function(){return this.Z};k.T=function(){return this.m<this.e.length-2?new Rf(this.e,this.m+2,this.Z):null};k.L=function(){return(this.e.length-this.m)/2};k.B=function(){return wc(this)};
-k.A=function(a,b){return Ic(this,b)};k.J=function(){return O(J,this.Z)};k.R=function(a,b){return P.a(b,this)};k.O=function(a,b,c){return P.c(b,c,this)};k.N=function(){return new W(null,2,5,uf,[this.e[this.m],this.e[this.m+1]],null)};k.S=function(){return this.m<this.e.length-2?new Rf(this.e,this.m+2,this.Z):J};k.D=function(){return this};k.F=function(a,b){return new Rf(this.e,this.m,b)};k.G=function(a,b){return M(b,this)};Rf.prototype[Ea]=function(){return uc(this)};
-function Sf(a,b,c){this.e=a;this.m=b;this.g=c}Sf.prototype.ga=function(){return this.m<this.g};Sf.prototype.next=function(){var a=new W(null,2,5,uf,[this.e[this.m],this.e[this.m+1]],null);this.m+=2;return a};function pa(a,b,c,d){this.k=a;this.g=b;this.e=c;this.p=d;this.j=16647951;this.q=8196}k=pa.prototype;k.toString=function(){return ec(this)};k.t=function(a,b){return $a.c(this,b,null)};k.s=function(a,b,c){a=Qf(this,b);return-1===a?c:this.e[a+1]};
-k.gb=function(a,b,c){a=this.e.length;for(var d=0;;)if(d<a){var e=this.e[d],f=this.e[d+1];c=b.c?b.c(c,e,f):b.call(null,c,e,f);if(Ac(c))return b=c,L.b?L.b(b):L.call(null,b);d+=2}else return c};k.vb=!0;k.fb=function(){return new Sf(this.e,0,2*this.g)};k.H=function(){return this.k};k.L=function(){return this.g};k.B=function(){var a=this.p;return null!=a?a:this.p=a=xc(this)};
-k.A=function(a,b){if(b&&(b.j&1024||b.ic)){var c=this.e.length;if(this.g===b.L(null))for(var d=0;;)if(d<c){var e=b.s(null,this.e[d],jd);if(e!==jd)if(sc.a(this.e[d+1],e))d+=2;else return!1;else return!1}else return!0;else return!1}else return Pf(this,b)};k.$a=function(){return new Tf({},this.e.length,Fa(this.e))};k.J=function(){return ub(Uf,this.k)};k.R=function(a,b){return P.a(b,this)};k.O=function(a,b,c){return P.c(b,c,this)};
-k.wb=function(a,b){if(0<=Qf(this,b)){var c=this.e.length,d=c-2;if(0===d)return Na(this);for(var d=Array(d),e=0,f=0;;){if(e>=c)return new pa(this.k,this.g-1,d,null);sc.a(b,this.e[e])||(d[f]=this.e[e],d[f+1]=this.e[e+1],f+=2);e+=2}}else return this};
-k.Ka=function(a,b,c){a=Qf(this,b);if(-1===a){if(this.g<Vf){a=this.e;for(var d=a.length,e=Array(d+2),f=0;;)if(f<d)e[f]=a[f],f+=1;else break;e[d]=b;e[d+1]=c;return new pa(this.k,this.g+1,e,null)}return ub(cb(af.a(Qc,this),b,c),this.k)}if(c===this.e[a+1])return this;b=Fa(this.e);b[a+1]=c;return new pa(this.k,this.g,b,null)};k.rb=function(a,b){return-1!==Qf(this,b)};k.D=function(){var a=this.e;return 0<=a.length-2?new Rf(a,0,null):null};k.F=function(a,b){return new pa(b,this.g,this.e,this.p)};
-k.G=function(a,b){if(ed(b))return cb(this,C.a(b,0),C.a(b,1));for(var c=this,d=D(b);;){if(null==d)return c;var e=G(d);if(ed(e))c=cb(c,C.a(e,0),C.a(e,1)),d=K(d);else throw Error("conj on a map takes map entries or seqables of map entries");}};
-k.call=function(){var a=null,a=function(a,c,d){switch(arguments.length){case 2:return this.t(null,c);case 3:return this.s(null,c,d)}throw Error("Invalid arity: "+arguments.length);};a.a=function(a,c){return this.t(null,c)};a.c=function(a,c,d){return this.s(null,c,d)};return a}();k.apply=function(a,b){return this.call.apply(this,[this].concat(Fa(b)))};k.b=function(a){return this.t(null,a)};k.a=function(a,b){return this.s(null,a,b)};var Uf=new pa(null,0,[],null),Vf=8;pa.prototype[Ea]=function(){return uc(this)};
-function Tf(a,b,c){this.Va=a;this.qa=b;this.e=c;this.q=56;this.j=258}k=Tf.prototype;k.Jb=function(a,b){if(t(this.Va)){var c=Qf(this,b);0<=c&&(this.e[c]=this.e[this.qa-2],this.e[c+1]=this.e[this.qa-1],c=this.e,c.pop(),c.pop(),this.qa-=2);return this}throw Error("dissoc! after persistent!");};
-k.kb=function(a,b,c){var d=this;if(t(d.Va)){a=Qf(this,b);if(-1===a)return d.qa+2<=2*Vf?(d.qa+=2,d.e.push(b),d.e.push(c),this):ee.c(function(){var a=d.qa,b=d.e;return Xf.a?Xf.a(a,b):Xf.call(null,a,b)}(),b,c);c!==d.e[a+1]&&(d.e[a+1]=c);return this}throw Error("assoc! after persistent!");};
-k.Sa=function(a,b){if(t(this.Va)){if(b?b.j&2048||b.jc||(b.j?0:w(fb,b)):w(fb,b))return Rb(this,Yf.b?Yf.b(b):Yf.call(null,b),Zf.b?Zf.b(b):Zf.call(null,b));for(var c=D(b),d=this;;){var e=G(c);if(t(e))var f=e,c=K(c),d=Rb(d,function(){var a=f;return Yf.b?Yf.b(a):Yf.call(null,a)}(),function(){var a=f;return Zf.b?Zf.b(a):Zf.call(null,a)}());else return d}}else throw Error("conj! after persistent!");};
-k.Ta=function(){if(t(this.Va))return this.Va=!1,new pa(null,Cd(this.qa,2),this.e,null);throw Error("persistent! called twice");};k.t=function(a,b){return $a.c(this,b,null)};k.s=function(a,b,c){if(t(this.Va))return a=Qf(this,b),-1===a?c:this.e[a+1];throw Error("lookup after persistent!");};k.L=function(){if(t(this.Va))return Cd(this.qa,2);throw Error("count after persistent!");};function Xf(a,b){for(var c=Ob(Qc),d=0;;)if(d<a)c=ee.c(c,b[d],b[d+1]),d+=2;else return c}function $f(){this.o=!1}
-function ag(a,b){return a===b?!0:Nd(a,b)?!0:sc.a(a,b)}var bg=function(){function a(a,b,c,g,h){a=Fa(a);a[b]=c;a[g]=h;return a}function b(a,b,c){a=Fa(a);a[b]=c;return a}var c=null,c=function(c,e,f,g,h){switch(arguments.length){case 3:return b.call(this,c,e,f);case 5:return a.call(this,c,e,f,g,h)}throw Error("Invalid arity: "+arguments.length);};c.c=b;c.r=a;return c}();function cg(a,b){var c=Array(a.length-2);hd(a,0,c,0,2*b);hd(a,2*(b+1),c,2*b,c.length-2*b);return c}
-var dg=function(){function a(a,b,c,g,h,l){a=a.Na(b);a.e[c]=g;a.e[h]=l;return a}function b(a,b,c,g){a=a.Na(b);a.e[c]=g;return a}var c=null,c=function(c,e,f,g,h,l){switch(arguments.length){case 4:return b.call(this,c,e,f,g);case 6:return a.call(this,c,e,f,g,h,l)}throw Error("Invalid arity: "+arguments.length);};c.n=b;c.P=a;return c}();
-function eg(a,b,c){for(var d=a.length,e=0,f=c;;)if(e<d){c=a[e];if(null!=c){var g=a[e+1];c=b.c?b.c(f,c,g):b.call(null,f,c,g)}else c=a[e+1],c=null!=c?c.Xa(b,f):f;if(Ac(c))return a=c,L.b?L.b(a):L.call(null,a);e+=2;f=c}else return f}function fg(a,b,c){this.u=a;this.w=b;this.e=c}k=fg.prototype;k.Na=function(a){if(a===this.u)return this;var b=Dd(this.w),c=Array(0>b?4:2*(b+1));hd(this.e,0,c,0,2*b);return new fg(a,this.w,c)};
-k.nb=function(a,b,c,d,e){var f=1<<(c>>>b&31);if(0===(this.w&f))return this;var g=Dd(this.w&f-1),h=this.e[2*g],l=this.e[2*g+1];return null==h?(b=l.nb(a,b+5,c,d,e),b===l?this:null!=b?dg.n(this,a,2*g+1,b):this.w===f?null:gg(this,a,f,g)):ag(d,h)?(e[0]=!0,gg(this,a,f,g)):this};function gg(a,b,c,d){if(a.w===c)return null;a=a.Na(b);b=a.e;var e=b.length;a.w^=c;hd(b,2*(d+1),b,2*d,e-2*(d+1));b[e-2]=null;b[e-1]=null;return a}k.lb=function(){var a=this.e;return hg.b?hg.b(a):hg.call(null,a)};
-k.Xa=function(a,b){return eg(this.e,a,b)};k.Oa=function(a,b,c,d){var e=1<<(b>>>a&31);if(0===(this.w&e))return d;var f=Dd(this.w&e-1),e=this.e[2*f],f=this.e[2*f+1];return null==e?f.Oa(a+5,b,c,d):ag(c,e)?f:d};
-k.la=function(a,b,c,d,e,f){var g=1<<(c>>>b&31),h=Dd(this.w&g-1);if(0===(this.w&g)){var l=Dd(this.w);if(2*l<this.e.length){var m=this.Na(a),p=m.e;f.o=!0;id(p,2*h,p,2*(h+1),2*(l-h));p[2*h]=d;p[2*h+1]=e;m.w|=g;return m}if(16<=l){g=[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];g[c>>>b&31]=ig.la(a,b+5,c,d,e,f);for(m=h=0;;)if(32>h)0!==(this.w>>>h&1)&&(g[h]=null!=this.e[m]?ig.la(a,b+5,nc(this.e[m]),
-this.e[m],this.e[m+1],f):this.e[m+1],m+=2),h+=1;else break;return new jg(a,l+1,g)}p=Array(2*(l+4));hd(this.e,0,p,0,2*h);p[2*h]=d;p[2*h+1]=e;hd(this.e,2*h,p,2*(h+1),2*(l-h));f.o=!0;m=this.Na(a);m.e=p;m.w|=g;return m}var q=this.e[2*h],s=this.e[2*h+1];if(null==q)return l=s.la(a,b+5,c,d,e,f),l===s?this:dg.n(this,a,2*h+1,l);if(ag(d,q))return e===s?this:dg.n(this,a,2*h+1,e);f.o=!0;return dg.P(this,a,2*h,null,2*h+1,function(){var f=b+5;return kg.ia?kg.ia(a,f,q,s,c,d,e):kg.call(null,a,f,q,s,c,d,e)}())};
-k.ka=function(a,b,c,d,e){var f=1<<(b>>>a&31),g=Dd(this.w&f-1);if(0===(this.w&f)){var h=Dd(this.w);if(16<=h){f=[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];f[b>>>a&31]=ig.ka(a+5,b,c,d,e);for(var l=g=0;;)if(32>g)0!==(this.w>>>g&1)&&(f[g]=null!=this.e[l]?ig.ka(a+5,nc(this.e[l]),this.e[l],this.e[l+1],e):this.e[l+1],l+=2),g+=1;else break;return new jg(null,h+1,f)}l=Array(2*(h+1));hd(this.e,
-0,l,0,2*g);l[2*g]=c;l[2*g+1]=d;hd(this.e,2*g,l,2*(g+1),2*(h-g));e.o=!0;return new fg(null,this.w|f,l)}var m=this.e[2*g],p=this.e[2*g+1];if(null==m)return h=p.ka(a+5,b,c,d,e),h===p?this:new fg(null,this.w,bg.c(this.e,2*g+1,h));if(ag(c,m))return d===p?this:new fg(null,this.w,bg.c(this.e,2*g+1,d));e.o=!0;return new fg(null,this.w,bg.r(this.e,2*g,null,2*g+1,function(){var e=a+5;return kg.P?kg.P(e,m,p,b,c,d):kg.call(null,e,m,p,b,c,d)}()))};
-k.mb=function(a,b,c){var d=1<<(b>>>a&31);if(0===(this.w&d))return this;var e=Dd(this.w&d-1),f=this.e[2*e],g=this.e[2*e+1];return null==f?(a=g.mb(a+5,b,c),a===g?this:null!=a?new fg(null,this.w,bg.c(this.e,2*e+1,a)):this.w===d?null:new fg(null,this.w^d,cg(this.e,e))):ag(c,f)?new fg(null,this.w^d,cg(this.e,e)):this};var ig=new fg(null,0,[]);
-function lg(a,b,c){var d=a.e,e=d.length;a=Array(2*(a.g-1));for(var f=0,g=1,h=0;;)if(f<e)f!==c&&null!=d[f]&&(a[g]=d[f],g+=2,h|=1<<f),f+=1;else return new fg(b,h,a)}function jg(a,b,c){this.u=a;this.g=b;this.e=c}k=jg.prototype;k.Na=function(a){return a===this.u?this:new jg(a,this.g,Fa(this.e))};
-k.nb=function(a,b,c,d,e){var f=c>>>b&31,g=this.e[f];if(null==g)return this;b=g.nb(a,b+5,c,d,e);if(b===g)return this;if(null==b){if(8>=this.g)return lg(this,a,f);a=dg.n(this,a,f,b);a.g-=1;return a}return dg.n(this,a,f,b)};k.lb=function(){var a=this.e;return mg.b?mg.b(a):mg.call(null,a)};k.Xa=function(a,b){for(var c=this.e.length,d=0,e=b;;)if(d<c){var f=this.e[d];if(null!=f&&(e=f.Xa(a,e),Ac(e)))return c=e,L.b?L.b(c):L.call(null,c);d+=1}else return e};
-k.Oa=function(a,b,c,d){var e=this.e[b>>>a&31];return null!=e?e.Oa(a+5,b,c,d):d};k.la=function(a,b,c,d,e,f){var g=c>>>b&31,h=this.e[g];if(null==h)return a=dg.n(this,a,g,ig.la(a,b+5,c,d,e,f)),a.g+=1,a;b=h.la(a,b+5,c,d,e,f);return b===h?this:dg.n(this,a,g,b)};k.ka=function(a,b,c,d,e){var f=b>>>a&31,g=this.e[f];if(null==g)return new jg(null,this.g+1,bg.c(this.e,f,ig.ka(a+5,b,c,d,e)));a=g.ka(a+5,b,c,d,e);return a===g?this:new jg(null,this.g,bg.c(this.e,f,a))};
-k.mb=function(a,b,c){var d=b>>>a&31,e=this.e[d];return null!=e?(a=e.mb(a+5,b,c),a===e?this:null==a?8>=this.g?lg(this,null,d):new jg(null,this.g-1,bg.c(this.e,d,a)):new jg(null,this.g,bg.c(this.e,d,a))):this};function ng(a,b,c){b*=2;for(var d=0;;)if(d<b){if(ag(c,a[d]))return d;d+=2}else return-1}function og(a,b,c,d){this.u=a;this.Ia=b;this.g=c;this.e=d}k=og.prototype;k.Na=function(a){if(a===this.u)return this;var b=Array(2*(this.g+1));hd(this.e,0,b,0,2*this.g);return new og(a,this.Ia,this.g,b)};
-k.nb=function(a,b,c,d,e){b=ng(this.e,this.g,d);if(-1===b)return this;e[0]=!0;if(1===this.g)return null;a=this.Na(a);e=a.e;e[b]=e[2*this.g-2];e[b+1]=e[2*this.g-1];e[2*this.g-1]=null;e[2*this.g-2]=null;a.g-=1;return a};k.lb=function(){var a=this.e;return hg.b?hg.b(a):hg.call(null,a)};k.Xa=function(a,b){return eg(this.e,a,b)};k.Oa=function(a,b,c,d){a=ng(this.e,this.g,c);return 0>a?d:ag(c,this.e[a])?this.e[a+1]:d};
-k.la=function(a,b,c,d,e,f){if(c===this.Ia){b=ng(this.e,this.g,d);if(-1===b){if(this.e.length>2*this.g)return a=dg.P(this,a,2*this.g,d,2*this.g+1,e),f.o=!0,a.g+=1,a;c=this.e.length;b=Array(c+2);hd(this.e,0,b,0,c);b[c]=d;b[c+1]=e;f.o=!0;f=this.g+1;a===this.u?(this.e=b,this.g=f,a=this):a=new og(this.u,this.Ia,f,b);return a}return this.e[b+1]===e?this:dg.n(this,a,b+1,e)}return(new fg(a,1<<(this.Ia>>>b&31),[null,this,null,null])).la(a,b,c,d,e,f)};
-k.ka=function(a,b,c,d,e){return b===this.Ia?(a=ng(this.e,this.g,c),-1===a?(a=2*this.g,b=Array(a+2),hd(this.e,0,b,0,a),b[a]=c,b[a+1]=d,e.o=!0,new og(null,this.Ia,this.g+1,b)):sc.a(this.e[a],d)?this:new og(null,this.Ia,this.g,bg.c(this.e,a+1,d))):(new fg(null,1<<(this.Ia>>>a&31),[null,this])).ka(a,b,c,d,e)};k.mb=function(a,b,c){a=ng(this.e,this.g,c);return-1===a?this:1===this.g?null:new og(null,this.Ia,this.g-1,cg(this.e,Cd(a,2)))};
-var kg=function(){function a(a,b,c,g,h,l,m){var p=nc(c);if(p===h)return new og(null,p,2,[c,g,l,m]);var q=new $f;return ig.la(a,b,p,c,g,q).la(a,b,h,l,m,q)}function b(a,b,c,g,h,l){var m=nc(b);if(m===g)return new og(null,m,2,[b,c,h,l]);var p=new $f;return ig.ka(a,m,b,c,p).ka(a,g,h,l,p)}var c=null,c=function(c,e,f,g,h,l,m){switch(arguments.length){case 6:return b.call(this,c,e,f,g,h,l);case 7:return a.call(this,c,e,f,g,h,l,m)}throw Error("Invalid arity: "+arguments.length);};c.P=b;c.ia=a;return c}();
-function pg(a,b,c,d,e){this.k=a;this.Pa=b;this.m=c;this.C=d;this.p=e;this.q=0;this.j=32374860}k=pg.prototype;k.toString=function(){return ec(this)};k.H=function(){return this.k};k.B=function(){var a=this.p;return null!=a?a:this.p=a=wc(this)};k.A=function(a,b){return Ic(this,b)};k.J=function(){return O(J,this.k)};k.R=function(a,b){return P.a(b,this)};k.O=function(a,b,c){return P.c(b,c,this)};k.N=function(){return null==this.C?new W(null,2,5,uf,[this.Pa[this.m],this.Pa[this.m+1]],null):G(this.C)};
-k.S=function(){if(null==this.C){var a=this.Pa,b=this.m+2;return hg.c?hg.c(a,b,null):hg.call(null,a,b,null)}var a=this.Pa,b=this.m,c=K(this.C);return hg.c?hg.c(a,b,c):hg.call(null,a,b,c)};k.D=function(){return this};k.F=function(a,b){return new pg(b,this.Pa,this.m,this.C,this.p)};k.G=function(a,b){return M(b,this)};pg.prototype[Ea]=function(){return uc(this)};
-var hg=function(){function a(a,b,c){if(null==c)for(c=a.length;;)if(b<c){if(null!=a[b])return new pg(null,a,b,null,null);var g=a[b+1];if(t(g)&&(g=g.lb(),t(g)))return new pg(null,a,b+2,g,null);b+=2}else return null;else return new pg(null,a,b,c,null)}function b(a){return c.c(a,0,null)}var c=null,c=function(c,e,f){switch(arguments.length){case 1:return b.call(this,c);case 3:return a.call(this,c,e,f)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.c=a;return c}();
-function qg(a,b,c,d,e){this.k=a;this.Pa=b;this.m=c;this.C=d;this.p=e;this.q=0;this.j=32374860}k=qg.prototype;k.toString=function(){return ec(this)};k.H=function(){return this.k};k.B=function(){var a=this.p;return null!=a?a:this.p=a=wc(this)};k.A=function(a,b){return Ic(this,b)};k.J=function(){return O(J,this.k)};k.R=function(a,b){return P.a(b,this)};k.O=function(a,b,c){return P.c(b,c,this)};k.N=function(){return G(this.C)};
-k.S=function(){var a=this.Pa,b=this.m,c=K(this.C);return mg.n?mg.n(null,a,b,c):mg.call(null,null,a,b,c)};k.D=function(){return this};k.F=function(a,b){return new qg(b,this.Pa,this.m,this.C,this.p)};k.G=function(a,b){return M(b,this)};qg.prototype[Ea]=function(){return uc(this)};
-var mg=function(){function a(a,b,c,g){if(null==g)for(g=b.length;;)if(c<g){var h=b[c];if(t(h)&&(h=h.lb(),t(h)))return new qg(a,b,c+1,h,null);c+=1}else return null;else return new qg(a,b,c,g,null)}function b(a){return c.n(null,a,0,null)}var c=null,c=function(c,e,f,g){switch(arguments.length){case 1:return b.call(this,c);case 4:return a.call(this,c,e,f,g)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.n=a;return c}();
-function rg(a,b,c,d,e,f){this.k=a;this.g=b;this.root=c;this.U=d;this.da=e;this.p=f;this.j=16123663;this.q=8196}k=rg.prototype;k.toString=function(){return ec(this)};k.t=function(a,b){return $a.c(this,b,null)};k.s=function(a,b,c){return null==b?this.U?this.da:c:null==this.root?c:this.root.Oa(0,nc(b),b,c)};k.gb=function(a,b,c){this.U&&(a=this.da,c=b.c?b.c(c,null,a):b.call(null,c,null,a));return Ac(c)?L.b?L.b(c):L.call(null,c):null!=this.root?this.root.Xa(b,c):c};k.H=function(){return this.k};k.L=function(){return this.g};
-k.B=function(){var a=this.p;return null!=a?a:this.p=a=xc(this)};k.A=function(a,b){return Pf(this,b)};k.$a=function(){return new sg({},this.root,this.g,this.U,this.da)};k.J=function(){return ub(Qc,this.k)};k.wb=function(a,b){if(null==b)return this.U?new rg(this.k,this.g-1,this.root,!1,null,null):this;if(null==this.root)return this;var c=this.root.mb(0,nc(b),b);return c===this.root?this:new rg(this.k,this.g-1,c,this.U,this.da,null)};
-k.Ka=function(a,b,c){if(null==b)return this.U&&c===this.da?this:new rg(this.k,this.U?this.g:this.g+1,this.root,!0,c,null);a=new $f;b=(null==this.root?ig:this.root).ka(0,nc(b),b,c,a);return b===this.root?this:new rg(this.k,a.o?this.g+1:this.g,b,this.U,this.da,null)};k.rb=function(a,b){return null==b?this.U:null==this.root?!1:this.root.Oa(0,nc(b),b,jd)!==jd};k.D=function(){if(0<this.g){var a=null!=this.root?this.root.lb():null;return this.U?M(new W(null,2,5,uf,[null,this.da],null),a):a}return null};
-k.F=function(a,b){return new rg(b,this.g,this.root,this.U,this.da,this.p)};k.G=function(a,b){if(ed(b))return cb(this,C.a(b,0),C.a(b,1));for(var c=this,d=D(b);;){if(null==d)return c;var e=G(d);if(ed(e))c=cb(c,C.a(e,0),C.a(e,1)),d=K(d);else throw Error("conj on a map takes map entries or seqables of map entries");}};
-k.call=function(){var a=null,a=function(a,c,d){switch(arguments.length){case 2:return this.t(null,c);case 3:return this.s(null,c,d)}throw Error("Invalid arity: "+arguments.length);};a.a=function(a,c){return this.t(null,c)};a.c=function(a,c,d){return this.s(null,c,d)};return a}();k.apply=function(a,b){return this.call.apply(this,[this].concat(Fa(b)))};k.b=function(a){return this.t(null,a)};k.a=function(a,b){return this.s(null,a,b)};var Qc=new rg(null,0,null,!1,null,0);rg.prototype[Ea]=function(){return uc(this)};
-function sg(a,b,c,d,e){this.u=a;this.root=b;this.count=c;this.U=d;this.da=e;this.q=56;this.j=258}k=sg.prototype;k.Jb=function(a,b){if(this.u)if(null==b)this.U&&(this.U=!1,this.da=null,this.count-=1);else{if(null!=this.root){var c=new $f,d=this.root.nb(this.u,0,nc(b),b,c);d!==this.root&&(this.root=d);t(c[0])&&(this.count-=1)}}else throw Error("dissoc! after persistent!");return this};k.kb=function(a,b,c){return tg(this,b,c)};k.Sa=function(a,b){return ug(this,b)};
-k.Ta=function(){var a;if(this.u)this.u=null,a=new rg(null,this.count,this.root,this.U,this.da,null);else throw Error("persistent! called twice");return a};k.t=function(a,b){return null==b?this.U?this.da:null:null==this.root?null:this.root.Oa(0,nc(b),b)};k.s=function(a,b,c){return null==b?this.U?this.da:c:null==this.root?c:this.root.Oa(0,nc(b),b,c)};k.L=function(){if(this.u)return this.count;throw Error("count after persistent!");};
-function ug(a,b){if(a.u){if(b?b.j&2048||b.jc||(b.j?0:w(fb,b)):w(fb,b))return tg(a,Yf.b?Yf.b(b):Yf.call(null,b),Zf.b?Zf.b(b):Zf.call(null,b));for(var c=D(b),d=a;;){var e=G(c);if(t(e))var f=e,c=K(c),d=tg(d,function(){var a=f;return Yf.b?Yf.b(a):Yf.call(null,a)}(),function(){var a=f;return Zf.b?Zf.b(a):Zf.call(null,a)}());else return d}}else throw Error("conj! after persistent");}
-function tg(a,b,c){if(a.u){if(null==b)a.da!==c&&(a.da=c),a.U||(a.count+=1,a.U=!0);else{var d=new $f;b=(null==a.root?ig:a.root).la(a.u,0,nc(b),b,c,d);b!==a.root&&(a.root=b);d.o&&(a.count+=1)}return a}throw Error("assoc! after persistent!");}function vg(a,b,c){for(var d=b;;)if(null!=a)b=c?a.left:a.right,d=Nc.a(d,a),a=b;else return d}function wg(a,b,c,d,e){this.k=a;this.stack=b;this.pb=c;this.g=d;this.p=e;this.q=0;this.j=32374862}k=wg.prototype;k.toString=function(){return ec(this)};k.H=function(){return this.k};
-k.L=function(){return 0>this.g?Q(K(this))+1:this.g};k.B=function(){var a=this.p;return null!=a?a:this.p=a=wc(this)};k.A=function(a,b){return Ic(this,b)};k.J=function(){return O(J,this.k)};k.R=function(a,b){return P.a(b,this)};k.O=function(a,b,c){return P.c(b,c,this)};k.N=function(){return Wc(this.stack)};k.S=function(){var a=G(this.stack),a=vg(this.pb?a.right:a.left,K(this.stack),this.pb);return null!=a?new wg(null,a,this.pb,this.g-1,null):J};k.D=function(){return this};
-k.F=function(a,b){return new wg(b,this.stack,this.pb,this.g,this.p)};k.G=function(a,b){return M(b,this)};wg.prototype[Ea]=function(){return uc(this)};function xg(a,b,c){return new wg(null,vg(a,null,b),b,c,null)}
-function yg(a,b,c,d){return c instanceof X?c.left instanceof X?new X(c.key,c.o,c.left.ua(),new Z(a,b,c.right,d,null),null):c.right instanceof X?new X(c.right.key,c.right.o,new Z(c.key,c.o,c.left,c.right.left,null),new Z(a,b,c.right.right,d,null),null):new Z(a,b,c,d,null):new Z(a,b,c,d,null)}
-function zg(a,b,c,d){return d instanceof X?d.right instanceof X?new X(d.key,d.o,new Z(a,b,c,d.left,null),d.right.ua(),null):d.left instanceof X?new X(d.left.key,d.left.o,new Z(a,b,c,d.left.left,null),new Z(d.key,d.o,d.left.right,d.right,null),null):new Z(a,b,c,d,null):new Z(a,b,c,d,null)}
-function Ag(a,b,c,d){if(c instanceof X)return new X(a,b,c.ua(),d,null);if(d instanceof Z)return zg(a,b,c,d.ob());if(d instanceof X&&d.left instanceof Z)return new X(d.left.key,d.left.o,new Z(a,b,c,d.left.left,null),zg(d.key,d.o,d.left.right,d.right.ob()),null);throw Error("red-black tree invariant violation");}
-var Cg=function Bg(b,c,d){d=null!=b.left?Bg(b.left,c,d):d;if(Ac(d))return L.b?L.b(d):L.call(null,d);var e=b.key,f=b.o;d=c.c?c.c(d,e,f):c.call(null,d,e,f);if(Ac(d))return L.b?L.b(d):L.call(null,d);b=null!=b.right?Bg(b.right,c,d):d;return Ac(b)?L.b?L.b(b):L.call(null,b):b};function Z(a,b,c,d,e){this.key=a;this.o=b;this.left=c;this.right=d;this.p=e;this.q=0;this.j=32402207}k=Z.prototype;k.Mb=function(a){return a.Ob(this)};k.ob=function(){return new X(this.key,this.o,this.left,this.right,null)};
-k.ua=function(){return this};k.Lb=function(a){return a.Nb(this)};k.replace=function(a,b,c,d){return new Z(a,b,c,d,null)};k.Nb=function(a){return new Z(a.key,a.o,this,a.right,null)};k.Ob=function(a){return new Z(a.key,a.o,a.left,this,null)};k.Xa=function(a,b){return Cg(this,a,b)};k.t=function(a,b){return C.c(this,b,null)};k.s=function(a,b,c){return C.c(this,b,c)};k.Q=function(a,b){return 0===b?this.key:1===b?this.o:null};k.$=function(a,b,c){return 0===b?this.key:1===b?this.o:c};
-k.Ua=function(a,b,c){return(new W(null,2,5,uf,[this.key,this.o],null)).Ua(null,b,c)};k.H=function(){return null};k.L=function(){return 2};k.hb=function(){return this.key};k.ib=function(){return this.o};k.La=function(){return this.o};k.Ma=function(){return new W(null,1,5,uf,[this.key],null)};k.B=function(){var a=this.p;return null!=a?a:this.p=a=wc(this)};k.A=function(a,b){return Ic(this,b)};k.J=function(){return Mc};k.R=function(a,b){return Cc.a(this,b)};k.O=function(a,b,c){return Cc.c(this,b,c)};
-k.Ka=function(a,b,c){return Rc.c(new W(null,2,5,uf,[this.key,this.o],null),b,c)};k.D=function(){return Ra(Ra(J,this.o),this.key)};k.F=function(a,b){return O(new W(null,2,5,uf,[this.key,this.o],null),b)};k.G=function(a,b){return new W(null,3,5,uf,[this.key,this.o,b],null)};
-k.call=function(){var a=null,a=function(a,c,d){switch(arguments.length){case 2:return this.t(null,c);case 3:return this.s(null,c,d)}throw Error("Invalid arity: "+arguments.length);};a.a=function(a,c){return this.t(null,c)};a.c=function(a,c,d){return this.s(null,c,d)};return a}();k.apply=function(a,b){return this.call.apply(this,[this].concat(Fa(b)))};k.b=function(a){return this.t(null,a)};k.a=function(a,b){return this.s(null,a,b)};Z.prototype[Ea]=function(){return uc(this)};
-function X(a,b,c,d,e){this.key=a;this.o=b;this.left=c;this.right=d;this.p=e;this.q=0;this.j=32402207}k=X.prototype;k.Mb=function(a){return new X(this.key,this.o,this.left,a,null)};k.ob=function(){throw Error("red-black tree invariant violation");};k.ua=function(){return new Z(this.key,this.o,this.left,this.right,null)};k.Lb=function(a){return new X(this.key,this.o,a,this.right,null)};k.replace=function(a,b,c,d){return new X(a,b,c,d,null)};
-k.Nb=function(a){return this.left instanceof X?new X(this.key,this.o,this.left.ua(),new Z(a.key,a.o,this.right,a.right,null),null):this.right instanceof X?new X(this.right.key,this.right.o,new Z(this.key,this.o,this.left,this.right.left,null),new Z(a.key,a.o,this.right.right,a.right,null),null):new Z(a.key,a.o,this,a.right,null)};
-k.Ob=function(a){return this.right instanceof X?new X(this.key,this.o,new Z(a.key,a.o,a.left,this.left,null),this.right.ua(),null):this.left instanceof X?new X(this.left.key,this.left.o,new Z(a.key,a.o,a.left,this.left.left,null),new Z(this.key,this.o,this.left.right,this.right,null),null):new Z(a.key,a.o,a.left,this,null)};k.Xa=function(a,b){return Cg(this,a,b)};k.t=function(a,b){return C.c(this,b,null)};k.s=function(a,b,c){return C.c(this,b,c)};
-k.Q=function(a,b){return 0===b?this.key:1===b?this.o:null};k.$=function(a,b,c){return 0===b?this.key:1===b?this.o:c};k.Ua=function(a,b,c){return(new W(null,2,5,uf,[this.key,this.o],null)).Ua(null,b,c)};k.H=function(){return null};k.L=function(){return 2};k.hb=function(){return this.key};k.ib=function(){return this.o};k.La=function(){return this.o};k.Ma=function(){return new W(null,1,5,uf,[this.key],null)};k.B=function(){var a=this.p;return null!=a?a:this.p=a=wc(this)};
-k.A=function(a,b){return Ic(this,b)};k.J=function(){return Mc};k.R=function(a,b){return Cc.a(this,b)};k.O=function(a,b,c){return Cc.c(this,b,c)};k.Ka=function(a,b,c){return Rc.c(new W(null,2,5,uf,[this.key,this.o],null),b,c)};k.D=function(){return Ra(Ra(J,this.o),this.key)};k.F=function(a,b){return O(new W(null,2,5,uf,[this.key,this.o],null),b)};k.G=function(a,b){return new W(null,3,5,uf,[this.key,this.o,b],null)};
-k.call=function(){var a=null,a=function(a,c,d){switch(arguments.length){case 2:return this.t(null,c);case 3:return this.s(null,c,d)}throw Error("Invalid arity: "+arguments.length);};a.a=function(a,c){return this.t(null,c)};a.c=function(a,c,d){return this.s(null,c,d)};return a}();k.apply=function(a,b){return this.call.apply(this,[this].concat(Fa(b)))};k.b=function(a){return this.t(null,a)};k.a=function(a,b){return this.s(null,a,b)};X.prototype[Ea]=function(){return uc(this)};
-var Eg=function Dg(b,c,d,e,f){if(null==c)return new X(d,e,null,null,null);var g;g=c.key;g=b.a?b.a(d,g):b.call(null,d,g);if(0===g)return f[0]=c,null;if(0>g)return b=Dg(b,c.left,d,e,f),null!=b?c.Lb(b):null;b=Dg(b,c.right,d,e,f);return null!=b?c.Mb(b):null},Gg=function Fg(b,c){if(null==b)return c;if(null==c)return b;if(b instanceof X){if(c instanceof X){var d=Fg(b.right,c.left);return d instanceof X?new X(d.key,d.o,new X(b.key,b.o,b.left,d.left,null),new X(c.key,c.o,d.right,c.right,null),null):new X(b.key,
-b.o,b.left,new X(c.key,c.o,d,c.right,null),null)}return new X(b.key,b.o,b.left,Fg(b.right,c),null)}if(c instanceof X)return new X(c.key,c.o,Fg(b,c.left),c.right,null);d=Fg(b.right,c.left);return d instanceof X?new X(d.key,d.o,new Z(b.key,b.o,b.left,d.left,null),new Z(c.key,c.o,d.right,c.right,null),null):Ag(b.key,b.o,b.left,new Z(c.key,c.o,d,c.right,null))},Ig=function Hg(b,c,d,e){if(null!=c){var f;f=c.key;f=b.a?b.a(d,f):b.call(null,d,f);if(0===f)return e[0]=c,Gg(c.left,c.right);if(0>f)return b=Hg(b,
-c.left,d,e),null!=b||null!=e[0]?c.left instanceof Z?Ag(c.key,c.o,b,c.right):new X(c.key,c.o,b,c.right,null):null;b=Hg(b,c.right,d,e);if(null!=b||null!=e[0])if(c.right instanceof Z)if(e=c.key,d=c.o,c=c.left,b instanceof X)c=new X(e,d,c,b.ua(),null);else if(c instanceof Z)c=yg(e,d,c.ob(),b);else if(c instanceof X&&c.right instanceof Z)c=new X(c.right.key,c.right.o,yg(c.key,c.o,c.left.ob(),c.right.left),new Z(e,d,c.right.right,b,null),null);else throw Error("red-black tree invariant violation");else c=
-new X(c.key,c.o,c.left,b,null);else c=null;return c}return null},Kg=function Jg(b,c,d,e){var f=c.key,g=b.a?b.a(d,f):b.call(null,d,f);return 0===g?c.replace(f,e,c.left,c.right):0>g?c.replace(f,c.o,Jg(b,c.left,d,e),c.right):c.replace(f,c.o,c.left,Jg(b,c.right,d,e))};function Lg(a,b,c,d,e){this.aa=a;this.na=b;this.g=c;this.k=d;this.p=e;this.j=418776847;this.q=8192}k=Lg.prototype;k.toString=function(){return ec(this)};
-function Mg(a,b){for(var c=a.na;;)if(null!=c){var d;d=c.key;d=a.aa.a?a.aa.a(b,d):a.aa.call(null,b,d);if(0===d)return c;c=0>d?c.left:c.right}else return null}k.t=function(a,b){return $a.c(this,b,null)};k.s=function(a,b,c){a=Mg(this,b);return null!=a?a.o:c};k.gb=function(a,b,c){return null!=this.na?Cg(this.na,b,c):c};k.H=function(){return this.k};k.L=function(){return this.g};k.ab=function(){return 0<this.g?xg(this.na,!1,this.g):null};k.B=function(){var a=this.p;return null!=a?a:this.p=a=xc(this)};
-k.A=function(a,b){return Pf(this,b)};k.J=function(){return new Lg(this.aa,null,0,this.k,0)};k.wb=function(a,b){var c=[null],d=Ig(this.aa,this.na,b,c);return null==d?null==R.a(c,0)?this:new Lg(this.aa,null,0,this.k,null):new Lg(this.aa,d.ua(),this.g-1,this.k,null)};k.Ka=function(a,b,c){a=[null];var d=Eg(this.aa,this.na,b,c,a);return null==d?(a=R.a(a,0),sc.a(c,a.o)?this:new Lg(this.aa,Kg(this.aa,this.na,b,c),this.g,this.k,null)):new Lg(this.aa,d.ua(),this.g+1,this.k,null)};
-k.rb=function(a,b){return null!=Mg(this,b)};k.D=function(){return 0<this.g?xg(this.na,!0,this.g):null};k.F=function(a,b){return new Lg(this.aa,this.na,this.g,b,this.p)};k.G=function(a,b){if(ed(b))return cb(this,C.a(b,0),C.a(b,1));for(var c=this,d=D(b);;){if(null==d)return c;var e=G(d);if(ed(e))c=cb(c,C.a(e,0),C.a(e,1)),d=K(d);else throw Error("conj on a map takes map entries or seqables of map entries");}};
-k.call=function(){var a=null,a=function(a,c,d){switch(arguments.length){case 2:return this.t(null,c);case 3:return this.s(null,c,d)}throw Error("Invalid arity: "+arguments.length);};a.a=function(a,c){return this.t(null,c)};a.c=function(a,c,d){return this.s(null,c,d)};return a}();k.apply=function(a,b){return this.call.apply(this,[this].concat(Fa(b)))};k.b=function(a){return this.t(null,a)};k.a=function(a,b){return this.s(null,a,b)};k.Hb=function(a,b){return 0<this.g?xg(this.na,b,this.g):null};
-k.Ib=function(a,b,c){if(0<this.g){a=null;for(var d=this.na;;)if(null!=d){var e;e=d.key;e=this.aa.a?this.aa.a(b,e):this.aa.call(null,b,e);if(0===e)return new wg(null,Nc.a(a,d),c,-1,null);t(c)?0>e?(a=Nc.a(a,d),d=d.left):d=d.right:0<e?(a=Nc.a(a,d),d=d.right):d=d.left}else return null==a?null:new wg(null,a,c,-1,null)}else return null};k.Gb=function(a,b){return Yf.b?Yf.b(b):Yf.call(null,b)};k.Fb=function(){return this.aa};var Ng=new Lg(od,null,0,null,0);Lg.prototype[Ea]=function(){return uc(this)};
-var Og=function(){function a(a){var d=null;if(0<arguments.length){for(var d=0,e=Array(arguments.length-0);d<e.length;)e[d]=arguments[d+0],++d;d=new F(e,0)}return b.call(this,d)}function b(a){a=D(a);for(var b=Ob(Qc);;)if(a){var e=K(K(a)),b=ee.c(b,G(a),Lc(a));a=e}else return Qb(b)}a.i=0;a.f=function(a){a=D(a);return b(a)};a.d=b;return a}(),Pg=function(){function a(a){var d=null;if(0<arguments.length){for(var d=0,e=Array(arguments.length-0);d<e.length;)e[d]=arguments[d+0],++d;d=new F(e,0)}return b.call(this,
-d)}function b(a){a:{a=T.a(Ha,a);for(var b=a.length,e=0,f=Ob(Uf);;)if(e<b)var g=e+2,f=Rb(f,a[e],a[e+1]),e=g;else{a=Qb(f);break a}a=void 0}return a}a.i=0;a.f=function(a){a=D(a);return b(a)};a.d=b;return a}(),Qg=function(){function a(a){var d=null;if(0<arguments.length){for(var d=0,e=Array(arguments.length-0);d<e.length;)e[d]=arguments[d+0],++d;d=new F(e,0)}return b.call(this,d)}function b(a){a=D(a);for(var b=Ng;;)if(a){var e=K(K(a)),b=Rc.c(b,G(a),Lc(a));a=e}else return b}a.i=0;a.f=function(a){a=D(a);
-return b(a)};a.d=b;return a}(),Rg=function(){function a(a,d){var e=null;if(1<arguments.length){for(var e=0,f=Array(arguments.length-1);e<f.length;)f[e]=arguments[e+1],++e;e=new F(f,0)}return b.call(this,a,e)}function b(a,b){for(var e=D(b),f=new Lg(qd(a),null,0,null,0);;)if(e)var g=K(K(e)),f=Rc.c(f,G(e),Lc(e)),e=g;else return f}a.i=1;a.f=function(a){var d=G(a);a=H(a);return b(d,a)};a.d=b;return a}();function Sg(a,b){this.Y=a;this.Z=b;this.q=0;this.j=32374988}k=Sg.prototype;k.toString=function(){return ec(this)};
-k.H=function(){return this.Z};k.T=function(){var a=this.Y,a=(a?a.j&128||a.xb||(a.j?0:w(Xa,a)):w(Xa,a))?this.Y.T(null):K(this.Y);return null==a?null:new Sg(a,this.Z)};k.B=function(){return wc(this)};k.A=function(a,b){return Ic(this,b)};k.J=function(){return O(J,this.Z)};k.R=function(a,b){return P.a(b,this)};k.O=function(a,b,c){return P.c(b,c,this)};k.N=function(){return this.Y.N(null).hb(null)};
-k.S=function(){var a=this.Y,a=(a?a.j&128||a.xb||(a.j?0:w(Xa,a)):w(Xa,a))?this.Y.T(null):K(this.Y);return null!=a?new Sg(a,this.Z):J};k.D=function(){return this};k.F=function(a,b){return new Sg(this.Y,b)};k.G=function(a,b){return M(b,this)};Sg.prototype[Ea]=function(){return uc(this)};function Tg(a){return(a=D(a))?new Sg(a,null):null}function Yf(a){return hb(a)}function Ug(a,b){this.Y=a;this.Z=b;this.q=0;this.j=32374988}k=Ug.prototype;k.toString=function(){return ec(this)};k.H=function(){return this.Z};
-k.T=function(){var a=this.Y,a=(a?a.j&128||a.xb||(a.j?0:w(Xa,a)):w(Xa,a))?this.Y.T(null):K(this.Y);return null==a?null:new Ug(a,this.Z)};k.B=function(){return wc(this)};k.A=function(a,b){return Ic(this,b)};k.J=function(){return O(J,this.Z)};k.R=function(a,b){return P.a(b,this)};k.O=function(a,b,c){return P.c(b,c,this)};k.N=function(){return this.Y.N(null).ib(null)};k.S=function(){var a=this.Y,a=(a?a.j&128||a.xb||(a.j?0:w(Xa,a)):w(Xa,a))?this.Y.T(null):K(this.Y);return null!=a?new Ug(a,this.Z):J};
-k.D=function(){return this};k.F=function(a,b){return new Ug(this.Y,b)};k.G=function(a,b){return M(b,this)};Ug.prototype[Ea]=function(){return uc(this)};function Vg(a){return(a=D(a))?new Ug(a,null):null}function Zf(a){return ib(a)}
-var Wg=function(){function a(a){var d=null;if(0<arguments.length){for(var d=0,e=Array(arguments.length-0);d<e.length;)e[d]=arguments[d+0],++d;d=new F(e,0)}return b.call(this,d)}function b(a){return t(Fe(ud,a))?A.a(function(a,b){return Nc.a(t(a)?a:Uf,b)},a):null}a.i=0;a.f=function(a){a=D(a);return b(a)};a.d=b;return a}(),Xg=function(){function a(a,d){var e=null;if(1<arguments.length){for(var e=0,f=Array(arguments.length-1);e<f.length;)f[e]=arguments[e+1],++e;e=new F(f,0)}return b.call(this,a,e)}function b(a,
-b){return t(Fe(ud,b))?A.a(function(a){return function(b,c){return A.c(a,t(b)?b:Uf,D(c))}}(function(b,d){var g=G(d),h=Lc(d);return nd(b,g)?Rc.c(b,g,function(){var d=S.a(b,g);return a.a?a.a(d,h):a.call(null,d,h)}()):Rc.c(b,g,h)}),b):null}a.i=1;a.f=function(a){var d=G(a);a=H(a);return b(d,a)};a.d=b;return a}();function Yg(a,b){for(var c=Uf,d=D(b);;)if(d)var e=G(d),f=S.c(a,e,Zg),c=je.a(f,Zg)?Rc.c(c,e,f):c,d=K(d);else return O(c,Vc(a))}
-function $g(a,b,c){this.k=a;this.Wa=b;this.p=c;this.j=15077647;this.q=8196}k=$g.prototype;k.toString=function(){return ec(this)};k.t=function(a,b){return $a.c(this,b,null)};k.s=function(a,b,c){return bb(this.Wa,b)?b:c};k.H=function(){return this.k};k.L=function(){return Ma(this.Wa)};k.B=function(){var a=this.p;return null!=a?a:this.p=a=xc(this)};k.A=function(a,b){return ad(b)&&Q(this)===Q(b)&&Ee(function(a){return function(b){return nd(a,b)}}(this),b)};k.$a=function(){return new ah(Ob(this.Wa))};
-k.J=function(){return O(bh,this.k)};k.Eb=function(a,b){return new $g(this.k,eb(this.Wa,b),null)};k.D=function(){return Tg(this.Wa)};k.F=function(a,b){return new $g(b,this.Wa,this.p)};k.G=function(a,b){return new $g(this.k,Rc.c(this.Wa,b,null),null)};
-k.call=function(){var a=null,a=function(a,c,d){switch(arguments.length){case 2:return this.t(null,c);case 3:return this.s(null,c,d)}throw Error("Invalid arity: "+arguments.length);};a.a=function(a,c){return this.t(null,c)};a.c=function(a,c,d){return this.s(null,c,d)};return a}();k.apply=function(a,b){return this.call.apply(this,[this].concat(Fa(b)))};k.b=function(a){return this.t(null,a)};k.a=function(a,b){return this.s(null,a,b)};var bh=new $g(null,Uf,0);$g.prototype[Ea]=function(){return uc(this)};
-function ah(a){this.ma=a;this.j=259;this.q=136}k=ah.prototype;k.call=function(){function a(a,b,c){return $a.c(this.ma,b,jd)===jd?c:b}function b(a,b){return $a.c(this.ma,b,jd)===jd?null:b}var c=null,c=function(c,e,f){switch(arguments.length){case 2:return b.call(this,c,e);case 3:return a.call(this,c,e,f)}throw Error("Invalid arity: "+arguments.length);};c.a=b;c.c=a;return c}();k.apply=function(a,b){return this.call.apply(this,[this].concat(Fa(b)))};
-k.b=function(a){return $a.c(this.ma,a,jd)===jd?null:a};k.a=function(a,b){return $a.c(this.ma,a,jd)===jd?b:a};k.t=function(a,b){return $a.c(this,b,null)};k.s=function(a,b,c){return $a.c(this.ma,b,jd)===jd?c:b};k.L=function(){return Q(this.ma)};k.Tb=function(a,b){this.ma=fe.a(this.ma,b);return this};k.Sa=function(a,b){this.ma=ee.c(this.ma,b,null);return this};k.Ta=function(){return new $g(null,Qb(this.ma),null)};function ch(a,b,c){this.k=a;this.ja=b;this.p=c;this.j=417730831;this.q=8192}k=ch.prototype;
-k.toString=function(){return ec(this)};k.t=function(a,b){return $a.c(this,b,null)};k.s=function(a,b,c){a=Mg(this.ja,b);return null!=a?a.key:c};k.H=function(){return this.k};k.L=function(){return Q(this.ja)};k.ab=function(){return 0<Q(this.ja)?Oe.a(Yf,Gb(this.ja)):null};k.B=function(){var a=this.p;return null!=a?a:this.p=a=xc(this)};k.A=function(a,b){return ad(b)&&Q(this)===Q(b)&&Ee(function(a){return function(b){return nd(a,b)}}(this),b)};k.J=function(){return new ch(this.k,Na(this.ja),0)};
-k.Eb=function(a,b){return new ch(this.k,Sc.a(this.ja,b),null)};k.D=function(){return Tg(this.ja)};k.F=function(a,b){return new ch(b,this.ja,this.p)};k.G=function(a,b){return new ch(this.k,Rc.c(this.ja,b,null),null)};k.call=function(){var a=null,a=function(a,c,d){switch(arguments.length){case 2:return this.t(null,c);case 3:return this.s(null,c,d)}throw Error("Invalid arity: "+arguments.length);};a.a=function(a,c){return this.t(null,c)};a.c=function(a,c,d){return this.s(null,c,d)};return a}();
-k.apply=function(a,b){return this.call.apply(this,[this].concat(Fa(b)))};k.b=function(a){return this.t(null,a)};k.a=function(a,b){return this.s(null,a,b)};k.Hb=function(a,b){return Oe.a(Yf,Hb(this.ja,b))};k.Ib=function(a,b,c){return Oe.a(Yf,Ib(this.ja,b,c))};k.Gb=function(a,b){return b};k.Fb=function(){return Kb(this.ja)};var eh=new ch(null,Ng,0);ch.prototype[Ea]=function(){return uc(this)};
-function fh(a){a=D(a);if(null==a)return bh;if(a instanceof F&&0===a.m){a=a.e;a:{for(var b=0,c=Ob(bh);;)if(b<a.length)var d=b+1,c=c.Sa(null,a[b]),b=d;else{a=c;break a}a=void 0}return a.Ta(null)}for(d=Ob(bh);;)if(null!=a)b=a.T(null),d=d.Sa(null,a.N(null)),a=b;else return d.Ta(null)}
-var gh=function(){function a(a){var d=null;if(0<arguments.length){for(var d=0,e=Array(arguments.length-0);d<e.length;)e[d]=arguments[d+0],++d;d=new F(e,0)}return b.call(this,d)}function b(a){return A.c(Ra,eh,a)}a.i=0;a.f=function(a){a=D(a);return b(a)};a.d=b;return a}(),hh=function(){function a(a,d){var e=null;if(1<arguments.length){for(var e=0,f=Array(arguments.length-1);e<f.length;)f[e]=arguments[e+1],++e;e=new F(f,0)}return b.call(this,a,e)}function b(a,b){return A.c(Ra,new ch(null,Rg(a),0),b)}
-a.i=1;a.f=function(a){var d=G(a);a=H(a);return b(d,a)};a.d=b;return a}();function Od(a){if(a&&(a.q&4096||a.lc))return a.name;if("string"===typeof a)return a;throw Error([z("Doesn't support name: "),z(a)].join(""));}
-var ih=function(){function a(a,b,c){return(a.b?a.b(b):a.call(null,b))>(a.b?a.b(c):a.call(null,c))?b:c}var b=null,c=function(){function a(b,d,h,l){var m=null;if(3<arguments.length){for(var m=0,p=Array(arguments.length-3);m<p.length;)p[m]=arguments[m+3],++m;m=new F(p,0)}return c.call(this,b,d,h,m)}function c(a,d,e,l){return A.c(function(c,d){return b.c(a,c,d)},b.c(a,d,e),l)}a.i=3;a.f=function(a){var b=G(a);a=K(a);var d=G(a);a=K(a);var l=G(a);a=H(a);return c(b,d,l,a)};a.d=c;return a}(),b=function(b,
-e,f,g){switch(arguments.length){case 2:return e;case 3:return a.call(this,b,e,f);default:var h=null;if(3<arguments.length){for(var h=0,l=Array(arguments.length-3);h<l.length;)l[h]=arguments[h+3],++h;h=new F(l,0)}return c.d(b,e,f,h)}throw Error("Invalid arity: "+arguments.length);};b.i=3;b.f=c.f;b.a=function(a,b){return b};b.c=a;b.d=c.d;return b}();function jh(a){this.e=a}jh.prototype.add=function(a){return this.e.push(a)};jh.prototype.size=function(){return this.e.length};
-jh.prototype.clear=function(){return this.e=[]};
-var kh=function(){function a(a,b,c){return new V(null,function(){var h=D(c);return h?M(Pe.a(a,h),d.c(a,b,Qe.a(b,h))):null},null,null)}function b(a,b){return d.c(a,a,b)}function c(a){return function(b){return function(c){return function(){function d(h,l){c.add(l);if(a===c.size()){var m=zf(c.e);c.clear();return b.a?b.a(h,m):b.call(null,h,m)}return h}function l(a){if(!t(0===c.e.length)){var d=zf(c.e);c.clear();a=Bc(b.a?b.a(a,d):b.call(null,a,d))}return b.b?b.b(a):b.call(null,a)}function m(){return b.l?
-b.l():b.call(null)}var p=null,p=function(a,b){switch(arguments.length){case 0:return m.call(this);case 1:return l.call(this,a);case 2:return d.call(this,a,b)}throw Error("Invalid arity: "+arguments.length);};p.l=m;p.b=l;p.a=d;return p}()}(new jh([]))}}var d=null,d=function(d,f,g){switch(arguments.length){case 1:return c.call(this,d);case 2:return b.call(this,d,f);case 3:return a.call(this,d,f,g)}throw Error("Invalid arity: "+arguments.length);};d.b=c;d.a=b;d.c=a;return d}(),lh=function(){function a(a,
-b){return new V(null,function(){var f=D(b);if(f){var g;g=G(f);g=a.b?a.b(g):a.call(null,g);f=t(g)?M(G(f),c.a(a,H(f))):null}else f=null;return f},null,null)}function b(a){return function(b){return function(){function c(f,g){return t(a.b?a.b(g):a.call(null,g))?b.a?b.a(f,g):b.call(null,f,g):new yc(f)}function g(a){return b.b?b.b(a):b.call(null,a)}function h(){return b.l?b.l():b.call(null)}var l=null,l=function(a,b){switch(arguments.length){case 0:return h.call(this);case 1:return g.call(this,a);case 2:return c.call(this,
-a,b)}throw Error("Invalid arity: "+arguments.length);};l.l=h;l.b=g;l.a=c;return l}()}}var c=null,c=function(c,e){switch(arguments.length){case 1:return b.call(this,c);case 2:return a.call(this,c,e)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}();function mh(a,b,c){return function(d){var e=Kb(a);d=Jb(a,d);e=e.a?e.a(d,c):e.call(null,d,c);return b.a?b.a(e,0):b.call(null,e,0)}}
-var nh=function(){function a(a,b,c,g,h){var l=Ib(a,c,!0);if(t(l)){var m=R.c(l,0,null);return lh.a(mh(a,g,h),t(mh(a,b,c).call(null,m))?l:K(l))}return null}function b(a,b,c){var g=mh(a,b,c),h;a:{h=[Ad,Bd];var l=h.length;if(l<=Vf)for(var m=0,p=Ob(Uf);;)if(m<l)var q=m+1,p=Rb(p,h[m],null),m=q;else{h=new $g(null,Qb(p),null);break a}else for(m=0,p=Ob(bh);;)if(m<l)q=m+1,p=Pb(p,h[m]),m=q;else{h=Qb(p);break a}h=void 0}return t(h.call(null,b))?(a=Ib(a,c,!0),t(a)?(b=R.c(a,0,null),t(g.b?g.b(b):g.call(null,b))?
-a:K(a)):null):lh.a(g,Hb(a,!0))}var c=null,c=function(c,e,f,g,h){switch(arguments.length){case 3:return b.call(this,c,e,f);case 5:return a.call(this,c,e,f,g,h)}throw Error("Invalid arity: "+arguments.length);};c.c=b;c.r=a;return c}();function oh(a,b,c){this.m=a;this.end=b;this.step=c}oh.prototype.ga=function(){return 0<this.step?this.m<this.end:this.m>this.end};oh.prototype.next=function(){var a=this.m;this.m+=this.step;return a};
-function ph(a,b,c,d,e){this.k=a;this.start=b;this.end=c;this.step=d;this.p=e;this.j=32375006;this.q=8192}k=ph.prototype;k.toString=function(){return ec(this)};k.Q=function(a,b){if(b<Ma(this))return this.start+b*this.step;if(this.start>this.end&&0===this.step)return this.start;throw Error("Index out of bounds");};k.$=function(a,b,c){return b<Ma(this)?this.start+b*this.step:this.start>this.end&&0===this.step?this.start:c};k.vb=!0;k.fb=function(){return new oh(this.start,this.end,this.step)};k.H=function(){return this.k};
-k.T=function(){return 0<this.step?this.start+this.step<this.end?new ph(this.k,this.start+this.step,this.end,this.step,null):null:this.start+this.step>this.end?new ph(this.k,this.start+this.step,this.end,this.step,null):null};k.L=function(){if(Aa(Cb(this)))return 0;var a=(this.end-this.start)/this.step;return Math.ceil.b?Math.ceil.b(a):Math.ceil.call(null,a)};k.B=function(){var a=this.p;return null!=a?a:this.p=a=wc(this)};k.A=function(a,b){return Ic(this,b)};k.J=function(){return O(J,this.k)};
-k.R=function(a,b){return Cc.a(this,b)};k.O=function(a,b,c){for(a=this.start;;)if(0<this.step?a<this.end:a>this.end){var d=a;c=b.a?b.a(c,d):b.call(null,c,d);if(Ac(c))return b=c,L.b?L.b(b):L.call(null,b);a+=this.step}else return c};k.N=function(){return null==Cb(this)?null:this.start};k.S=function(){return null!=Cb(this)?new ph(this.k,this.start+this.step,this.end,this.step,null):J};k.D=function(){return 0<this.step?this.start<this.end?this:null:this.start>this.end?this:null};
-k.F=function(a,b){return new ph(b,this.start,this.end,this.step,this.p)};k.G=function(a,b){return M(b,this)};ph.prototype[Ea]=function(){return uc(this)};
-var qh=function(){function a(a,b,c){return new ph(null,a,b,c,null)}function b(a,b){return e.c(a,b,1)}function c(a){return e.c(0,a,1)}function d(){return e.c(0,Number.MAX_VALUE,1)}var e=null,e=function(e,g,h){switch(arguments.length){case 0:return d.call(this);case 1:return c.call(this,e);case 2:return b.call(this,e,g);case 3:return a.call(this,e,g,h)}throw Error("Invalid arity: "+arguments.length);};e.l=d;e.b=c;e.a=b;e.c=a;return e}(),rh=function(){function a(a,b){return new V(null,function(){var f=
-D(b);return f?M(G(f),c.a(a,Qe.a(a,f))):null},null,null)}function b(a){return function(b){return function(c){return function(){function g(g,h){var l=c.bb(0,c.Ra(null)+1),m=Cd(l,a);return 0===l-a*m?b.a?b.a(g,h):b.call(null,g,h):g}function h(a){return b.b?b.b(a):b.call(null,a)}function l(){return b.l?b.l():b.call(null)}var m=null,m=function(a,b){switch(arguments.length){case 0:return l.call(this);case 1:return h.call(this,a);case 2:return g.call(this,a,b)}throw Error("Invalid arity: "+arguments.length);
-};m.l=l;m.b=h;m.a=g;return m}()}(new Me(-1))}}var c=null,c=function(c,e){switch(arguments.length){case 1:return b.call(this,c);case 2:return a.call(this,c,e)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}(),th=function(){function a(a,b){return new V(null,function(){var f=D(b);if(f){var g=G(f),h=a.b?a.b(g):a.call(null,g),g=M(g,lh.a(function(b,c){return function(b){return sc.a(c,a.b?a.b(b):a.call(null,b))}}(g,h,f,f),K(f)));return M(g,c.a(a,D(Qe.a(Q(g),f))))}return null},null,
-null)}function b(a){return function(b){return function(c,g){return function(){function h(h,l){var m=L.b?L.b(g):L.call(null,g),p=a.b?a.b(l):a.call(null,l);ac(g,p);if(Nd(m,sh)||sc.a(p,m))return c.add(l),h;m=zf(c.e);c.clear();m=b.a?b.a(h,m):b.call(null,h,m);Ac(m)||c.add(l);return m}function l(a){if(!t(0===c.e.length)){var d=zf(c.e);c.clear();a=Bc(b.a?b.a(a,d):b.call(null,a,d))}return b.b?b.b(a):b.call(null,a)}function m(){return b.l?b.l():b.call(null)}var p=null,p=function(a,b){switch(arguments.length){case 0:return m.call(this);
-case 1:return l.call(this,a);case 2:return h.call(this,a,b)}throw Error("Invalid arity: "+arguments.length);};p.l=m;p.b=l;p.a=h;return p}()}(new jh([]),new Me(sh))}}var c=null,c=function(c,e){switch(arguments.length){case 1:return b.call(this,c);case 2:return a.call(this,c,e)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}(),uh=function(){function a(a,b){for(;;)if(D(b)&&0<a){var c=a-1,g=K(b);a=c;b=g}else return null}function b(a){for(;;)if(D(a))a=K(a);else return null}var c=
-null,c=function(c,e){switch(arguments.length){case 1:return b.call(this,c);case 2:return a.call(this,c,e)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}(),vh=function(){function a(a,b){uh.a(a,b);return b}function b(a){uh.b(a);return a}var c=null,c=function(c,e){switch(arguments.length){case 1:return b.call(this,c);case 2:return a.call(this,c,e)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}();
-function wh(a,b,c,d,e,f,g){var h=ma;try{ma=null==ma?null:ma-1;if(null!=ma&&0>ma)return Lb(a,"#");Lb(a,c);if(D(g)){var l=G(g);b.c?b.c(l,a,f):b.call(null,l,a,f)}for(var m=K(g),p=za.b(f)-1;;)if(!m||null!=p&&0===p){D(m)&&0===p&&(Lb(a,d),Lb(a,"..."));break}else{Lb(a,d);var q=G(m);c=a;g=f;b.c?b.c(q,c,g):b.call(null,q,c,g);var s=K(m);c=p-1;m=s;p=c}return Lb(a,e)}finally{ma=h}}
-var xh=function(){function a(a,d){var e=null;if(1<arguments.length){for(var e=0,f=Array(arguments.length-1);e<f.length;)f[e]=arguments[e+1],++e;e=new F(f,0)}return b.call(this,a,e)}function b(a,b){for(var e=D(b),f=null,g=0,h=0;;)if(h<g){var l=f.Q(null,h);Lb(a,l);h+=1}else if(e=D(e))f=e,fd(f)?(e=Yb(f),g=Zb(f),f=e,l=Q(e),e=g,g=l):(l=G(f),Lb(a,l),e=K(f),f=null,g=0),h=0;else return null}a.i=1;a.f=function(a){var d=G(a);a=H(a);return b(d,a)};a.d=b;return a}(),yh={'"':'\\"',"\\":"\\\\","\b":"\\b","\f":"\\f",
-"\n":"\\n","\r":"\\r","\t":"\\t"};function zh(a){return[z('"'),z(a.replace(RegExp('[\\\\"\b\f\n\r\t]',"g"),function(a){return yh[a]})),z('"')].join("")}
-var $=function Ah(b,c,d){if(null==b)return Lb(c,"nil");if(void 0===b)return Lb(c,"#\x3cundefined\x3e");t(function(){var c=S.a(d,wa);return t(c)?(c=b?b.j&131072||b.kc?!0:b.j?!1:w(rb,b):w(rb,b))?Vc(b):c:c}())&&(Lb(c,"^"),Ah(Vc(b),c,d),Lb(c," "));if(null==b)return Lb(c,"nil");if(b.Yb)return b.nc(c);if(b&&(b.j&2147483648||b.I))return b.v(null,c,d);if(Ba(b)===Boolean||"number"===typeof b)return Lb(c,""+z(b));if(null!=b&&b.constructor===Object){Lb(c,"#js ");var e=Oe.a(function(c){return new W(null,2,5,
-uf,[Pd.b(c),b[c]],null)},gd(b));return Bh.n?Bh.n(e,Ah,c,d):Bh.call(null,e,Ah,c,d)}return b instanceof Array?wh(c,Ah,"#js ["," ","]",d,b):t("string"==typeof b)?t(ua.b(d))?Lb(c,zh(b)):Lb(c,b):Tc(b)?xh.d(c,Kc(["#\x3c",""+z(b),"\x3e"],0)):b instanceof Date?(e=function(b,c){for(var d=""+z(b);;)if(Q(d)<c)d=[z("0"),z(d)].join("");else return d},xh.d(c,Kc(['#inst "',""+z(b.getUTCFullYear()),"-",e(b.getUTCMonth()+1,2),"-",e(b.getUTCDate(),2),"T",e(b.getUTCHours(),2),":",e(b.getUTCMinutes(),2),":",e(b.getUTCSeconds(),
-2),".",e(b.getUTCMilliseconds(),3),"-",'00:00"'],0))):b instanceof RegExp?xh.d(c,Kc(['#"',b.source,'"'],0)):(b?b.j&2147483648||b.I||(b.j?0:w(Mb,b)):w(Mb,b))?Nb(b,c,d):xh.d(c,Kc(["#\x3c",""+z(b),"\x3e"],0))},Ch=function(){function a(a){var d=null;if(0<arguments.length){for(var d=0,e=Array(arguments.length-0);d<e.length;)e[d]=arguments[d+0],++d;d=new F(e,0)}return b.call(this,d)}function b(a){var b=oa();if(Yc(a))b="";else{var e=z,f=new fa;a:{var g=new dc(f);$(G(a),g,b);a=D(K(a));for(var h=null,l=0,
-m=0;;)if(m<l){var p=h.Q(null,m);Lb(g," ");$(p,g,b);m+=1}else if(a=D(a))h=a,fd(h)?(a=Yb(h),l=Zb(h),h=a,p=Q(a),a=l,l=p):(p=G(h),Lb(g," "),$(p,g,b),a=K(h),h=null,l=0),m=0;else break a}b=""+e(f)}return b}a.i=0;a.f=function(a){a=D(a);return b(a)};a.d=b;return a}();function Bh(a,b,c,d){return wh(c,function(a,c,d){var h=hb(a);b.c?b.c(h,c,d):b.call(null,h,c,d);Lb(c," ");a=ib(a);return b.c?b.c(a,c,d):b.call(null,a,c,d)},"{",", ","}",d,D(a))}Me.prototype.I=!0;
-Me.prototype.v=function(a,b,c){Lb(b,"#\x3cVolatile: ");$(this.state,b,c);return Lb(b,"\x3e")};F.prototype.I=!0;F.prototype.v=function(a,b,c){return wh(b,$,"("," ",")",c,this)};V.prototype.I=!0;V.prototype.v=function(a,b,c){return wh(b,$,"("," ",")",c,this)};wg.prototype.I=!0;wg.prototype.v=function(a,b,c){return wh(b,$,"("," ",")",c,this)};pg.prototype.I=!0;pg.prototype.v=function(a,b,c){return wh(b,$,"("," ",")",c,this)};Z.prototype.I=!0;
-Z.prototype.v=function(a,b,c){return wh(b,$,"["," ","]",c,this)};Rf.prototype.I=!0;Rf.prototype.v=function(a,b,c){return wh(b,$,"("," ",")",c,this)};ch.prototype.I=!0;ch.prototype.v=function(a,b,c){return wh(b,$,"#{"," ","}",c,this)};Bf.prototype.I=!0;Bf.prototype.v=function(a,b,c){return wh(b,$,"("," ",")",c,this)};Ld.prototype.I=!0;Ld.prototype.v=function(a,b,c){return wh(b,$,"("," ",")",c,this)};Hc.prototype.I=!0;Hc.prototype.v=function(a,b,c){return wh(b,$,"("," ",")",c,this)};
-rg.prototype.I=!0;rg.prototype.v=function(a,b,c){return Bh(this,$,b,c)};qg.prototype.I=!0;qg.prototype.v=function(a,b,c){return wh(b,$,"("," ",")",c,this)};Df.prototype.I=!0;Df.prototype.v=function(a,b,c){return wh(b,$,"["," ","]",c,this)};Lg.prototype.I=!0;Lg.prototype.v=function(a,b,c){return Bh(this,$,b,c)};$g.prototype.I=!0;$g.prototype.v=function(a,b,c){return wh(b,$,"#{"," ","}",c,this)};Vd.prototype.I=!0;Vd.prototype.v=function(a,b,c){return wh(b,$,"("," ",")",c,this)};Ug.prototype.I=!0;
-Ug.prototype.v=function(a,b,c){return wh(b,$,"("," ",")",c,this)};X.prototype.I=!0;X.prototype.v=function(a,b,c){return wh(b,$,"["," ","]",c,this)};W.prototype.I=!0;W.prototype.v=function(a,b,c){return wh(b,$,"["," ","]",c,this)};Kf.prototype.I=!0;Kf.prototype.v=function(a,b,c){return wh(b,$,"("," ",")",c,this)};Hd.prototype.I=!0;Hd.prototype.v=function(a,b){return Lb(b,"()")};ze.prototype.I=!0;ze.prototype.v=function(a,b,c){return wh(b,$,"("," ",")",c,this)};Lf.prototype.I=!0;
-Lf.prototype.v=function(a,b,c){return wh(b,$,"#queue ["," ","]",c,D(this))};pa.prototype.I=!0;pa.prototype.v=function(a,b,c){return Bh(this,$,b,c)};ph.prototype.I=!0;ph.prototype.v=function(a,b,c){return wh(b,$,"("," ",")",c,this)};Sg.prototype.I=!0;Sg.prototype.v=function(a,b,c){return wh(b,$,"("," ",")",c,this)};Fd.prototype.I=!0;Fd.prototype.v=function(a,b,c){return wh(b,$,"("," ",")",c,this)};W.prototype.sb=!0;W.prototype.tb=function(a,b){return pd.a(this,b)};Df.prototype.sb=!0;
-Df.prototype.tb=function(a,b){return pd.a(this,b)};U.prototype.sb=!0;U.prototype.tb=function(a,b){return Md(this,b)};qc.prototype.sb=!0;qc.prototype.tb=function(a,b){return pc(this,b)};var Dh=function(){function a(a,d,e){var f=null;if(2<arguments.length){for(var f=0,g=Array(arguments.length-2);f<g.length;)g[f]=arguments[f+2],++f;f=new F(g,0)}return b.call(this,a,d,f)}function b(a,b,e){return a.k=T.c(b,a.k,e)}a.i=2;a.f=function(a){var d=G(a);a=K(a);var e=G(a);a=H(a);return b(d,e,a)};a.d=b;return a}();
-function Eh(a){return function(b,c){var d=a.a?a.a(b,c):a.call(null,b,c);return Ac(d)?new yc(d):d}}
-function Ve(a){return function(b){return function(){function c(a,c){return A.c(b,a,c)}function d(b){return a.b?a.b(b):a.call(null,b)}function e(){return a.l?a.l():a.call(null)}var f=null,f=function(a,b){switch(arguments.length){case 0:return e.call(this);case 1:return d.call(this,a);case 2:return c.call(this,a,b)}throw Error("Invalid arity: "+arguments.length);};f.l=e;f.b=d;f.a=c;return f}()}(Eh(a))}
-var Fh=function(){function a(a){return Ce.a(c.l(),a)}function b(){return function(a){return function(b){return function(){function c(f,g){var h=L.b?L.b(b):L.call(null,b);ac(b,g);return sc.a(h,g)?f:a.a?a.a(f,g):a.call(null,f,g)}function g(b){return a.b?a.b(b):a.call(null,b)}function h(){return a.l?a.l():a.call(null)}var l=null,l=function(a,b){switch(arguments.length){case 0:return h.call(this);case 1:return g.call(this,a);case 2:return c.call(this,a,b)}throw Error("Invalid arity: "+arguments.length);
-};l.l=h;l.b=g;l.a=c;return l}()}(new Me(sh))}}var c=null,c=function(c){switch(arguments.length){case 0:return b.call(this);case 1:return a.call(this,c)}throw Error("Invalid arity: "+arguments.length);};c.l=b;c.b=a;return c}();function Gh(a,b){this.fa=a;this.Zb=b;this.q=0;this.j=2173173760}Gh.prototype.v=function(a,b,c){return wh(b,$,"("," ",")",c,this)};Gh.prototype.O=function(a,b,c){return wd.n(this.fa,b,c,this.Zb)};Gh.prototype.D=function(){return D(Ce.a(this.fa,this.Zb))};Gh.prototype[Ea]=function(){return uc(this)};
-var Hh={};function Ih(a){if(a?a.gc:a)return a.gc(a);var b;b=Ih[n(null==a?null:a)];if(!b&&(b=Ih._,!b))throw x("IEncodeJS.-clj-\x3ejs",a);return b.call(null,a)}function Jh(a){return(a?t(t(null)?null:a.fc)||(a.yb?0:w(Hh,a)):w(Hh,a))?Ih(a):"string"===typeof a||"number"===typeof a||a instanceof U||a instanceof qc?Kh.b?Kh.b(a):Kh.call(null,a):Ch.d(Kc([a],0))}
-var Kh=function Lh(b){if(null==b)return null;if(b?t(t(null)?null:b.fc)||(b.yb?0:w(Hh,b)):w(Hh,b))return Ih(b);if(b instanceof U)return Od(b);if(b instanceof qc)return""+z(b);if(dd(b)){var c={};b=D(b);for(var d=null,e=0,f=0;;)if(f<e){var g=d.Q(null,f),h=R.c(g,0,null),g=R.c(g,1,null);c[Jh(h)]=Lh(g);f+=1}else if(b=D(b))fd(b)?(e=Yb(b),b=Zb(b),d=e,e=Q(e)):(e=G(b),d=R.c(e,0,null),e=R.c(e,1,null),c[Jh(d)]=Lh(e),b=K(b),d=null,e=0),f=0;else break;return c}if($c(b)){c=[];b=D(Oe.a(Lh,b));d=null;for(f=e=0;;)if(f<
-e)h=d.Q(null,f),c.push(h),f+=1;else if(b=D(b))d=b,fd(d)?(b=Yb(d),f=Zb(d),d=b,e=Q(b),b=f):(b=G(d),c.push(b),b=K(d),d=null,e=0),f=0;else break;return c}return b},Mh={};function Nh(a,b){if(a?a.ec:a)return a.ec(a,b);var c;c=Nh[n(null==a?null:a)];if(!c&&(c=Nh._,!c))throw x("IEncodeClojure.-js-\x3eclj",a);return c.call(null,a,b)}
-var Ph=function(){function a(a){return b.d(a,Kc([new pa(null,1,[Oh,!1],null)],0))}var b=null,c=function(){function a(c,d){var h=null;if(1<arguments.length){for(var h=0,l=Array(arguments.length-1);h<l.length;)l[h]=arguments[h+1],++h;h=new F(l,0)}return b.call(this,c,h)}function b(a,c){var d=kd(c)?T.a(Og,c):c,e=S.a(d,Oh);return function(a,b,d,e){return function v(f){return(f?t(t(null)?null:f.uc)||(f.yb?0:w(Mh,f)):w(Mh,f))?Nh(f,T.a(Pg,c)):kd(f)?vh.b(Oe.a(v,f)):$c(f)?af.a(Oc(f),Oe.a(v,f)):f instanceof
-Array?zf(Oe.a(v,f)):Ba(f)===Object?af.a(Uf,function(){return function(a,b,c,d){return function Pa(e){return new V(null,function(a,b,c,d){return function(){for(;;){var a=D(e);if(a){if(fd(a)){var b=Yb(a),c=Q(b),g=Td(c);return function(){for(var a=0;;)if(a<c){var e=C.a(b,a),h=g,l=uf,m;m=e;m=d.b?d.b(m):d.call(null,m);e=new W(null,2,5,l,[m,v(f[e])],null);h.add(e);a+=1}else return!0}()?Wd(g.ca(),Pa(Zb(a))):Wd(g.ca(),null)}var h=G(a);return M(new W(null,2,5,uf,[function(){var a=h;return d.b?d.b(a):d.call(null,
-a)}(),v(f[h])],null),Pa(H(a)))}return null}}}(a,b,c,d),null,null)}}(a,b,d,e)(gd(f))}()):f}}(c,d,e,t(e)?Pd:z)(a)}a.i=1;a.f=function(a){var c=G(a);a=H(a);return b(c,a)};a.d=b;return a}(),b=function(b,e){switch(arguments.length){case 1:return a.call(this,b);default:var f=null;if(1<arguments.length){for(var f=0,g=Array(arguments.length-1);f<g.length;)g[f]=arguments[f+1],++f;f=new F(g,0)}return c.d(b,f)}throw Error("Invalid arity: "+arguments.length);};b.i=1;b.f=c.f;b.b=a;b.d=c.d;return b}();var wa=new U(null,"meta","meta",1499536964),ya=new U(null,"dup","dup",556298533),sh=new U("cljs.core","none","cljs.core/none",926646439),pe=new U(null,"file","file",-1269645878),le=new U(null,"end-column","end-column",1425389514),sa=new U(null,"flush-on-newline","flush-on-newline",-151457939),ne=new U(null,"column","column",2078222095),ua=new U(null,"readably","readably",1129599760),oe=new U(null,"line","line",212345235),za=new U(null,"print-length","print-length",1931866356),me=new U(null,"end-line",
-"end-line",1837326455),Oh=new U(null,"keywordize-keys","keywordize-keys",1310784252),Zg=new U("cljs.core","not-found","cljs.core/not-found",-1572889185);function Qh(a,b){var c=T.c(ih,a,b);return M(c,Ye.a(function(a){return function(b){return a===b}}(c),b))}
-var Rh=function(){function a(a,b){return Q(a)<Q(b)?A.c(Nc,b,a):A.c(Nc,a,b)}var b=null,c=function(){function a(c,d,h){var l=null;if(2<arguments.length){for(var l=0,m=Array(arguments.length-2);l<m.length;)m[l]=arguments[l+2],++l;l=new F(m,0)}return b.call(this,c,d,l)}function b(a,c,d){a=Qh(Q,Nc.d(d,c,Kc([a],0)));return A.c(af,G(a),H(a))}a.i=2;a.f=function(a){var c=G(a);a=K(a);var d=G(a);a=H(a);return b(c,d,a)};a.d=b;return a}(),b=function(b,e,f){switch(arguments.length){case 0:return bh;case 1:return b;
-case 2:return a.call(this,b,e);default:var g=null;if(2<arguments.length){for(var g=0,h=Array(arguments.length-2);g<h.length;)h[g]=arguments[g+2],++g;g=new F(h,0)}return c.d(b,e,g)}throw Error("Invalid arity: "+arguments.length);};b.i=2;b.f=c.f;b.l=function(){return bh};b.b=function(a){return a};b.a=a;b.d=c.d;return b}(),Sh=function(){function a(a,b){for(;;)if(Q(b)<Q(a)){var c=a;a=b;b=c}else return A.c(function(a,b){return function(a,c){return nd(b,c)?a:Xc.a(a,c)}}(a,b),a,a)}var b=null,c=function(){function a(b,
-d,h){var l=null;if(2<arguments.length){for(var l=0,m=Array(arguments.length-2);l<m.length;)m[l]=arguments[l+2],++l;l=new F(m,0)}return c.call(this,b,d,l)}function c(a,d,e){a=Qh(function(a){return-Q(a)},Nc.d(e,d,Kc([a],0)));return A.c(b,G(a),H(a))}a.i=2;a.f=function(a){var b=G(a);a=K(a);var d=G(a);a=H(a);return c(b,d,a)};a.d=c;return a}(),b=function(b,e,f){switch(arguments.length){case 1:return b;case 2:return a.call(this,b,e);default:var g=null;if(2<arguments.length){for(var g=0,h=Array(arguments.length-
-2);g<h.length;)h[g]=arguments[g+2],++g;g=new F(h,0)}return c.d(b,e,g)}throw Error("Invalid arity: "+arguments.length);};b.i=2;b.f=c.f;b.b=function(a){return a};b.a=a;b.d=c.d;return b}(),Th=function(){function a(a,b){return Q(a)<Q(b)?A.c(function(a,c){return nd(b,c)?Xc.a(a,c):a},a,a):A.c(Xc,a,b)}var b=null,c=function(){function a(b,d,h){var l=null;if(2<arguments.length){for(var l=0,m=Array(arguments.length-2);l<m.length;)m[l]=arguments[l+2],++l;l=new F(m,0)}return c.call(this,b,d,l)}function c(a,d,
-e){return A.c(b,a,Nc.a(e,d))}a.i=2;a.f=function(a){var b=G(a);a=K(a);var d=G(a);a=H(a);return c(b,d,a)};a.d=c;return a}(),b=function(b,e,f){switch(arguments.length){case 1:return b;case 2:return a.call(this,b,e);default:var g=null;if(2<arguments.length){for(var g=0,h=Array(arguments.length-2);g<h.length;)h[g]=arguments[g+2],++g;g=new F(h,0)}return c.d(b,e,g)}throw Error("Invalid arity: "+arguments.length);};b.i=2;b.f=c.f;b.b=function(a){return a};b.a=a;b.d=c.d;return b}();
-function Uh(a,b){return A.c(function(b,d){var e=R.c(d,0,null),f=R.c(d,1,null);return nd(a,e)?Rc.c(b,f,S.a(a,e)):b},T.c(Sc,a,Tg(b)),b)}function Vh(a,b){return A.c(function(a,d){var e=Yg(d,b);return Rc.c(a,e,Nc.a(S.c(a,e,bh),d))},Uf,a)}function Wh(a){return A.c(function(a,c){var d=R.c(c,0,null),e=R.c(c,1,null);return Rc.c(a,e,d)},Uf,a)}
-var Xh=function(){function a(a,b,c){a=Q(a)<=Q(b)?new W(null,3,5,uf,[a,b,Wh(c)],null):new W(null,3,5,uf,[b,a,c],null);b=R.c(a,0,null);c=R.c(a,1,null);var g=R.c(a,2,null),h=Vh(b,Vg(g));return A.c(function(a,b,c,d,e){return function(f,g){var h=function(){var a=Uh(Yg(g,Tg(d)),d);return e.b?e.b(a):e.call(null,a)}();return t(h)?A.c(function(){return function(a,b){return Nc.a(a,Wg.d(Kc([b,g],0)))}}(h,a,b,c,d,e),f,h):f}}(a,b,c,g,h),bh,c)}function b(a,b){if(D(a)&&D(b)){var c=Sh.a(fh(Tg(G(a))),fh(Tg(G(b)))),
-g=Q(a)<=Q(b)?new W(null,2,5,uf,[a,b],null):new W(null,2,5,uf,[b,a],null),h=R.c(g,0,null),l=R.c(g,1,null),m=Vh(h,c);return A.c(function(a,b,c,d,e){return function(f,g){var h=function(){var b=Yg(g,a);return e.b?e.b(b):e.call(null,b)}();return t(h)?A.c(function(){return function(a,b){return Nc.a(a,Wg.d(Kc([b,g],0)))}}(h,a,b,c,d,e),f,h):f}}(c,g,h,l,m),bh,l)}return bh}var c=null,c=function(c,e,f){switch(arguments.length){case 2:return b.call(this,c,e);case 3:return a.call(this,c,e,f)}throw Error("Invalid arity: "+
-arguments.length);};c.a=b;c.c=a;return c}();r("mori.apply",T);r("mori.apply.f2",T.a);r("mori.apply.f3",T.c);r("mori.apply.f4",T.n);r("mori.apply.f5",T.r);r("mori.apply.fn",T.K);r("mori.count",Q);r("mori.distinct",function(a){return function c(a,e){return new V(null,function(){return function(a,d){for(;;){var e=a,l=R.c(e,0,null);if(e=D(e))if(nd(d,l))l=H(e),e=d,a=l,d=e;else return M(l,c(H(e),Nc.a(d,l)));else return null}}.call(null,a,e)},null,null)}(a,bh)});r("mori.empty",Oc);r("mori.first",G);r("mori.second",Lc);r("mori.next",K);
-r("mori.rest",H);r("mori.seq",D);r("mori.conj",Nc);r("mori.conj.f0",Nc.l);r("mori.conj.f1",Nc.b);r("mori.conj.f2",Nc.a);r("mori.conj.fn",Nc.K);r("mori.cons",M);r("mori.find",function(a,b){return null!=a&&bd(a)&&nd(a,b)?new W(null,2,5,uf,[b,S.a(a,b)],null):null});r("mori.nth",R);r("mori.nth.f2",R.a);r("mori.nth.f3",R.c);r("mori.last",function(a){for(;;){var b=K(a);if(null!=b)a=b;else return G(a)}});r("mori.assoc",Rc);r("mori.assoc.f3",Rc.c);r("mori.assoc.fn",Rc.K);r("mori.dissoc",Sc);
-r("mori.dissoc.f1",Sc.b);r("mori.dissoc.f2",Sc.a);r("mori.dissoc.fn",Sc.K);r("mori.getIn",cf);r("mori.getIn.f2",cf.a);r("mori.getIn.f3",cf.c);r("mori.updateIn",df);r("mori.updateIn.f3",df.c);r("mori.updateIn.f4",df.n);r("mori.updateIn.f5",df.r);r("mori.updateIn.f6",df.P);r("mori.updateIn.fn",df.K);r("mori.assocIn",function Yh(b,c,d){var e=R.c(c,0,null);return(c=Ed(c))?Rc.c(b,e,Yh(S.a(b,e),c,d)):Rc.c(b,e,d)});r("mori.fnil",Ke);r("mori.fnil.f2",Ke.a);r("mori.fnil.f3",Ke.c);r("mori.fnil.f4",Ke.n);
-r("mori.disj",Xc);r("mori.disj.f1",Xc.b);r("mori.disj.f2",Xc.a);r("mori.disj.fn",Xc.K);r("mori.pop",function(a){return null==a?null:mb(a)});r("mori.peek",Wc);r("mori.hash",nc);r("mori.get",S);r("mori.get.f2",S.a);r("mori.get.f3",S.c);r("mori.hasKey",nd);r("mori.isEmpty",Yc);r("mori.reverse",Jd);r("mori.take",Pe);r("mori.take.f1",Pe.b);r("mori.take.f2",Pe.a);r("mori.drop",Qe);r("mori.drop.f1",Qe.b);r("mori.drop.f2",Qe.a);r("mori.takeNth",rh);r("mori.takeNth.f1",rh.b);r("mori.takeNth.f2",rh.a);
-r("mori.partition",bf);r("mori.partition.f2",bf.a);r("mori.partition.f3",bf.c);r("mori.partition.f4",bf.n);r("mori.partitionAll",kh);r("mori.partitionAll.f1",kh.b);r("mori.partitionAll.f2",kh.a);r("mori.partitionAll.f3",kh.c);r("mori.partitionBy",th);r("mori.partitionBy.f1",th.b);r("mori.partitionBy.f2",th.a);r("mori.iterate",function Zh(b,c){return M(c,new V(null,function(){return Zh(b,b.b?b.b(c):b.call(null,c))},null,null))});r("mori.into",af);r("mori.into.f2",af.a);r("mori.into.f3",af.c);
-r("mori.merge",Wg);r("mori.mergeWith",Xg);r("mori.subvec",Cf);r("mori.subvec.f2",Cf.a);r("mori.subvec.f3",Cf.c);r("mori.takeWhile",lh);r("mori.takeWhile.f1",lh.b);r("mori.takeWhile.f2",lh.a);r("mori.dropWhile",Re);r("mori.dropWhile.f1",Re.b);r("mori.dropWhile.f2",Re.a);r("mori.groupBy",function(a,b){return ce(A.c(function(b,d){var e=a.b?a.b(d):a.call(null,d);return ee.c(b,e,Nc.a(S.c(b,e,Mc),d))},Ob(Uf),b))});r("mori.interpose",function(a,b){return Qe.a(1,Ue.a(Se.b(a),b))});r("mori.interleave",Ue);
-r("mori.interleave.f2",Ue.a);r("mori.interleave.fn",Ue.K);r("mori.concat",ae);r("mori.concat.f0",ae.l);r("mori.concat.f1",ae.b);r("mori.concat.f2",ae.a);r("mori.concat.fn",ae.K);function $e(a){return a instanceof Array||cd(a)}r("mori.flatten",function(a){return Xe.a(function(a){return!$e(a)},H(Ze(a)))});r("mori.lazySeq",function(a){return new V(null,a,null,null)});r("mori.keys",Tg);r("mori.selectKeys",Yg);r("mori.vals",Vg);r("mori.primSeq",Jc);r("mori.primSeq.f1",Jc.b);r("mori.primSeq.f2",Jc.a);
-r("mori.map",Oe);r("mori.map.f1",Oe.b);r("mori.map.f2",Oe.a);r("mori.map.f3",Oe.c);r("mori.map.f4",Oe.n);r("mori.map.fn",Oe.K);
-r("mori.mapIndexed",function(a,b){return function d(b,f){return new V(null,function(){var g=D(f);if(g){if(fd(g)){for(var h=Yb(g),l=Q(h),m=Td(l),p=0;;)if(p<l)Xd(m,function(){var d=b+p,f=C.a(h,p);return a.a?a.a(d,f):a.call(null,d,f)}()),p+=1;else break;return Wd(m.ca(),d(b+l,Zb(g)))}return M(function(){var d=G(g);return a.a?a.a(b,d):a.call(null,b,d)}(),d(b+1,H(g)))}return null},null,null)}(0,b)});r("mori.mapcat",We);r("mori.mapcat.f1",We.b);r("mori.mapcat.fn",We.K);r("mori.reduce",A);
-r("mori.reduce.f2",A.a);r("mori.reduce.f3",A.c);r("mori.reduceKV",function(a,b,c){return null!=c?xb(c,a,b):b});r("mori.keep",Le);r("mori.keep.f1",Le.b);r("mori.keep.f2",Le.a);r("mori.keepIndexed",Ne);r("mori.keepIndexed.f1",Ne.b);r("mori.keepIndexed.f2",Ne.a);r("mori.filter",Xe);r("mori.filter.f1",Xe.b);r("mori.filter.f2",Xe.a);r("mori.remove",Ye);r("mori.remove.f1",Ye.b);r("mori.remove.f2",Ye.a);r("mori.some",Fe);r("mori.every",Ee);r("mori.equals",sc);r("mori.equals.f1",sc.b);
-r("mori.equals.f2",sc.a);r("mori.equals.fn",sc.K);r("mori.range",qh);r("mori.range.f0",qh.l);r("mori.range.f1",qh.b);r("mori.range.f2",qh.a);r("mori.range.f3",qh.c);r("mori.repeat",Se);r("mori.repeat.f1",Se.b);r("mori.repeat.f2",Se.a);r("mori.repeatedly",Te);r("mori.repeatedly.f1",Te.b);r("mori.repeatedly.f2",Te.a);r("mori.sort",sd);r("mori.sort.f1",sd.b);r("mori.sort.f2",sd.a);r("mori.sortBy",td);r("mori.sortBy.f2",td.a);r("mori.sortBy.f3",td.c);r("mori.intoArray",Ia);r("mori.intoArray.f1",Ia.b);
-r("mori.intoArray.f2",Ia.a);r("mori.subseq",nh);r("mori.subseq.f3",nh.c);r("mori.subseq.f5",nh.r);r("mori.dedupe",Fh);r("mori.dedupe.f0",Fh.l);r("mori.dedupe.f1",Fh.b);r("mori.transduce",wd);r("mori.transduce.f3",wd.c);r("mori.transduce.f4",wd.n);r("mori.eduction",function(a,b){return new Gh(a,b)});r("mori.sequence",Ce);r("mori.sequence.f1",Ce.b);r("mori.sequence.f2",Ce.a);r("mori.sequence.fn",Ce.K);r("mori.completing",vd);r("mori.completing.f1",vd.b);r("mori.completing.f2",vd.a);r("mori.list",Kd);
-r("mori.vector",Af);r("mori.hashMap",Pg);r("mori.set",fh);r("mori.sortedSet",gh);r("mori.sortedSetBy",hh);r("mori.sortedMap",Qg);r("mori.sortedMapBy",Rg);r("mori.queue",function(){function a(a){var d=null;if(0<arguments.length){for(var d=0,e=Array(arguments.length-0);d<e.length;)e[d]=arguments[d+0],++d;d=new F(e,0)}return b.call(this,d)}function b(a){return af.a?af.a(Mf,a):af.call(null,Mf,a)}a.i=0;a.f=function(a){a=D(a);return b(a)};a.d=b;return a}());r("mori.keyword",Pd);r("mori.keyword.f1",Pd.b);
-r("mori.keyword.f2",Pd.a);r("mori.symbol",rc);r("mori.symbol.f1",rc.b);r("mori.symbol.f2",rc.a);r("mori.zipmap",function(a,b){for(var c=Ob(Uf),d=D(a),e=D(b);;)if(d&&e)c=ee.c(c,G(d),G(e)),d=K(d),e=K(e);else return Qb(c)});r("mori.isList",function(a){return a?a.j&33554432||a.wc?!0:a.j?!1:w(Eb,a):w(Eb,a)});r("mori.isSeq",kd);r("mori.isVector",ed);r("mori.isMap",dd);r("mori.isSet",ad);r("mori.isKeyword",function(a){return a instanceof U});r("mori.isSymbol",function(a){return a instanceof qc});
-r("mori.isCollection",$c);r("mori.isSequential",cd);r("mori.isAssociative",bd);r("mori.isCounted",Ec);r("mori.isIndexed",Fc);r("mori.isReduceable",function(a){return a?a.j&524288||a.Sb?!0:a.j?!1:w(vb,a):w(vb,a)});r("mori.isSeqable",ld);r("mori.isReversible",Id);r("mori.union",Rh);r("mori.union.f0",Rh.l);r("mori.union.f1",Rh.b);r("mori.union.f2",Rh.a);r("mori.union.fn",Rh.K);r("mori.intersection",Sh);r("mori.intersection.f1",Sh.b);r("mori.intersection.f2",Sh.a);r("mori.intersection.fn",Sh.K);
-r("mori.difference",Th);r("mori.difference.f1",Th.b);r("mori.difference.f2",Th.a);r("mori.difference.fn",Th.K);r("mori.join",Xh);r("mori.join.f2",Xh.a);r("mori.join.f3",Xh.c);r("mori.index",Vh);r("mori.project",function(a,b){return fh(Oe.a(function(a){return Yg(a,b)},a))});r("mori.mapInvert",Wh);r("mori.rename",function(a,b){return fh(Oe.a(function(a){return Uh(a,b)},a))});r("mori.renameKeys",Uh);r("mori.isSubset",function(a,b){return Q(a)<=Q(b)&&Ee(function(a){return nd(b,a)},a)});
-r("mori.isSuperset",function(a,b){return Q(a)>=Q(b)&&Ee(function(b){return nd(a,b)},b)});r("mori.notEquals",je);r("mori.notEquals.f1",je.b);r("mori.notEquals.f2",je.a);r("mori.notEquals.fn",je.K);r("mori.gt",Ad);r("mori.gt.f1",Ad.b);r("mori.gt.f2",Ad.a);r("mori.gt.fn",Ad.K);r("mori.gte",Bd);r("mori.gte.f1",Bd.b);r("mori.gte.f2",Bd.a);r("mori.gte.fn",Bd.K);r("mori.lt",yd);r("mori.lt.f1",yd.b);r("mori.lt.f2",yd.a);r("mori.lt.fn",yd.K);r("mori.lte",zd);r("mori.lte.f1",zd.b);r("mori.lte.f2",zd.a);
-r("mori.lte.fn",zd.K);r("mori.compare",od);r("mori.partial",Je);r("mori.partial.f1",Je.b);r("mori.partial.f2",Je.a);r("mori.partial.f3",Je.c);r("mori.partial.f4",Je.n);r("mori.partial.fn",Je.K);r("mori.comp",Ie);r("mori.comp.f0",Ie.l);r("mori.comp.f1",Ie.b);r("mori.comp.f2",Ie.a);r("mori.comp.f3",Ie.c);r("mori.comp.fn",Ie.K);
-r("mori.pipeline",function(){function a(a){var d=null;if(0<arguments.length){for(var d=0,e=Array(arguments.length-0);d<e.length;)e[d]=arguments[d+0],++d;d=new F(e,0)}return b.call(this,d)}function b(a){function b(a,c){return c.b?c.b(a):c.call(null,a)}return A.a?A.a(b,a):A.call(null,b,a)}a.i=0;a.f=function(a){a=D(a);return b(a)};a.d=b;return a}());
-r("mori.curry",function(){function a(a,d){var e=null;if(1<arguments.length){for(var e=0,f=Array(arguments.length-1);e<f.length;)f[e]=arguments[e+1],++e;e=new F(f,0)}return b.call(this,a,e)}function b(a,b){return function(e){return T.a(a,M.a?M.a(e,b):M.call(null,e,b))}}a.i=1;a.f=function(a){var d=G(a);a=H(a);return b(d,a)};a.d=b;return a}());
-r("mori.juxt",function(){function a(a){var d=null;if(0<arguments.length){for(var d=0,e=Array(arguments.length-0);d<e.length;)e[d]=arguments[d+0],++d;d=new F(e,0)}return b.call(this,d)}function b(a){return function(){function b(a){var c=null;if(0<arguments.length){for(var c=0,d=Array(arguments.length-0);c<d.length;)d[c]=arguments[c+0],++c;c=new F(d,0)}return e.call(this,c)}function e(b){var d=function(){function d(a){return T.a(a,b)}return Oe.a?Oe.a(d,a):Oe.call(null,d,a)}();return Ia.b?Ia.b(d):Ia.call(null,
-d)}b.i=0;b.f=function(a){a=D(a);return e(a)};b.d=e;return b}()}a.i=0;a.f=function(a){a=D(a);return b(a)};a.d=b;return a}());
-r("mori.knit",function(){function a(a){var d=null;if(0<arguments.length){for(var d=0,e=Array(arguments.length-0);d<e.length;)e[d]=arguments[d+0],++d;d=new F(e,0)}return b.call(this,d)}function b(a){return function(b){var e=function(){function e(a,b){return a.b?a.b(b):a.call(null,b)}return Oe.c?Oe.c(e,a,b):Oe.call(null,e,a,b)}();return Ia.b?Ia.b(e):Ia.call(null,e)}}a.i=0;a.f=function(a){a=D(a);return b(a)};a.d=b;return a}());r("mori.sum",xd);r("mori.sum.f0",xd.l);r("mori.sum.f1",xd.b);
-r("mori.sum.f2",xd.a);r("mori.sum.fn",xd.K);r("mori.inc",function(a){return a+1});r("mori.dec",function(a){return a-1});r("mori.isEven",Ge);r("mori.isOdd",function(a){return!Ge(a)});r("mori.each",function(a,b){for(var c=D(a),d=null,e=0,f=0;;)if(f<e){var g=d.Q(null,f);b.b?b.b(g):b.call(null,g);f+=1}else if(c=D(c))fd(c)?(e=Yb(c),c=Zb(c),d=e,e=Q(e)):(d=g=G(c),b.b?b.b(d):b.call(null,d),c=K(c),d=null,e=0),f=0;else return null});r("mori.identity",ud);
-r("mori.constantly",function(a){return function(){function b(b){if(0<arguments.length)for(var d=0,e=Array(arguments.length-0);d<e.length;)e[d]=arguments[d+0],++d;return a}b.i=0;b.f=function(b){D(b);return a};b.d=function(){return a};return b}()});r("mori.toJs",Kh);
-r("mori.toClj",function(){function a(a,b){return Ph.d(a,Kc([Oh,b],0))}function b(a){return Ph.b(a)}var c=null,c=function(c,e){switch(arguments.length){case 1:return b.call(this,c);case 2:return a.call(this,c,e)}throw Error("Invalid arity: "+arguments.length);};c.b=b;c.a=a;return c}());r("mori.configure",function(a,b){switch(a){case "print-length":return la=b;case "print-level":return ma=b;default:throw Error([z("No matching clause: "),z(a)].join(""));}});r("mori.meta",Vc);r("mori.withMeta",O);
-r("mori.varyMeta",ie);r("mori.varyMeta.f2",ie.a);r("mori.varyMeta.f3",ie.c);r("mori.varyMeta.f4",ie.n);r("mori.varyMeta.f5",ie.r);r("mori.varyMeta.f6",ie.P);r("mori.varyMeta.fn",ie.K);r("mori.alterMeta",Dh);r("mori.resetMeta",function(a,b){return a.k=b});V.prototype.inspect=function(){return this.toString()};F.prototype.inspect=function(){return this.toString()};Hc.prototype.inspect=function(){return this.toString()};wg.prototype.inspect=function(){return this.toString()};pg.prototype.inspect=function(){return this.toString()};
-qg.prototype.inspect=function(){return this.toString()};Fd.prototype.inspect=function(){return this.toString()};Ld.prototype.inspect=function(){return this.toString()};Hd.prototype.inspect=function(){return this.toString()};W.prototype.inspect=function(){return this.toString()};Vd.prototype.inspect=function(){return this.toString()};Bf.prototype.inspect=function(){return this.toString()};Df.prototype.inspect=function(){return this.toString()};Z.prototype.inspect=function(){return this.toString()};
-X.prototype.inspect=function(){return this.toString()};pa.prototype.inspect=function(){return this.toString()};rg.prototype.inspect=function(){return this.toString()};Lg.prototype.inspect=function(){return this.toString()};$g.prototype.inspect=function(){return this.toString()};ch.prototype.inspect=function(){return this.toString()};ph.prototype.inspect=function(){return this.toString()};U.prototype.inspect=function(){return this.toString()};qc.prototype.inspect=function(){return this.toString()};
-Lf.prototype.inspect=function(){return this.toString()};Kf.prototype.inspect=function(){return this.toString()};r("mori.mutable.thaw",function(a){return Ob(a)});r("mori.mutable.freeze",ce);r("mori.mutable.conj",de);r("mori.mutable.conj.f0",de.l);r("mori.mutable.conj.f1",de.b);r("mori.mutable.conj.f2",de.a);r("mori.mutable.conj.fn",de.K);r("mori.mutable.assoc",ee);r("mori.mutable.assoc.f3",ee.c);r("mori.mutable.assoc.fn",ee.K);r("mori.mutable.dissoc",fe);r("mori.mutable.dissoc.f2",fe.a);r("mori.mutable.dissoc.fn",fe.K);r("mori.mutable.pop",function(a){return Ub(a)});r("mori.mutable.disj",ge);
-r("mori.mutable.disj.f2",ge.a);r("mori.mutable.disj.fn",ge.K);;return this.mori;}.call({});});
-
-},{}],385:[function(require,module,exports){
-(function (global){
-(function(){
-  "use strict";
-
-  function addPropertyTo(target, methodName, value) {
-    Object.defineProperty(target, methodName, {
-      enumerable: false,
-      configurable: false,
-      writable: false,
-      value: value
-    });
-  }
-
-  function banProperty(target, methodName) {
-    addPropertyTo(target, methodName, function() {
-      throw new ImmutableError("The " + methodName +
-        " method cannot be invoked on an Immutable data structure.");
-    });
-  }
-
-  var immutabilityTag = "__immutable_invariants_hold";
-
-  function addImmutabilityTag(target) {
-    addPropertyTo(target, immutabilityTag, true);
-  }
-
-  function isImmutable(target) {
-    if (typeof target === "object") {
-      return target === null || target.hasOwnProperty(immutabilityTag);
-    } else {
-      // In JavaScript, only objects are even potentially mutable.
-      // strings, numbers, null, and undefined are all naturally immutable.
-      return true;
-    }
-  }
-
-  var mutatingObjectMethods = [
-    "setPrototypeOf"
-  ];
-
-  var nonMutatingObjectMethods = [
-    "keys"
-  ];
-
-  var mutatingArrayMethods = mutatingObjectMethods.concat([
-    "push", "pop", "sort", "splice", "shift", "unshift", "reverse"
-  ]);
-
-  var nonMutatingArrayMethods = nonMutatingObjectMethods.concat([
-    "map", "filter", "slice", "concat", "reduce", "reduceRight"
-  ]);
-
-  function ImmutableError(message) {
-    var err       = new Error(message);
-    err.__proto__ = ImmutableError;
-
-    return err;
-  }
-  ImmutableError.prototype = Error.prototype;
-
-  function makeImmutable(obj, bannedMethods) {
-    // Make all mutating methods throw exceptions.
-    for (var index in bannedMethods) {
-      banProperty(obj, bannedMethods[index]);
-    }
-
-    // Tag it so we can quickly tell it's immutable later.
-    addImmutabilityTag(obj);
-
-    // Freeze it and return it.
-    Object.freeze(obj);
-
-    return obj;
-  }
-
-  function makeMethodReturnImmutable(obj, methodName) {
-    var currentMethod = obj[methodName];
-
-    addPropertyTo(obj, methodName, function() {
-      return Immutable(currentMethod.apply(obj, arguments));
-    });
-  }
-
-  function makeImmutableArray(array) {
-    // Don't change their implementations, but wrap these functions to make sure
-    // they always return an immutable value.
-    for (var index in nonMutatingArrayMethods) {
-      var methodName = nonMutatingArrayMethods[index];
-      makeMethodReturnImmutable(array, methodName);
-    }
-
-    addPropertyTo(array, "flatMap",  flatMap);
-    addPropertyTo(array, "asObject", asObject);
-    addPropertyTo(array, "asMutable", asMutableArray);
-
-    for(var i = 0, length = array.length; i < length; i++) {
-      array[i] = Immutable(array[i]);
-    }
-
-    return makeImmutable(array, mutatingArrayMethods);
-  }
-
-  /**
-   * Effectively performs a map() over the elements in the array, using the
-   * provided iterator, except that whenever the iterator returns an array, that
-   * array's elements are added to the final result instead of the array itself.
-   *
-   * @param {function} iterator - The iterator function that will be invoked on each element in the array. It will receive three arguments: the current value, the current index, and the current object.
-   */
-  function flatMap(iterator) {
-    // Calling .flatMap() with no arguments is a no-op. Don't bother cloning.
-    if (arguments.length === 0) {
-      return this;
-    }
-
-    var result = [];
-
-    for (var key in this) {
-      var iteratorResult = iterator(this[key], key, this);
-
-      if (iteratorResult instanceof Array) {
-        // Concatenate Array results into the return value we're building up.
-        result.push.apply(result, iteratorResult);
-      } else {
-        // Handle non-Array results the same way map() does.
-        result.push(iteratorResult);
-      }
-    }
-
-    return makeImmutableArray(result);
-  }
-
-  /**
-   * Returns an Immutable copy of the object without the given keys included.
-   *
-   * @param {array} keysToRemove - A list of strings representing the keys to exclude in the return value. Instead of providing a single array, this method can also be called by passing multiple strings as separate arguments.
-   */
-  function without(keysToRemove) {
-    // Calling .without() with no arguments is a no-op. Don't bother cloning.
-    if (arguments.length === 0) {
-      return this;
-    }
-
-    // If we weren't given an array, use the arguments list.
-    if (!(keysToRemove instanceof Array)) {
-      keysToRemove = Array.prototype.slice.call(arguments);
-    }
-
-    var result = {};
-
-    for (var key in this) {
-      if (keysToRemove.indexOf(key) === -1) {
-        result[key] = this[key];
-      }
-    }
-
-    return makeImmutableObject(result);
-  }
-
-  function asMutableArray(opts) {
-    var result = [], i, length;
-
-    if(opts && opts.deep) {
-      for(i = 0, length = this.length; i < length; i++) {
-        result.push( asDeepMutable(this[i]) );
-      }
-    } else {
-      for(i = 0, length = this.length; i < length; i++) {
-        result.push(this[i]);
-      }
-    }
-
-    return result;
-  }
-
-  /**
-   * Effectively performs a [map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) over the elements in the array, expecting that the iterator function
-   * will return an array of two elements - the first representing a key, the other
-   * a value. Then returns an Immutable Object constructed of those keys and values.
-   *
-   * @param {function} iterator - A function which should return an array of two elements - the first representing the desired key, the other the desired value.
-   */
-  function asObject(iterator) {
-    // If no iterator was provided, assume the identity function
-    // (suggesting this array is already a list of key/value pairs.)
-    if (typeof iterator !== "function") {
-      iterator = function(value) { return value; };
-    }
-
-    var result = {};
-
-    for (var index in this) {
-      var pair  = iterator(this[index], index, this),
-          key   = pair[0],
-          value = pair[1];
-
-      result[key] = value;
-    }
-
-    return makeImmutableObject(result);
-  }
-
-  function asDeepMutable(obj) {
-    if( !obj || !obj.hasOwnProperty(immutabilityTag) ) { return obj; }
-    return obj.asMutable({deep: true});
-  }
-
-  function quickCopy(src, dest) {
-    for (var key in src) { dest[key] = src[key]; }
-
-    return dest;
-  }
-
-  /**
-   * Returns an Immutable Object containing the properties and values of both
-   * this object and the provided object, prioritizing the provided object's
-   * values whenever the same key is present in both objects.
-   *
-   * @param {object} other - The other object to merge. Multiple objects can be passed, either as an array or as extra arguments. In such a case, the later an object appears in that list, the higher its priority.
-   */
-  function merge(arg) {
-    // Calling .merge() with no arguments is a no-op. Don't bother cloning.
-    if (arguments.length === 0) {
-      return this;
-    }
-
-    var anyChanges    = false,
-        result        = quickCopy(this, {}), // A shallow clone of this object.
-        receivedArray = (arg instanceof Array),
-        key;
-
-    // Use the given key to extract a value from the given object, then place
-    // that value in the result object under the same key. If that resulted
-    // in a change from this object's value at that key, set anyChanges = true.
-    function addToResult(currentObj, otherObj, key) {
-      var immutableValue = Immutable(otherObj[key]);
-
-      anyChanges = anyChanges ||
-        (!currentObj.hasOwnProperty(key) ||
-        ((immutableValue !== currentObj[key]) &&
-          // Avoid false positives due to (NaN !== NaN) evaluating to true
-          (immutableValue === immutableValue)));
-
-      result[key] = immutableValue;
-    }
-
-    // Achieve prioritization by overriding previous values that get in the way.
-    if (!receivedArray && arguments.length === 1) {
-      // The most common use case: just merge one object into the existing one.
-      for (key in arg) {
-        addToResult(this, arg, key);
-      }
-    } else {
-      // We also accept either an Array or multiple arguments.
-      var others = receivedArray ? arg :
-        Array.prototype.slice.call(arguments);
-        // Note: If we don't convert arguments into an Array, IE9 will end up
-        // including the arguments object in the final result object.
-        // Can't make this stuff up.
-
-      for (var index in others) {
-        var other = others[index];
-
-        for (key in other) {
-          addToResult(this, other, key);
-        }
-      }
-    }
-
-    if (anyChanges) {
-      return makeImmutableObject(result);
-    } else {
-      return this;
-    }
-  }
-
-  function asMutableObject(opts) {
-    var result = {}, key;
-
-    if(opts && opts.deep) {
-      for (key in this) {
-        result[key] = asDeepMutable(this[key]);
-      }
-    } else {
-      for (key in this) {
-        result[key] = this[key];
-      }
-    }
-
-    return result;
-  }
-
-  // Finalizes an object with immutable methods, freezes it, and returns it.
-  function makeImmutableObject(obj) {
-    addPropertyTo(obj, "merge", merge);
-    addPropertyTo(obj, "without", without);
-    addPropertyTo(obj, "asMutable", asMutableObject);
-
-    return makeImmutable(obj, mutatingObjectMethods);
-  }
-
-  function Immutable(obj) {
-    // If the user passes multiple arguments, assume what they want is an array.
-    if (arguments.length > 1) {
-      return makeImmutableArray(Array.prototype.slice.call(arguments));
-    } else if (isImmutable(obj)) {
-      return obj;
-    } else if (obj instanceof Array) {
-      return makeImmutableArray(obj.slice());
-    } else {
-      // Don't freeze the object we were given; make a clone and use that.
-      var clone = {};
-
-      for (var key in obj) {
-        clone[key] = Immutable(obj[key]);
-      }
-
-      return makeImmutableObject(clone);
-    }
-  }
-
-  // Export the library
-  Immutable.isImmutable    = isImmutable;
-  Immutable.ImmutableError = ImmutableError;
-
-  Object.freeze(Immutable);
-
-  /* istanbul ignore if */
-  if (typeof module === "object") {
-    module.exports = Immutable;
-  } else if (typeof exports === "object") {
-    exports.Immutable = Immutable;
-  } else if (typeof window === "object") {
-    window.Immutable = Immutable;
-  } else if (typeof global === "object") {
-    global.Immutable = Immutable;
-  }
-})();
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}]},{},[1]);

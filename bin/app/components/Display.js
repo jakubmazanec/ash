@@ -12,6 +12,8 @@ var ash = _interopRequire(require("../ash"));
 
 var Display = (function (_ash$Component) {
 	function Display() {
+		this.state = { displayClicks: 0 };
+
 		_classCallCheck(this, Display);
 
 		if (_ash$Component != null) {
@@ -22,14 +24,9 @@ var Display = (function (_ash$Component) {
 	_inherits(Display, _ash$Component);
 
 	_prototypeProperties(Display, null, {
-		getInitialState: {
-			value: function getInitialState() {
-				return { displayClicks: 0 };
-			},
-			writable: true,
-			configurable: true
-		},
 		render: {
+			/* jshint ignore:end */
+
 			value: function render() {
 				var message = "Timer Clicks = " + this.props.timerClicks + " -- Display Click = " + this.state.displayClicks;
 
@@ -75,11 +72,16 @@ var Display = (function (_ash$Component) {
 	return Display;
 })(ash.Component);
 
-module.exports = ash.createFactory(Display);
+module.exports = ash.createElement(Display);
+
+/* jshint ignore:start */
+
 //console.log('display componentWillReceiveProps');
+
 //console.log('display componentDidMount');
 //debugger;
 //this.interval = setInterval(this.tick, 500);
 //console.log(this.getDOMNode());
+
 //console.log('display componentWillUnmount');
 //clearInterval(this.interval);
