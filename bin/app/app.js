@@ -8,21 +8,16 @@ var _inherits = function (subClass, superClass) { if (typeof superClass !== "fun
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
-var $ = _interopRequire(require("jquery"));
+// import $ from 'jquery';
 
 var _ = _interopRequire(require("_"));
 
 var ash = _interopRequire(require("./ash"));
 
-var icepick = _interopRequire(require("icepick"));
-
-// import m from 'mithril';
-// import React from 'react';
-
 // import Display from './components/Display';
 // import Timer from './components/Timer';
 
-global.$ = $;
+// global.$ = $;
 global._ = _;
 global.ash = ash;
 
@@ -32,9 +27,11 @@ var Renderer = global.Renderer = new ash.Renderer();
 
 var AppComponent = (function (_ash$Component) {
 	function AppComponent() {
+		this.name = "App";
 		this.state = new ash.ImmutableObject({
 			list1: new ash.ImmutableArray(),
-			list2: new ash.ImmutableArray()
+			list2: new ash.ImmutableArray(),
+			redShadow: true
 		});
 
 		_classCallCheck(this, AppComponent);
@@ -53,13 +50,28 @@ var AppComponent = (function (_ash$Component) {
 			value: function render() {
 				return ash.e("div", null, ash.e("div", {
 					style: {
-						boxShadow: "2px 2px 5px red"
+						boxShadow: this.state.redShadow ? "2px 2px 5px red" : "2px 2px 5px blue"
 					}
 				}, ash.e("button", {
 					events: { click: this.addToList1 }
 				}, "+ list 1"), ash.e("button", {
 					events: { click: this.addToList2 }
-				}, "+ list 2")), new List(this.state.list1), new List(this.state.list2));
+				}, "+ list 2"), ash.e("button", {
+					events: { click: this.clearList1 }
+				}, "+ clear 1"), ash.e("button", {
+					events: { click: this.clearList2 }
+				}, "+ clear 2"), ash.e("button", {
+					events: { click: this.changeShadow }
+				}, "!!!")), new List(this.state.list1), //);
+				new List(this.state.list2));
+			},
+			writable: true,
+			configurable: true
+		},
+		changeShadow: {
+			value: function changeShadow() {
+				this.state = this.state.set("redShadow", !this.state.redShadow);
+				this.isDirty = true;
 			},
 			writable: true,
 			configurable: true
@@ -68,14 +80,13 @@ var AppComponent = (function (_ash$Component) {
 			value: function addToList1() {
 				var items = [];
 
-				for (var i = 0; i < 5000; i++) {
+				for (var i = 0; i < 1000; i++) {
 					items.push(Math.random().toFixed(1));
 				}
 
 				this.state = this.state.merge({ list1: this.state.list1.concat(items) });
-				//this.state.list1 = this.state.list1.concat(items);
+				// this.state.list1 = this.state.list1.concat(items);
 
-				// this.setDirty();
 				this.isDirty = true;
 			},
 			writable: true,
@@ -85,14 +96,31 @@ var AppComponent = (function (_ash$Component) {
 			value: function addToList2() {
 				var items = [];
 
-				for (var i = 0; i < 5000; i++) {
+				for (var i = 0; i < 1000; i++) {
 					items.push(Math.random().toFixed(1));
 				}
 
 				this.state = this.state.merge({ list2: this.state.list2.concat(items) });
-				//this.state.list2 = this.state.list2.concat(items);
+				// this.state.list2 = this.state.list2.concat(items);
 
-				// this.setDirty();
+				this.isDirty = true;
+			},
+			writable: true,
+			configurable: true
+		},
+		clearList1: {
+			value: function clearList1() {
+				this.state = this.state.merge({ list1: [] });
+				// this.state.list1 = [];
+				this.isDirty = true;
+			},
+			writable: true,
+			configurable: true
+		},
+		clearList2: {
+			value: function clearList2() {
+				this.state = this.state.merge({ list2: [] });
+				// this.state.list2 = [];
 				this.isDirty = true;
 			},
 			writable: true,
@@ -107,6 +135,9 @@ var App = ash.createElement(AppComponent);
 
 var ListComponent = (function (_ash$Component2) {
 	function ListComponent() {
+		this.name = "List";
+		this.state = { redOutline: false };
+
 		_classCallCheck(this, ListComponent);
 
 		if (_ash$Component2 != null) {
@@ -118,15 +149,33 @@ var ListComponent = (function (_ash$Component2) {
 
 	_prototypeProperties(ListComponent, null, {
 		render: {
+			/* jshint ignore:end */
+
 			value: function render() {
-				var items = [];
+				var items = [ash.e("button", {
+					events: { click: this.changeOutline }
+				}, "!!!")];
 
 				for (var i = 0; i < this.props.length; i++) {
 					items.push(ash.e("li", null, /*{key: i + ''}*/this.props[i] + ""));
 				}
 
-				return ash.e("ul", null, items);
+				return ash.e("ul", { style: { outline: this.state.redOutline ? "1px solid red" : "1px solid blue" } }, items);
 			},
+			writable: true,
+			configurable: true
+		},
+		changeOutline: {
+			value: function changeOutline() {
+				this.state.redOutline = !this.state.redOutline;
+
+				this.isDirty = true;
+			},
+			writable: true,
+			configurable: true
+		},
+		onBeforeReceiveProps: {
+			value: function onBeforeReceiveProps() {},
 			writable: true,
 			configurable: true
 		}
@@ -137,7 +186,7 @@ var ListComponent = (function (_ash$Component2) {
 
 var List = ash.createElement(ListComponent);
 
-Renderer.addComponent(new App(), $(".page")[0]);
+Renderer.addComponent(new App(), global.document.querySelector(".page"));
 
 function assign() {
 	var sources = [];
@@ -407,17 +456,13 @@ router.start();*/
 
 // Renderer.registerComponent(todoApp, $('.page-content')[0]);
 
-/*getInitialState() {
-	return new ash.ImmutableObject({
-		list1: new ash.ImmutableArray(),
-		list2: new ash.ImmutableArray()
-	});
-}*/
-/*getInitialState() {
-	return {
-		list1: [],
-		list2: []
-	};
-}*/
+/* jshint ignore:start */
+
+/*state = {
+	list1: [],
+	list2: [],
+	redShadow: true
+};*/
+
 /* jshint ignore:start */
 /*target, ...source*/

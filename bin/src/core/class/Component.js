@@ -38,7 +38,7 @@ var Component = (function (Observable) {
 		this.props = props || {};
 		this.state = this.state || {};
 
-		this.__isDirty = true;
+		this.__isDirty = false;
 		this.__lifecycle = LIFECYCLE_UNMOUNTED;
 	}
 
@@ -52,8 +52,8 @@ var Component = (function (Observable) {
 			set: function (value) {
 				this.__isDirty = !!value;
 
-				if (this.__isDirty && this.element.stage) {
-					this.element.stage.update();
+				if (this.__isDirty && this.__element.stage) {
+					this.__element.stage.update(this);
 				}
 			},
 			configurable: true
@@ -80,7 +80,6 @@ var Component = (function (Observable) {
 		cachedRender: {
 			get: function () {
 				this.__cachedRender = this.render();
-				this.isDirty = false;
 
 				return this.__cachedRender;
 			},
@@ -89,7 +88,7 @@ var Component = (function (Observable) {
 		domNode: {
 			get: function () {
 				if (this.isMounted && isAshNodeAshElement(this.__cachedRender)) {
-					return findNode(this.element.stage.getRootNode(), this.__cachedRender.instance.index);
+					return findNode(this.__element.stage.getRootNode(), this.__cachedRender.instance.index);
 				}
 
 				return null;

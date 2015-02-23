@@ -1,14 +1,12 @@
-import $ from 'jquery';
+// import $ from 'jquery';
 import _ from '_';
 import ash from './ash';
-import icepick from 'icepick';
-// import m from 'mithril';
-// import React from 'react';
+
 
 // import Display from './components/Display';
 // import Timer from './components/Timer';
 
-global.$ = $;
+// global.$ = $;
 global._ = _;
 global.ash = ash;
 
@@ -24,30 +22,27 @@ var Renderer = global.Renderer = new ash.Renderer();
 // Renderer.addComponent(new Timer(), $('.page')[0]);
 
 class AppComponent extends ash.Component {
-	/*getInitialState() {
-		return new ash.ImmutableObject({
-			list1: new ash.ImmutableArray(),
-			list2: new ash.ImmutableArray()
-		});
-	}*/
-	/*getInitialState() {
-		return {
-			list1: [],
-			list2: []
-		};
-	}*/
 	/* jshint ignore:start */
 	state = new ash.ImmutableObject({
 		list1: new ash.ImmutableArray(),
-		list2: new ash.ImmutableArray()
+		list2: new ash.ImmutableArray(),
+		redShadow: true
 	});
+
+	/*state = {
+		list1: [],
+		list2: [],
+		redShadow: true
+	};*/
+
+	name = 'App';
 	/* jshint ignore:end */
 
 	render() {
 		return ash.e('div', null,
 			ash.e('div', {
 				style: {
-					boxShadow: '2px 2px 5px red'
+					boxShadow: this.state.redShadow ? '2px 2px 5px red' : '2px 2px 5px blue'
 				}
 			},
 				ash.e('button', {
@@ -55,36 +50,60 @@ class AppComponent extends ash.Component {
 				}, '+ list 1'),
 				ash.e('button', {
 					events: {click: this.addToList2}
-				}, '+ list 2')),
-			new List(this.state.list1),
+				}, '+ list 2'),
+				ash.e('button', {
+					events: {click: this.clearList1}
+				}, '+ clear 1'),
+				ash.e('button', {
+					events: {click: this.clearList2}
+				}, '+ clear 2'),
+				ash.e('button', {
+						events: {click: this.changeShadow}
+					}, '!!!')),
+			new List(this.state.list1),//);
 			new List(this.state.list2));
+	}
+
+	changeShadow() {
+		this.state = this.state.set('redShadow', !this.state.redShadow);
+		this.isDirty = true;
 	}
 
 	addToList1() {
 		var items = [];
 
-		for (let i = 0; i < 5000; i++) {
+		for (let i = 0; i < 1000; i++) {
 			items.push(Math.random().toFixed(1));
 		}
 
 		this.state = this.state.merge({list1: this.state.list1.concat(items)});
-		//this.state.list1 = this.state.list1.concat(items);
+		// this.state.list1 = this.state.list1.concat(items);
 
-		// this.setDirty();
 		this.isDirty = true;
 	}
 
 	addToList2() {
 		var items = [];
 
-		for (let i = 0; i < 5000; i++) {
+		for (let i = 0; i < 1000; i++) {
 			items.push(Math.random().toFixed(1));
 		}
 
 		this.state = this.state.merge({list2: this.state.list2.concat(items)});
-		//this.state.list2 = this.state.list2.concat(items);
+		// this.state.list2 = this.state.list2.concat(items);
 
-		// this.setDirty();
+		this.isDirty = true;
+	}
+
+	clearList1() {
+		this.state = this.state.merge({list1: []});
+		// this.state.list1 = [];
+		this.isDirty = true;
+	}
+
+	clearList2() {
+		this.state = this.state.merge({list2: []});
+		// this.state.list2 = [];
 		this.isDirty = true;
 	}
 }
@@ -92,20 +111,37 @@ class AppComponent extends ash.Component {
 var App = ash.createElement(AppComponent);
 
 class ListComponent extends ash.Component {
+	/* jshint ignore:start */
+	state = {redOutline: false};
+
+	name = 'List';
+	/* jshint ignore:end */
+
 	render() {
-		var items = [];
+		var items = [ash.e('button', {
+					events: {click: this.changeOutline}
+				}, '!!!')];
 
 		for (let i = 0; i < this.props.length; i++) {
 			items.push(ash.e('li', null/*{key: i + ''}*/, this.props[i] + ''));
 		}
 
-		return ash.e('ul', null, items);
+		return ash.e('ul', {style: {outline: this.state.redOutline ? '1px solid red' : '1px solid blue'}}, items);
+	}
+
+	changeOutline() {
+		this.state.redOutline = !this.state.redOutline;
+
+		this.isDirty = true;
+	}
+
+	onBeforeReceiveProps() {
 	}
 }
 
 var List = ash.createElement(ListComponent);
 
-Renderer.addComponent(new App(), $('.page')[0]);
+Renderer.addComponent(new App(), global.document.querySelector('.page'));
 
 
 

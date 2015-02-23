@@ -75,6 +75,8 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 					
 					oldAshElement.children.pop();
 				}
+			} else {
+
 			}
 		}	else if (oldAshElement.type === COMPONENT_ASH_ELEMENT) {
 			// old is component, new is different component
@@ -211,24 +213,11 @@ function updateComponentAshElement(componentAshElement, stage) {
 	render.parent = componentAshElement;
 	render.order = 0;
 
-	componentAshElement.instance.isDirty = false;
+	componentAshElement.isDirty = true;
 
 	walkUpdateComponentAshElement(componentAshElement.children[0], render, stage);
-}
 
-function findDirtyComponent(ashElement, stage) {
-	if (ashElement.type === ASH_NODE_ASH_ELEMENT) {
-		for (let i = 0; i < ashElement.children.length; i++) {
-			findDirtyComponent(ashElement.children[i], stage);
-		}
-	} else if (ashElement.type === COMPONENT_ASH_ELEMENT) {
-		if (ashElement.instance.isDirty) {
-			// descriptor is dirty, let's update
-			updateComponentAshElement(ashElement, stage);
-		} else {
-			findDirtyComponent(ashElement.children[0], stage);
-		}
-	}
+	componentAshElement.instance.isDirty = false;
 }
 
 function mountComponents(ashElement) {
@@ -252,7 +241,7 @@ function mountComponents(ashElement) {
 	}
 }
 
-function getRootNode(stageId) {
+function getStageRootNode(stageId) {
 	for (let i = 0; i < this.stages[stageId].node.childNodes.length; i++) {
 		if (typeof this.stages[stageId].node.childNodes[i][INDEX_ATTRIBUTE_NAME] !== 'undefined') {
 			return this.stages[stageId].node.childNodes[i];
@@ -262,7 +251,26 @@ function getRootNode(stageId) {
 	return null;
 }
 
+function updateStage(stageId, component) {
+	if (this.stages[stageId] && !this.stages[stageId].isUpdating) {
+		this.stages[stageId].isUpdating = true;
+
+		// find descriptors that should be updated
+		updateComponentAshElement(component.__element, this.stages[stageId]);
+
+		// set stage to dirty, so Renderer can rerender the DOM
+		this.stages[stageId].isDirty = true;
+		this.render();
+	} else if (this.stages[stageId] && this.stages[stageId].isUpdating) {
+		throw new Error('You cannot update components during previous update!');
+	}
+}
+
 class Renderer {
+	/* jshint ignore:start */
+	stages = [];
+	/* jshint ignore:end */
+
 	constructor() {
 		if (renderer) {
 			return renderer;
@@ -270,8 +278,6 @@ class Renderer {
 
 		// save singleton
 		renderer = this;
-		
-		renderer.stages = [];
 
 		// render loop is always bound to renderer
 		renderer.render = renderer.render.bind(renderer);
@@ -289,23 +295,22 @@ class Renderer {
 			throw new Error(node + ' must be a DOM Element.');
 		}
 
-		let stage = {
+		this.stages.push({
 			id: stageId,
 			isRendering: false,
 			isDirty: true,
+			isUpdating: true,
 
 			node: node,
 			ashNodeTree: null,
+			ashElementTree: null,
 
-			getRootNode: getRootNode.bind(this, stageId),
-			update: this.update.bind(this, stageId)
-		};
+			getRootNode: getStageRootNode.bind(this, stageId),
+			update: updateStage.bind(this, stageId)
+		});
 
 		// create Ash Element tree for the Component Ash Element
-		stage.ashElementTree = createAshElementTree(componentAshElement, stage);
-
-		// push the stages
-		this.stages.push(stage);
+		this.stages[stageId].ashElementTree = createAshElementTree(componentAshElement, this.stages[stageId]);
 		stageId++;
 
 		// render
@@ -335,21 +340,6 @@ class Renderer {
 
 		return stringifyAshNodeTree(stage.ashNodeTree);
 	}
-
-	
-
-	update(stageId) {
-		if (this.stages[stageId] && !this.stages[stageId].isRendering) {
-			// find descriptors that should be updated
-			findDirtyComponent(this.stages[stageId].ashElementTree, this.stages[stageId]);
-
-			// set stage to dirty, so Renderer can rerender the DOM
-			this.stages[stageId].isDirty = true;
-			this.render();
-		}
-
-		return this;
-	}
 	
 	render() {
 		var isNodeTreeValid;
@@ -358,9 +348,7 @@ class Renderer {
 		var patches;
 
 		for (let i = 0; i < this.stages.length; i++) {
-			if (this.stages[i].isDirty && !this.stages[i].isRendering) {
-				this.stages[i].isRendering = true;
-
+			if (this.stages[i].isDirty/* && !this.stages[i].isRendering*/) {
 				if (!this.stages[i].ashNodeTree) {
 					isNodeTreeValid = false;
 					isNodeTreeValidated = false;
@@ -392,15 +380,23 @@ class Renderer {
 							this.stages[i].node.removeChild(this.stages[i].node.firstChild);
 						}
 
-						this.stages[i].node.appendChild(createNodeTree(this.stages[i].ashNodeTree));
-					}
+						this.stages[i].isRendering = true;
 
-					// mount components
-					mountComponents(this.stages[i].ashElementTree);
+						global.requestAnimationFrame((timestamp) => {
+							this.stages[i].node.appendChild(createNodeTree(this.stages[i].ashNodeTree));
+
+							// mount components
+							mountComponents(this.stages[i].ashElementTree);
+
+							this.stages[i].isRendering = false;
+						});
+					}
 				} else {
 					newAshNodeTree = createAshNodeTree(this.stages[i].ashElementTree);
 					patches = diffAshNodeTree(this.stages[i].ashNodeTree, newAshNodeTree);
 					this.stages[i].ashNodeTree = newAshNodeTree;
+
+					this.stages[i].isRendering = true;
 
 					global.requestAnimationFrame((timestamp) => {
 						var isSuccessful = patchNodeTree(this.stages[i].getRootNode(), patches);
@@ -408,14 +404,16 @@ class Renderer {
 						if (!isSuccessful) {
 							throw new Error('Patching the DOM was unsuccesful!');
 						}
-					});
 
-					// mount components
-					mountComponents(this.stages[i].ashElementTree);
+						// mount components
+						mountComponents(this.stages[i].ashElementTree);
+						
+						this.stages[i].isRendering = false;
+					});
 				}
 
 				this.stages[i].isDirty = false;
-				this.stages[i].isRendering = false;
+				this.stages[i].isUpdating = false;
 			}
 		}
 

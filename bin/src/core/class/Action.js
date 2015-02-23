@@ -31,30 +31,30 @@ var Action = (function (Observable) {
 		trigger: {
 			value: function trigger() {
 				if (typeof this.onTrigger === "function") {
-					_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "*", this.onTrigger.apply(this, arguments), TRIGGER_OPTIONS);
+					_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "all", this.onTrigger.apply(this, arguments), TRIGGER_OPTIONS);
 				} else {
 					if (arguments.length == 10) {
-						_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], TRIGGER_OPTIONS);
+						_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "all", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], TRIGGER_OPTIONS);
 					} else if (arguments.length == 9) {
-						_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], TRIGGER_OPTIONS);
+						_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "all", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], TRIGGER_OPTIONS);
 					} else if (arguments.length == 8) {
-						_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], TRIGGER_OPTIONS);
+						_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "all", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], TRIGGER_OPTIONS);
 					} else if (arguments.length == 7) {
-						_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], TRIGGER_OPTIONS);
+						_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "all", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], TRIGGER_OPTIONS);
 					} else if (arguments.length == 6) {
-						_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], TRIGGER_OPTIONS);
+						_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "all", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], TRIGGER_OPTIONS);
 					} else if (arguments.length == 5) {
-						_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], TRIGGER_OPTIONS);
+						_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "all", arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], TRIGGER_OPTIONS);
 					} else if (arguments.length == 4) {
-						_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "*", arguments[0], arguments[1], arguments[2], arguments[3], TRIGGER_OPTIONS);
+						_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "all", arguments[0], arguments[1], arguments[2], arguments[3], TRIGGER_OPTIONS);
 					} else if (arguments.length == 3) {
-						_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "*", arguments[0], arguments[1], arguments[2], TRIGGER_OPTIONS);
+						_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "all", arguments[0], arguments[1], arguments[2], TRIGGER_OPTIONS);
 					} else if (arguments.length == 2) {
-						_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "*", arguments[0], arguments[1], TRIGGER_OPTIONS);
+						_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "all", arguments[0], arguments[1], TRIGGER_OPTIONS);
 					} else if (arguments.length) {
-						_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "*", arguments[0], TRIGGER_OPTIONS);
+						_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "all", arguments[0], TRIGGER_OPTIONS);
 					} else {
-						_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "*", TRIGGER_OPTIONS);
+						_get(Object.getPrototypeOf(Action.prototype), "trigger", this).call(this, "all", TRIGGER_OPTIONS);
 					}
 				}
 

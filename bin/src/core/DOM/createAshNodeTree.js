@@ -33,7 +33,7 @@ function cloneAshNode(ashNodeAshElement) {
 	}
 }
 
-function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentIndex) {
+function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentIndex, isParentDirty) {
 	var clonedAshNode;
 
 	if (isAshNodeAshElement(ashElement)) {
@@ -44,15 +44,21 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentIndex) {
 		ashElement.instance.index = clonedAshNode.index = parentIndex + LEVEL_SEPARATOR + index;
 		ashElement.instance.order = clonedAshNode.order = index;
 
+		// is parent component dirty?
+		clonedAshNode.isDirty = isParentDirty;
+
 		// add child
 		ashNodeTree.children.push(clonedAshNode);
 
 		// walk the children
 		for (var i = 0; i < ashElement.children.length; i++) {
-			walkCreateAshNodeTree(ashNodeTree.children[ashNodeTree.children.length - 1], ashElement.children[i], i, ashNodeTree.children[ashNodeTree.children.length - 1].index);
+			walkCreateAshNodeTree(ashNodeTree.children[ashNodeTree.children.length - 1], ashElement.children[i], i, ashNodeTree.children[ashNodeTree.children.length - 1].index, isParentDirty);
 		}
 	} else if (ashElement && ashElement.children[0]) {
-		walkCreateAshNodeTree(ashNodeTree, ashElement.children[0], index, parentIndex);
+		var isDirty = ashElement.isDirty;
+		ashElement.isDirty = false;
+
+		walkCreateAshNodeTree(ashNodeTree, ashElement.children[0], index, parentIndex, isDirty);
 	}
 }
 
@@ -64,6 +70,8 @@ function createAshNodeTree(componentAshElement) {
 
 	var ashElement = componentAshElement;
 	var ashNodeTree;
+	var isDirty = ashElement.isDirty;
+	ashElement.isDirty = false;
 
 	// find first children Virtual Node ashElement
 	while (!isAshNodeAshElement(ashElement)) {
@@ -77,9 +85,12 @@ function createAshNodeTree(componentAshElement) {
 	ashElement.instance.index = ashNodeTree.index = "0";
 	ashElement.instance.order = ashNodeTree.order = 0;
 
+	// is parent component dirty?
+	ashNodeTree.isDirty = isDirty;
+
 	// walk the children
 	for (var i = 0; i < ashElement.children.length; i++) {
-		walkCreateAshNodeTree(ashNodeTree, ashElement.children[i], i, ashNodeTree.index);
+		walkCreateAshNodeTree(ashNodeTree, ashElement.children[i], i, ashNodeTree.index, isDirty);
 	}
 
 	return ashNodeTree;

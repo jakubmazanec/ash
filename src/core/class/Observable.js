@@ -3,7 +3,6 @@ import isString from '../internal/isString';
 import isFunction from '../internal/isFunction';
 import isObject from '../internal/isObject';
 import isMatching from '../internal/isMatching';
-import isPlainObject from '../internal/isPlainObject';
 
 // Regular expressions used to split event name strings
 const REGEX_TOPIC = /\s+/; // one or more space
@@ -31,20 +30,20 @@ class Observable {
 			events = object;
 			object = this;
 		} else if (isFunction(object)) {
-			// observed object is missing, `this` is used, and events string is missing, `'*'`' is used
+			// observed object is missing, `this` is used, and events string is missing, `'all'`' is used
 			context = events;
 			callback = object;
-			events = '*';
+			events = 'all';
 			object = this;
 		} else if (!isObject(object)) {
 			throw new Error(object + ' must be an object.');
 		}
 
-		// events string is missing, we will use '*', and juggle the remaining arguments
+		// events string is missing, we will use 'all', and juggle the remaining arguments
 		if (isFunction(events)) {
 			context = callback;
 			callback = events;
-			events = '*';
+			events = 'all';
 		}
 
 		if (!isFunction(callback)) {
@@ -55,7 +54,7 @@ class Observable {
 			throw new Error(context + ' must be an object.');
 		}
 
-		events = isString(events) ? events.trim().split(REGEX_TOPIC) : ['*'];
+		events = isString(events) ? events.trim().split(REGEX_TOPIC) : ['all'];
 
 		for (let i = 0; i < events.length; i++) {
 			if (!store[events[i]]) {
@@ -84,22 +83,22 @@ class Observable {
 		var callback = arguments[2];
 		var context = arguments[3];
 
-		// events string is missing, we will use '*', and juggle the remaining arguments
+		// events string is missing, we will use 'all', and juggle the remaining arguments
 		if (isFunction(events)) {
 			context = callback;
 			callback = events;
-			events = '*';
+			events = 'all';
 		}
 
-		events = isString(events) ? events.trim().split(REGEX_TOPIC) : ['*'];
+		events = isString(events) ? events.trim().split(REGEX_TOPIC) : ['all'];
 
 		for (let i = 0; i < events.length; i++) {
 			for (let key in store) {
-				if (store.hasOwnProperty(key) && (store[key] == events[i] || events[i] == '*')) {
+				if (store.hasOwnProperty(key) && (store[key] === events[i] || events[i] === 'all')) {
 					for (let j = 0; j < store[key].observables.length; j++) {
 						// we can remove only this observable
-						if (store[key].observables[j].observable == observable) {
-							if ((!object || store[key].observables[j].observed == object) && (!callback || store[key].observables[j].callback == callback) && (!context || store[key].observables[j].context == context)) {
+						if (store[key].observables[j].observable === observable) {
+							if ((!object || store[key].observables[j].observed === object) && (!callback || store[key].observables[j].callback === callback) && (!context || store[key].observables[j].context === context)) {
 								// remove observable from the store
 								store[key].observables.splice(j, 1);
 							}
@@ -114,10 +113,10 @@ class Observable {
 
 	trigger(/*events, data, options.useAsync|options.noEventArgument*/) {
 		var observable = this;
-		var events = isString(arguments[0]) ? arguments[0].trim().split(REGEX_TOPIC) : ['*'];
+		var events = isString(arguments[0]) ? arguments[0].trim().split(REGEX_TOPIC) : ['all'];
 		var data = [];
-		var useAsync = arguments.length > 1 && isPlainObject(arguments[arguments.length - 1]) && arguments[arguments.length - 1].async ? true : false;
-		var noEventArgument = arguments.length > 1 && isPlainObject(arguments[arguments.length - 1]) && arguments[arguments.length - 1].noEventArgument ? true : false;
+		var useAsync = arguments.length > 1 && isObject(arguments[arguments.length - 1]) && arguments[arguments.length - 1].async === true ? true : false;
+		var noEventArgument = arguments.length > 1 && isObject(arguments[arguments.length - 1]) && arguments[arguments.length - 1].noEventArgument === true ? true : false;
 		var categories;
 
 		for (let i = 1; i < (useAsync || noEventArgument ? arguments.length - 1 : arguments.length); i++) {
@@ -129,7 +128,7 @@ class Observable {
 				categories = events[i].split(REGEX_CATEGORY);
 
 				for (let j in store) {
-					if (store.hasOwnProperty(j) && (isMatching(store[j].categories, categories) || store[j].name == '*' || events[i] == '*')) {
+					if (store.hasOwnProperty(j) && (isMatching(store[j].categories, categories) || store[j].name === 'all' || events[i] === 'all')) {
 						for (let k = 0; k < store[j].observables.length; k++) {
 							if (observable == store[j].observables[k].observed) {
 								if (!noEventArgument) {

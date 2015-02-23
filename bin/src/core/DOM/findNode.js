@@ -19,7 +19,7 @@ function findNode(nodeTree, nodeIndex) {
 	if (parsedAshNodeIndex.length == 1) {
 		return node;
 	} else {
-		for (var i = 1; i < parsedAshNodeIndex.length - 1; i++) {
+		for (var i = 1, _length = parsedAshNodeIndex.length - 1; i < _length; i++) {
 			if (!node) {
 				return false;
 			}
@@ -28,7 +28,7 @@ function findNode(nodeTree, nodeIndex) {
 		}
 	}
 
-	for (var i = 0; i < node.childNodes.length; i++) {
+	for (var i = 0, _length2 = node.childNodes.length; i < _length2; i++) {
 		if (node.childNodes[i].nodeType == 1 && node.childNodes[i][INDEX_ATTRIBUTE_NAME] == nodeIndex) {
 			return node.childNodes[i];
 		} else if (node.childNodes[i].nodeType == 3 && i == parsedAshNodeIndex[parsedAshNodeIndex.length - 1]) {

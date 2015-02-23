@@ -43,6 +43,7 @@ var AshElement = (function () {
 		if (type == COMPONENT_ASH_ELEMENT) {
 			this.type = type;
 			this.spec = spec;
+			this.isDirty = true;
 
 			if (arguments.length >= 3 && typeof arguments[2] !== "undefined") {
 				this.args = [arguments[2]];
@@ -83,6 +84,8 @@ var AshElement = (function () {
 					} else {
 						this.instance = new this.spec();
 					}
+
+					this.instance.__element = this;
 				} else if (this.type == ASH_NODE_ASH_ELEMENT) {
 					if (this.args) {
 						this.instance = new this.spec(this.args[0], this.args[1]);
@@ -92,8 +95,6 @@ var AshElement = (function () {
 				} else {
 					throw new Error(this + " is not a AshElement object.");
 				}
-
-				this.instance.element = this;
 
 				return this.instance;
 			},

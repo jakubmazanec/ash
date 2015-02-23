@@ -20,7 +20,7 @@ class Component extends Observable {
 		this.props = props || {};
 		this.state = this.state || {};
 
-		this.__isDirty = true;
+		this.__isDirty = false;
 		this.__lifecycle = LIFECYCLE_UNMOUNTED;
 	}
 
@@ -31,8 +31,8 @@ class Component extends Observable {
 	set isDirty(value) {
 		this.__isDirty = !!value;
 
-		if (this.__isDirty && this.element.stage) {
-			this.element.stage.update();
+		if (this.__isDirty && this.__element.stage) {
+			this.__element.stage.update(this);
 		}
 	}
 
@@ -54,14 +54,13 @@ class Component extends Observable {
 
 	get cachedRender() {
 		this.__cachedRender = this.render();
-		this.isDirty = false;
 
 		return this.__cachedRender;
 	}
 
 	get domNode() {
 		if (this.isMounted && isAshNodeAshElement(this.__cachedRender)) {
-			return findNode(this.element.stage.getRootNode(), this.__cachedRender.instance.index);
+			return findNode(this.__element.stage.getRootNode(), this.__cachedRender.instance.index);
 		}
 
 		return null;
