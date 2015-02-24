@@ -1,7 +1,7 @@
-import isComponentAshElement from '../internal/isComponentAshElement';
-import isAshNodeAshElement from '../internal/isAshNodeAshElement';
-import isAshNode from '../internal/isAshNode';
-import constants from '../internal/constants';
+import isComponentAshElement from '../internals/isComponentAshElement';
+import isAshNodeAshElement from '../internals/isAshNodeAshElement';
+import isAshNode from '../internals/isAshNode';
+import constants from '../internals/constants';
 
 const LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
 

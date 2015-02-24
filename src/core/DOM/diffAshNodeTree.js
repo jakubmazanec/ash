@@ -1,4 +1,4 @@
-import constants from '../internal/constants';
+import constants from '../internals/constants';
 import parseAshNodeIndex from './parseAshNodeIndex';
 
 // constants references

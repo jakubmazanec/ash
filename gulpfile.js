@@ -16,7 +16,7 @@ gulp.task('server', function () {
 		script: './bin/app/server.js',
 		nodeArgs: ['--harmony'],
 		watch: ['bin/app/**/*.js'],
-		delay: 2
+		delay: 1
 	});
 });
 

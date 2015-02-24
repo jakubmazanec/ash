@@ -1,8 +1,8 @@
-import isAshElement from '../internal/isAshElement';
-import isString from '../internal/isString';
-import isComponentAshElement from '../internal/isComponentAshElement';
-import isAshNodeAshElement from '../internal/isAshNodeAshElement';
-import constants from '../internal/constants';
+import isAshElement from '../internals/isAshElement';
+import isString from '../internals/isString';
+import isComponentAshElement from '../internals/isComponentAshElement';
+import isAshNodeAshElement from '../internals/isAshNodeAshElement';
+import constants from '../internals/constants';
 
 const LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
 const LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;

@@ -1,21 +1,39 @@
-import createAshElementTree from '../DOM/createAshElementTree';
-import isComponentAshElement from '../internal/isComponentAshElement';
-import isAshNodeAshElement from '../internal/isAshNodeAshElement';
-import createAshNodeTree from '../DOM/createAshNodeTree';
-import createNodeTree from '../DOM/createNodeTree';
-import diffAshNodeTree from '../DOM/diffAshNodeTree';
-import patchNodeTree from '../DOM/patchNodeTree';
-import stringifyAshNodeTree from '../DOM/stringifyAshNodeTree';
-import validateNodeTree from '../DOM/validateNodeTree';
-import constants from '../internal/constants';
-import isElement from '../internal/isElement';
+"use strict";
 
-const LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
-const LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
-const LIFECYCLE_UNMOUNTED = constants.LIFECYCLE_UNMOUNTED;
-const INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
-const COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
-const ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
+
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+var createAshElementTree = _interopRequire(require("../DOM/createAshElementTree"));
+
+var isComponentAshElement = _interopRequire(require("../internals/isComponentAshElement"));
+
+var isAshNodeAshElement = _interopRequire(require("../internals/isAshNodeAshElement"));
+
+var createAshNodeTree = _interopRequire(require("../DOM/createAshNodeTree"));
+
+var createNodeTree = _interopRequire(require("../DOM/createNodeTree"));
+
+var diffAshNodeTree = _interopRequire(require("../DOM/diffAshNodeTree"));
+
+var patchNodeTree = _interopRequire(require("../DOM/patchNodeTree"));
+
+var stringifyAshNodeTree = _interopRequire(require("../DOM/stringifyAshNodeTree"));
+
+var validateNodeTree = _interopRequire(require("../DOM/validateNodeTree"));
+
+var constants = _interopRequire(require("../internals/constants"));
+
+var isElement = _interopRequire(require("../internals/isElement"));
+
+var LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
+var LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
+var LIFECYCLE_UNMOUNTED = constants.LIFECYCLE_UNMOUNTED;
+var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
+var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
+var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
 
 var stageId = 0;
 var renderer;
@@ -71,11 +89,11 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 					if (oldAshElement.children[0].type == COMPONENT_ASH_ELEMENT) {
 						oldAshElement.children[0].instance.__lifecycle = LIFECYCLE_UNMOUNTED;
 					}
-					
+
 					oldAshElement.children.pop();
 				}
 			}
-		}	else if (oldAshElement.type === COMPONENT_ASH_ELEMENT) {
+		} else if (oldAshElement.type === COMPONENT_ASH_ELEMENT) {
 			// old is component, new is different component
 
 			if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
@@ -130,7 +148,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 			if (newAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
 				createAshElementTree(newAshElement, stage, newAshElement.id, newAshElement.level);
-				
+
 				// replace the old
 				newAshElement.parent.children[0] = newAshElement;
 			} else if (newAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
@@ -147,7 +165,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 			oldAshElement.instantiate();
 
 			// adding children to the queue
-			for (let i = 0; i < newAshElement.children.length; i++) {
+			for (var i = 0; i < newAshElement.children.length; i++) {
 				if (newAshElement.children[i] && oldAshElement.children[i]) {
 					newAshElement.children[i].owner = oldAshElement.owner;
 					newAshElement.children[i].parent = oldAshElement;
@@ -180,7 +198,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
 				createAshElementTree(newAshElement, stage, oldAshElement.id, oldAshElement.level);
-				
+
 				// replace the old
 				oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
 				oldAshElement.parent.children[0] = newAshElement;
@@ -214,7 +232,7 @@ function updateComponentAshElement(componentAshElement, stage) {
 
 function mountComponents(ashElement) {
 	if (isAshNodeAshElement(ashElement)) {
-		for (let i = 0; i < ashElement.children.length; i++) {
+		for (var i = 0; i < ashElement.children.length; i++) {
 			if (ashElement.children[i]) {
 				// walk the child
 				mountComponents(ashElement.children[i]);
@@ -233,8 +251,8 @@ function mountComponents(ashElement) {
 }
 
 function getStageRootNode(stageId) {
-	for (let i = 0; i < this.stages[stageId].node.childNodes.length; i++) {
-		if (typeof this.stages[stageId].node.childNodes[i][INDEX_ATTRIBUTE_NAME] !== 'undefined') {
+	for (var i = 0; i < this.stages[stageId].node.childNodes.length; i++) {
+		if (typeof this.stages[stageId].node.childNodes[i][INDEX_ATTRIBUTE_NAME] !== "undefined") {
 			return this.stages[stageId].node.childNodes[i];
 		}
 	}
@@ -253,16 +271,18 @@ function updateStage(stageId, component) {
 		this.stages[stageId].isDirty = true;
 		this.render();
 	} else if (this.stages[stageId] && this.stages[stageId].isUpdating) {
-		throw new Error('You cannot update components during previous update!');
+		throw new Error("You cannot update components during previous update!");
 	}
 }
 
-class Renderer {
-	/* jshint ignore:start */
-	stages = [];
+var Renderer = (function () {
 	/* jshint ignore:end */
 
-	constructor() {
+	function Renderer() {
+		this.stages = [];
+
+		_classCallCheck(this, Renderer);
+
 		if (renderer) {
 			return renderer;
 		}
@@ -276,140 +296,160 @@ class Renderer {
 		return renderer;
 	}
 
-	addComponent(componentAshElement, node) {
-		// type check
-		if (!isComponentAshElement(componentAshElement)) {
-			throw new Error(componentAshElement + ' must be a Componenet Descriptor.');
-		}
-
-		if (!isElement(node)) {
-			throw new Error(node + ' must be a DOM Element.');
-		}
-
-		this.stages.push({
-			id: stageId,
-			isRendering: false,
-			isDirty: true,
-			isUpdating: true,
-
-			node: node,
-			ashNodeTree: null,
-			ashElementTree: null,
-
-			getRootNode: getStageRootNode.bind(this, stageId),
-			update: updateStage.bind(this, stageId)
-		});
-
-		// create Ash Element tree for the Component Ash Element
-		this.stages[stageId].ashElementTree = createAshElementTree(componentAshElement, this.stages[stageId]);
-		stageId++;
-
-		// render
-		this.render();
-
-		return this;
-	}
-
-	componentToString(componentAshElement) {
-		// type check
-		if (!isComponentAshElement(componentAshElement)) {
-			throw new Error(componentAshElement + ' must be a Componenet Descriptor.');
-		}
-
-		let stage = {
-			isRendering: false,
-			isDirty: true,
-			node: null,
-			ashNodeTree: null
-		};
-
-		// create Ash Element tree for the Component Ash Element
-		stage.ashElementTree = createAshElementTree(componentAshElement, stage);
-
-		// create ash node tree
-		stage.ashNodeTree = createAshNodeTree(stage.ashElementTree);
-
-		return stringifyAshNodeTree(stage.ashNodeTree);
-	}
-	
-	render() {
-		var isNodeTreeValid;
-		var isNodeTreeValidated;
-		var newAshNodeTree;
-		var patches;
-
-		for (let i = 0; i < this.stages.length; i++) {
-			if (this.stages[i].isDirty/* && !this.stages[i].isRendering*/) {
-				if (!this.stages[i].ashNodeTree) {
-					isNodeTreeValid = false;
-					isNodeTreeValidated = false;
-
-					// remove child nodes which are not element nodes
-					for (let j = 0; j < this.stages[i].node.childNodes.length; j++) {
-						if (this.stages[i].node.childNodes[j].nodeType != 1) {
-							this.stages[i].node.removeChild(this.stages[i].node.childNodes[j]);
-							j--;
-						}
-					}
-
-					// create ash node tree
-					this.stages[i].ashNodeTree = createAshNodeTree(this.stages[i].ashElementTree);
-
-					// there are some element nodes?
-					if (this.stages[i].node.childNodes.length) {
-						isNodeTreeValidated = true;
-						isNodeTreeValid = validateNodeTree(this.stages[i].node.childNodes[0], this.stages[i].ashNodeTree, this.stages[i]);
-					}
-
-					// render to the Real DOM, if needed
-					if (!isNodeTreeValid || !isNodeTreeValidated) {
-						if (isNodeTreeValidated) {
-							console.warn('Existing html is invalid!');
-						}
-
-						while (this.stages[i].node.firstChild) {
-							this.stages[i].node.removeChild(this.stages[i].node.firstChild);
-						}
-
-						this.stages[i].isRendering = true;
-
-						global.requestAnimationFrame((timestamp) => {
-							this.stages[i].node.appendChild(createNodeTree(this.stages[i].ashNodeTree));
-
-							// mount components
-							mountComponents(this.stages[i].ashElementTree);
-
-							this.stages[i].isRendering = false;
-						});
-					}
-				} else {
-					newAshNodeTree = createAshNodeTree(this.stages[i].ashElementTree);
-					patches = diffAshNodeTree(this.stages[i].ashNodeTree, newAshNodeTree);
-					this.stages[i].ashNodeTree = newAshNodeTree;
-
-					this.stages[i].isRendering = true;
-
-					global.requestAnimationFrame((timestamp) => {
-						var isSuccessful = patchNodeTree(this.stages[i].getRootNode(), patches);
-
-						if (!isSuccessful) {
-							throw new Error('Patching the DOM was unsuccesful!');
-						}
-
-						// mount components
-						mountComponents(this.stages[i].ashElementTree);
-						
-						this.stages[i].isRendering = false;
-					});
+	_prototypeProperties(Renderer, null, {
+		addComponent: {
+			value: function addComponent(componentAshElement, node) {
+				// type check
+				if (!isComponentAshElement(componentAshElement)) {
+					throw new Error(componentAshElement + " must be a Componenet Descriptor.");
 				}
 
-				this.stages[i].isDirty = false;
-				this.stages[i].isUpdating = false;
-			}
+				if (!isElement(node)) {
+					throw new Error(node + " must be a DOM Element.");
+				}
+
+				this.stages.push({
+					id: stageId,
+					isRendering: false,
+					isDirty: true,
+					isUpdating: true,
+
+					node: node,
+					ashNodeTree: null,
+					ashElementTree: null,
+
+					getRootNode: getStageRootNode.bind(this, stageId),
+					update: updateStage.bind(this, stageId)
+				});
+
+				// create Ash Element tree for the Component Ash Element
+				this.stages[stageId].ashElementTree = createAshElementTree(componentAshElement, this.stages[stageId]);
+				stageId++;
+
+				// render
+				this.render();
+
+				return this;
+			},
+			writable: true,
+			configurable: true
+		},
+		componentToString: {
+			value: function componentToString(componentAshElement) {
+				// type check
+				if (!isComponentAshElement(componentAshElement)) {
+					throw new Error(componentAshElement + " must be a Componenet Descriptor.");
+				}
+
+				var stage = {
+					isRendering: false,
+					isDirty: true,
+					node: null,
+					ashNodeTree: null
+				};
+
+				// create Ash Element tree for the Component Ash Element
+				stage.ashElementTree = createAshElementTree(componentAshElement, stage);
+
+				// create ash node tree
+				stage.ashNodeTree = createAshNodeTree(stage.ashElementTree);
+
+				return stringifyAshNodeTree(stage.ashNodeTree);
+			},
+			writable: true,
+			configurable: true
+		},
+		render: {
+			value: function render() {
+				var _this = this;
+
+				var isNodeTreeValid;
+				var isNodeTreeValidated;
+				var newAshNodeTree;
+				var patches;
+
+				for (var i = 0; i < this.stages.length; i++) {
+					(function (i) {
+						if (_this.stages[i].isDirty /* && !this.stages[i].isRendering*/) {
+							if (!_this.stages[i].ashNodeTree) {
+								isNodeTreeValid = false;
+								isNodeTreeValidated = false;
+
+								// remove child nodes which are not element nodes
+								for (var j = 0; j < _this.stages[i].node.childNodes.length; j++) {
+									if (_this.stages[i].node.childNodes[j].nodeType != 1) {
+										_this.stages[i].node.removeChild(_this.stages[i].node.childNodes[j]);
+										j--;
+									}
+								}
+
+								// create ash node tree
+								_this.stages[i].ashNodeTree = createAshNodeTree(_this.stages[i].ashElementTree);
+
+								// there are some element nodes?
+								if (_this.stages[i].node.childNodes.length) {
+									isNodeTreeValidated = true;
+									isNodeTreeValid = validateNodeTree(_this.stages[i].node.childNodes[0], _this.stages[i].ashNodeTree, _this.stages[i]);
+								}
+
+								// render to the Real DOM, if needed
+								if (!isNodeTreeValid || !isNodeTreeValidated) {
+									if (isNodeTreeValidated) {
+										console.warn("Existing html is invalid!");
+									}
+
+									while (_this.stages[i].node.firstChild) {
+										_this.stages[i].node.removeChild(_this.stages[i].node.firstChild);
+									}
+
+									_this.stages[i].isRendering = true;
+
+									global.requestAnimationFrame(function (timestamp) {
+										_this.stages[i].node.appendChild(createNodeTree(_this.stages[i].ashNodeTree));
+
+										// mount components
+										mountComponents(_this.stages[i].ashElementTree);
+
+										_this.stages[i].isRendering = false;
+									});
+								}
+							} else {
+								newAshNodeTree = createAshNodeTree(_this.stages[i].ashElementTree);
+								patches = diffAshNodeTree(_this.stages[i].ashNodeTree, newAshNodeTree);
+								_this.stages[i].ashNodeTree = newAshNodeTree;
+
+								_this.stages[i].isRendering = true;
+
+								global.requestAnimationFrame(function (timestamp) {
+									var isSuccessful = patchNodeTree(_this.stages[i].getRootNode(), patches);
+
+									if (!isSuccessful) {
+										throw new Error("Patching the DOM was unsuccesful!");
+									}
+
+									// mount components
+									mountComponents(_this.stages[i].ashElementTree);
+
+									_this.stages[i].isRendering = false;
+								});
+							}
+
+							_this.stages[i].isDirty = false;
+							_this.stages[i].isUpdating = false;
+						}
+					})(i);
+				}
+
+				return this;
+			},
+			writable: true,
+			configurable: true
 		}
+	});
 
-		return this;
-	}
-}
+	return Renderer;
+})();
 
-export default Renderer;
+module.exports = Renderer;
+
+/* jshint ignore:start */

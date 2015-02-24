@@ -1,5 +1,5 @@
 import parseAshNodeIndex from './parseAshNodeIndex';
-import constants from '../internal/constants';
+import constants from '../internals/constants';
 
 const INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
 

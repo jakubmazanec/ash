@@ -4,7 +4,7 @@ var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.defaul
 
 var parseAshNodeIndex = _interopRequire(require("./parseAshNodeIndex"));
 
-var constants = _interopRequire(require("../internal/constants"));
+var constants = _interopRequire(require("../internals/constants"));
 
 var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
 

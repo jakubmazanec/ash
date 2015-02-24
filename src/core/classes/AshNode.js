@@ -1,4 +1,4 @@
-import constants from '../internal/constants';
+import constants from '../internals/constants';
 
 // constants references
 const ASH_NODE = constants.ASH_NODE;

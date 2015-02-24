@@ -1,8 +1,8 @@
-import immediate from '../polyfill/immediate';
-import isString from '../internal/isString';
-import isFunction from '../internal/isFunction';
-import isObject from '../internal/isObject';
-import isMatching from '../internal/isMatching';
+import immediate from '../polyfills/immediate';
+import isString from '../internals/isString';
+import isFunction from '../internals/isFunction';
+import isObject from '../internals/isObject';
+import isMatching from '../internals/isMatching';
 
 // Regular expressions used to split event name strings
 const REGEX_TOPIC = /\s+/; // one or more space

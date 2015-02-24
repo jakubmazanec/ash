@@ -1,6 +1,6 @@
-import isAshTextNode from '../internal/isAshTextNode';
+import isAshTextNode from '../internals/isAshTextNode';
 import setNodeProperties from './setNodeProperties';
-import constants from '../internal/constants';
+import constants from '../internals/constants';
 
 const INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
 const ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;

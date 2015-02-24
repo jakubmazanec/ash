@@ -2,7 +2,7 @@
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
 
-var constants = _interopRequire(require("../internal/constants"));
+var constants = _interopRequire(require("../internals/constants"));
 
 var parseAshNodeIndex = _interopRequire(require("./parseAshNodeIndex"));
 

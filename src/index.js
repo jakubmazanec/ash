@@ -1,16 +1,17 @@
 import support from './core/support';
 
-import Observable from './core/class/Observable';
-import Component from './core/class/Component';
-import Renderer from './core/class/Renderer';
-import Action from './core/class/Action';
-import Store from './core/class/Store';
+import {ImmutableArray, ImmutableObject} from './core/classes/Immutables';
+import Observable from './core/classes/Observable';
+import Component from './core/classes/Component';
+import Renderer from './core/classes/Renderer';
+import Action from './core/classes/Action';
+import Store from './core/classes/Store';
 
-import createElement from './core/internal/createElement';
+import createElement from './core/internals/createElement';
 
-import {ImmutableArray, ImmutableObject} from './core/immutable/Immutables';
-
-import assign from './core/internal/assign';
+import assign from './core/internals/assign';
+import isImmutable from './core/internals/isImmutable';
+import isAncestor from './core/internals/isAncestor';
 
 
 
@@ -22,19 +23,23 @@ var ash = {};
 const VERSION = '0.1.0';
 
 assign(ash, {
-	VERSION,
-	support,
-	Observable,
-	Component,
-	Renderer,
-	Action,
-	Store,
+	'VERSION': VERSION,
+	'support': support,
+
+	'ImmutableArray': ImmutableArray,
+	'ImmutableObject': ImmutableObject,
+
+	'Observable': Observable,
+	'Component': Component,
+	'Renderer': Renderer,
+	'Action': Action,
+	'Store': Store,
 
 	'e': createElement,
-	createElement,
+	'createElement': createElement,
 
-	ImmutableArray,
-	ImmutableObject
+	'isImmutable': isImmutable,
+	'isAncestor': isAncestor
 });
 
 export default ash;

@@ -1,15 +1,13 @@
-import isFinite from '../internal/isFinite';
-import constants from '../internal/constants';
-import isArray from '../internal/isArray';
-import isFunction from '../internal/isFunction';
-import isString from '../internal/isString';
-import isImmutable from './isImmutable';
+import isFinite from '../internals/isFinite';
+import constants from '../internals/constants';
+import isFunction from '../internals/isFunction';
+import isString from '../internals/isString';
 
 const IMMUTABLE_TAG = constants.IMMUTABLE_TAG;
 
 class ImmutableArray extends Array {
 	constructor() {
-		if (isImmutable(arguments[0])) {
+		if (arguments[0] && arguments[0][IMMUTABLE_TAG]) {
 			return arguments[0];
 		}
 
@@ -128,7 +126,7 @@ class ImmutableArray extends Array {
 
 class ImmutableObject {
 	constructor(value, options) {
-		if (isImmutable(value)) {
+		if (value && value[IMMUTABLE_TAG]) {
 			return value;
 		}
 
@@ -138,7 +136,7 @@ class ImmutableObject {
 
 				if (this[key] && this[key][IMMUTABLE_TAG]) {
 					// no action needed
-				} else if (isArray(this[key])) {
+				} else if (Array.isArray(this[key])) {
 					this[key] = new ImmutableArray(this[key]);
 				} else if (this[key] !== null && typeof this[key] === 'object') {
 					this[key] = new ImmutableObject(this[key]);
@@ -229,7 +227,7 @@ class ImmutableObject {
 						clone[prop] = source[prop];
 						hasChanged = true;
 					}
-				} else if (isArray(source[prop])) {
+				} else if (Array.isArray(source[prop])) {
 					if (source[prop] !== this[prop]) {
 						clone[prop] = source[prop];
 						hasChanged = true;

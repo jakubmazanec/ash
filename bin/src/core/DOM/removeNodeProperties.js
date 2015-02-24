@@ -2,7 +2,7 @@
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
 
-var EventListener = _interopRequire(require("../class/EventListener"));
+var EventListener = _interopRequire(require("../classes/EventListener"));
 
 var eventListener = new EventListener();
 

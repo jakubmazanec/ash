@@ -1,11 +1,11 @@
-import constants from '../internal/constants';
+import constants from '../internals/constants';
 import parseAshNodeIndex from './parseAshNodeIndex';
 import createNodeTree from './createNodeTree';
 import setNodeProperties from './setNodeProperties';
 import removeNodeProperties from './removeNodeProperties';
 import findNode from './findNode';
-import EventListener from '../class/EventListener';
-import isElement from '../internal/isElement';
+import EventListener from '../classes/EventListener';
+import isElement from '../internals/isElement';
 
 const INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
 const ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;

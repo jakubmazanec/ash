@@ -2,7 +2,7 @@
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
 
-var constants = _interopRequire(require("../internal/constants"));
+var constants = _interopRequire(require("../internals/constants"));
 
 var parseAshNodeIndex = _interopRequire(require("./parseAshNodeIndex"));
 
@@ -14,9 +14,9 @@ var removeNodeProperties = _interopRequire(require("./removeNodeProperties"));
 
 var findNode = _interopRequire(require("./findNode"));
 
-var EventListener = _interopRequire(require("../class/EventListener"));
+var EventListener = _interopRequire(require("../classes/EventListener"));
 
-var isElement = _interopRequire(require("../internal/isElement"));
+var isElement = _interopRequire(require("../internals/isElement"));
 
 var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
 var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;

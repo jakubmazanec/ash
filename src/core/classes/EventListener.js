@@ -1,7 +1,7 @@
-import constants from '../internal/constants';
+import constants from '../internals/constants';
 import parseAshNodeIndex from '../DOM/parseAshNodeIndex';
-import isFunction from '../internal/isFunction';
-import isMatching from '../internal/isMatching';
+import isFunction from '../internals/isFunction';
+import isMatching from '../internals/isMatching';
 
 // constants references
 const INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;

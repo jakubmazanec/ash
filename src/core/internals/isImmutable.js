@@ -1,4 +1,4 @@
-import constants from '../internal/constants';
+import constants from '../internals/constants';
 
 const IMMUTABLE_TAG = constants.IMMUTABLE_TAG;
 

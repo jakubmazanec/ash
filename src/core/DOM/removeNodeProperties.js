@@ -1,4 +1,4 @@
-import EventListener from '../class/EventListener';
+import EventListener from '../classes/EventListener';
 
 var eventListener = new EventListener();
 

@@ -1,5 +1,5 @@
-import EventListener from '../class/EventListener';
-import constants from '../internal/constants';
+import EventListener from '../classes/EventListener';
+import constants from '../internals/constants';
 
 const INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
 const ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;

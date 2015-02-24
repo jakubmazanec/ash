@@ -1,8 +1,8 @@
 import Observable from './Observable';
-import isAshNodeAshElement from '../internal/isAshNodeAshElement';
-import constants from '../internal/constants';
+import isAshNodeAshElement from '../internals/isAshNodeAshElement';
+import constants from '../internals/constants';
 import findNode from '../DOM/findNode';
-import isFunction from '../internal/isFunction';
+import isFunction from '../internals/isFunction';
 
 const LIFECYCLE_UNMOUNTED = constants.LIFECYCLE_UNMOUNTED;
 const LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;

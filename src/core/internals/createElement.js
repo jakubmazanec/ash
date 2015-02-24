@@ -1,9 +1,9 @@
-import AshNode from '../class/AshNode';
-import AshElement from '../class/AshElement';
+import AshNode from '../classes/AshNode';
+import AshElement from '../classes/AshElement';
 import isAshElement from './isAshElement';
 import constants from './constants';
-import Component from '../class/Component';
-import isAncestor from '../internal/isAncestor';
+import Component from '../classes/Component';
+import isAncestor from '../internals/isAncestor';
 
 // constants references
 const COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;

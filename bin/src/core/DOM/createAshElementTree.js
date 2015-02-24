@@ -2,15 +2,15 @@
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
 
-var isAshElement = _interopRequire(require("../internal/isAshElement"));
+var isAshElement = _interopRequire(require("../internals/isAshElement"));
 
-var isString = _interopRequire(require("../internal/isString"));
+var isString = _interopRequire(require("../internals/isString"));
 
-var isComponentAshElement = _interopRequire(require("../internal/isComponentAshElement"));
+var isComponentAshElement = _interopRequire(require("../internals/isComponentAshElement"));
 
-var isAshNodeAshElement = _interopRequire(require("../internal/isAshNodeAshElement"));
+var isAshNodeAshElement = _interopRequire(require("../internals/isAshNodeAshElement"));
 
-var constants = _interopRequire(require("../internal/constants"));
+var constants = _interopRequire(require("../internals/constants"));
 
 var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
 var LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;

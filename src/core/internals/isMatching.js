@@ -1,5 +1,3 @@
-import isArray from './isArray';
-
 /**
  * Checks if the chains of ; i.e all categories from the template chain must be present in the second chain, and in the same order.
  * Strict comparison (===) is used.
@@ -21,7 +19,7 @@ import isArray from './isArray';
  * ash.isMatching([1, 2, 3], [1, 2, 3, 5, 5], true); // -> true
  */
 function isMatching(chain1, chain2, options) {
-	if (!isArray(chain1) || !isArray(chain2)) {
+	if (!Array.isArray(chain1) || !Array.isArray(chain2)) {
 		return false;
 	} // if
 

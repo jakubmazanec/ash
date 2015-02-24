@@ -4,24 +4,28 @@ var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.defaul
 
 var support = _interopRequire(require("./core/support"));
 
-var Observable = _interopRequire(require("./core/class/Observable"));
+var _coreClassesImmutables = require("./core/classes/Immutables");
 
-var Component = _interopRequire(require("./core/class/Component"));
+var ImmutableArray = _coreClassesImmutables.ImmutableArray;
+var ImmutableObject = _coreClassesImmutables.ImmutableObject;
 
-var Renderer = _interopRequire(require("./core/class/Renderer"));
+var Observable = _interopRequire(require("./core/classes/Observable"));
 
-var Action = _interopRequire(require("./core/class/Action"));
+var Component = _interopRequire(require("./core/classes/Component"));
 
-var Store = _interopRequire(require("./core/class/Store"));
+var Renderer = _interopRequire(require("./core/classes/Renderer"));
 
-var createElement = _interopRequire(require("./core/internal/createElement"));
+var Action = _interopRequire(require("./core/classes/Action"));
 
-var _coreImmutableImmutables = require("./core/immutable/Immutables");
+var Store = _interopRequire(require("./core/classes/Store"));
 
-var ImmutableArray = _coreImmutableImmutables.ImmutableArray;
-var ImmutableObject = _coreImmutableImmutables.ImmutableObject;
+var createElement = _interopRequire(require("./core/internals/createElement"));
 
-var assign = _interopRequire(require("./core/internal/assign"));
+var assign = _interopRequire(require("./core/internals/assign"));
+
+var isImmutable = _interopRequire(require("./core/internals/isImmutable"));
+
+var isAncestor = _interopRequire(require("./core/internals/isAncestor"));
 
 /**
  * ash object
@@ -31,19 +35,23 @@ var ash = {};
 var VERSION = "0.1.0";
 
 assign(ash, {
-	VERSION: VERSION,
-	support: support,
-	Observable: Observable,
-	Component: Component,
-	Renderer: Renderer,
-	Action: Action,
-	Store: Store,
+	"VERSION": VERSION,
+	"support": support,
+
+	"ImmutableArray": ImmutableArray,
+	"ImmutableObject": ImmutableObject,
+
+	"Observable": Observable,
+	"Component": Component,
+	"Renderer": Renderer,
+	"Action": Action,
+	"Store": Store,
 
 	"e": createElement,
-	createElement: createElement,
+	"createElement": createElement,
 
-	ImmutableArray: ImmutableArray,
-	ImmutableObject: ImmutableObject
+	"isImmutable": isImmutable,
+	"isAncestor": isAncestor
 });
 
 module.exports = ash;

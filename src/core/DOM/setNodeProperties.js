@@ -1,5 +1,5 @@
-import isObject from '../internal/isObject';
-import EventListener from '../class/EventListener';
+import isObject from '../internals/isObject';
+import EventListener from '../classes/EventListener';
 
 var eventListener = new EventListener();
 
