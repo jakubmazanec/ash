@@ -4,7 +4,7 @@ function test() {
 }
 
 function install(func) {
-	return function () {
+	return () => {
 		process.nextTick(func);
 	};
 }

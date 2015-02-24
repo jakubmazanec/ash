@@ -5,6 +5,7 @@ var constants = {
 	LIFECYCLE_UNMOUNTED: "Unmounted",
 	LIFECYCLE_MOUNTING: "Mounting",
 	LIFECYCLE_MOUNTED: "Mounted",
+	LIFECYCLE_UNINITIALIZED: "Uninitialized",
 
 	// patch types
 	PATCH_NONE: "Patch None",

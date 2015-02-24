@@ -188,88 +188,6 @@ var List = ash.createElement(ListComponent);
 
 Renderer.addComponent(new App(), global.document.querySelector(".page"));
 
-function assign() {
-	var sources = [];
-	var target = arguments[0] || {};
-
-	for (var i = 1; i < arguments.length; i++) {
-		if (arguments[i] && typeof arguments[i] === "object") {
-			sources.push(arguments[i]);
-		}
-	}
-
-	if (!sources.length) {
-		return target;
-	}
-
-	for (var i = 0; i < sources.length; i++) {
-		for (var prop in sources[i]) {
-			if (sources[i].hasOwnProperty(prop) && typeof sources[i].prop !== "undefined" && sources[i].prop !== null) {
-				target[prop] = sources[i][prop];
-			}
-		}
-	}
-}
-
-global.assign = assign;
-
-/*class AppComponent extends React.Component {
-	state = {
-		list1: [],
-		list2: []
-	};
-
-	render() {
-		return React.createElement('div', null,
-			React.createElement('div', null,
-				React.createElement('button', {
-					onClick: this.addToList1.bind(this)
-				}, '+ list 1'),
-				React.createElement('button', {
-					onClick: this.addToList2.bind(this)
-				}, '+ list 2')),
-			React.createElement(ListComponent, {list: this.state.list1}),
-			React.createElement(ListComponent, {list: this.state.list2}));
-	}
-
-	addToList1() {
-		var items = [];
-
-		for (let i = 0; i < 5000; i++) {
-			items.push(Math.random().toFixed(1));
-		}
-
-		this.setState({list1: this.state.list1.concat(items)});
-	}
-
-	addToList2() {
-		var items = [];
-
-		for (let i = 0; i < 5000; i++) {
-			items.push(Math.random().toFixed(1));
-		}
-
-		this.setState({list2: this.state.list2.concat(items)});
-	}
-}
-
-
-class ListComponent extends React.Component {
-	render() {
-		var items = [];
-
-		if (this.props.list) {
-			for (let i = 0; i < this.props.list.length; i++) {
-				items.push(React.createElement('li', null, this.props.list[i] + ''));
-			}
-		}
-
-		return React.createElement('ul', null, items);
-	}
-}
-
-React.render(React.createElement(AppComponent, null), $('.page')[0]);*/
-
 // benchmark
 // var start;
 // var end;
@@ -465,4 +383,3 @@ router.start();*/
 };*/
 
 /* jshint ignore:start */
-/*target, ...source*/

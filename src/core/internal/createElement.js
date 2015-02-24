@@ -2,6 +2,8 @@ import AshNode from '../class/AshNode';
 import AshElement from '../class/AshElement';
 import isAshElement from './isAshElement';
 import constants from './constants';
+import Component from '../class/Component';
+import isAncestor from '../internal/isAncestor';
 
 // constants references
 const COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
@@ -11,7 +13,7 @@ function createElement(tagName/*, props, children*/) {
 	var props;
 	var children;
 
-	if (typeof tagName !== 'string') {
+	if (typeof tagName !== 'string' && typeof tagName === 'function' && isAncestor(Component, tagName)) {
 		return AshElement.bind(null, COMPONENT_ASH_ELEMENT, tagName);
 	} else if (typeof tagName === 'string' && !tagName.length) {
 		throw new Error(tagName + ' (tagName) must be non-empty string or Component class.');

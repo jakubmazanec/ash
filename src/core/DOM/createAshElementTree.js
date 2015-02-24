@@ -47,8 +47,7 @@ function walkCreateAshElementTree(ashElement, index, owner, lastLevel) {
 		ashElement.stage = owner.stage;
 
 		// create child by rendering component
-		ashElement.instance.onBeforeMount();
-		ashElement.instance.lifecycle = LIFECYCLE_MOUNTING;
+		ashElement.instance.__lifecycle = LIFECYCLE_MOUNTING;
 		ashElement.children[0] = ashElement.instance.cachedRender;
 		
 		if (ashElement.children[0]) {
@@ -87,9 +86,8 @@ function createAshElementTree(rootAshElement, stage, startingLevel) {
 		ashElementTree.order = typeof ashElementTree.order === 'undefined' ? 0 : ashElementTree.order;
 
 		// create child by rendering component
-		ashElementTree.instance.onBeforeMount();
+		ashElementTree.instance.__lifecycle = LIFECYCLE_MOUNTING;
 		ashElementTree.children[0] = ashElementTree.instance.cachedRender;
-		ashElementTree.instance.lifecycle = LIFECYCLE_MOUNTING;
 
 		// set up a parent
 		ashElementTree.children[0].parent = ashElementTree;

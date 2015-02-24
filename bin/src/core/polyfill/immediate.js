@@ -13,30 +13,37 @@ var stateChange = _interopRequire(require("./immediate/stateChange"));
 var timeout = _interopRequire(require("./immediate/timeout"));
 
 var types = [nextTick, mutation.js, messageChannel, stateChange, timeout];
-var draining;
 var queue = [];
-//named nextTick for less confusing stack traces
+var draining;
+
+// named nextTick for less confusing stack traces
 function nextTick() {
+	var oldQueue;
+	var i;
+
 	draining = true;
-	var i, oldQueue;
-	var len = queue.length;
-	while (len) {
+
+	while (queue.length) {
 		oldQueue = queue;
 		queue = [];
 		i = -1;
-		while (++i < len) {
+
+		while (++i < queue.length) {
 			oldQueue[i]();
 		}
-		len = queue.length;
 	}
+
 	draining = false;
 }
+
 var scheduleDrain;
 var i = -1;
 var len = types.length;
+
 while (++i < len) {
 	if (types[i] && types[i].test && types[i].test()) {
 		scheduleDrain = types[i].install(nextTick);
+
 		break;
 	}
 }

@@ -10,23 +10,11 @@ const COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
 class AshElement {
 	constructor(type, spec) {
 		if (type != COMPONENT_ASH_ELEMENT && type != ASH_NODE_ASH_ELEMENT) {
-			throw new Error(type + 'must be ' + COMPONENT_ASH_ELEMENT + ' or ' + ASH_NODE_ASH_ELEMENT + '.');
+			throw new Error(`${type} "type" must be "${COMPONENT_ASH_ELEMENT}" or "${ASH_NODE_ASH_ELEMENT}".`);
 		}
 
 		if (!spec) {
-			throw new Error(spec + 'must be specified.');
-		}
-
-		if (!(this instanceof AshElement)) {
-			if (arguments.length >= 5) {
-				return new AshElement(type, spec, arguments[2], arguments[3], arguments[4]);
-			} else if (arguments.length >= 4) {
-				return new AshElement(type, spec, arguments[2], arguments[3]);
-			} else if (arguments.length >= 3) {
-				return new AshElement(type, spec, arguments[2]);
-			} else {
-				return new AshElement(type, spec);
-			}
+			throw new Error(`${spec} "spec" must be specified.`);
 		}
 
 		if (type == COMPONENT_ASH_ELEMENT) {
@@ -80,7 +68,7 @@ class AshElement {
 				this.instance = new this.spec();
 			}
 		} else {
-			throw new Error(this + ' is not a AshElement object.');
+			throw new Error(`${this} is not an AshElement object.`);
 		}
 
 		return this.instance;

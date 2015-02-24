@@ -23,7 +23,7 @@ gulp.task('server', function () {
 gulp.task('es6-app', function () {
 	return gulp.src('./app/**/*.js')
 		.pipe(babel({
-			whitelist: ['es6.tailCall', 'es6.classes', 'es6.constants', 'es6.blockScoping', 'es6.arrowFunctions', 'es6.modules', 'es6.properties.shorthand', 'useStrict'],
+			whitelist: ['es6.templateLiterals', 'es6.tailCall', 'es6.classes', 'es6.constants', 'es6.blockScoping', 'es6.arrowFunctions', 'es6.modules', 'es6.properties.shorthand', 'useStrict'],
 			sourceMap: false,
 			playground: true
 		}))
@@ -33,7 +33,7 @@ gulp.task('es6-app', function () {
 gulp.task('es6-src', function () {
 	return gulp.src('./src/**/*.js')
 		.pipe(babel({
-			whitelist: ['es6.tailCall', 'es6.classes', 'es6.constants', 'es6.blockScoping', 'es6.arrowFunctions', 'es6.modules', 'es6.properties.shorthand', 'useStrict'],
+			whitelist: ['es6.templateLiterals', 'es6.tailCall', 'es6.classes', 'es6.constants', 'es6.blockScoping', 'es6.arrowFunctions', 'es6.modules', 'es6.properties.shorthand', 'useStrict'],
 			sourceMap: false,
 			playground: true
 		}))

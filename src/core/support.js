@@ -1,75 +1,43 @@
-import isNative from './internal/isNative';
-
-/** Used to detect functions containing a `this` reference. */
-var reThis = /\bthis\b/;
-
-/** Used for native method references. */
-var objectProto = Object.prototype;
-
-/** Used to detect DOM support. */
-var document = (document = global.window) && document.document;
-
-/** Native method references. */
-var propertyIsEnumerable = objectProto.propertyIsEnumerable;
-
 /**
  * An object environment feature flags.
  *
  * @static
- * @memberOf _
+ * @memberOf ash
  * @type Object
  */
 var support = {};
 
-(function(x) {
+((x) => {
 
-  /**
-   * Detect if functions can be decompiled by `Function#toString`
-   * (all but Firefox OS certified apps, older Opera mobile browsers, and
-   * the PlayStation 3; forced `false` for Windows 8 apps).
-   *
-   * @memberOf _.support
-   * @type boolean
-   */
-  support.funcDecomp = !isNative(global.WinRTError) && reThis.test(function() { return this; });
+	/**
+	 * Detect if modern jabascript is supported.
+	 *
+	 * @memberOf ash.support
+	 * @type boolean
+	 */
+	support.modernJavascript = typeof Object.getOwnPropertyNames && typeof Object.getPrototypeOf == 'function' && typeof Object.defineProperties == 'function' && typeof Object.freeze == 'function' && typeof Object.freeze == 'function' && typeof Function.prototype.bind == 'function' && typeof Array.isArray == 'function' && ({__proto__: []}) instanceof Array && (global.history && global.history.pushState);
 
-  /**
-   * Detect if `Function#name` is supported (all but IE).
-   *
-   * @memberOf _.support
-   * @type boolean
-   */
-  support.funcNames = typeof Function.name == 'string';
 
-  /**
-   * Detect if the DOM is supported.
-   *
-   * @memberOf _.support
-   * @type boolean
-   */
-  try {
-    support.dom = document.createDocumentFragment().nodeType === 11;
-  } catch(e) {
-    support.dom = false;
-  }
 
-  /**
-   * Detect if `arguments` object indexes are non-enumerable.
-   *
-   * In Firefox < 4, IE < 9, PhantomJS, and Safari < 5.1 `arguments` object
-   * indexes are non-enumerable. Chrome < 25 and Node.js < 0.11.0 treat
-   * `arguments` object indexes as non-enumerable and fail `hasOwnProperty`
-   * checks for indexes that exceed their function's formal parameters with
-   * associated values of `0`.
-   *
-   * @memberOf _.support
-   * @type boolean
-   */
-  try {
-    support.nonEnumArgs = !propertyIsEnumerable.call(arguments, 1);
-  } catch(e) {
-    support.nonEnumArgs = true;
-  }
+	/**
+	 * Detect if the DOM is supported.
+	 *
+	 * @memberOf ash.support
+	 * @type boolean
+	 */
+	try {
+		support.dom = global.document.createDocumentFragment().nodeType === 11 && typeof global.addEventListener === 'function';
+	} catch (error) {
+		support.dom = false;
+	}
+
 }(0, 0));
+
+// add supprted class to <html>
+if (support.modernJavascript && support.dom) {
+	global.document.documentElement.className = global.document.documentElement.className.replace(new RegExp('(^|\\b)' + 'no-js'.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+	global.document.documentElement.className += ' js ash--supported';
+	global.document.documentElement.className = global.document.documentElement.className.trim();
+}
 
 export default support;

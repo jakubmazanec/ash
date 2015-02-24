@@ -4,7 +4,6 @@ import messageChannel from './immediate/messageChannel';
 import stateChange from './immediate/stateChange';
 import timeout from './immediate/timeout';
 
-
 var types = [
 	nextTick,
 	mutation.js,
@@ -12,30 +11,37 @@ var types = [
 	stateChange,
 	timeout
 ];
-var draining;
 var queue = [];
-//named nextTick for less confusing stack traces
+var draining;
+
+// named nextTick for less confusing stack traces
 function nextTick() {
+	var oldQueue;
+	var i;
+
 	draining = true;
-	var i, oldQueue;
-	var len = queue.length;
-	while (len) {
+
+	while (queue.length) {
 		oldQueue = queue;
 		queue = [];
 		i = -1;
-		while (++i < len) {
+
+		while (++i < queue.length) {
 			oldQueue[i]();
 		}
-		len = queue.length;
 	}
+
 	draining = false;
 }
+
 var scheduleDrain;
 var i = -1;
 var len = types.length;
-while (++ i < len) {
+
+while (++i < len) {
 	if (types[i] && types[i].test && types[i].test()) {
 		scheduleDrain = types[i].install(nextTick);
+
 		break;
 	}
 }

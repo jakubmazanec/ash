@@ -4,13 +4,16 @@ function test() {
 		// which doesn't handel postMessage well
 		return false;
 	}
+
 	return typeof global.MessageChannel !== 'undefined';
 }
 
 function install(func) {
 	var channel = new global.MessageChannel();
+	
 	channel.port1.onmessage = func;
-	return function () {
+
+	return () => {
 		channel.port2.postMessage(0);
 	};
 }

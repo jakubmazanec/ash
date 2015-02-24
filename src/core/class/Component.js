@@ -7,11 +7,12 @@ import isFunction from '../internal/isFunction';
 const LIFECYCLE_UNMOUNTED = constants.LIFECYCLE_UNMOUNTED;
 const LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
 const LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
+const LIFECYCLE_UNINITIALIZED = constants.LIFECYCLE_UNINITIALIZED;
 
 class Component extends Observable {
 	constructor(props) {
 		// autobind methods
-		Object.getOwnPropertyNames(this.__proto__).forEach((value) => {
+		Object.getOwnPropertyNames(Object.getPrototypeOf(this)).forEach((value) => {
 			if (isFunction(this[value]) && value !== 'constructor') {
 				this[value] = this[value].bind(this);
 			}
@@ -21,7 +22,8 @@ class Component extends Observable {
 		this.state = this.state || {};
 
 		this.__isDirty = false;
-		this.__lifecycle = LIFECYCLE_UNMOUNTED;
+		this.__previousLifecycle = LIFECYCLE_UNINITIALIZED;
+		this.__currentLifecycle = LIFECYCLE_UNMOUNTED;
 	}
 
 	get isDirty() {
@@ -36,20 +38,31 @@ class Component extends Observable {
 		}
 	}
 
-	get lifecycle() {
-		return this.__lifecycle;
+	get __lifecycle() {
+		return this.__currentLifecycle;
 	}
 
-	set lifecycle(value) {
-		if (value != LIFECYCLE_UNMOUNTED && value != LIFECYCLE_MOUNTING && value != LIFECYCLE_MOUNTED) {
-			throw new Error(value + ' must be "Unmounted", "Mounting" or "Mounted".');
+	set __lifecycle(nextLifecycle) {
+		if (nextLifecycle !== LIFECYCLE_UNMOUNTED && nextLifecycle !== LIFECYCLE_MOUNTING && nextLifecycle !== LIFECYCLE_MOUNTED) {
+			throw new Error(`${nextLifecycle} must be "${LIFECYCLE_UNMOUNTED}", "${LIFECYCLE_MOUNTING}" or "${LIFECYCLE_MOUNTED}". Also, this property is for internal use only. Do not change it!`);
 		}
 
-		this.__lifecycle = value;
+		this.__previousLifecycle = this.__currentLifecycle;
+		this.__currentLifecycle = nextLifecycle;
+
+		if (this.__previousLifecycle !== this.__currentLifecycle) {
+			if (this.__currentLifecycle === LIFECYCLE_MOUNTING) {
+				this.onBeforeMount();
+			} else if (this.__currentLifecycle === LIFECYCLE_MOUNTED) {
+				this.onMount();
+			} else if (this.__currentLifecycle === LIFECYCLE_UNMOUNTED) {
+				this.onUnmount();
+			}
+		}
 	}
 
 	get isMounted() {
-		return this.__lifecycle === LIFECYCLE_MOUNTED;
+		return this.__currentLifecycle === LIFECYCLE_MOUNTED;
 	}
 
 	get cachedRender() {

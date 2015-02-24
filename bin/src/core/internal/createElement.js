@@ -10,6 +10,10 @@ var isAshElement = _interopRequire(require("./isAshElement"));
 
 var constants = _interopRequire(require("./constants"));
 
+var Component = _interopRequire(require("../class/Component"));
+
+var isAncestor = _interopRequire(require("../internal/isAncestor"));
+
 // constants references
 var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
 var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
@@ -18,7 +22,7 @@ function createElement(tagName /*, props, children*/) {
 	var props;
 	var children;
 
-	if (typeof tagName !== "string") {
+	if (typeof tagName !== "string" && typeof tagName === "function" && isAncestor(Component, tagName)) {
 		return AshElement.bind(null, COMPONENT_ASH_ELEMENT, tagName);
 	} else if (typeof tagName === "string" && !tagName.length) {
 		throw new Error(tagName + " (tagName) must be non-empty string or Component class.");

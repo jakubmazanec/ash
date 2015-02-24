@@ -3,7 +3,7 @@ function test() {
 }
 
 function install(t) {
-	return function () {
+	return () => {
 		setTimeout(t, 0);
 	};
 }
