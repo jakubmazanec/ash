@@ -1,5 +1,5 @@
 // import $ from 'jquery';
-import _ from '_';
+import _ from 'lodash-fp';
 import ash from './ash';
 
 
@@ -62,6 +62,10 @@ class AppComponent extends ash.Component {
 					}, '!!!')),
 			new List(this.state.list1),//);
 			new List(this.state.list2));
+	}
+
+	onMount() {
+		console.log('App mounted!');
 	}
 
 	changeShadow() {

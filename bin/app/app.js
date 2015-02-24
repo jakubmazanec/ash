@@ -10,7 +10,7 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 
 // import $ from 'jquery';
 
-var _ = _interopRequire(require("_"));
+var _ = _interopRequire(require("lodash-fp"));
 
 var ash = _interopRequire(require("./ash"));
 
@@ -64,6 +64,13 @@ var AppComponent = (function (_ash$Component) {
 					events: { click: this.changeShadow }
 				}, "!!!")), new List(this.state.list1), //);
 				new List(this.state.list2));
+			},
+			writable: true,
+			configurable: true
+		},
+		onMount: {
+			value: function onMount() {
+				console.log("App mounted!");
 			},
 			writable: true,
 			configurable: true

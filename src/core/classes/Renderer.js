@@ -381,6 +381,9 @@ class Renderer {
 
 							this.stages[i].isRendering = false;
 						});
+					} if (isNodeTreeValid && isNodeTreeValidated) {
+						// mount components
+						mountComponents(this.stages[i].ashElementTree);
 					}
 				} else {
 					newAshNodeTree = createAshNodeTree(this.stages[i].ashElementTree);

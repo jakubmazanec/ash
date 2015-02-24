@@ -9,7 +9,7 @@
 	"unused": true,
 	"validthis": true,
 	"unused": "vars",
-	"predef": ["-Promise" , "-Uint8Array", "-Set"],
+	"predef": ["-Promise"],
 	"proto" : true,
 	"undef": true
 }

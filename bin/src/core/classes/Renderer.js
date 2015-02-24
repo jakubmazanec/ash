@@ -412,6 +412,9 @@ var Renderer = (function () {
 
 										_this.stages[i].isRendering = false;
 									});
+								}if (isNodeTreeValid && isNodeTreeValidated) {
+									// mount components
+									mountComponents(_this.stages[i].ashElementTree);
 								}
 							} else {
 								newAshNodeTree = createAshNodeTree(_this.stages[i].ashElementTree);
