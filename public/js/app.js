@@ -89,7 +89,7 @@ var AppComponent = (function (_ash$Component) {
 			value: function addToList1() {
 				var items = [];
 
-				for (var i = 0; i < 1000; i++) {
+				for (var i = 0; i < 5000; i++) {
 					items.push(Math.random().toFixed(1));
 				}
 
@@ -105,7 +105,7 @@ var AppComponent = (function (_ash$Component) {
 			value: function addToList2() {
 				var items = [];
 
-				for (var i = 0; i < 1000; i++) {
+				for (var i = 0; i < 5000; i++) {
 					items.push(Math.random().toFixed(1));
 				}
 
@@ -406,7 +406,7 @@ var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.defaul
 
 var isAshElement = _interopRequire(require("../internals/isAshElement"));
 
-var isString = _interopRequire(require("../internals/isString"));
+//import isString from '../internals/isString';
 
 var isComponentAshElement = _interopRequire(require("../internals/isComponentAshElement"));
 
@@ -414,10 +414,10 @@ var isAshNodeAshElement = _interopRequire(require("../internals/isAshNodeAshElem
 
 var constants = _interopRequire(require("../internals/constants"));
 
-var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
+//const LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
 var LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
 
-function walkCreateAshElementTree(ashElement, index, owner, lastLevel) {
+function walkCreateAshElementTree(ashElement, /*index, */owner /*, lastLevel*/) {
 	// type check
 	if (!isComponentAshElement(owner)) {
 		throw new Error(owner + " must be a Component type AshElement Object");
@@ -428,8 +428,8 @@ function walkCreateAshElementTree(ashElement, index, owner, lastLevel) {
 		ashElement.instantiate();
 
 		// set up ordering properties
-		ashElement.level = lastLevel + LEVEL_SEPARATOR + index;
-		ashElement.order = index;
+		//ashElement.level = lastLevel + LEVEL_SEPARATOR + index;
+		//ashElement.order = index;
 
 		// set up owner & stage
 		ashElement.owner = owner;
@@ -441,7 +441,7 @@ function walkCreateAshElementTree(ashElement, index, owner, lastLevel) {
 				ashElement.children[i].parent = ashElement;
 
 				// walk the child
-				walkCreateAshElementTree(ashElement.children[i], i, owner, ashElement.level);
+				walkCreateAshElementTree(ashElement.children[i], /*i, */owner /*, ashElement.level*/);
 			}
 		}
 	} else if (isComponentAshElement(ashElement)) {
@@ -449,8 +449,8 @@ function walkCreateAshElementTree(ashElement, index, owner, lastLevel) {
 		ashElement.instantiate();
 
 		// set up ordering properties
-		ashElement.level = lastLevel + LEVEL_SEPARATOR + index;
-		ashElement.order = index;
+		//ashElement.level = lastLevel + LEVEL_SEPARATOR + index;
+		//ashElement.order = index;
 
 		// set up owner
 		ashElement.owner = owner;
@@ -465,12 +465,12 @@ function walkCreateAshElementTree(ashElement, index, owner, lastLevel) {
 			ashElement.children[0].parent = ashElement;
 
 			// walk the child
-			walkCreateAshElementTree(ashElement.children[0], 0, ashElement, ashElement.level);
+			walkCreateAshElementTree(ashElement.children[0], /*0, */ashElement /*, ashElement.level*/);
 		}
 	}
 }
 
-function createAshElementTree(rootAshElement, stage, startingLevel) {
+function createAshElementTree(rootAshElement, stage /*, startingLevel*/) {
 	// type check
 	if (!isAshElement(rootAshElement)) {
 		throw new Error(rootAshElement + " must be a AshElement object.");
@@ -480,7 +480,7 @@ function createAshElementTree(rootAshElement, stage, startingLevel) {
 		throw new Error(stage + " must be an object.");
 	}
 
-	startingLevel = isString(startingLevel) ? startingLevel : "0";
+	//startingLevel = isString(startingLevel) ? startingLevel : '0';
 
 	var ashElementTree = rootAshElement;
 
@@ -492,8 +492,8 @@ function createAshElementTree(rootAshElement, stage, startingLevel) {
 		ashElementTree.instantiate();
 
 		// set up ordering properties
-		ashElementTree.level = startingLevel;
-		ashElementTree.order = typeof ashElementTree.order === "undefined" ? 0 : ashElementTree.order;
+		//ashElementTree.level = startingLevel;
+		//ashElementTree.order = typeof ashElementTree.order === 'undefined' ? 0 : ashElementTree.order;
 
 		// create child by rendering component
 		ashElementTree.instance.__lifecycle = LIFECYCLE_MOUNTING;
@@ -503,21 +503,21 @@ function createAshElementTree(rootAshElement, stage, startingLevel) {
 		ashElementTree.children[0].parent = ashElementTree;
 
 		// walk the child
-		walkCreateAshElementTree(ashElementTree.children[0], 0, ashElementTree, ashElementTree.level);
+		walkCreateAshElementTree(ashElementTree.children[0], /*0, */ashElementTree /*, ashElementTree.level*/);
 	} else {
 		// instantiate descriptor
 		ashElementTree.instantiate();
 
 		// set up ordering properties
-		ashElementTree.level = startingLevel;
-		ashElementTree.order = typeof ashElementTree.order === "undefined" ? 0 : ashElementTree.order;
+		//ashElementTree.level = startingLevel;
+		//ashElementTree.order = typeof ashElementTree.order === 'undefined' ? 0 : ashElementTree.order;
 
 		for (var i = 0; i < ashElementTree.children.length; i++) {
 			// set up a parent
 			ashElementTree.children[i].parent = ashElementTree;
 
 			// walk the child
-			walkCreateAshElementTree(ashElementTree.children[i], i, ashElementTree.owner, ashElementTree.level);
+			walkCreateAshElementTree(ashElementTree.children[i], /*i, */ashElementTree.owner /*, ashElementTree.level*/);
 		}
 	}
 
@@ -526,7 +526,7 @@ function createAshElementTree(rootAshElement, stage, startingLevel) {
 }
 
 module.exports = createAshElementTree;
-},{"../internals/constants":24,"../internals/isAshElement":27,"../internals/isAshNodeAshElement":29,"../internals/isComponentAshElement":31,"../internals/isString":40}],4:[function(require,module,exports){
+},{"../internals/constants":24,"../internals/isAshElement":27,"../internals/isAshNodeAshElement":29,"../internals/isComponentAshElement":31}],4:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -2739,13 +2739,13 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 			// newAshElement must be added as a child...
 			if (newAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
-				createAshElementTree(newAshElement, stage, newAshElement.owner.id, newAshElement.level);
+				createAshElementTree(newAshElement, stage /*, newAshElement.owner.id, newAshElement.level*/);
 
 				// replace the old
 				newAshElement.parent.children[newAshElement.order] = newAshElement;
 			} else if (newAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
-				createAshElementTree(newAshElement, stage, newAshElement.id, newAshElement.level);
+				createAshElementTree(newAshElement, stage /*, newAshElement.id, newAshElement.level*/);
 
 				// replace the old
 				newAshElement.parent.children[0] = newAshElement;
@@ -2794,7 +2794,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage, oldAshElement.owner.id, oldAshElement.level);
+				createAshElementTree(newAshElement, stage /*, oldAshElement.owner.id, oldAshElement.level*/);
 
 				// replace the old
 				oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
@@ -2804,7 +2804,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage, oldAshElement.id, oldAshElement.level);
+				createAshElementTree(newAshElement, stage /*, oldAshElement.id, oldAshElement.level*/);
 
 				// replace the old
 				oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
@@ -2818,7 +2818,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage, oldAshElement.owner.id, oldAshElement.level);
+				createAshElementTree(newAshElement, stage /*, oldAshElement.owner.id, oldAshElement.level*/);
 
 				// replace the old
 				oldAshElement.parent.children[oldAshElement.order] = newAshElement;
@@ -2827,7 +2827,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage, oldAshElement.id, oldAshElement.level);
+				createAshElementTree(newAshElement, stage /*, oldAshElement.id, oldAshElement.level*/);
 
 				// replace the old
 				oldAshElement.parent.children[0] = newAshElement;
@@ -2840,13 +2840,13 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 			// newAshElement must be added as a child...
 			if (newAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
-				createAshElementTree(newAshElement, stage, newAshElement.id, newAshElement.level);
+				createAshElementTree(newAshElement, stage /*, newAshElement.id, newAshElement.level*/);
 
 				// replace the old
 				newAshElement.parent.children[0] = newAshElement;
 			} else if (newAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
-				createAshElementTree(newAshElement, stage, newAshElement.owner.id, newAshElement.level);
+				createAshElementTree(newAshElement, stage /*, newAshElement.owner.id, newAshElement.level*/);
 
 				// replace the old
 				newAshElement.parent.children[newAshElement.order] = newAshElement;
@@ -2890,7 +2890,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage, oldAshElement.id, oldAshElement.level);
+				createAshElementTree(newAshElement, stage /*, oldAshElement.id, oldAshElement.level*/);
 
 				// replace the old
 				oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
@@ -2900,7 +2900,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage, oldAshElement.owner.id, oldAshElement.level);
+				createAshElementTree(newAshElement, stage /*, oldAshElement.owner.id, oldAshElement.level*/);
 
 				// replace the old
 				oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;

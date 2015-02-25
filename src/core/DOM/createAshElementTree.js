@@ -1,13 +1,13 @@
 import isAshElement from '../internals/isAshElement';
-import isString from '../internals/isString';
+//import isString from '../internals/isString';
 import isComponentAshElement from '../internals/isComponentAshElement';
 import isAshNodeAshElement from '../internals/isAshNodeAshElement';
 import constants from '../internals/constants';
 
-const LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
+//const LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
 const LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
 
-function walkCreateAshElementTree(ashElement, index, owner, lastLevel) {
+function walkCreateAshElementTree(ashElement, /*index, */owner/*, lastLevel*/) {
 	// type check
 	if (!isComponentAshElement(owner)) {
 		throw new Error(owner + ' must be a Component type AshElement Object');
@@ -18,8 +18,8 @@ function walkCreateAshElementTree(ashElement, index, owner, lastLevel) {
 		ashElement.instantiate();
 
 		// set up ordering properties
-		ashElement.level = lastLevel + LEVEL_SEPARATOR + index;
-		ashElement.order = index;
+		//ashElement.level = lastLevel + LEVEL_SEPARATOR + index;
+		//ashElement.order = index;
 
 		// set up owner & stage
 		ashElement.owner = owner;
@@ -31,7 +31,7 @@ function walkCreateAshElementTree(ashElement, index, owner, lastLevel) {
 				ashElement.children[i].parent = ashElement;
 
 				// walk the child
-				walkCreateAshElementTree(ashElement.children[i], i, owner, ashElement.level);
+				walkCreateAshElementTree(ashElement.children[i], /*i, */owner/*, ashElement.level*/);
 			}
 		}
 	} else if (isComponentAshElement(ashElement)) {
@@ -39,8 +39,8 @@ function walkCreateAshElementTree(ashElement, index, owner, lastLevel) {
 		ashElement.instantiate();
 
 		// set up ordering properties
-		ashElement.level = lastLevel + LEVEL_SEPARATOR + index;
-		ashElement.order = index;
+		//ashElement.level = lastLevel + LEVEL_SEPARATOR + index;
+		//ashElement.order = index;
 
 		// set up owner
 		ashElement.owner = owner;
@@ -55,12 +55,12 @@ function walkCreateAshElementTree(ashElement, index, owner, lastLevel) {
 			ashElement.children[0].parent = ashElement;
 
 			// walk the child
-			walkCreateAshElementTree(ashElement.children[0], 0, ashElement, ashElement.level);
+			walkCreateAshElementTree(ashElement.children[0], /*0, */ashElement/*, ashElement.level*/);
 		}
 	}
 }
 
-function createAshElementTree(rootAshElement, stage, startingLevel) {
+function createAshElementTree(rootAshElement, stage/*, startingLevel*/) {
 	// type check
 	if (!isAshElement(rootAshElement)) {
 		throw new Error(rootAshElement + ' must be a AshElement object.');
@@ -70,7 +70,7 @@ function createAshElementTree(rootAshElement, stage, startingLevel) {
 		throw new Error(stage + ' must be an object.');
 	}
 
-	startingLevel = isString(startingLevel) ? startingLevel : '0';
+	//startingLevel = isString(startingLevel) ? startingLevel : '0';
 
 	var ashElementTree = rootAshElement;
 
@@ -82,8 +82,8 @@ function createAshElementTree(rootAshElement, stage, startingLevel) {
 		ashElementTree.instantiate();
 
 		// set up ordering properties
-		ashElementTree.level = startingLevel;
-		ashElementTree.order = typeof ashElementTree.order === 'undefined' ? 0 : ashElementTree.order;
+		//ashElementTree.level = startingLevel;
+		//ashElementTree.order = typeof ashElementTree.order === 'undefined' ? 0 : ashElementTree.order;
 
 		// create child by rendering component
 		ashElementTree.instance.__lifecycle = LIFECYCLE_MOUNTING;
@@ -93,21 +93,21 @@ function createAshElementTree(rootAshElement, stage, startingLevel) {
 		ashElementTree.children[0].parent = ashElementTree;
 
 		// walk the child
-		walkCreateAshElementTree(ashElementTree.children[0], 0, ashElementTree, ashElementTree.level);
+		walkCreateAshElementTree(ashElementTree.children[0], /*0, */ashElementTree/*, ashElementTree.level*/);
 	} else {
 		// instantiate descriptor
 		ashElementTree.instantiate();
 
 		// set up ordering properties
-		ashElementTree.level = startingLevel;
-		ashElementTree.order = typeof ashElementTree.order === 'undefined' ? 0 : ashElementTree.order;
+		//ashElementTree.level = startingLevel;
+		//ashElementTree.order = typeof ashElementTree.order === 'undefined' ? 0 : ashElementTree.order;
 
 		for (let i = 0; i < ashElementTree.children.length; i++) {
 			// set up a parent
 			ashElementTree.children[i].parent = ashElementTree;
 
 			// walk the child
-			walkCreateAshElementTree(ashElementTree.children[i], i, ashElementTree.owner, ashElementTree.level);
+			walkCreateAshElementTree(ashElementTree.children[i], /*i, */ashElementTree.owner/*, ashElementTree.level*/);
 		}
 	}
 
