@@ -97,7 +97,7 @@
 
 @mixin json($value) {
 		// All browsers except IE8-
-		body:before {
+		body::before {
 			display: none !important;
 			content: json($value);
 		}

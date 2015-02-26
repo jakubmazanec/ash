@@ -14,13 +14,17 @@ html
 body
 {
 	box-sizing: border-box;
-	position: relative;	
+	position: relative;
 	z-index: 0;
 	width: 100%;
 	min-height: 100%;
 	padding: 0 b(1);
 	
 	@include font-size(style(font-size));
+
+	@include after {
+		content: 'hoj';
+	}
 }
 
 @include json($__objects);

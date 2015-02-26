@@ -17,7 +17,7 @@ var support = {};
   * @memberOf ash.support
   * @type boolean
   */
-	support.modernJavascript = typeof Object.getOwnPropertyNames && typeof Object.getPrototypeOf == "function" && typeof Object.defineProperties == "function" && typeof Object.freeze == "function" && typeof Object.freeze == "function" && typeof Function.prototype.bind == "function" && typeof Array.isArray == "function" && { __proto__: [] } instanceof Array && (global.history && global.history.pushState) && global.requestAnimationFrame;
+	support.modernJavascript = typeof Object.getOwnPropertyNames && typeof Object.getPrototypeOf == "function" && typeof Object.defineProperties == "function" && typeof Object.freeze == "function" && typeof Object.freeze == "function" && typeof Function.prototype.bind == "function" && typeof Array.isArray == "function" && { __proto__: [] } instanceof Array && (global.history && global.history.pushState) && global.requestAnimationFrame && global.getComputedStyle;
 
 	/**
   * Detect if the DOM is supported.

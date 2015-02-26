@@ -42,4 +42,18 @@ assign(ash, {
 	'isAncestor': isAncestor
 });
 
+// load variables from css
+if (support.dom) {
+	var jsonString = global.getComputedStyle(global.document.body, '::before').content;
+	var removeQuotes = (s) => {
+		return s.replace(/^['"]+|\s+|\\|(;\s?})+|['"]$/g, '');
+	};
+
+	try {
+		ash.sass = JSON.parse(removeQuotes(jsonString));
+	} catch (error) {
+		ash.sass = {};
+	}
+}
+
 export default ash;

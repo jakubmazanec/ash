@@ -3991,7 +3991,7 @@ var support = {};
   * @memberOf ash.support
   * @type boolean
   */
-	support.modernJavascript = typeof Object.getOwnPropertyNames && typeof Object.getPrototypeOf == "function" && typeof Object.defineProperties == "function" && typeof Object.freeze == "function" && typeof Object.freeze == "function" && typeof Function.prototype.bind == "function" && typeof Array.isArray == "function" && { __proto__: [] } instanceof Array && (global.history && global.history.pushState) && global.requestAnimationFrame;
+	support.modernJavascript = typeof Object.getOwnPropertyNames && typeof Object.getPrototypeOf == "function" && typeof Object.defineProperties == "function" && typeof Object.freeze == "function" && typeof Object.freeze == "function" && typeof Function.prototype.bind == "function" && typeof Array.isArray == "function" && { __proto__: [] } instanceof Array && (global.history && global.history.pushState) && global.requestAnimationFrame && global.getComputedStyle;
 
 	/**
   * Detect if the DOM is supported.
@@ -4016,6 +4016,7 @@ if (support.modernJavascript && support.dom) {
 module.exports = support;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],48:[function(require,module,exports){
+(function (global){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
@@ -4072,7 +4073,22 @@ assign(ash, {
 	"isAncestor": isAncestor
 });
 
+// load variables from css
+if (support.dom) {
+	var jsonString = global.getComputedStyle(global.document.body, "::before").content;
+	var removeQuotes = function (s) {
+		return s.replace(/^['"]+|\s+|\\|(;\s?})+|['"]$/g, "");
+	};
+
+	try {
+		ash.sass = JSON.parse(removeQuotes(jsonString));
+	} catch (error) {
+		ash.sass = {};
+	}
+}
+
 module.exports = ash;
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./core/classes/Action":14,"./core/classes/Component":17,"./core/classes/Immutables":19,"./core/classes/Observable":20,"./core/classes/Renderer":21,"./core/classes/Store":22,"./core/internals/assign":23,"./core/internals/createElement":25,"./core/internals/isAncestor":26,"./core/internals/isImmutable":35,"./core/support":47}],49:[function(require,module,exports){
 // shim for using process in browser
 
