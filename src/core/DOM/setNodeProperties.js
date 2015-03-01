@@ -15,7 +15,11 @@ function setNodeProperties(node, properties, inserted) {
 			} else if (prop === 'events' && isObject(properties[prop])) {
 				eventListener.addEvents(node, properties[prop], inserted);
 			} else if (prop === 'className' || prop === 'class') {
-				node.className = properties[prop];
+				if (typeof node.className === 'string') {
+					node.className = properties[prop];
+				} else {
+					node.setAttribute('class', properties[prop]);
+				}
 			}	else if (!isObject(properties[prop])) {
 				if (prop.substring(0, 6) == 'xlink:') {
 					node.setAttributeNS('http://www.w3.org/1999/xlink', prop.substring(6), properties[prop]);

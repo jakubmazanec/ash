@@ -32,11 +32,13 @@ var support = {};
 	}
 })(0, 0);
 
-// add supprted class to <html>
+// add supported class to <html>
 if (support.modernJavascript && support.dom) {
 	global.document.documentElement.className = global.document.documentElement.className.replace(new RegExp("(^|\\b)" + "no-js".split(" ").join("|") + "(\\b|$)", "gi"), " ");
 	global.document.documentElement.className += " js ash--supported";
 	global.document.documentElement.className = global.document.documentElement.className.trim();
+} else {
+	throw new Error("Unsupported javascript version.");
 }
 
 module.exports = support;

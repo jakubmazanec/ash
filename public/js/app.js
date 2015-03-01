@@ -736,7 +736,7 @@ function createNodeTree(ashNodeTree) {
 	}
 
 	// create element
-	if (ashNodeTree.tagName === "svg" || ashNodeTree.tagName === "use" || ashNodeTree.tagName === "path" || ashNodeTree.tagName === "circle" || ashNodeTree.tagName === "text" || ashNodeTree.tagName === "ellipse" || ashNodeTree.tagName === "line" || ashNodeTree.tagName === "polygon" || ashNodeTree.tagName === "polyline" || ashNodeTree.tagName == "rect") {
+	if (ashNodeTree.tagName === "svg" || ashNodeTree.tagName === "use" || ashNodeTree.tagName === "path" || ashNodeTree.tagName === "circle" || ashNodeTree.tagName === "text" || ashNodeTree.tagName === "ellipse" || ashNodeTree.tagName === "line" || ashNodeTree.tagName === "polygon" || ashNodeTree.tagName === "polyline" || ashNodeTree.tagName === "rect") {
 		nodeTree = global.document.createElementNS("http://www.w3.org/2000/svg", ashNodeTree.tagName);
 	} else {
 		nodeTree = global.document.createElement(ashNodeTree.tagName);
@@ -1438,7 +1438,11 @@ function removeNodeProperties(node, properties) {
 			if (props[0] == "style") {
 				node.removeAttribute("style");
 			} else if (props[0] == "events") {} else if (props[0] == "className" || props[0] == "class") {
-				node.className = "";
+				if (typeof node.className === "string") {
+					node.className = "";
+				} else {
+					node.setAttribute("class", "");
+				}
 			} else {
 				if (props[0].substring(0, 6) == "xlink:") {
 					node.removeAttributeNS("http://www.w3.org/1999/xlink", props[0].substring(6));
@@ -1482,7 +1486,11 @@ function setNodeProperties(node, properties, inserted) {
 			} else if (prop === "events" && isObject(properties[prop])) {
 				eventListener.addEvents(node, properties[prop], inserted);
 			} else if (prop === "className" || prop === "class") {
-				node.className = properties[prop];
+				if (typeof node.className === "string") {
+					node.className = properties[prop];
+				} else {
+					node.setAttribute("class", properties[prop]);
+				}
 			} else if (!isObject(properties[prop])) {
 				if (prop.substring(0, 6) == "xlink:") {
 					node.setAttributeNS("http://www.w3.org/1999/xlink", prop.substring(6), properties[prop]);
@@ -4086,11 +4094,13 @@ var support = {};
 	}
 })(0, 0);
 
-// add supprted class to <html>
+// add supported class to <html>
 if (support.modernJavascript && support.dom) {
 	global.document.documentElement.className = global.document.documentElement.className.replace(new RegExp("(^|\\b)" + "no-js".split(" ").join("|") + "(\\b|$)", "gi"), " ");
 	global.document.documentElement.className += " js ash--supported";
 	global.document.documentElement.className = global.document.documentElement.className.trim();
+} else {
+	throw new Error("Unsupported javascript version.");
 }
 
 module.exports = support;
