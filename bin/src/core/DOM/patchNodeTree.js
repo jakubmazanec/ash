@@ -48,7 +48,7 @@ function walkReindexChildNodes(node, levelIndex, order) {
 	var childLevels;
 
 	for (var i = 0; i < node.childNodes.length; i++) {
-		if (node.childNodes[i].nodeType == 1) {
+		if (node.childNodes[i].nodeType === 1) {
 			childLevels = parseAshNodeIndex(node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
 			childLevels[levelIndex] = order;
 
@@ -149,15 +149,15 @@ function patchNodeTree(nodeTree /*, patches*/) {
 		// then the patch type is important
 		if (patches[i].type === PATCH_ASH_NODE) {
 			patches[i].sortOrder += zeroPadNumber(9, maxDigits);
-		} else if (patches[i].type == PATCH_ASH_TEXT_NODE) {
+		} else if (patches[i].type === PATCH_ASH_TEXT_NODE) {
 			patches[i].sortOrder += zeroPadNumber(8, maxDigits);
-		} else if (patches[i].type == PATCH_PROPERTIES) {
+		} else if (patches[i].type === PATCH_PROPERTIES) {
 			patches[i].sortOrder += zeroPadNumber(7, maxDigits);
-		} else if (patches[i].type == PATCH_REMOVE) {
+		} else if (patches[i].type === PATCH_REMOVE) {
 			patches[i].sortOrder += zeroPadNumber(6, maxDigits);
-		} else if (patches[i].type == PATCH_INSERT) {
+		} else if (patches[i].type === PATCH_INSERT) {
 			patches[i].sortOrder += zeroPadNumber(5, maxDigits);
-		} else if (patches[i].type == PATCH_ORDER) {
+		} else if (patches[i].type === PATCH_ORDER) {
 			patches[i].sortOrder += zeroPadNumber(4, maxDigits);
 		} else {
 			patches[i].sortOrder += zeroPadNumber(0, maxDigits);
@@ -187,7 +187,7 @@ function patchNodeTree(nodeTree /*, patches*/) {
 				index = levels.join(LEVEL_SEPARATOR);
 
 				for (var j = i; j >= 0; j--) {
-					if (patches[j].type === PATCH_ORDER && patches[j].newIndex == index) {
+					if (patches[j].type === PATCH_ORDER && patches[j].newIndex === index) {
 						// patches[i].origIndex = patches[i].index;
 						// patches[i].origParsedIndex = patches[i].parsedIndex.slice(0);
 						// patches[i].origParentIndex = patches[i].parentIndex;

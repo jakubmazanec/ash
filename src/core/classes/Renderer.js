@@ -28,13 +28,13 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 			// newAshElement must be added as a child...
 			if (newAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
-				createAshElementTree(newAshElement, stage/*, newAshElement.owner.id, newAshElement.level*/);
+				createAshElementTree(newAshElement, stage);
 
 				// replace the old
 				newAshElement.parent.children[newAshElement.order] = newAshElement;
 			} else if (newAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
-				createAshElementTree(newAshElement, stage/*, newAshElement.id, newAshElement.level*/);
+				createAshElementTree(newAshElement, stage);
 
 				// replace the old
 				newAshElement.parent.children[0] = newAshElement;
@@ -49,7 +49,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				oldAshElement.instance.props = newAshElement.args[0];
 
 				// create child for the new descriptor
-				newAshElement.children[0] = oldAshElement.instance.cachedRender;
+				newAshElement.children[0] = oldAshElement.instance.render();
 
 				// adding children to the queue
 				if (newAshElement.children[0] && oldAshElement.children[0]) {
@@ -68,7 +68,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 
 				// deleting old surplus children
 				if (!newAshElement.children[0] && oldAshElement.children[0]) {
-					if (oldAshElement.children[0].type == COMPONENT_ASH_ELEMENT) {
+					if (oldAshElement.children[0].type === COMPONENT_ASH_ELEMENT) {
 						oldAshElement.children[0].instance.__lifecycle = LIFECYCLE_UNMOUNTED;
 					}
 					
@@ -83,17 +83,17 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage/*, oldAshElement.owner.id, oldAshElement.level*/);
+				createAshElementTree(newAshElement, stage);
 
 				// replace the old
 				oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
 				oldAshElement.parent.children[oldAshElement.order] = newAshElement;
-			} else if (oldAshElement.parent.type == COMPONENT_ASH_ELEMENT) {
+			} else if (oldAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage/*, oldAshElement.id, oldAshElement.level*/);
+				createAshElementTree(newAshElement, stage);
 
 				// replace the old
 				oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
@@ -107,16 +107,16 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage/*, oldAshElement.owner.id, oldAshElement.level*/);
+				createAshElementTree(newAshElement, stage);
 
 				// replace the old
 				oldAshElement.parent.children[oldAshElement.order] = newAshElement;
-			} else if (oldAshElement.parent.type == COMPONENT_ASH_ELEMENT) {
+			} else if (oldAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage/*, oldAshElement.id, oldAshElement.level*/);
+				createAshElementTree(newAshElement, stage);
 
 				// replace the old
 				oldAshElement.parent.children[0] = newAshElement;
@@ -129,13 +129,13 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 			// newAshElement must be added as a child...
 			if (newAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
-				createAshElementTree(newAshElement, stage/*, newAshElement.id, newAshElement.level*/);
+				createAshElementTree(newAshElement, stage);
 				
 				// replace the old
 				newAshElement.parent.children[0] = newAshElement;
 			} else if (newAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
-				createAshElementTree(newAshElement, stage/*, newAshElement.owner.id, newAshElement.level*/);
+				createAshElementTree(newAshElement, stage);
 
 				// replace the old
 				newAshElement.parent.children[newAshElement.order] = newAshElement;
@@ -165,7 +165,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 
 			// deleting old surplus children
 			while (oldAshElement.children.length > newAshElement.children.length) {
-				if (oldAshElement.children[oldAshElement.children.length - 1].type == COMPONENT_ASH_ELEMENT) {
+				if (oldAshElement.children[oldAshElement.children.length - 1].type === COMPONENT_ASH_ELEMENT) {
 					oldAshElement.children[oldAshElement.children.length - 1].instance.__lifecycle = LIFECYCLE_UNMOUNTED;
 				}
 
@@ -179,7 +179,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage/*, oldAshElement.id, oldAshElement.level*/);
+				createAshElementTree(newAshElement, stage);
 				
 				// replace the old
 				oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
@@ -189,7 +189,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage/*, oldAshElement.owner.id, oldAshElement.level*/);
+				createAshElementTree(newAshElement, stage);
 
 				// replace the old
 				oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
@@ -200,7 +200,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 }
 
 function updateComponentAshElement(componentAshElement, stage) {
-	var render = componentAshElement.instance.cachedRender;
+	var render = componentAshElement.instance.render();
 	render.owner = componentAshElement;
 	render.parent = componentAshElement;
 	render.order = 0;
@@ -221,7 +221,7 @@ function mountComponents(ashElement) {
 			}
 		}
 	} else if (isComponentAshElement(ashElement)) {
-		if (ashElement.instance && ashElement.instance.__lifecycle == LIFECYCLE_MOUNTING) {
+		if (ashElement.instance && ashElement.instance.__lifecycle === LIFECYCLE_MOUNTING) {
 			ashElement.instance.__lifecycle = LIFECYCLE_MOUNTED;
 		}
 
@@ -258,9 +258,7 @@ function updateStage(stageId, component) {
 }
 
 class Renderer {
-	/* jshint ignore:start */
 	stages = [];
-	/* jshint ignore:end */
 
 	constructor() {
 		if (renderer) {
@@ -346,7 +344,7 @@ class Renderer {
 
 					// remove child nodes which are not element nodes
 					for (let j = 0; j < this.stages[i].node.childNodes.length; j++) {
-						if (this.stages[i].node.childNodes[j].nodeType != 1) {
+						if (this.stages[i].node.childNodes[j].nodeType !== 1) {
 							this.stages[i].node.removeChild(this.stages[i].node.childNodes[j]);
 							j--;
 						}

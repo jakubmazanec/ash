@@ -25,88 +25,9 @@ global.ash = ash;
 
 var Renderer = global.Renderer = new ash.Renderer();
 
-var LogoComponent = (function (_ash$Component) {
-	function LogoComponent() {
-		_classCallCheck(this, LogoComponent);
-
-		if (_ash$Component != null) {
-			_ash$Component.apply(this, arguments);
-		}
-	}
-
-	_inherits(LogoComponent, _ash$Component);
-
-	_prototypeProperties(LogoComponent, null, {
-		render: {
-			value: function render() {
-				var badge = [ash.e("path", {
-					fill: "#ffb819",
-					d: "M27,0C12.112,0,0,12.112,0,27c0,0.677,0.033,1.346,0.083,2.01c0.008,0.113,0.016,0.226,0.026,0.34c0.186,2.13,0.618,4.19,1.271,6.15l11.066-11.066C12.162,23.674,12,22.857,12,22c0-3.859,3.14-7,7-7s7,3.141,7,7c0,1.126-0.273,2.188-0.748,3.131L31,30.879l3.086-3.086C33.88,27.23,33.75,26.633,33.75,26c0-2.895,2.355-5.25,5.25-5.25s5.25,2.355,5.25,5.25c0,0.633-0.13,1.23-0.336,1.793l8.454,8.454c0.257-0.702,0.483-1.42,0.682-2.149c0.008-0.03,0.018-0.059,0.026-0.089c0.186-0.691,0.341-1.396,0.472-2.108c0.017-0.096,0.035-0.191,0.051-0.287c0.12-0.691,0.214-1.392,0.28-2.1c0.009-0.1,0.015-0.199,0.022-0.299C53.962,28.484,54,27.747,54,27C54,12.112,41.888,0,27,0z"
-				}), ash.e("path", {
-					fill: "#ffb819",
-					d: "M29.206,53.902c0.492-0.039,0.981-0.092,1.464-0.158c0.088-0.012,0.178-0.019,0.266-0.033c0.587-0.086,1.168-0.191,1.742-0.314c0.063-0.014,0.124-0.029,0.186-0.043c0.54-0.12,1.073-0.256,1.6-0.407c0.054-0.016,0.107-0.03,0.161-0.046c7.174-2.117,13.112-7.143,16.45-13.703l-8.979-8.979C41.226,30.858,40.162,31.25,39,31.25s-2.226-0.392-3.097-1.032l-3.843,3.843C31.768,34.354,31.384,34.5,31,34.5s-0.768-0.146-1.06-0.439l-6.587-6.588C22.156,28.426,20.645,29,19,29c-1.899,0-3.622-0.763-4.884-1.995L2.592,38.529c3.246,6.846,9.287,12.117,16.64,14.33c0.025,0.008,0.051,0.015,0.077,0.022c0.544,0.162,1.097,0.304,1.655,0.433c0.088,0.02,0.175,0.041,0.264,0.061c0.585,0.128,1.177,0.239,1.775,0.328c0.054,0.008,0.108,0.014,0.162,0.021c0.527,0.075,1.059,0.132,1.596,0.177c0.149,0.012,0.299,0.023,0.45,0.034C25.802,53.973,26.398,54,27,54c0.589,0,1.171-0.025,1.751-0.063C28.903,53.928,29.055,53.915,29.206,53.902z"
-				}), ash.e("circle", {
-					fill: "#ffb819",
-					cx: "39",
-					cy: "26",
-					r: "2.75"
-				}), ash.e("path", {
-					fill: "#ffb819",
-					d: "M23,22c0-2.205-1.794-4-4-4s-4,1.795-4,4s1.794,4,4,4S23,24.205,23,22z"
-				})];
-				var label = [ash.e("path", {
-					fill: "#292624",
-					d: "M78,21.04c0-0.18,0.144-0.342,0.324-0.342h4.393c3.475,0,6.32,2.827,6.32,6.284c0,3.493-2.845,6.32-6.32,6.32h-4.393c-0.18,0-0.324-0.162-0.324-0.342V21.04z M82.538,30.637c2.035,0,3.511-1.602,3.511-3.655c0-2.035-1.476-3.637-3.511-3.637h-1.729v7.292H82.538z"
-				}), ash.e("path", {
-					fill: "#292624",
-					d: "M89.664,32.833l5.636-12.118c0.054-0.108,0.18-0.198,0.306-0.198h0.18c0.126,0,0.252,0.09,0.306,0.198l5.636,12.118c0.108,0.234-0.036,0.468-0.306,0.468h-1.999c-0.324,0-0.468-0.108-0.63-0.45l-0.648-1.422h-4.897l-0.648,1.44c-0.09,0.216-0.288,0.432-0.648,0.432H89.97C89.7,33.302,89.556,33.068,89.664,32.833z M97.064,28.98l-1.368-2.971h-0.018l-1.351,2.971H97.064z"
-				}), ash.e("path", {
-					fill: "#292624",
-					d: "M104.353,23.345h-2.575c-0.198,0-0.342-0.162-0.342-0.342V21.04c0-0.18,0.144-0.342,0.342-0.342h7.994c0.198,0,0.342,0.162,0.342,0.342v1.963c0,0.18-0.144,0.342-0.342,0.342h-2.575v9.615c0,0.18-0.162,0.342-0.342,0.342h-2.161c-0.18,0-0.342-0.162-0.342-0.342V23.345z"
-				}), ash.e("path", {
-					fill: "#292624",
-					d: "M109.824,32.833l5.635-12.118c0.054-0.108,0.18-0.198,0.306-0.198h0.18c0.126,0,0.252,0.09,0.306,0.198l5.636,12.118c0.108,0.234-0.036,0.468-0.306,0.468h-1.999c-0.324,0-0.468-0.108-0.63-0.45l-0.648-1.422h-4.897l-0.648,1.44c-0.09,0.216-0.288,0.432-0.648,0.432h-1.981C109.859,33.302,109.715,33.068,109.824,32.833z M117.224,28.98l-1.368-2.971h-0.018l-1.351,2.971H117.224z"
-				}), ash.e("path", {
-					fill: "#292624",
-					d: "M123.521,20.842c0-0.18,0.162-0.324,0.342-0.324h0.45l7.184,6.914h0.018V21.04c0-0.18,0.144-0.342,0.342-0.342h2.161c0.18,0,0.342,0.162,0.342,0.342v12.118c0,0.18-0.162,0.324-0.342,0.324h-0.288c-0.054,0-0.198-0.054-0.234-0.09l-7.112-7.148h-0.018v6.716c0,0.18-0.144,0.342-0.342,0.342h-2.143c-0.18,0-0.342-0.162-0.342-0.342L123.521,20.842"
-				}), ash.e("path", {
-					fill: "#292624",
-					d: "M136.013,32.833l5.635-12.118c0.054-0.108,0.18-0.198,0.306-0.198h0.18c0.126,0,0.252,0.09,0.306,0.198l5.636,12.118c0.108,0.234-0.036,0.468-0.306,0.468h-1.999c-0.324,0-0.468-0.108-0.63-0.45l-0.648-1.422h-4.897l-0.648,1.44c-0.09,0.216-0.288,0.432-0.648,0.432h-1.981C136.049,33.302,135.905,33.068,136.013,32.833z M143.413,28.98l-1.368-2.971h-0.018l-1.351,2.971H143.413z"
-				}), ash.e("path", {
-					fill: "#292624",
-					d: "M149.333,21.04c0-0.18,0.162-0.342,0.342-0.342h2.215c0.198,0,0.342,0.162,0.342,0.342v7.292c0,1.261,0.937,2.269,2.215,2.269c1.296,0,2.25-1.008,2.25-2.269V21.04c0-0.18,0.144-0.342,0.342-0.342h2.215c0.18,0,0.342,0.162,0.342,0.342v7.437c0,2.736-2.305,5.005-5.149,5.005c-2.827,0-5.113-2.269-5.113-5.005V21.04z"
-				}), ash.e("path", {
-					fill: "#292624",
-					d: "M164.292,23.345h-2.575c-0.198,0-0.342-0.162-0.342-0.342V21.04c0-0.18,0.144-0.342,0.342-0.342h7.994c0.198,0,0.342,0.162,0.342,0.342v1.963c0,0.18-0.144,0.342-0.342,0.342h-2.575v9.615c0,0.18-0.162,0.342-0.342,0.342h-2.161c-0.18,0-0.342-0.162-0.342-0.342V23.345z"
-				}), ash.e("path", {
-					fill: "#292624",
-					d: "M172.031,21.04c0-0.18,0.162-0.342,0.342-0.342h2.161c0.18,0,0.342,0.162,0.342,0.342v11.919c0,0.18-0.162,0.342-0.342,0.342h-2.161c-0.18,0-0.342-0.162-0.342-0.342V21.04z"
-				}), ash.e("path", {
-					fill: "#292624",
-					d: "M178.151,21.13c0-0.234,0.18-0.432,0.432-0.432h2.107c0.234,0,0.432,0.198,0.432,0.432v4.736l3.997-4.988c0.072-0.09,0.234-0.18,0.342-0.18h2.269c0.342,0,0.522,0.396,0.324,0.666l-4.213,5.275l4.591,5.978c0.198,0.27,0,0.666-0.342,0.666h-2.485c-0.126,0-0.288-0.072-0.324-0.126l-4.159-5.654v5.366c0,0.234-0.198,0.432-0.432,0.432h-2.107c-0.252,0-0.432-0.198-0.432-0.432V21.13z"
-				}), ash.e("path", {
-					fill: "#292624",
-					d: "M188.825,32.833l5.635-12.118c0.054-0.108,0.18-0.198,0.306-0.198h0.18c0.126,0,0.252,0.09,0.306,0.198l5.636,12.118c0.108,0.234-0.036,0.468-0.306,0.468h-1.999c-0.324,0-0.468-0.108-0.63-0.45l-0.648-1.422h-4.897l-0.648,1.44c-0.09,0.216-0.288,0.432-0.648,0.432h-1.981C188.86,33.302,188.716,33.068,188.825,32.833z M196.225,28.98l-1.368-2.971h-0.018l-1.351,2.971H196.225z"
-				})];
-
-				return ash.e("span", { className: this.props.className ? this.props.className : "logo" }, [ash.e("svg", {
-					xlmns: "http://www.w3.org/2000/svg",
-					viewBox: this.props.badgeOnly ? "0 0 54 54" : "0 0 200.924 54"
-				}, this.props.badgeOnly ? badge : badge.concat(label))]);
-			},
-			writable: true,
-			configurable: true
-		}
-	});
-
-	return LogoComponent;
-})(ash.Component);
-
-var Logo = ash.createElement(LogoComponent);
-
 // Renderer.addComponent(new Timer(), $('.page')[0]);
 
-var AppComponent = (function (_ash$Component2) {
+var AppComponent = (function (_ash$Component) {
 	function AppComponent() {
 		this.name = "App";
 		this.state = new ash.ImmutableObject({
@@ -117,12 +38,12 @@ var AppComponent = (function (_ash$Component2) {
 
 		_classCallCheck(this, AppComponent);
 
-		if (_ash$Component2 != null) {
-			_ash$Component2.apply(this, arguments);
+		if (_ash$Component != null) {
+			_ash$Component.apply(this, arguments);
 		}
 	}
 
-	_inherits(AppComponent, _ash$Component2);
+	_inherits(AppComponent, _ash$Component);
 
 	_prototypeProperties(AppComponent, null, {
 		render: {
@@ -168,7 +89,7 @@ var AppComponent = (function (_ash$Component2) {
 			value: function addToList1() {
 				var items = [];
 
-				for (var i = 0; i < 5000; i++) {
+				for (var i = 0; i < 9; i++) {
 					items.push(Math.random().toFixed(1));
 				}
 
@@ -184,7 +105,7 @@ var AppComponent = (function (_ash$Component2) {
 			value: function addToList2() {
 				var items = [];
 
-				for (var i = 0; i < 5000; i++) {
+				for (var i = 0; i < 9; i++) {
 					items.push(Math.random().toFixed(1));
 				}
 
@@ -221,19 +142,19 @@ var AppComponent = (function (_ash$Component2) {
 
 var App = ash.createElement(AppComponent);
 
-var ListComponent = (function (_ash$Component3) {
+var ListComponent = (function (_ash$Component2) {
 	function ListComponent() {
 		this.name = "List";
 		this.state = { redOutline: false };
 
 		_classCallCheck(this, ListComponent);
 
-		if (_ash$Component3 != null) {
-			_ash$Component3.apply(this, arguments);
+		if (_ash$Component2 != null) {
+			_ash$Component2.apply(this, arguments);
 		}
 	}
 
-	_inherits(ListComponent, _ash$Component3);
+	_inherits(ListComponent, _ash$Component2);
 
 	_prototypeProperties(ListComponent, null, {
 		render: {
@@ -274,8 +195,7 @@ var ListComponent = (function (_ash$Component3) {
 
 var List = ash.createElement(ListComponent);
 
-//Renderer.addComponent(new App(), global.document.querySelector('.page'));
-Renderer.addComponent(new Logo(), global.document.querySelector(".page"));
+Renderer.addComponent(new App(), global.document.querySelector(".page"));
 
 // benchmark
 // var start;
@@ -497,7 +417,7 @@ var constants = _interopRequire(require("../internals/constants"));
 //const LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
 var LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
 
-function walkCreateAshElementTree(ashElement, /*index, */owner /*, lastLevel*/) {
+function walkCreateAshElementTree(ashElement, owner, order) {
 	// type check
 	if (!isComponentAshElement(owner)) {
 		throw new Error(owner + " must be a Component type AshElement Object");
@@ -508,8 +428,7 @@ function walkCreateAshElementTree(ashElement, /*index, */owner /*, lastLevel*/) 
 		ashElement.instantiate();
 
 		// set up ordering properties
-		//ashElement.level = lastLevel + LEVEL_SEPARATOR + index;
-		//ashElement.order = index;
+		ashElement.order = order;
 
 		// set up owner & stage
 		ashElement.owner = owner;
@@ -521,7 +440,7 @@ function walkCreateAshElementTree(ashElement, /*index, */owner /*, lastLevel*/) 
 				ashElement.children[i].parent = ashElement;
 
 				// walk the child
-				walkCreateAshElementTree(ashElement.children[i], /*i, */owner /*, ashElement.level*/);
+				walkCreateAshElementTree(ashElement.children[i], owner, i);
 			}
 		}
 	} else if (isComponentAshElement(ashElement)) {
@@ -529,8 +448,7 @@ function walkCreateAshElementTree(ashElement, /*index, */owner /*, lastLevel*/) 
 		ashElement.instantiate();
 
 		// set up ordering properties
-		//ashElement.level = lastLevel + LEVEL_SEPARATOR + index;
-		//ashElement.order = index;
+		ashElement.order = order;
 
 		// set up owner
 		ashElement.owner = owner;
@@ -538,14 +456,14 @@ function walkCreateAshElementTree(ashElement, /*index, */owner /*, lastLevel*/) 
 
 		// create child by rendering component
 		ashElement.instance.__lifecycle = LIFECYCLE_MOUNTING;
-		ashElement.children[0] = ashElement.instance.cachedRender;
+		ashElement.children[0] = ashElement.instance.render();
 
 		if (ashElement.children[0]) {
 			// set up parent
 			ashElement.children[0].parent = ashElement;
 
 			// walk the child
-			walkCreateAshElementTree(ashElement.children[0], /*0, */ashElement /*, ashElement.level*/);
+			walkCreateAshElementTree(ashElement.children[0], ashElement, 0);
 		}
 	}
 }
@@ -560,8 +478,6 @@ function createAshElementTree(rootAshElement, stage /*, startingLevel*/) {
 		throw new Error(stage + " must be an object.");
 	}
 
-	//startingLevel = isString(startingLevel) ? startingLevel : '0';
-
 	var ashElementTree = rootAshElement;
 
 	ashElementTree.stage = stage;
@@ -572,32 +488,30 @@ function createAshElementTree(rootAshElement, stage /*, startingLevel*/) {
 		ashElementTree.instantiate();
 
 		// set up ordering properties
-		//ashElementTree.level = startingLevel;
-		//ashElementTree.order = typeof ashElementTree.order === 'undefined' ? 0 : ashElementTree.order;
+		ashElementTree.order = typeof ashElementTree.order === "undefined" ? 0 : ashElementTree.order;
 
 		// create child by rendering component
 		ashElementTree.instance.__lifecycle = LIFECYCLE_MOUNTING;
-		ashElementTree.children[0] = ashElementTree.instance.cachedRender;
+		ashElementTree.children[0] = ashElementTree.instance.render();
 
 		// set up a parent
 		ashElementTree.children[0].parent = ashElementTree;
 
 		// walk the child
-		walkCreateAshElementTree(ashElementTree.children[0], /*0, */ashElementTree /*, ashElementTree.level*/);
+		walkCreateAshElementTree(ashElementTree.children[0], ashElementTree, 0);
 	} else {
 		// instantiate descriptor
 		ashElementTree.instantiate();
 
 		// set up ordering properties
-		//ashElementTree.level = startingLevel;
-		//ashElementTree.order = typeof ashElementTree.order === 'undefined' ? 0 : ashElementTree.order;
+		ashElementTree.order = typeof ashElementTree.order === "undefined" ? 0 : ashElementTree.order;
 
 		for (var i = 0; i < ashElementTree.children.length; i++) {
 			// set up a parent
 			ashElementTree.children[i].parent = ashElementTree;
 
 			// walk the child
-			walkCreateAshElementTree(ashElementTree.children[i], /*i, */ashElementTree.owner /*, ashElementTree.level*/);
+			walkCreateAshElementTree(ashElementTree.children[i], ashElementTree.owner, i);
 		}
 	}
 
@@ -1153,7 +1067,7 @@ function walkReindexChildNodes(node, levelIndex, order) {
 	var childLevels;
 
 	for (var i = 0; i < node.childNodes.length; i++) {
-		if (node.childNodes[i].nodeType == 1) {
+		if (node.childNodes[i].nodeType === 1) {
 			childLevels = parseAshNodeIndex(node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
 			childLevels[levelIndex] = order;
 
@@ -1254,15 +1168,15 @@ function patchNodeTree(nodeTree /*, patches*/) {
 		// then the patch type is important
 		if (patches[i].type === PATCH_ASH_NODE) {
 			patches[i].sortOrder += zeroPadNumber(9, maxDigits);
-		} else if (patches[i].type == PATCH_ASH_TEXT_NODE) {
+		} else if (patches[i].type === PATCH_ASH_TEXT_NODE) {
 			patches[i].sortOrder += zeroPadNumber(8, maxDigits);
-		} else if (patches[i].type == PATCH_PROPERTIES) {
+		} else if (patches[i].type === PATCH_PROPERTIES) {
 			patches[i].sortOrder += zeroPadNumber(7, maxDigits);
-		} else if (patches[i].type == PATCH_REMOVE) {
+		} else if (patches[i].type === PATCH_REMOVE) {
 			patches[i].sortOrder += zeroPadNumber(6, maxDigits);
-		} else if (patches[i].type == PATCH_INSERT) {
+		} else if (patches[i].type === PATCH_INSERT) {
 			patches[i].sortOrder += zeroPadNumber(5, maxDigits);
-		} else if (patches[i].type == PATCH_ORDER) {
+		} else if (patches[i].type === PATCH_ORDER) {
 			patches[i].sortOrder += zeroPadNumber(4, maxDigits);
 		} else {
 			patches[i].sortOrder += zeroPadNumber(0, maxDigits);
@@ -1292,7 +1206,7 @@ function patchNodeTree(nodeTree /*, patches*/) {
 				index = levels.join(LEVEL_SEPARATOR);
 
 				for (var j = i; j >= 0; j--) {
-					if (patches[j].type === PATCH_ORDER && patches[j].newIndex == index) {
+					if (patches[j].type === PATCH_ORDER && patches[j].newIndex === index) {
 						// patches[i].origIndex = patches[i].index;
 						// patches[i].origParsedIndex = patches[i].parsedIndex.slice(0);
 						// patches[i].origParentIndex = patches[i].parentIndex;
@@ -1991,18 +1905,10 @@ var Component = (function (Observable) {
 			},
 			configurable: true
 		},
-		cachedRender: {
-			get: function () {
-				this.__cachedRender = this.render();
-
-				return this.__cachedRender;
-			},
-			configurable: true
-		},
 		domNode: {
 			get: function () {
-				if (this.isMounted && isAshNodeAshElement(this.__cachedRender)) {
-					return findNode(this.__element.stage.getRootNode(), this.__cachedRender.instance.index);
+				if (this.isMounted && isAshNodeAshElement(this.__element.children[0])) {
+					return findNode(this.__element.stage.getRootNode(), this.__element.children[0].instance.index);
 				}
 
 				return null;
@@ -2827,13 +2733,13 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 			// newAshElement must be added as a child...
 			if (newAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
-				createAshElementTree(newAshElement, stage /*, newAshElement.owner.id, newAshElement.level*/);
+				createAshElementTree(newAshElement, stage);
 
 				// replace the old
 				newAshElement.parent.children[newAshElement.order] = newAshElement;
 			} else if (newAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
-				createAshElementTree(newAshElement, stage /*, newAshElement.id, newAshElement.level*/);
+				createAshElementTree(newAshElement, stage);
 
 				// replace the old
 				newAshElement.parent.children[0] = newAshElement;
@@ -2848,7 +2754,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				oldAshElement.instance.props = newAshElement.args[0];
 
 				// create child for the new descriptor
-				newAshElement.children[0] = oldAshElement.instance.cachedRender;
+				newAshElement.children[0] = oldAshElement.instance.render();
 
 				// adding children to the queue
 				if (newAshElement.children[0] && oldAshElement.children[0]) {
@@ -2867,7 +2773,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 
 				// deleting old surplus children
 				if (!newAshElement.children[0] && oldAshElement.children[0]) {
-					if (oldAshElement.children[0].type == COMPONENT_ASH_ELEMENT) {
+					if (oldAshElement.children[0].type === COMPONENT_ASH_ELEMENT) {
 						oldAshElement.children[0].instance.__lifecycle = LIFECYCLE_UNMOUNTED;
 					}
 
@@ -2882,17 +2788,17 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage /*, oldAshElement.owner.id, oldAshElement.level*/);
+				createAshElementTree(newAshElement, stage);
 
 				// replace the old
 				oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
 				oldAshElement.parent.children[oldAshElement.order] = newAshElement;
-			} else if (oldAshElement.parent.type == COMPONENT_ASH_ELEMENT) {
+			} else if (oldAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage /*, oldAshElement.id, oldAshElement.level*/);
+				createAshElementTree(newAshElement, stage);
 
 				// replace the old
 				oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
@@ -2906,16 +2812,16 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage /*, oldAshElement.owner.id, oldAshElement.level*/);
+				createAshElementTree(newAshElement, stage);
 
 				// replace the old
 				oldAshElement.parent.children[oldAshElement.order] = newAshElement;
-			} else if (oldAshElement.parent.type == COMPONENT_ASH_ELEMENT) {
+			} else if (oldAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage /*, oldAshElement.id, oldAshElement.level*/);
+				createAshElementTree(newAshElement, stage);
 
 				// replace the old
 				oldAshElement.parent.children[0] = newAshElement;
@@ -2928,13 +2834,13 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 			// newAshElement must be added as a child...
 			if (newAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
-				createAshElementTree(newAshElement, stage /*, newAshElement.id, newAshElement.level*/);
+				createAshElementTree(newAshElement, stage);
 
 				// replace the old
 				newAshElement.parent.children[0] = newAshElement;
 			} else if (newAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
-				createAshElementTree(newAshElement, stage /*, newAshElement.owner.id, newAshElement.level*/);
+				createAshElementTree(newAshElement, stage);
 
 				// replace the old
 				newAshElement.parent.children[newAshElement.order] = newAshElement;
@@ -2964,7 +2870,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 
 			// deleting old surplus children
 			while (oldAshElement.children.length > newAshElement.children.length) {
-				if (oldAshElement.children[oldAshElement.children.length - 1].type == COMPONENT_ASH_ELEMENT) {
+				if (oldAshElement.children[oldAshElement.children.length - 1].type === COMPONENT_ASH_ELEMENT) {
 					oldAshElement.children[oldAshElement.children.length - 1].instance.__lifecycle = LIFECYCLE_UNMOUNTED;
 				}
 
@@ -2978,7 +2884,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage /*, oldAshElement.id, oldAshElement.level*/);
+				createAshElementTree(newAshElement, stage);
 
 				// replace the old
 				oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
@@ -2988,7 +2894,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage /*, oldAshElement.owner.id, oldAshElement.level*/);
+				createAshElementTree(newAshElement, stage);
 
 				// replace the old
 				oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
@@ -2999,7 +2905,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 }
 
 function updateComponentAshElement(componentAshElement, stage) {
-	var render = componentAshElement.instance.cachedRender;
+	var render = componentAshElement.instance.render();
 	render.owner = componentAshElement;
 	render.parent = componentAshElement;
 	render.order = 0;
@@ -3020,7 +2926,7 @@ function mountComponents(ashElement) {
 			}
 		}
 	} else if (isComponentAshElement(ashElement)) {
-		if (ashElement.instance && ashElement.instance.__lifecycle == LIFECYCLE_MOUNTING) {
+		if (ashElement.instance && ashElement.instance.__lifecycle === LIFECYCLE_MOUNTING) {
 			ashElement.instance.__lifecycle = LIFECYCLE_MOUNTED;
 		}
 
@@ -3057,8 +2963,6 @@ function updateStage(stageId, component) {
 }
 
 var Renderer = (function () {
-	/* jshint ignore:end */
-
 	function Renderer() {
 		this.stages = [];
 
@@ -3158,7 +3062,7 @@ var Renderer = (function () {
 
 								// remove child nodes which are not element nodes
 								for (var j = 0; j < _this.stages[i].node.childNodes.length; j++) {
-									if (_this.stages[i].node.childNodes[j].nodeType != 1) {
+									if (_this.stages[i].node.childNodes[j].nodeType !== 1) {
 										_this.stages[i].node.removeChild(_this.stages[i].node.childNodes[j]);
 										j--;
 									}
@@ -3235,8 +3139,6 @@ var Renderer = (function () {
 })();
 
 module.exports = Renderer;
-
-/* jshint ignore:start */
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"../DOM/createAshElementTree":3,"../DOM/createAshNodeTree":4,"../DOM/createNodeTree":5,"../DOM/diffAshNodeTree":6,"../DOM/patchNodeTree":9,"../DOM/stringifyAshNodeTree":12,"../DOM/validateNodeTree":13,"../internals/constants":24,"../internals/isAshNodeAshElement":29,"../internals/isComponentAshElement":31,"../internals/isElement":32}],22:[function(require,module,exports){
 "use strict";

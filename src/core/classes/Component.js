@@ -65,15 +65,9 @@ class Component extends Observable {
 		return this.__currentLifecycle === LIFECYCLE_MOUNTED;
 	}
 
-	get cachedRender() {
-		this.__cachedRender = this.render();
-
-		return this.__cachedRender;
-	}
-
 	get domNode() {
-		if (this.isMounted && isAshNodeAshElement(this.__cachedRender)) {
-			return findNode(this.__element.stage.getRootNode(), this.__cachedRender.instance.index);
+		if (this.isMounted && isAshNodeAshElement(this.__element.children[0])) {
+			return findNode(this.__element.stage.getRootNode(), this.__element.children[0].instance.index);
 		}
 
 		return null;

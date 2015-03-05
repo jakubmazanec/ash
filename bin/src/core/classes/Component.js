@@ -90,18 +90,10 @@ var Component = (function (Observable) {
 			},
 			configurable: true
 		},
-		cachedRender: {
-			get: function () {
-				this.__cachedRender = this.render();
-
-				return this.__cachedRender;
-			},
-			configurable: true
-		},
 		domNode: {
 			get: function () {
-				if (this.isMounted && isAshNodeAshElement(this.__cachedRender)) {
-					return findNode(this.__element.stage.getRootNode(), this.__cachedRender.instance.index);
+				if (this.isMounted && isAshNodeAshElement(this.__element.children[0])) {
+					return findNode(this.__element.stage.getRootNode(), this.__element.children[0].instance.index);
 				}
 
 				return null;
