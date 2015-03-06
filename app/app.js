@@ -74,7 +74,7 @@ class AppComponent extends ash.Component {
 	addToList1() {
 		var items = [];
 
-		for (let i = 0; i < 9; i++) {
+		for (let i = 0; i < 5000; i++) {
 			items.push(Math.random().toFixed(1));
 		}
 
@@ -87,7 +87,7 @@ class AppComponent extends ash.Component {
 	addToList2() {
 		var items = [];
 
-		for (let i = 0; i < 9; i++) {
+		for (let i = 0; i < 5000; i++) {
 			items.push(Math.random().toFixed(1));
 		}
 

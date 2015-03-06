@@ -87,7 +87,7 @@ var AppComponent = (function (_ash$Component) {
 			value: function addToList1() {
 				var items = [];
 
-				for (var i = 0; i < 9; i++) {
+				for (var i = 0; i < 5000; i++) {
 					items.push(Math.random().toFixed(1));
 				}
 
@@ -103,7 +103,7 @@ var AppComponent = (function (_ash$Component) {
 			value: function addToList2() {
 				var items = [];
 
-				for (var i = 0; i < 9; i++) {
+				for (var i = 0; i < 5000; i++) {
 					items.push(Math.random().toFixed(1));
 				}
 

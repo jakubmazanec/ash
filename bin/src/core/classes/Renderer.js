@@ -61,6 +61,8 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 			// old is component, new is same component
 
 			if (oldAshElement.instance.shouldUpdate(newAshElement.args[0])) {
+				oldAshElement.isDirty = true;
+
 				// copy the new to the old...
 				oldAshElement.args = newAshElement.args;
 				oldAshElement.instance.onBeforeReceiveProps(newAshElement.args[0]);

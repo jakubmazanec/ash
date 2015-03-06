@@ -89,7 +89,7 @@ var AppComponent = (function (_ash$Component) {
 			value: function addToList1() {
 				var items = [];
 
-				for (var i = 0; i < 9; i++) {
+				for (var i = 0; i < 5000; i++) {
 					items.push(Math.random().toFixed(1));
 				}
 
@@ -105,7 +105,7 @@ var AppComponent = (function (_ash$Component) {
 			value: function addToList2() {
 				var items = [];
 
-				for (var i = 0; i < 9; i++) {
+				for (var i = 0; i < 5000; i++) {
 					items.push(Math.random().toFixed(1));
 				}
 
@@ -2748,6 +2748,8 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 			// old is component, new is same component
 
 			if (oldAshElement.instance.shouldUpdate(newAshElement.args[0])) {
+				oldAshElement.isDirty = true;
+
 				// copy the new to the old...
 				oldAshElement.args = newAshElement.args;
 				oldAshElement.instance.onBeforeReceiveProps(newAshElement.args[0]);
