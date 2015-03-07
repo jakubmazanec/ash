@@ -1,8 +1,8 @@
 "use strict";
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -18,7 +18,7 @@ var isString = _interopRequire(require("../internals/isString"));
 
 var IMMUTABLE_TAG = constants.IMMUTABLE_TAG;
 
-var ImmutableArray = (function (Array) {
+var ImmutableArray = (function (_Array) {
 	function ImmutableArray() {
 		_classCallCheck(this, ImmutableArray);
 
@@ -68,9 +68,9 @@ var ImmutableArray = (function (Array) {
 		return array;
 	}
 
-	_inherits(ImmutableArray, Array);
+	_inherits(ImmutableArray, _Array);
 
-	_prototypeProperties(ImmutableArray, null, {
+	_createClass(ImmutableArray, {
 		push: {
 			value: function push() {
 				var array = this.slice(0);
@@ -78,9 +78,7 @@ var ImmutableArray = (function (Array) {
 				array.push.apply(array, arguments);
 
 				return new ImmutableArray(array, { clone: false });
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		pop: {
 			value: function pop() {
@@ -89,9 +87,7 @@ var ImmutableArray = (function (Array) {
 				array.pop();
 
 				return new ImmutableArray(array, { clone: false });
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		sort: {
 			value: function sort(compareFunction) {
@@ -100,9 +96,7 @@ var ImmutableArray = (function (Array) {
 				array.sort(compareFunction);
 
 				return new ImmutableArray(array, { clone: false });
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		splice: {
 			value: function splice() {
@@ -111,9 +105,7 @@ var ImmutableArray = (function (Array) {
 				array.splice.apply(array, arguments);
 
 				return new ImmutableArray(array, { clone: false });
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		shift: {
 			value: function shift() {
@@ -122,9 +114,7 @@ var ImmutableArray = (function (Array) {
 				array.shift();
 
 				return new ImmutableArray(array, { clone: false });
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		unshift: {
 			value: function unshift() {
@@ -133,9 +123,7 @@ var ImmutableArray = (function (Array) {
 				array.unshift.apply(array, arguments);
 
 				return new ImmutableArray(array, { clone: false });
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		reverse: {
 			value: function reverse() {
@@ -144,9 +132,7 @@ var ImmutableArray = (function (Array) {
 				array.reverse();
 
 				return new ImmutableArray(array, { clone: false });
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		set: {
 			value: function set(index, value) {
@@ -159,9 +145,7 @@ var ImmutableArray = (function (Array) {
 				array[index] = value;
 
 				return new ImmutableArray(array, { clone: false });
-			},
-			writable: true,
-			configurable: true
+			}
 		}
 	});
 
@@ -202,7 +186,7 @@ var ImmutableObject = (function () {
 		return this;
 	}
 
-	_prototypeProperties(ImmutableObject, null, {
+	_createClass(ImmutableObject, {
 		set: {
 			value: function set(key, value) {
 				var clone;
@@ -231,9 +215,7 @@ var ImmutableObject = (function () {
 				clone[key] = value;
 
 				return new ImmutableObject(clone);
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		remove: {
 			value: function remove(key) {
@@ -257,9 +239,7 @@ var ImmutableObject = (function () {
 				}
 
 				return new ImmutableObject(clone);
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		merge: {
 			value: function merge(source) {
@@ -313,9 +293,7 @@ var ImmutableObject = (function () {
 				}
 
 				return new ImmutableObject(clone);
-			},
-			writable: true,
-			configurable: true
+			}
 		}
 	});
 

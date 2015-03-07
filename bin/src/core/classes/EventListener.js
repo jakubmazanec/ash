@@ -1,8 +1,8 @@
 "use strict";
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
@@ -37,7 +37,7 @@ var EventListener = (function () {
 		return eventListener;
 	}
 
-	_prototypeProperties(EventListener, null, {
+	_createClass(EventListener, {
 		addEvent: {
 			value: function addEvent(node, eventName, callback, isInserted) {
 				if (!topics[eventName]) {
@@ -64,9 +64,7 @@ var EventListener = (function () {
 				});
 
 				return this;
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		addEvents: {
 			value: function addEvents(node, events, isInserted) {
@@ -79,9 +77,7 @@ var EventListener = (function () {
 				}
 
 				return this;
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		removeEvent: {
 			value: function removeEvent(node, eventName) {
@@ -108,9 +104,7 @@ var EventListener = (function () {
 				}
 
 				return this;
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		removeEvents: {
 
@@ -131,9 +125,7 @@ var EventListener = (function () {
 				}
 
 				return this;
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		reindexEvents: {
 			value: function reindexEvents(oldIndex, newOrder, stage) {
@@ -153,9 +145,7 @@ var EventListener = (function () {
 				}
 
 				return this;
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		markEvents: {
 			value: function markEvents(stage) {
@@ -171,9 +161,7 @@ var EventListener = (function () {
 				}
 
 				return this;
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		callback: {
 			value: function callback(eventName, eventObject) {
@@ -193,9 +181,7 @@ var EventListener = (function () {
 						index = levels.join(LEVEL_SEPARATOR);
 					}
 				}
-			},
-			writable: true,
-			configurable: true
+			}
 		}
 	});
 

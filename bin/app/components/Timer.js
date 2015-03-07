@@ -1,8 +1,8 @@
 "use strict";
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -25,31 +25,23 @@ var Timer = (function (_ash$Component) {
 
 	_inherits(Timer, _ash$Component);
 
-	_prototypeProperties(Timer, null, {
+	_createClass(Timer, {
 		tick: {
 			/* jshint ignore:end */
 
 			value: function tick() {
 				console.log("timer tick!");
 				this.setState({ timerClicks: this.state.timerClicks + 1 });
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		onMount: {
-			value: function onMount() {},
-			writable: true,
-			configurable: true
+			value: function onMount() {}
 		},
 		onUnmount: {
-			value: function onUnmount() {},
-			writable: true,
-			configurable: true
+			value: function onUnmount() {}
 		},
 		onBeforeMount: {
-			value: function onBeforeMount() {},
-			writable: true,
-			configurable: true
+			value: function onBeforeMount() {}
 		},
 		render: {
 
@@ -66,9 +58,7 @@ var Timer = (function (_ash$Component) {
 						click: this.tick
 					}
 				}, "+")]);
-			},
-			writable: true,
-			configurable: true
+			}
 		}
 	});
 

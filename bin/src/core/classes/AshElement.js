@@ -1,8 +1,8 @@
 "use strict";
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
@@ -63,7 +63,7 @@ var AshElement = (function () {
 		this.owner = null;
 	}
 
-	_prototypeProperties(AshElement, null, {
+	_createClass(AshElement, {
 		instantiate: {
 			value: function instantiate() {
 				if (this.type == COMPONENT_ASH_ELEMENT) {
@@ -85,9 +85,7 @@ var AshElement = (function () {
 				}
 
 				return this.instance;
-			},
-			writable: true,
-			configurable: true
+			}
 		}
 	});
 

@@ -1,8 +1,8 @@
 "use strict";
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -23,7 +23,7 @@ var Display = (function (_ash$Component) {
 
 	_inherits(Display, _ash$Component);
 
-	_prototypeProperties(Display, null, {
+	_createClass(Display, {
 		render: {
 			/* jshint ignore:end */
 
@@ -39,33 +39,23 @@ var Display = (function (_ash$Component) {
 						click: this.tick
 					}
 				}, "+")]);
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		tick: {
 			value: function tick() {
 				console.log(this);
 				//console.log(this.name + ' tick!');
 				this.setState({ displayClicks: this.state.displayClicks + 1 });
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		onBeforeReceiveProps: {
-			value: function onBeforeReceiveProps() {},
-			writable: true,
-			configurable: true
+			value: function onBeforeReceiveProps() {}
 		},
 		onMount: {
-			value: function onMount() {},
-			writable: true,
-			configurable: true
+			value: function onMount() {}
 		},
 		onUnmount: {
-			value: function onUnmount() {},
-			writable: true,
-			configurable: true
+			value: function onUnmount() {}
 		}
 	});
 

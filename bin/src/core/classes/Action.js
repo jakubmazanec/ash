@@ -1,8 +1,8 @@
 "use strict";
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -16,18 +16,18 @@ var TRIGGER_OPTIONS = {
 	noEventArgument: true
 };
 
-var Action = (function (Observable) {
+var Action = (function (_Observable) {
 	function Action() {
 		_classCallCheck(this, Action);
 
-		if (Observable != null) {
-			Observable.apply(this, arguments);
+		if (_Observable != null) {
+			_Observable.apply(this, arguments);
 		}
 	}
 
-	_inherits(Action, Observable);
+	_inherits(Action, _Observable);
 
-	_prototypeProperties(Action, null, {
+	_createClass(Action, {
 		trigger: {
 			value: function trigger() {
 				if (typeof this.onTrigger === "function") {
@@ -59,9 +59,7 @@ var Action = (function (Observable) {
 				}
 
 				return this;
-			},
-			writable: true,
-			configurable: true
+			}
 		}
 	});
 

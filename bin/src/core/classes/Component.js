@@ -1,8 +1,8 @@
 "use strict";
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -23,7 +23,7 @@ var LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
 var LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
 var LIFECYCLE_UNINITIALIZED = constants.LIFECYCLE_UNINITIALIZED;
 
-var Component = (function (Observable) {
+var Component = (function (_Observable) {
 	function Component(props) {
 		var _this = this;
 
@@ -31,7 +31,9 @@ var Component = (function (Observable) {
 
 		// autobind methods
 		Object.getOwnPropertyNames(Object.getPrototypeOf(this)).forEach(function (value) {
-			if (isFunction(_this[value]) && value !== "constructor") {
+			var descriptor = Object.getOwnPropertyDescriptor(_this, value);
+
+			if (isFunction(_this[value]) && value !== "constructor" && !(descriptor && (descriptor.get || descriptor.set))) {
 				_this[value] = _this[value].bind(_this);
 			}
 		});
@@ -44,9 +46,9 @@ var Component = (function (Observable) {
 		this.__currentLifecycle = LIFECYCLE_UNMOUNTED;
 	}
 
-	_inherits(Component, Observable);
+	_inherits(Component, _Observable);
 
-	_prototypeProperties(Component, null, {
+	_createClass(Component, {
 		isDirty: {
 			get: function () {
 				return this.__isDirty;
@@ -57,8 +59,7 @@ var Component = (function (Observable) {
 				if (this.__isDirty && this.__element.stage) {
 					this.__element.stage.update(this);
 				}
-			},
-			configurable: true
+			}
 		},
 		__lifecycle: {
 			get: function () {
@@ -81,14 +82,12 @@ var Component = (function (Observable) {
 						this.onUnmount();
 					}
 				}
-			},
-			configurable: true
+			}
 		},
 		isMounted: {
 			get: function () {
 				return this.__currentLifecycle === LIFECYCLE_MOUNTED;
-			},
-			configurable: true
+			}
 		},
 		domNode: {
 			get: function () {
@@ -97,42 +96,29 @@ var Component = (function (Observable) {
 				}
 
 				return null;
-			},
-			configurable: true
+			}
 		},
 		shouldUpdate: {
 			value: function shouldUpdate(newProps) {
 				return this.props !== newProps;
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		onBeforeMount: {
-			value: function onBeforeMount() {},
-			writable: true,
-			configurable: true
+			value: function onBeforeMount() {}
 		},
 		onMount: {
-			value: function onMount() {},
-			writable: true,
-			configurable: true
+			value: function onMount() {}
 		},
 		onUnmount: {
-			value: function onUnmount() {},
-			writable: true,
-			configurable: true
+			value: function onUnmount() {}
 		},
 		onBeforeReceiveProps: {
-			value: function onBeforeReceiveProps() {},
-			writable: true,
-			configurable: true
+			value: function onBeforeReceiveProps() {}
 		},
 		render: {
 			value: function render() {
 				return null;
-			},
-			writable: true,
-			configurable: true
+			}
 		}
 	});
 

@@ -1,8 +1,8 @@
 "use strict";
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -43,7 +43,7 @@ var AppComponent = (function (_ash$Component) {
 
 	_inherits(AppComponent, _ash$Component);
 
-	_prototypeProperties(AppComponent, null, {
+	_createClass(AppComponent, {
 		render: {
 			/* jshint ignore:end */
 
@@ -64,24 +64,18 @@ var AppComponent = (function (_ash$Component) {
 					events: { click: this.changeShadow }
 				}, "!!!")), new List(this.state.list1), //);
 				new List(this.state.list2));
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		onMount: {
 			value: function onMount() {
 				console.log("App mounted!");
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		changeShadow: {
 			value: function changeShadow() {
 				this.state = this.state.set("redShadow", !this.state.redShadow);
 				this.isDirty = true;
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		addToList1: {
 			value: function addToList1() {
@@ -95,9 +89,7 @@ var AppComponent = (function (_ash$Component) {
 				// this.state.list1 = this.state.list1.concat(items);
 
 				this.isDirty = true;
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		addToList2: {
 			value: function addToList2() {
@@ -111,27 +103,26 @@ var AppComponent = (function (_ash$Component) {
 				// this.state.list2 = this.state.list2.concat(items);
 
 				this.isDirty = true;
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		clearList1: {
 			value: function clearList1() {
 				this.state = this.state.merge({ list1: [] });
 				// this.state.list1 = [];
 				this.isDirty = true;
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		clearList2: {
 			value: function clearList2() {
 				this.state = this.state.merge({ list2: [] });
 				// this.state.list2 = [];
 				this.isDirty = true;
-			},
-			writable: true,
-			configurable: true
+			}
+		},
+		randomFoo: {
+			get: function () {
+				return Math.random();
+			}
 		}
 	});
 
@@ -154,7 +145,7 @@ var ListComponent = (function (_ash$Component2) {
 
 	_inherits(ListComponent, _ash$Component2);
 
-	_prototypeProperties(ListComponent, null, {
+	_createClass(ListComponent, {
 		render: {
 			/* jshint ignore:end */
 
@@ -168,23 +159,17 @@ var ListComponent = (function (_ash$Component2) {
 				}
 
 				return ash.e("ul", { style: { outline: this.state.redOutline ? "1px solid red" : "1px solid blue" } }, items);
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		changeOutline: {
 			value: function changeOutline() {
 				this.state.redOutline = !this.state.redOutline;
 
 				this.isDirty = true;
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		onBeforeReceiveProps: {
-			value: function onBeforeReceiveProps() {},
-			writable: true,
-			configurable: true
+			value: function onBeforeReceiveProps() {}
 		}
 	});
 

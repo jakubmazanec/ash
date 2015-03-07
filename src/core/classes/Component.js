@@ -13,7 +13,9 @@ class Component extends Observable {
 	constructor(props) {
 		// autobind methods
 		Object.getOwnPropertyNames(Object.getPrototypeOf(this)).forEach((value) => {
-			if (isFunction(this[value]) && value !== 'constructor') {
+			let descriptor = Object.getOwnPropertyDescriptor(this, value);
+
+			if (isFunction(this[value]) && value !== 'constructor' && !(descriptor && (descriptor.get || descriptor.set))) {
 				this[value] = this[value].bind(this);
 			}
 		});

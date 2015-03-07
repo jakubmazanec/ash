@@ -108,6 +108,10 @@ class AppComponent extends ash.Component {
 		// this.state.list2 = [];
 		this.isDirty = true;
 	}
+
+	get randomFoo() {
+		return Math.random();
+	}
 }
 
 var App = ash.createElement(AppComponent);

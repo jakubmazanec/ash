@@ -1,6 +1,6 @@
 "use strict";
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
 var isComponentAshElement = _interopRequire(require("../internals/isComponentAshElement"));
 

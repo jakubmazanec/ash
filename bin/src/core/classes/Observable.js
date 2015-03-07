@@ -1,8 +1,8 @@
 "use strict";
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
@@ -29,7 +29,7 @@ var Observable = (function () {
 		return this;
 	}
 
-	_prototypeProperties(Observable, null, {
+	_createClass(Observable, {
 		observe: {
 			value: function observe() {
 				var observable = this;
@@ -90,9 +90,7 @@ var Observable = (function () {
 				}
 
 				return observable;
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		unobserve: {
 			value: function unobserve() {
@@ -128,9 +126,7 @@ var Observable = (function () {
 				}
 
 				return observable;
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		trigger: {
 			value: function trigger() {
@@ -172,9 +168,7 @@ var Observable = (function () {
 				}
 
 				return observable;
-			},
-			writable: true,
-			configurable: true
+			}
 		}
 	});
 

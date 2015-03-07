@@ -1,8 +1,8 @@
 "use strict";
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj.default : obj; };
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
@@ -296,7 +296,7 @@ var Renderer = (function () {
 		return renderer;
 	}
 
-	_prototypeProperties(Renderer, null, {
+	_createClass(Renderer, {
 		addComponent: {
 			value: function addComponent(componentAshElement, node) {
 				// type check
@@ -330,9 +330,7 @@ var Renderer = (function () {
 				this.render();
 
 				return this;
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		componentToString: {
 			value: function componentToString(componentAshElement) {
@@ -355,9 +353,7 @@ var Renderer = (function () {
 				stage.ashNodeTree = createAshNodeTree(stage.ashElementTree);
 
 				return stringifyAshNodeTree(stage.ashNodeTree);
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		render: {
 			value: function render() {
@@ -444,9 +440,7 @@ var Renderer = (function () {
 				}
 
 				return this;
-			},
-			writable: true,
-			configurable: true
+			}
 		}
 	});
 
