@@ -12,10 +12,11 @@ const LIFECYCLE_UNINITIALIZED = constants.LIFECYCLE_UNINITIALIZED;
 class Component extends Observable {
 	constructor(props) {
 		// autobind methods
-		Object.getOwnPropertyNames(Object.getPrototypeOf(this)).forEach((value) => {
-			let descriptor = Object.getOwnPropertyDescriptor(this, value);
+		var prototype = Object.getPrototypeOf(this);
+		Object.getOwnPropertyNames(prototype).forEach((value) => {
+			let descriptor = Object.getOwnPropertyDescriptor(prototype, value);
 
-			if (isFunction(this[value]) && value !== 'constructor' && !(descriptor && (descriptor.get || descriptor.set))) {
+			if (!(descriptor && (typeof descriptor.get !== 'undefined' || typeof descriptor.set !== 'undefined')) && isFunction(this[value]) && value !== 'constructor') {
 				this[value] = this[value].bind(this);
 			}
 		});
