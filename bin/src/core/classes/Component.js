@@ -30,10 +30,11 @@ var Component = (function (_Observable) {
 		_classCallCheck(this, Component);
 
 		// autobind methods
-		Object.getOwnPropertyNames(Object.getPrototypeOf(this)).forEach(function (value) {
-			var descriptor = Object.getOwnPropertyDescriptor(_this, value);
+		var prototype = Object.getPrototypeOf(this);
+		Object.getOwnPropertyNames(prototype).forEach(function (value) {
+			var descriptor = Object.getOwnPropertyDescriptor(prototype, value);
 
-			if (isFunction(_this[value]) && value !== "constructor" && !(descriptor && (descriptor.get || descriptor.set))) {
+			if (!(descriptor && (typeof descriptor.get !== "undefined" || typeof descriptor.set !== "undefined")) && isFunction(_this[value]) && value !== "constructor") {
 				_this[value] = _this[value].bind(_this);
 			}
 		});
