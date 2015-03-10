@@ -60,13 +60,13 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 		} else if (oldAshElement.type === COMPONENT_ASH_ELEMENT && newAshElement.spec === oldAshElement.spec) {
 			// old is component, new is same component
 
-			if (oldAshElement.instance.shouldUpdate(newAshElement.args[0])) {
+			if (oldAshElement.instance.shouldUpdate(newAshElement.args ? newAshElement.args[0] : null)) {
 				oldAshElement.isDirty = true;
 
 				// copy the new to the old...
 				oldAshElement.args = newAshElement.args;
-				oldAshElement.instance.onBeforeReceiveProps(newAshElement.args[0]);
-				oldAshElement.instance.props = newAshElement.args[0];
+				oldAshElement.instance.onBeforeReceiveProps(newAshElement.args ? newAshElement.args[0] : null);
+				oldAshElement.instance.props = newAshElement.args ? newAshElement.args[0] : null;
 
 				// create child for the new descriptor
 				newAshElement.children[0] = oldAshElement.instance.render();
