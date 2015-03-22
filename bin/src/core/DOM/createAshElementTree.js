@@ -93,7 +93,9 @@ function createAshElementTree(rootAshElement, stage /*, startingLevel*/) {
 		ashElementTree.children[0] = ashElementTree.instance.render();
 
 		// set up a parent
-		ashElementTree.children[0].parent = ashElementTree;
+		if (ashElementTree.children[0]) {
+			ashElementTree.children[0].parent = ashElementTree;
+		}
 
 		// walk the child
 		walkCreateAshElementTree(ashElementTree.children[0], ashElementTree, 0);
