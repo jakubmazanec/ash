@@ -1,22 +1,32 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 
-var isAshTextNode = _interopRequire(require("../internals/isAshTextNode"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var setNodeProperties = _interopRequire(require("./setNodeProperties"));
+var _internalsIsAshTextNode = require('../internals/isAshTextNode');
 
-var constants = _interopRequire(require("../internals/constants"));
+var _internalsIsAshTextNode2 = _interopRequireDefault(_internalsIsAshTextNode);
 
-var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
-var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
-var STAGE_ATTRIBUTE_NAME = constants.STAGE_ATTRIBUTE_NAME;
+var _setNodeProperties = require('./setNodeProperties');
+
+var _setNodeProperties2 = _interopRequireDefault(_setNodeProperties);
+
+var _internalsConstants = require('../internals/constants');
+
+var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
+
+var INDEX_ATTRIBUTE_NAME = _internalsConstants2.default.INDEX_ATTRIBUTE_NAME;
+var ORDER_ATTRIBUTE_NAME = _internalsConstants2.default.ORDER_ATTRIBUTE_NAME;
+var STAGE_ATTRIBUTE_NAME = _internalsConstants2.default.STAGE_ATTRIBUTE_NAME;
 
 function createNodeTree(ashNodeTree) {
 	var nodeTree;
 	var child;
 
-	if (isAshTextNode(ashNodeTree)) {
+	if (_internalsIsAshTextNode2.default(ashNodeTree)) {
 		nodeTree = global.document.createTextNode(ashNodeTree.text);
 		nodeTree[INDEX_ATTRIBUTE_NAME] = ashNodeTree.index;
 		nodeTree[ORDER_ATTRIBUTE_NAME] = ashNodeTree.order;
@@ -26,8 +36,8 @@ function createNodeTree(ashNodeTree) {
 	}
 
 	// create element
-	if (ashNodeTree.tagName === "svg" || ashNodeTree.tagName === "use" || ashNodeTree.tagName === "path" || ashNodeTree.tagName === "circle" || ashNodeTree.tagName === "text" || ashNodeTree.tagName === "ellipse" || ashNodeTree.tagName === "line" || ashNodeTree.tagName === "polygon" || ashNodeTree.tagName === "polyline" || ashNodeTree.tagName === "rect" || ashNodeTree.tagName === "g") {
-		nodeTree = global.document.createElementNS("http://www.w3.org/2000/svg", ashNodeTree.tagName);
+	if (ashNodeTree.tagName === 'svg' || ashNodeTree.tagName === 'use' || ashNodeTree.tagName === 'path' || ashNodeTree.tagName === 'circle' || ashNodeTree.tagName === 'text' || ashNodeTree.tagName === 'ellipse' || ashNodeTree.tagName === 'line' || ashNodeTree.tagName === 'polygon' || ashNodeTree.tagName === 'polyline' || ashNodeTree.tagName === 'rect' || ashNodeTree.tagName === 'g') {
+		nodeTree = global.document.createElementNS('http://www.w3.org/2000/svg', ashNodeTree.tagName);
 	} else {
 		nodeTree = global.document.createElement(ashNodeTree.tagName);
 	}
@@ -36,7 +46,7 @@ function createNodeTree(ashNodeTree) {
 	nodeTree[INDEX_ATTRIBUTE_NAME] = ashNodeTree.index;
 	nodeTree[ORDER_ATTRIBUTE_NAME] = ashNodeTree.order;
 	nodeTree[STAGE_ATTRIBUTE_NAME] = ashNodeTree.stage;
-	setNodeProperties(nodeTree, ashNodeTree.properties, true);
+	_setNodeProperties2.default(nodeTree, ashNodeTree.properties, true);
 	//$(nodeTree).attr('index', nodeTree[INDEX_ATTRIBUTE_NAME]/* + ' - ' + ashNodeTree.key*/);
 	//$(nodeTree).attr('order', nodeTree[ORDER_ATTRIBUTE_NAME]/* + ' - ' + ashNodeTree.key*/);
 
@@ -51,4 +61,5 @@ function createNodeTree(ashNodeTree) {
 	return nodeTree;
 }
 
-module.exports = createNodeTree;
+exports.default = createNodeTree;
+module.exports = exports.default;

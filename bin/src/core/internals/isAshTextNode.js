@@ -1,13 +1,20 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 
-var constants = _interopRequire(require("./constants"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var ASH_TEXT_NODE = constants.ASH_TEXT_NODE;
+var _constants = require('./constants');
+
+var _constants2 = _interopRequireDefault(_constants);
+
+var ASH_TEXT_NODE = _constants2.default.ASH_TEXT_NODE;
 
 function isAshTextNode(value) {
 	return value && value.type === ASH_TEXT_NODE;
 }
 
-module.exports = isAshTextNode;
+exports.default = isAshTextNode;
+module.exports = exports.default;

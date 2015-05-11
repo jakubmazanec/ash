@@ -1,14 +1,14 @@
-"use strict";
+'use strict';
 
-var _ = require("_");
-var ash = require("ash");
-var completeTodo = require("./actions/completeTodo");
-var createTodo = require("./actions/createTodo");
-var destroyCompleted = require("./actions/destroyCompleted");
-var destroyTodo = require("./actions/destroyTodo");
-var toggleCompleteAll = require("./actions/toggleCompleteAll");
-var undoComplete = require("./actions/undoComplete");
-var updateText = require("./actions/updateText");
+var _ = require('_');
+var ash = require('ash');
+var completeTodo = require('./actions/completeTodo');
+var createTodo = require('./actions/createTodo');
+var destroyCompleted = require('./actions/destroyCompleted');
+var destroyTodo = require('./actions/destroyTodo');
+var toggleCompleteAll = require('./actions/toggleCompleteAll');
+var undoComplete = require('./actions/undoComplete');
+var updateText = require('./actions/updateText');
 
 var TodoStore = ash.Store.extend({
 	initialize: function () {
@@ -48,8 +48,8 @@ var TodoStore = ash.Store.extend({
 	},
 
 	create: function (text) {
-		if (_.isString(text) && text.trim() !== "") {
-			var id = _.uniqueId("todo-"); //_.uuid();
+		if (_.isString(text) && text.trim() !== '') {
+			var id = _.uniqueId('todo-'); //_.uuid();
 
 			this.todos[id] = {
 				id: id,
@@ -58,13 +58,13 @@ var TodoStore = ash.Store.extend({
 			};
 		}
 
-		this.trigger("change");
+		this.trigger('change');
 	},
 
 	update: function (id, data) {
 		_.assign(this.todos[id], data);
 
-		this.trigger("change");
+		this.trigger('change');
 	},
 
 	updateAll: function (data) {
@@ -72,31 +72,31 @@ var TodoStore = ash.Store.extend({
 			_.assign(todo, data);
 		});
 
-		this.trigger("change");
+		this.trigger('change');
 	},
 
 	destroy: function (id) {
 		delete this.todos[id];
 
-		this.trigger("change");
+		this.trigger('change');
 	},
 
 	destroyCompleted: function () {
-		_(this.todos).filter("complete").pluck("id").map(this.destroy, this);
+		_(this.todos).filter('complete').pluck('id').map(this.destroy, this);
 
-		this.trigger("change");
+		this.trigger('change');
 	},
 
 	getAll: function () {
 		return this.todos;
 
-		this.trigger("change");
+		this.trigger('change');
 	},
 
 	areAllComplete: function () {
-		return !_.countBy(this.todos, "complete").false;
+		return !_.countBy(this.todos, 'complete').false;
 
-		this.trigger("change");
+		this.trigger('change');
 	}
 });
 

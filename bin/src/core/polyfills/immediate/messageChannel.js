@@ -1,5 +1,8 @@
-"use strict";
+'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 function test() {
 	if (global.setImmediate) {
 		// we can only get here in IE10
@@ -7,7 +10,7 @@ function test() {
 		return false;
 	}
 
-	return typeof global.MessageChannel !== "undefined";
+	return typeof global.MessageChannel !== 'undefined';
 }
 
 function install(func) {
@@ -25,4 +28,5 @@ var messageChannel = {
 	install: install
 };
 
-module.exports = messageChannel;
+exports.default = messageChannel;
+module.exports = exports.default;

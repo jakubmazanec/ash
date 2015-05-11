@@ -1,44 +1,52 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 
-var isObject = _interopRequire(require("../internals/isObject"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var EventListener = _interopRequire(require("../classes/EventListener"));
+var _internalsIsObject = require('../internals/isObject');
 
-var eventListener = new EventListener();
+var _internalsIsObject2 = _interopRequireDefault(_internalsIsObject);
+
+var _classesEventListener = require('../classes/EventListener');
+
+var _classesEventListener2 = _interopRequireDefault(_classesEventListener);
+
+var eventListener = new _classesEventListener2.default();
 
 function setNodeProperties(node, properties, inserted) {
 	for (var prop in properties) {
 		if (properties.hasOwnProperty(prop)) {
-			if (prop == "style" && isObject(properties[prop])) {
+			if (prop == 'style' && _internalsIsObject2.default(properties[prop])) {
 				for (var style in properties[prop]) {
 					if (properties[prop].hasOwnProperty(style)) {
 						node.style[style] = properties[prop][style];
 					}
 				}
-			} else if (prop === "events" && isObject(properties[prop])) {
+			} else if (prop === 'events' && _internalsIsObject2.default(properties[prop])) {
 				eventListener.addEvents(node, properties[prop], inserted);
-			} else if (prop === "className" || prop === "class") {
-				if (typeof node.className === "string") {
+			} else if (prop === 'className' || prop === 'class') {
+				if (typeof node.className === 'string') {
 					node.className = properties[prop];
 				} else {
-					node.setAttribute("class", properties[prop]);
+					node.setAttribute('class', properties[prop]);
 				}
-			} else if (!isObject(properties[prop])) {
-				if (prop.substring(0, 6) == "xlink:") {
-					node.setAttributeNS("http://www.w3.org/1999/xlink", prop.substring(6), properties[prop]);
-				} else if (prop.substring(0, 4) == "xml:") {
-					node.setAttributeNS("http://www.w3.org/2000/svg", prop.substring(4), properties[prop]);
+			} else if (!_internalsIsObject2.default(properties[prop])) {
+				if (prop.substring(0, 6) == 'xlink:') {
+					node.setAttributeNS('http://www.w3.org/1999/xlink', prop.substring(6), properties[prop]);
+				} else if (prop.substring(0, 4) == 'xml:') {
+					node.setAttributeNS('http://www.w3.org/2000/svg', prop.substring(4), properties[prop]);
 				} else {
-					if (prop == "checked") {
+					if (prop == 'checked') {
 						node.checked = !!properties[prop];
 						if (node.checked) {
-							node.setAttribute("checked", "checked");
+							node.setAttribute('checked', 'checked');
 						} else {
-							node.removeAttribute("checked");
+							node.removeAttribute('checked');
 						}
-					} else if (prop == "value") {
+					} else if (prop == 'value') {
 						node.value = properties[prop];
 						node.setAttribute(prop, properties[prop]);
 					} else {
@@ -52,4 +60,5 @@ function setNodeProperties(node, properties, inserted) {
 	return node;
 }
 
-module.exports = setNodeProperties;
+exports.default = setNodeProperties;
+module.exports = exports.default;

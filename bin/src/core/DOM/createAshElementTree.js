@@ -1,27 +1,39 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 
-var isAshElement = _interopRequire(require("../internals/isAshElement"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _internalsIsAshElement = require('../internals/isAshElement');
+
+var _internalsIsAshElement2 = _interopRequireDefault(_internalsIsAshElement);
 
 //import isString from '../internals/isString';
 
-var isComponentAshElement = _interopRequire(require("../internals/isComponentAshElement"));
+var _internalsIsComponentAshElement = require('../internals/isComponentAshElement');
 
-var isAshNodeAshElement = _interopRequire(require("../internals/isAshNodeAshElement"));
+var _internalsIsComponentAshElement2 = _interopRequireDefault(_internalsIsComponentAshElement);
 
-var constants = _interopRequire(require("../internals/constants"));
+var _internalsIsAshNodeAshElement = require('../internals/isAshNodeAshElement');
+
+var _internalsIsAshNodeAshElement2 = _interopRequireDefault(_internalsIsAshNodeAshElement);
+
+var _internalsConstants = require('../internals/constants');
+
+var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 
 //const LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
-var LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
+var LIFECYCLE_MOUNTING = _internalsConstants2.default.LIFECYCLE_MOUNTING;
 
 function walkCreateAshElementTree(ashElement, owner, order) {
 	// type check
-	if (!isComponentAshElement(owner)) {
-		throw new Error(owner + " must be a Component type AshElement Object");
+	if (!_internalsIsComponentAshElement2.default(owner)) {
+		throw new Error(owner + ' must be a Component type AshElement Object');
 	}
 
-	if (isAshNodeAshElement(ashElement)) {
+	if (_internalsIsAshNodeAshElement2.default(ashElement)) {
 		// instantiate ashElement
 		ashElement.instantiate();
 
@@ -41,7 +53,7 @@ function walkCreateAshElementTree(ashElement, owner, order) {
 				walkCreateAshElementTree(ashElement.children[i], owner, i);
 			}
 		}
-	} else if (isComponentAshElement(ashElement)) {
+	} else if (_internalsIsComponentAshElement2.default(ashElement)) {
 		// instantiate ashElement
 		ashElement.instantiate();
 
@@ -68,12 +80,12 @@ function walkCreateAshElementTree(ashElement, owner, order) {
 
 function createAshElementTree(rootAshElement, stage /*, startingLevel*/) {
 	// type check
-	if (!isAshElement(rootAshElement)) {
-		throw new Error(rootAshElement + " must be a AshElement object.");
+	if (!_internalsIsAshElement2.default(rootAshElement)) {
+		throw new Error(rootAshElement + ' must be a AshElement object.');
 	}
 
 	if (!stage) {
-		throw new Error(stage + " must be an object.");
+		throw new Error(stage + ' must be an object.');
 	}
 
 	var ashElementTree = rootAshElement;
@@ -81,12 +93,12 @@ function createAshElementTree(rootAshElement, stage /*, startingLevel*/) {
 	ashElementTree.stage = stage;
 	ashElementTree.isRoot = true;
 
-	if (isComponentAshElement(ashElementTree)) {
+	if (_internalsIsComponentAshElement2.default(ashElementTree)) {
 		// instantiate descriptor
 		ashElementTree.instantiate();
 
 		// set up ordering properties
-		ashElementTree.order = typeof ashElementTree.order === "undefined" ? 0 : ashElementTree.order;
+		ashElementTree.order = typeof ashElementTree.order === 'undefined' ? 0 : ashElementTree.order;
 
 		// create child by rendering component
 		ashElementTree.instance.__lifecycle = LIFECYCLE_MOUNTING;
@@ -104,7 +116,7 @@ function createAshElementTree(rootAshElement, stage /*, startingLevel*/) {
 		ashElementTree.instantiate();
 
 		// set up ordering properties
-		ashElementTree.order = typeof ashElementTree.order === "undefined" ? 0 : ashElementTree.order;
+		ashElementTree.order = typeof ashElementTree.order === 'undefined' ? 0 : ashElementTree.order;
 
 		for (var i = 0; i < ashElementTree.children.length; i++) {
 			// set up a parent
@@ -119,4 +131,5 @@ function createAshElementTree(rootAshElement, stage /*, startingLevel*/) {
 	return ashElementTree;
 }
 
-module.exports = createAshElementTree;
+exports.default = createAshElementTree;
+module.exports = exports.default;

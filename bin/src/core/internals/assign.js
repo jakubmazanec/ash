@@ -1,11 +1,14 @@
-"use strict";
+'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 function assign() {
 	var sources = [];
 	var target = arguments[0] || {};
 
 	for (var i = 1; i < arguments.length; i++) {
-		if (arguments[i] && typeof arguments[i] === "object") {
+		if (arguments[i] && typeof arguments[i] === 'object') {
 			sources.push(arguments[i]);
 		}
 	}
@@ -16,7 +19,7 @@ function assign() {
 
 	for (var i = 0; i < sources.length; i++) {
 		for (var prop in sources[i]) {
-			if (sources[i].hasOwnProperty(prop) && typeof sources[i][prop] !== "undefined" && sources[i][prop] !== null) {
+			if (sources[i].hasOwnProperty(prop) && typeof sources[i][prop] !== 'undefined' && sources[i][prop] !== null) {
 				target[prop] = sources[i][prop];
 			}
 		}
@@ -25,5 +28,6 @@ function assign() {
 	return target;
 }
 
-module.exports = assign;
+exports.default = assign;
+module.exports = exports.default;
 /*target, ...source*/

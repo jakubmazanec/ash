@@ -1,5 +1,8 @@
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 function test() {
 	return true;
 }
@@ -15,4 +18,5 @@ var timeout = {
 	install: install
 };
 
-module.exports = timeout;
+exports.default = timeout;
+module.exports = exports.default;

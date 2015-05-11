@@ -1,25 +1,39 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 
-var nextTick = _interopRequire(require("./immediate/nextTick"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var mutation = _interopRequire(require("./immediate/mutation.js"));
+var _immediateNextTick = require('./immediate/nextTick');
 
-var messageChannel = _interopRequire(require("./immediate/messageChannel"));
+var _immediateNextTick2 = _interopRequireDefault(_immediateNextTick);
 
-var stateChange = _interopRequire(require("./immediate/stateChange"));
+var _immediateMutationJs = require('./immediate/mutation.js');
 
-var timeout = _interopRequire(require("./immediate/timeout"));
+var _immediateMutationJs2 = _interopRequireDefault(_immediateMutationJs);
 
-var types = [nextTick, mutation.js, messageChannel, stateChange, timeout];
+var _immediateMessageChannel = require('./immediate/messageChannel');
+
+var _immediateMessageChannel2 = _interopRequireDefault(_immediateMessageChannel);
+
+var _immediateStateChange = require('./immediate/stateChange');
+
+var _immediateStateChange2 = _interopRequireDefault(_immediateStateChange);
+
+var _immediateTimeout = require('./immediate/timeout');
+
+var _immediateTimeout2 = _interopRequireDefault(_immediateTimeout);
+
+var types = [_immediateNextTick2.default, _immediateMutationJs2.default.js, _immediateMessageChannel2.default, _immediateStateChange2.default, _immediateTimeout2.default];
 var queue = [];
 var draining;
 
 // named nextTick for less confusing stack traces
-function nextTick() {
+function next() {
 	var oldQueue;
-	var i;
+	var i = undefined;
 
 	draining = true;
 
@@ -37,12 +51,10 @@ function nextTick() {
 }
 
 var scheduleDrain;
-var i = -1;
-var len = types.length;
 
-while (++i < len) {
+for (var i = 0; i < types.length; i++) {
 	if (types[i] && types[i].test && types[i].test()) {
-		scheduleDrain = types[i].install(nextTick);
+		scheduleDrain = types[i].install(next);
 
 		break;
 	}
@@ -54,4 +66,5 @@ function immediate(task) {
 	}
 }
 
-module.exports = immediate;
+exports.default = immediate;
+module.exports = exports.default;

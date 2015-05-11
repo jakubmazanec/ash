@@ -1,25 +1,52 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 
-var isFunction = _interopRequire(require("./isFunction"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _isFunction = require('./isFunction');
+
+var _isFunction2 = _interopRequireDefault(_isFunction);
 
 /**
  * Finds if ancestor is parent of ancestor class of value.
  */
 function isAncestor(ancestor, value) {
-	if (!isFunction(ancestor) || !isFunction(value) || ancestor === Function) {
+	if (!_isFunction2.default(ancestor) || !_isFunction2.default(value) || ancestor === Function || value === Function) {
 		return false;
 	}
 
-	var prototype;
+	if (ancestor === value) {
+		return true;
+	}
 
-	while (prototype !== value) {
+	if (ancestor === Function && value !== Object) {
+		return true;
+	}if (ancestor === Function && value === Object) {
+		return false;
+	}
+
+	if (ancestor === Object && value === Function) {
+		return true;
+	} else if (ancestor === Object) {
+		return true;
+	}
+
+	var prototype, lastPrototype;
+
+	while (prototype !== ancestor) {
+		lastPrototype = prototype;
 		prototype = Object.getPrototypeOf(value);
+
+		if (lastPrototype === prototype) {
+			return false;
+		}
 
 		if (prototype === ancestor) {
 			return true;
-		} else if (prototype === Function) {
+		} else if (prototype === Function || prototype === Object) {
 			return false;
 		}
 	}
@@ -27,4 +54,5 @@ function isAncestor(ancestor, value) {
 	return false;
 }
 
-module.exports = isAncestor;
+exports.default = isAncestor;
+module.exports = exports.default;

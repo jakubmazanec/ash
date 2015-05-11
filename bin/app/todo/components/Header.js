@@ -1,18 +1,18 @@
-"use strict";
+'use strict';
 
-var _ = require("_");
-var ash = require("ash");
-var TodoTextInput = require("./TodoTextInput");
+var _ = require('_');
+var ash = require('ash');
+var TodoTextInput = require('./TodoTextInput');
 
-var createTodo = require("../actions/createTodo");
+var createTodo = require('../actions/createTodo');
 
 var Header = ash.Component.create({
-	name: "Header",
+	name: 'Header',
 
 	render: function () {
-		return ash.e("header", null, [ash.e("h1", { style: { margin: 0 } }, "todos"), new TodoTextInput({
+		return ash.e('header', null, [ash.e('h1', { style: { margin: 0 } }, 'todos'), new TodoTextInput({
 			onSave: this.onSave,
-			placeholder: "What needs to be done?"
+			placeholder: 'What needs to be done?'
 		})]);
 	},
 

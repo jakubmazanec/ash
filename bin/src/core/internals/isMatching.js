@@ -1,5 +1,8 @@
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 /**
  * Checks if the chains of ; i.e all categories from the template chain must be present in the second chain, and in the same order.
  * Strict comparison (===) is used.
@@ -60,4 +63,5 @@ function isMatching(chain1, chain2, options) {
 	return true;
 } // isMatching
 
-module.exports = isMatching;
+exports.default = isMatching;
+module.exports = exports.default;

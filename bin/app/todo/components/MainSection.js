@@ -1,13 +1,14 @@
-"use strict";
 
-var _ = require("_");
-var ash = require("ash");
-var TodoItem = require("./TodoItem");
+'use strict';
 
-var toggleCompleteAll = require("../actions/toggleCompleteAll");
+var _ = require('_');
+var ash = require('ash');
+var TodoItem = require('./TodoItem');
+
+var toggleCompleteAll = require('../actions/toggleCompleteAll');
 
 var MainSection = ash.Component.create({
-	name: "MainSection",
+	name: 'MainSection',
 
 	render: function () {
 		if (!_.keys(this.props.allTodos).length) {
@@ -23,17 +24,17 @@ var MainSection = ash.Component.create({
 			}));
 		});
 
-		return ash.e("section", null, [ash.e("input", {
-			id: "toggle-all",
-			type: "checkbox",
-			checked: this.props.areAllComplete ? "checked" : "",
+		return ash.e('section', null, [ash.e('input', {
+			id: 'toggle-all',
+			type: 'checkbox',
+			checked: this.props.areAllComplete ? 'checked' : '',
 			events: {
-				"change": this.onToggleCompleteAll
+				'change': this.onToggleCompleteAll
 			}
-		}), ash.e("label", {
-			"for": "toggle-all"
-		}, "Mark as complete"), ash.e("ul", {
-			id: "todo-list"
+		}), ash.e('label', {
+			'for': 'toggle-all'
+		}, 'Mark as complete'), ash.e('ul', {
+			id: 'todo-list'
 		}, todos)]);
 	},
 

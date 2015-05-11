@@ -10,7 +10,9 @@ const LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
 const LIFECYCLE_UNINITIALIZED = constants.LIFECYCLE_UNINITIALIZED;
 
 class Component extends Observable {
-	constructor(props) {
+	constructor(props = {}) {
+		super();
+
 		// autobind methods
 		var prototype = Object.getPrototypeOf(this);
 		Object.getOwnPropertyNames(prototype).forEach((value) => {
@@ -21,7 +23,7 @@ class Component extends Observable {
 			}
 		});
 
-		this.props = props || {};
+		this.props = props;
 		this.state = this.state || {};
 
 		this.__isDirty = false;

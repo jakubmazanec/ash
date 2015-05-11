@@ -1,377 +1,241 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-// import $ from 'jquery';
+var _jquery = require('jquery');
 
-var _ = _interopRequire(require("lodash-fp"));
+var _jquery2 = _interopRequireDefault(_jquery);
 
-var ash = _interopRequire(require("./ash"));
+var _lodashFp = require('lodash-fp');
 
-// import Display from './components/Display';
-// import Timer from './components/Timer';
+var _lodashFp2 = _interopRequireDefault(_lodashFp);
 
-// global.$ = $;
-global._ = _;
-global.ash = ash;
+var _ash = require('./ash');
 
-var Renderer = global.Renderer = new ash.Renderer();
+var _ash2 = _interopRequireDefault(_ash);
 
-// Renderer.addComponent(new Timer(), $('.page')[0]);
+global.$ = _jquery2.default;
+global._ = _lodashFp2.default;
+global.ash = _ash2.default;
 
-var AppComponent = (function (_ash$Component) {
-	function AppComponent() {
-		this.name = "App";
-		this.state = new ash.ImmutableObject({
-			list1: new ash.ImmutableArray(),
-			list2: new ash.ImmutableArray(),
-			redShadow: true
-		});
+var Renderer = global.Renderer = new _ash2.default.Renderer();
 
-		_classCallCheck(this, AppComponent);
+var List = (function (_ash$Component) {
+	function List() {
+		_classCallCheck(this, List);
 
 		if (_ash$Component != null) {
 			_ash$Component.apply(this, arguments);
 		}
+
+		this.state = { redOutline: false };
+		this.name = 'List';
 	}
 
-	_inherits(AppComponent, _ash$Component);
+	_inherits(List, _ash$Component);
 
-	_createClass(AppComponent, {
-		render: {
-			/* jshint ignore:end */
+	_createClass(List, [{
+		key: 'render',
+		value: function render() {
+			var items = [_ash2.default.e('button', {
+				events: { click: this.changeOutline }
+			}, '!!!')];
 
-			value: function render() {
-				return ash.e("div", null, ash.e("div", {
-					style: {
-						boxShadow: this.state.redShadow ? "2px 2px 5px red" : "2px 2px 5px blue"
-					}
-				}, ash.e("button", {
-					events: { click: this.addToList1 }
-				}, "+ list 1"), ash.e("button", {
-					events: { click: this.addToList2 }
-				}, "+ list 2"), ash.e("button", {
-					events: { click: this.clearList1 }
-				}, "+ clear 1"), ash.e("button", {
-					events: { click: this.clearList2 }
-				}, "+ clear 2"), ash.e("button", {
-					events: { click: this.changeShadow }
-				}, "!!!")), new List(this.state.list1), //);
-				new List(this.state.list2));
+			for (var i = 0; i < this.props.length; i++) {
+				// items.push(ash.e('li', {key: i + ''}, this.props[i] + ''));
+				// items.push(ash.e('li', null, this.props[i] + ''));
+				items.push(_ash2.default.e(
+					'li',
+					null,
+					'' + this.props[i]
+				));
 			}
-		},
-		onMount: {
-			value: function onMount() {
-				console.log("App mounted!");
-			}
-		},
-		changeShadow: {
-			value: function changeShadow() {
-				this.state = this.state.set("redShadow", !this.state.redShadow);
-				this.isDirty = true;
-			}
-		},
-		addToList1: {
-			value: function addToList1() {
-				var items = [];
 
-				for (var i = 0; i < 5000; i++) {
-					items.push(Math.random().toFixed(1));
-				}
-
-				this.state = this.state.merge({ list1: this.state.list1.concat(items) });
-				// this.state.list1 = this.state.list1.concat(items);
-
-				this.isDirty = true;
-			}
-		},
-		addToList2: {
-			value: function addToList2() {
-				var items = [];
-
-				for (var i = 0; i < 5000; i++) {
-					items.push(Math.random().toFixed(1));
-				}
-
-				this.state = this.state.merge({ list2: this.state.list2.concat(items) });
-				// this.state.list2 = this.state.list2.concat(items);
-
-				this.isDirty = true;
-			}
-		},
-		clearList1: {
-			value: function clearList1() {
-				this.state = this.state.merge({ list1: [] });
-				// this.state.list1 = [];
-				this.isDirty = true;
-			}
-		},
-		clearList2: {
-			value: function clearList2() {
-				this.state = this.state.merge({ list2: [] });
-				// this.state.list2 = [];
-				this.isDirty = true;
-			}
-		},
-		randomFoo: {
-			get: function () {
-				return Math.random();
-			}
+			// return ash.e('ul', {style: {outline: this.state.redOutline ? '1px solid red' : '1px solid blue'}}, items);
+			return _ash2.default.e(
+				'ul',
+				{ style: {
+						outline: this.state.redOutline ? '1px solid red' : '1px solid blue'
+					} },
+				items
+			);
 		}
-	});
+	}, {
+		key: 'changeOutline',
+		value: function changeOutline() {
+			this.state.redOutline = !this.state.redOutline;
 
-	return AppComponent;
-})(ash.Component);
+			this.isDirty = true;
+		}
+	}, {
+		key: 'onBeforeReceiveProps',
+		value: function onBeforeReceiveProps() {}
+	}]);
 
-var App = ash.createElement(AppComponent);
+	return List;
+})(_ash2.default.Component);
 
-var ListComponent = (function (_ash$Component2) {
-	function ListComponent() {
-		this.name = "List";
-		this.state = { redOutline: false };
-
-		_classCallCheck(this, ListComponent);
+var App = (function (_ash$Component2) {
+	function App() {
+		_classCallCheck(this, App);
 
 		if (_ash$Component2 != null) {
 			_ash$Component2.apply(this, arguments);
 		}
+
+		this.state = new _ash2.default.ImmutableObject({
+			list1: new _ash2.default.ImmutableArray(),
+			list2: new _ash2.default.ImmutableArray(),
+			redShadow: true
+		});
+		this.name = 'App';
 	}
 
-	_inherits(ListComponent, _ash$Component2);
+	_inherits(App, _ash$Component2);
 
-	_createClass(ListComponent, {
-		render: {
-			/* jshint ignore:end */
-
-			value: function render() {
-				var items = [ash.e("button", {
-					events: { click: this.changeOutline }
-				}, "!!!")];
-
-				for (var i = 0; i < this.props.length; i++) {
-					items.push(ash.e("li", null, /*{key: i + ''}*/this.props[i] + ""));
-				}
-
-				return ash.e("ul", { style: { outline: this.state.redOutline ? "1px solid red" : "1px solid blue" } }, items);
-			}
-		},
-		changeOutline: {
-			value: function changeOutline() {
-				this.state.redOutline = !this.state.redOutline;
-
-				this.isDirty = true;
-			}
-		},
-		onBeforeReceiveProps: {
-			value: function onBeforeReceiveProps() {}
+	_createClass(App, [{
+		key: 'render',
+		value: function render() {
+			/*return ash.e('div', null,
+   	ash.e('div', {
+   		style: {
+   			boxShadow: this.state.redShadow ? '2px 2px 5px red' : '2px 2px 5px blue'
+   		}
+   	},
+   		ash.e('button', {
+   			events: {click: this.addToList1}
+   		}, '+ list 1'),
+   		ash.e('button', {
+   			events: {click: this.addToList2}
+   		}, '+ list 2'),
+   		ash.e('button', {
+   			events: {click: this.clearList1}
+   		}, '+ clear 1'),
+   		ash.e('button', {
+   			events: {click: this.clearList2}
+   		}, '+ clear 2'),
+   		ash.e('button', {
+   				events: {click: this.changeShadow}
+   			}, '!!!')),
+   	ash.e(List, this.state.list1),
+   	ash.e(List, this.state.list2));*/
+			return _ash2.default.e(
+				'div',
+				null,
+				_ash2.default.e(
+					'div',
+					{ style: {
+							boxShadow: this.state.redShadow ? '2px 2px 5px red' : '2px 2px 5px blue'
+						} },
+					_ash2.default.e(
+						'button',
+						{ events: {
+								click: this.addToList1
+							} },
+						'+ list 1!'
+					),
+					_ash2.default.e(
+						'button',
+						{ events: {
+								click: this.addToList2
+							} },
+						'+ list 2!'
+					),
+					_ash2.default.e(
+						'button',
+						{ events: {
+								click: this.clearList1
+							} },
+						'+ clear 1!'
+					),
+					_ash2.default.e(
+						'button',
+						{ events: {
+								click: this.clearList2
+							} },
+						'+ clear 2!'
+					),
+					_ash2.default.e(
+						'button',
+						{ events: {
+								click: this.changeShadow
+							} },
+						'!!!'
+					)
+				),
+				_ash2.default.e(List, this.state.list1),
+				_ash2.default.e(List, this.state.list2)
+			);
 		}
-	});
+	}, {
+		key: 'onMount',
+		value: function onMount() {
+			console.log('App mounted!');
+		}
+	}, {
+		key: 'changeShadow',
+		value: function changeShadow() {
+			this.state = this.state.set('redShadow', !this.state.redShadow);
+			this.isDirty = true;
+		}
+	}, {
+		key: 'addToList1',
+		value: function addToList1() {
+			var items = [];
 
-	return ListComponent;
-})(ash.Component);
+			for (var i = 0; i < 5000; i++) {
+				items.push(Math.random().toFixed(1));
+			}
 
-var List = ash.createElement(ListComponent);
+			this.state = this.state.merge({ list1: this.state.list1.concat(items) });
+			// this.state.list1 = this.state.list1.concat(items);
 
-Renderer.addComponent(new App(), global.document.querySelector(".page"));
+			this.isDirty = true;
+		}
+	}, {
+		key: 'addToList2',
+		value: function addToList2() {
+			var items = [];
 
-// benchmark
-// var start;
-// var end;
-// var total1 = 0;
-// var total2 = 0;
-// var total3 = 0;
-// var total4 = 0;
-// var total5 = 0;
-// var total6 = 0;
+			for (var i = 0; i < 5000; i++) {
+				items.push(Math.random().toFixed(1));
+			}
 
-// var object = {a: 1, b: 2};
+			this.state = this.state.merge({ list2: this.state.list2.concat(items) });
+			// this.state.list2 = this.state.list2.concat(items);
 
-// var coll = icepick.freeze(object);
-// var imobj = new ash.ImmutableObject(object);
+			this.isDirty = true;
+		}
+	}, {
+		key: 'clearList1',
+		value: function clearList1() {
+			this.state = this.state.merge({ list1: [] });
+			// this.state.list1 = [];
+			this.isDirty = true;
+		}
+	}, {
+		key: 'clearList2',
+		value: function clearList2() {
+			this.state = this.state.merge({ list2: [] });
+			// this.state.list2 = [];
+			this.isDirty = true;
+		}
+	}, {
+		key: 'randomFoo',
+		get: function () {
+			return Math.random();
+		}
+	}]);
 
-// const TEST_STRESS = 100;
-// const TEST_REPEAT = 10;
+	return App;
+})(_ash2.default.Component);
 
-// for (let j = 0; j < TEST_REPEAT; j++) {
-// 	start = global.performance.now();
-// 	for (let i = 0; i < TEST_STRESS; i++) {
-// 		coll = icepick.assoc(coll, 'new' + i, i);
-// 	}
-// 	end = global.performance.now();
-// 	total1 += (end - start);
+Renderer.addComponent(_ash2.default.e(App, null), global.document.querySelector('.page'));
 
-// 	start = global.performance.now();
-// 	for (let i = 0; i < TEST_STRESS; i++) {
-// 		imobj = imobj.set('new' + i, i);
-// 	}
-// 	end = global.performance.now();
-// 	total2 += (end - start);
-
-// start = global.performance.now();
-// for (let i = 0; i < TEST_STRESS; i++) {
-// 	zeroPadNumber2(12345, 10, '0');
-// }
-// end = global.performance.now();
-// total3 += (end - start);
-// }
-
-// console.log('icepick', total1 / TEST_REPEAT);
-// console.log('ImmutableObject', total2 / TEST_REPEAT);
-// console.log('_.padLeft', total3 / TEST_REPEAT);
-
-// var map1 = new ash.ImmutableArray(1, 2);
-// var map2 = map1.push(3);
-// var map3 = map2.reverse();
-// var map4 = new ash.ImmutableArray(map1, 4, 5);
-// var map5 = map1.push(map3);
-// var map6 = new ash.ImmutableArray([[10, 20], [30, 40]]);
-// var map7 = map1.set(3, 'oi!');
-
-// var hash1 = new ash.ImmutableObject({foo: 1, bar: 2});
-// var hash2 = hash1.set('pax', {qux: 'oi!'});
-// var hash3 = hash1.set('foo', 1);
-// var hash4 = hash1.set('foo', '1');
-// var hash5 = new ash.ImmutableObject({
-// 	foo: 1,
-// 	bar: {
-// 		pax: 'oi!',
-// 		qux: true,
-// 		norf: null,
-// 		baz: {
-// 			foo: () => {},
-// 			bar: undefined
-// 		}
-// 	}
-// });
-
-// var hash6 = hash5.merge({
-// 	/*bar: {
-// 		baz: {
-// 			foo: () => {},
-// 			bar: undefined
-// 		}
-// 	}*/
-// 	bar: {
-// 		pax: false
-// 	}
-// });
-
-// var hash7 = new ash.ImmutableObject({
-// 	orig: 'so so!'
-// });
-
-// var hash8 = hash5.merge({imm: [1, 2, hash7]});
-
-// console.log('map1', JSON.stringify(map1), map1, map1['__ash:immutable__']);
-// console.log('map2', JSON.stringify(map2), map2);
-// console.log('map3', JSON.stringify(map3), map3);
-// console.log('map4', JSON.stringify(map4), map4, map4[0] === map1);
-// console.log('map5', JSON.stringify(map5), map5, map5[2] === map3);
-// console.log('map6', JSON.stringify(map6), map6);
-// console.log('map7', JSON.stringify(map7), map7);
-
-// console.log('hash1', JSON.stringify(hash1), hash1);
-// console.log('hash2', JSON.stringify(hash2), hash2);
-// console.log('hash3', JSON.stringify(hash3), hash3, hash3 === hash1);
-// console.log('hash4', JSON.stringify(hash4), hash4, hash4 === hash1);
-// console.log('hash5', JSON.stringify(hash5), hash5);
-// console.log('hash6', JSON.stringify(hash6), hash6, hash6 === hash5);
-// console.log('hash7', JSON.stringify(hash7), hash7);
-// console.log('hash8', JSON.stringify(hash8), hash8, hash8.imm[2] === hash7);
-
-/*$(document).on('click', 'a', function (event) {
-	event.preventDefault();
-
-
-});
-
-var $buttons = $('.ash-button--flat').eq(0);
-var progress = 0;
-
-var makeProgress = function () {
-	console.log(progress);
-
-	progress += Math.random();
-
-	if (progress > 100) progress = 0;
-
-	$buttons.removeClass (function (index, css) {
-			return (css.match (/(^|\s)progress-\S+/g) || []).join(' ');
-	});
-
-	$buttons.addClass('progress-' + Math.floor(progress));
-
-	requestAnimationFrame(makeProgress);
-};*/
-
-//requestAnimationFrame(makeProgress);
-
-//Renderer.addComponent(timer(), $('.page-content')[0]);
-
-/*class FooComponent extends ash.Component {
-	render() {
-		return ash.e('div', {
-			style: {
-				'border-top': '1px solid red',
-				'font-size': '24px'
-			},
-			'checked': true,
-			'value': 42,
-			'data-foo': '<This is Foo!>'
-		}, [
-			ash.e('b', null, 'This is Foo!')
-		]);
-	}
-}
-
-var fooComponent = ash.createFactory(FooComponent);*/
-
-//html = Renderer.componentToString(fooComponent());
-//html = Renderer.componentToString(Timer());
-
-//console.log(html);
-
-//$('.page').html('<br>');
-
-/**
- * todo
- */
-
-/*var TodoStore = require('./todo/TodoStore');
-var TodoApp = require('./todo/components/TodoApp');*/
-
-/*var router = global.router = new ash.Router();
-router.add('*all', 'not found');
-router.on('all', function ()
-{
-	console.log('router triggered something', arguments);
-});
-router.start();*/
-
-// global.TodoStore = TodoStore;
-// var todoApp = global.todoApp = new TodoApp();
-
-// TodoStore.create('foo');
-// TodoStore.create('bar');
-// TodoStore.create('baz');
-// // TodoStore.create('qux');
-
-// TodoStore.todos['todo-1'].complete = true;
-
-// Renderer.registerComponent(todoApp, $('.page-content')[0]);
-
-/* jshint ignore:start */
-
-/*state = {
-	list1: [],
-	list2: [],
-	redShadow: true
-};*/
-
-/* jshint ignore:start */
+// console.log(<div>test</div>);

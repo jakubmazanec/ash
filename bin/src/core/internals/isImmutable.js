@@ -1,13 +1,20 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 
-var constants = _interopRequire(require("../internals/constants"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var IMMUTABLE_TAG = constants.IMMUTABLE_TAG;
+var _internalsConstants = require('../internals/constants');
+
+var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
+
+var IMMUTABLE_TAG = _internalsConstants2.default.IMMUTABLE_TAG;
 
 function isImmutable(value) {
 	return value && value[IMMUTABLE_TAG];
 }
 
-module.exports = isImmutable;
+exports.default = isImmutable;
+module.exports = exports.default;

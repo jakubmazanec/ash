@@ -1,5 +1,5 @@
-"use strict";
+'use strict';
 
-var ash = require("ash");
+var ash = require('ash');
 
-module.exports = new ash.Action("createTodo");
+module.exports = new ash.Action('createTodo');

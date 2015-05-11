@@ -1,12 +1,18 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-var isNative = _interopRequire(require("./isNative"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _isNative = require('./isNative');
+
+var _isNative2 = _interopRequireDefault(_isNative);
 
 /* Native method references for those with the same name as other `lodash` methods. */
 var nativeIsFinite = global.isFinite,
-    nativeNumIsFinite = isNative(nativeNumIsFinite = Number.isFinite) && nativeNumIsFinite;
+    nativeNumIsFinite = _isNative2.default(nativeNumIsFinite = Number.isFinite) && nativeNumIsFinite;
 
 /**
  * Checks if `value` is a finite primitive number.
@@ -38,7 +44,8 @@ var nativeIsFinite = global.isFinite,
  * // => false
  */
 var isFinite = nativeNumIsFinite || function (value) {
-  return typeof value == "number" && nativeIsFinite(value);
+  return typeof value == 'number' && nativeIsFinite(value);
 };
 
-module.exports = isFinite;
+exports.default = isFinite;
+module.exports = exports.default;

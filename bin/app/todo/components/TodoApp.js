@@ -1,11 +1,12 @@
-"use strict";
 
-var _ = require("_");
-var ash = require("ash");
-var Header = require("./Header");
-var Footer = require("./Footer");
-var MainSection = require("./MainSection");
-var TodoStore = require("../TodoStore");
+'use strict';
+
+var _ = require('_');
+var ash = require('ash');
+var Header = require('./Header');
+var Footer = require('./Footer');
+var MainSection = require('./MainSection');
+var TodoStore = require('../TodoStore');
 
 /**
  * Retrieve the current TODO data from the TodoStore
@@ -20,22 +21,22 @@ function getTodoState() {
 }
 
 var TodoApp = ash.Component.create({
-	name: "TodoApp",
+	name: 'TodoApp',
 
 	getInitialState: function () {
 		return getTodoState();
 	},
 
 	onMount: function () {
-		TodoStore.on("change", this.onTodoStoreChange);
+		TodoStore.on('change', this.onTodoStoreChange);
 	},
 
 	onUnmount: function () {
-		TodoStore.off("change", this.onTodoStoreChange);
+		TodoStore.off('change', this.onTodoStoreChange);
 	},
 
 	render: function () {
-		return ash.e("div", [
+		return ash.e('div', [
 		//new Header(),
 		new MainSection({
 			allTodos: this.state.allTodos,

@@ -1,26 +1,34 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 
-var constants = _interopRequire(require("../internals/constants"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var parseAshNodeIndex = _interopRequire(require("./parseAshNodeIndex"));
+var _internalsConstants = require('../internals/constants');
+
+var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
+
+var _parseAshNodeIndex = require('./parseAshNodeIndex');
+
+var _parseAshNodeIndex2 = _interopRequireDefault(_parseAshNodeIndex);
 
 // constants references
-var PATCH_ASH_NODE = constants.PATCH_ASH_NODE;
-var PATCH_ASH_TEXT_NODE = constants.PATCH_ASH_TEXT_NODE;
-var PATCH_PROPERTIES = constants.PATCH_PROPERTIES;
-var PATCH_ORDER = constants.PATCH_ORDER;
-var PATCH_INSERT = constants.PATCH_INSERT;
-var PATCH_REMOVE = constants.PATCH_REMOVE;
-var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
+var PATCH_ASH_NODE = _internalsConstants2.default.PATCH_ASH_NODE;
+var PATCH_ASH_TEXT_NODE = _internalsConstants2.default.PATCH_ASH_TEXT_NODE;
+var PATCH_PROPERTIES = _internalsConstants2.default.PATCH_PROPERTIES;
+var PATCH_ORDER = _internalsConstants2.default.PATCH_ORDER;
+var PATCH_INSERT = _internalsConstants2.default.PATCH_INSERT;
+var PATCH_REMOVE = _internalsConstants2.default.PATCH_REMOVE;
+var LEVEL_SEPARATOR = _internalsConstants2.default.LEVEL_SEPARATOR;
 
 function diffChildren(oldChildren, newChildren, patches) {
 	// lets fill in keys, if needed; simple first-to-first correspondence
 	var oldChildIndex = 0;
 	var newChildIndex = 0;
 	var lastKey = 0;
-	var key = "__key:" + lastKey + "__";
+	var key = '__key:' + lastKey + '__';
 	var isChildDirty = false;
 
 	for (var i = 0, _length = Math.max(oldChildren.length, newChildren.length); i < _length; i++) {
@@ -53,7 +61,7 @@ function diffChildren(oldChildren, newChildren, patches) {
 		}
 
 		lastKey++;
-		key = "__key:" + lastKey + "__";
+		key = '__key:' + lastKey + '__';
 		oldChildIndex++;
 		newChildIndex++;
 	}
@@ -92,7 +100,7 @@ function diffChildren(oldChildren, newChildren, patches) {
 					type: PATCH_ORDER,
 					newIndex: newChildren[foundIndex].index,
 					index: oldChildren[i].index,
-					parsedIndex: parseAshNodeIndex(oldChildren[i].index),
+					parsedIndex: _parseAshNodeIndex2.default(oldChildren[i].index),
 					stage: oldChildren[i].stage,
 					order: foundIndex
 				});
@@ -111,7 +119,7 @@ function diffChildren(oldChildren, newChildren, patches) {
 			patches.push({
 				type: PATCH_REMOVE,
 				index: oldChildren[i].index,
-				parsedIndex: parseAshNodeIndex(oldChildren[i].index),
+				parsedIndex: _parseAshNodeIndex2.default(oldChildren[i].index),
 				stage: oldChildren[i].stage });
 
 			for (var k = 0; k < patches[patches.length - 1].parsedIndex.length; k++) {
@@ -138,7 +146,7 @@ function diffChildren(oldChildren, newChildren, patches) {
 			patches.push({
 				type: PATCH_INSERT,
 				index: newChildren[j].index,
-				parsedIndex: parseAshNodeIndex(newChildren[j].index),
+				parsedIndex: _parseAshNodeIndex2.default(newChildren[j].index),
 				node: newChildren[j]
 			});
 
@@ -148,7 +156,7 @@ function diffChildren(oldChildren, newChildren, patches) {
 				}
 			}
 
-			var parentIndex = parseAshNodeIndex(newChildren[j].index);
+			var parentIndex = _parseAshNodeIndex2.default(newChildren[j].index);
 			parentIndex.pop();
 			patches[patches.length - 1].parentIndex = parentIndex.join(LEVEL_SEPARATOR);
 		}
@@ -164,11 +172,11 @@ function diffAshNodeTree(oldAshNode, newAshNode /*, patches*/) {
 	var propertiesToChange = {};
 	var propertiesToRemove = [];
 
-	if (typeof patches.maxIndex === "undefined") {
+	if (typeof patches.maxIndex === 'undefined') {
 		patches.maxIndex = 0;
 	}
 
-	if (typeof patches.stage === "undefined") {
+	if (typeof patches.stage === 'undefined') {
 		patches.stage = oldAshNode.stage;
 	}
 
@@ -184,7 +192,7 @@ function diffAshNodeTree(oldAshNode, newAshNode /*, patches*/) {
 	// which propertie are different or new
 	for (var newProperty in newAshNode.properties) {
 		if (newAshNode.properties.hasOwnProperty(newProperty) && oldAshNode.properties && newAshNode.properties[newProperty] !== oldAshNode.properties[newProperty]) {
-			if (typeof newAshNode.properties[newProperty] === "object" && oldAshNode.properties[newProperty] && typeof oldAshNode.properties[newProperty] == "object") {
+			if (typeof newAshNode.properties[newProperty] === 'object' && oldAshNode.properties[newProperty] && typeof oldAshNode.properties[newProperty] == 'object') {
 				// which propertie are different or new
 				for (var newSubproperty in newAshNode.properties[newProperty]) {
 					if (newAshNode.properties[newProperty].hasOwnProperty(newSubproperty) && newAshNode.properties[newProperty][newSubproperty] !== oldAshNode.properties[newProperty][newSubproperty]) {
@@ -197,8 +205,8 @@ function diffAshNodeTree(oldAshNode, newAshNode /*, patches*/) {
 
 				// which properties are to be removed
 				for (var oldSubproperty in oldAshNode.properties[newProperty]) {
-					if (oldAshNode.properties[newProperty].hasOwnProperty(oldSubproperty) && typeof newAshNode.properties[newProperty][oldSubproperty] === "undefined") {
-						propertiesToRemove.push(newProperty + "." + oldSubproperty);
+					if (oldAshNode.properties[newProperty].hasOwnProperty(oldSubproperty) && typeof newAshNode.properties[newProperty][oldSubproperty] === 'undefined') {
+						propertiesToRemove.push(newProperty + '.' + oldSubproperty);
 
 						differentProperties = true;
 					}
@@ -213,7 +221,7 @@ function diffAshNodeTree(oldAshNode, newAshNode /*, patches*/) {
 
 	// which properties are to be removed
 	for (var oldProperty in oldAshNode.properties) {
-		if (oldAshNode.properties.hasOwnProperty(oldProperty) && newAshNode.properties && typeof newAshNode.properties[oldProperty] === "undefined") {
+		if (oldAshNode.properties.hasOwnProperty(oldProperty) && newAshNode.properties && typeof newAshNode.properties[oldProperty] === 'undefined') {
 			differentProperties = true;
 			propertiesToRemove.push(oldProperty);
 		}
@@ -223,7 +231,7 @@ function diffAshNodeTree(oldAshNode, newAshNode /*, patches*/) {
 		patches.push({
 			type: PATCH_ASH_NODE,
 			index: oldAshNode.index,
-			parsedIndex: parseAshNodeIndex(oldAshNode.index),
+			parsedIndex: _parseAshNodeIndex2.default(oldAshNode.index),
 			stage: oldAshNode.stage,
 			node: newAshNode
 		});
@@ -242,7 +250,7 @@ function diffAshNodeTree(oldAshNode, newAshNode /*, patches*/) {
 		patches.push({
 			type: PATCH_ASH_TEXT_NODE,
 			index: oldAshNode.index,
-			parsedIndex: parseAshNodeIndex(oldAshNode.index),
+			parsedIndex: _parseAshNodeIndex2.default(oldAshNode.index),
 			text: newAshNode.text
 		});
 
@@ -257,7 +265,7 @@ function diffAshNodeTree(oldAshNode, newAshNode /*, patches*/) {
 		patches.push({
 			type: PATCH_PROPERTIES,
 			index: oldAshNode.index,
-			parsedIndex: parseAshNodeIndex(oldAshNode.index),
+			parsedIndex: _parseAshNodeIndex2.default(oldAshNode.index),
 			stage: oldAshNode.stage,
 			propertiesToChange: propertiesToChange,
 			propertiesToRemove: propertiesToRemove
@@ -278,4 +286,5 @@ function diffAshNodeTree(oldAshNode, newAshNode /*, patches*/) {
 	return patches;
 }
 
-module.exports = diffAshNodeTree;
+exports.default = diffAshNodeTree;
+module.exports = exports.default;

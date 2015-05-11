@@ -1,39 +1,59 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 
-var constants = _interopRequire(require("../internals/constants"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var parseAshNodeIndex = _interopRequire(require("./parseAshNodeIndex"));
+var _internalsConstants = require('../internals/constants');
 
-var createNodeTree = _interopRequire(require("./createNodeTree"));
+var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 
-var setNodeProperties = _interopRequire(require("./setNodeProperties"));
+var _parseAshNodeIndex = require('./parseAshNodeIndex');
 
-var removeNodeProperties = _interopRequire(require("./removeNodeProperties"));
+var _parseAshNodeIndex2 = _interopRequireDefault(_parseAshNodeIndex);
 
-var findNode = _interopRequire(require("./findNode"));
+var _createNodeTree = require('./createNodeTree');
 
-var EventListener = _interopRequire(require("../classes/EventListener"));
+var _createNodeTree2 = _interopRequireDefault(_createNodeTree);
 
-var isElement = _interopRequire(require("../internals/isElement"));
+var _setNodeProperties = require('./setNodeProperties');
 
-var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
-var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
-var PATCH_ASH_NODE = constants.PATCH_ASH_NODE;
-var PATCH_ASH_TEXT_NODE = constants.PATCH_ASH_TEXT_NODE;
-var PATCH_PROPERTIES = constants.PATCH_PROPERTIES;
-var PATCH_ORDER = constants.PATCH_ORDER;
-var PATCH_INSERT = constants.PATCH_INSERT;
-var PATCH_REMOVE = constants.PATCH_REMOVE;
-var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
+var _setNodeProperties2 = _interopRequireDefault(_setNodeProperties);
 
-var eventListener = new EventListener();
+var _removeNodeProperties = require('./removeNodeProperties');
+
+var _removeNodeProperties2 = _interopRequireDefault(_removeNodeProperties);
+
+var _findNode = require('./findNode');
+
+var _findNode2 = _interopRequireDefault(_findNode);
+
+var _classesEventListener = require('../classes/EventListener');
+
+var _classesEventListener2 = _interopRequireDefault(_classesEventListener);
+
+var _internalsIsElement = require('../internals/isElement');
+
+var _internalsIsElement2 = _interopRequireDefault(_internalsIsElement);
+
+var INDEX_ATTRIBUTE_NAME = _internalsConstants2.default.INDEX_ATTRIBUTE_NAME;
+var ORDER_ATTRIBUTE_NAME = _internalsConstants2.default.ORDER_ATTRIBUTE_NAME;
+var PATCH_ASH_NODE = _internalsConstants2.default.PATCH_ASH_NODE;
+var PATCH_ASH_TEXT_NODE = _internalsConstants2.default.PATCH_ASH_TEXT_NODE;
+var PATCH_PROPERTIES = _internalsConstants2.default.PATCH_PROPERTIES;
+var PATCH_ORDER = _internalsConstants2.default.PATCH_ORDER;
+var PATCH_INSERT = _internalsConstants2.default.PATCH_INSERT;
+var PATCH_REMOVE = _internalsConstants2.default.PATCH_REMOVE;
+var LEVEL_SEPARATOR = _internalsConstants2.default.LEVEL_SEPARATOR;
+
+var eventListener = new _classesEventListener2.default();
 
 function zeroPadNumber(number, length) {
 	var n = Math.pow(10, length);
 
-	return number < n ? ("" + (n + number)).slice(1) : "" + number;
+	return number < n ? ('' + (n + number)).slice(1) : '' + number;
 }
 
 function comparePatches(a, b) {
@@ -49,7 +69,7 @@ function walkReindexChildNodes(node, levelIndex, order) {
 
 	for (var i = 0; i < node.childNodes.length; i++) {
 		if (node.childNodes[i].nodeType === 1) {
-			childLevels = parseAshNodeIndex(node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
+			childLevels = _parseAshNodeIndex2.default(node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
 			childLevels[levelIndex] = order;
 
 			node.childNodes[i][INDEX_ATTRIBUTE_NAME] = childLevels.join(LEVEL_SEPARATOR);
@@ -65,7 +85,7 @@ function walkReindexChildNodes(node, levelIndex, order) {
 }
 
 function reindexChildNodes(parentNode, order) {
-	var parentLevels = parseAshNodeIndex(parentNode[INDEX_ATTRIBUTE_NAME]);
+	var parentLevels = _parseAshNodeIndex2.default(parentNode[INDEX_ATTRIBUTE_NAME]);
 	var levelIndex = parentLevels.length - 1;
 
 	walkReindexChildNodes(parentNode, levelIndex, order);
@@ -122,7 +142,7 @@ function patchNodeTree(nodeTree /*, patches*/) {
 	var reorderCache = [];
 
 	// type check
-	if (!isElement(nodeTree)) {
+	if (!_internalsIsElement2.default(nodeTree)) {
 		return false;
 	}
 
@@ -139,7 +159,7 @@ function patchNodeTree(nodeTree /*, patches*/) {
 
 	// compute sort order
 	for (var i = 0; i < patches.length; i++) {
-		patches[i].sortOrder = "";
+		patches[i].sortOrder = '';
 
 		// first we order patches by their levels without the last level
 		for (var j = 0; j < patches[i].parsedIndex.length - 1; j++) {
@@ -199,7 +219,7 @@ function patchNodeTree(nodeTree /*, patches*/) {
 
 						patches[i].index = newParsedIndex.join(LEVEL_SEPARATOR);
 						patches[i].parsedIndex = newParsedIndex.slice(0);
-						newParsedIndex = parseAshNodeIndex(patches[i].parentIndex);
+						newParsedIndex = _parseAshNodeIndex2.default(patches[i].parentIndex);
 
 						for (var k = 0; k < patches[j].parsedIndex.length; k++) {
 							newParsedIndex[k] = patches[j].parsedIndex[k];
@@ -231,17 +251,17 @@ function patchNodeTree(nodeTree /*, patches*/) {
 			eventListener.removeEvents(patches[i].index, patches[i].stage);
 
 			// replace node
-			node = findNode(nodeTree, patches[i].index);
+			node = _findNode2.default(nodeTree, patches[i].index);
 
 			if (!node) {
 				return false;
 			}
 
-			node.parentNode.replaceChild(createNodeTree(patches[i].node), node);
+			node.parentNode.replaceChild(_createNodeTree2.default(patches[i].node), node);
 		}
 
 		if (patches[i].type === PATCH_ASH_TEXT_NODE) {
-			node = findNode(nodeTree, patches[i].index);
+			node = _findNode2.default(nodeTree, patches[i].index);
 
 			if (!node) {
 				return false;
@@ -251,18 +271,18 @@ function patchNodeTree(nodeTree /*, patches*/) {
 		}
 
 		if (patches[i].type === PATCH_PROPERTIES) {
-			node = findNode(nodeTree, patches[i].index);
+			node = _findNode2.default(nodeTree, patches[i].index);
 
 			if (!node) {
 				return false;
 			}
 
-			setNodeProperties(node, patches[i].propertiesToChange, false);
-			removeNodeProperties(node, patches[i].propertiesToRemove);
+			_setNodeProperties2.default(node, patches[i].propertiesToChange, false);
+			_removeNodeProperties2.default(node, patches[i].propertiesToRemove);
 		}
 
 		if (patches[i].type === PATCH_REMOVE) {
-			node = findNode(nodeTree, patches[i].index);
+			node = _findNode2.default(nodeTree, patches[i].index);
 
 			if (!node) {
 				return false;
@@ -275,19 +295,19 @@ function patchNodeTree(nodeTree /*, patches*/) {
 		}
 
 		if (patches[i].type === PATCH_INSERT) {
-			node = findNode(nodeTree, patches[i].parentIndex);
+			node = _findNode2.default(nodeTree, patches[i].parentIndex);
 
 			if (!node) {
 				return false;
 			}
 
-			node.appendChild(createNodeTree(patches[i].node));
+			node.appendChild(_createNodeTree2.default(patches[i].node));
 
 			reorderCache.push(node);
 		}
 
 		if (patches[i].type === PATCH_ORDER) {
-			node = findNode(nodeTree, patches[i].index);
+			node = _findNode2.default(nodeTree, patches[i].index);
 
 			if (!node) {
 				return false;
@@ -315,4 +335,5 @@ function patchNodeTree(nodeTree /*, patches*/) {
 	return true;
 }
 
-module.exports = patchNodeTree;
+exports.default = patchNodeTree;
+module.exports = exports.default;

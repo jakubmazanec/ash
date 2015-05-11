@@ -9,34 +9,38 @@ var source = require('vinyl-source-stream');
 var nodemon = require('gulp-nodemon');
 var babel = require('gulp-babel');
 var uglify = require('gulp-uglify');
+var cache = require('gulp-cached');
 
 // server app
 gulp.task('server', function () {
+	// nodemon({
+	// 	script: './bin/app/server.js',
+	// 	nodeArgs: ['--harmony'],
+	// 	watch: ['bin/app/**/*.js'],
+	// 	delay: 1
+	// });
 	nodemon({
 		script: './bin/app/server.js',
-		nodeArgs: ['--harmony'],
+		// nodeArgs: ['--harmony_proxies'],
 		watch: ['bin/app/**/*.js'],
-		delay: 1
+		execMap: {
+			js: 'iojs'
+		},
+		delay: 2
 	});
 });
 
 gulp.task('es6-app', function () {
 	return gulp.src('./app/**/*.js')
-		.pipe(babel({
-			whitelist: ['es6.templateLiterals', 'es6.tailCall', 'es6.classes', 'es6.constants', 'es6.blockScoping', 'es6.arrowFunctions', 'es6.modules', 'es6.properties.shorthand', 'useStrict'],
-			sourceMap: false,
-			playground: true
-		}))
+		.pipe(cache('scripts-es6-app'))
+		.pipe(babel())
 		.pipe(gulp.dest('bin/app'));
 });
 
 gulp.task('es6-src', function () {
 	return gulp.src('./src/**/*.js')
-		.pipe(babel({
-			whitelist: ['es6.templateLiterals', 'es6.tailCall', 'es6.classes', 'es6.constants', 'es6.blockScoping', 'es6.arrowFunctions', 'es6.modules', 'es6.properties.shorthand', 'useStrict'],
-			sourceMap: false,
-			playground: true
-		}))
+		.pipe(cache('scripts-es6-src'))
+		.pipe(babel())
 		//.pipe(uglify())
 		.pipe(gulp.dest('bin/src'));
 });

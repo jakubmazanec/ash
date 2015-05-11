@@ -1,19 +1,31 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 
-var isComponentAshElement = _interopRequire(require("../internals/isComponentAshElement"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var isAshNodeAshElement = _interopRequire(require("../internals/isAshNodeAshElement"));
+var _internalsIsComponentAshElement = require('../internals/isComponentAshElement');
 
-var isAshNode = _interopRequire(require("../internals/isAshNode"));
+var _internalsIsComponentAshElement2 = _interopRequireDefault(_internalsIsComponentAshElement);
 
-var constants = _interopRequire(require("../internals/constants"));
+var _internalsIsAshNodeAshElement = require('../internals/isAshNodeAshElement');
 
-var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
+var _internalsIsAshNodeAshElement2 = _interopRequireDefault(_internalsIsAshNodeAshElement);
+
+var _internalsIsAshNode = require('../internals/isAshNode');
+
+var _internalsIsAshNode2 = _interopRequireDefault(_internalsIsAshNode);
+
+var _internalsConstants = require('../internals/constants');
+
+var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
+
+var LEVEL_SEPARATOR = _internalsConstants2.default.LEVEL_SEPARATOR;
 
 function cloneAshNode(ashNodeAshElement) {
-	if (isAshNode(ashNodeAshElement.instance)) {
+	if (_internalsIsAshNode2.default(ashNodeAshElement.instance)) {
 		return {
 			type: ashNodeAshElement.instance.type,
 			index: ashNodeAshElement.instance.index,
@@ -36,7 +48,7 @@ function cloneAshNode(ashNodeAshElement) {
 function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentIndex, isParentDirty) {
 	var clonedAshNode;
 
-	if (isAshNodeAshElement(ashElement)) {
+	if (_internalsIsAshNodeAshElement2.default(ashElement)) {
 		// clone virtual node
 		clonedAshNode = cloneAshNode(ashElement);
 
@@ -64,8 +76,8 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentIndex, isPa
 
 function createAshNodeTree(componentAshElement) {
 	// type check
-	if (!isComponentAshElement(componentAshElement)) {
-		throw new Error(componentAshElement + " must be a Component Descriptor object.");
+	if (!_internalsIsComponentAshElement2.default(componentAshElement)) {
+		throw new Error(componentAshElement + ' must be a Component Descriptor object.');
 	}
 
 	var ashElement = componentAshElement;
@@ -74,7 +86,7 @@ function createAshNodeTree(componentAshElement) {
 	ashElement.isDirty = false;
 
 	// find first children Virtual Node ashElement
-	while (!isAshNodeAshElement(ashElement)) {
+	while (!_internalsIsAshNodeAshElement2.default(ashElement)) {
 		ashElement = ashElement.children[0];
 	}
 
@@ -82,7 +94,7 @@ function createAshNodeTree(componentAshElement) {
 	ashNodeTree = cloneAshNode(ashElement);
 
 	// set up ordering properties
-	ashElement.instance.index = ashNodeTree.index = "0";
+	ashElement.instance.index = ashNodeTree.index = '0';
 	ashElement.instance.order = ashNodeTree.order = 0;
 
 	// is parent component dirty?
@@ -96,4 +108,5 @@ function createAshNodeTree(componentAshElement) {
 	return ashNodeTree;
 }
 
-module.exports = createAshNodeTree;
+exports.default = createAshNodeTree;
+module.exports = exports.default;

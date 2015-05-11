@@ -1,16 +1,24 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 
-var EventListener = _interopRequire(require("../classes/EventListener"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var constants = _interopRequire(require("../internals/constants"));
+var _classesEventListener = require('../classes/EventListener');
 
-var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
-var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
-var STAGE_ATTRIBUTE_NAME = constants.STAGE_ATTRIBUTE_NAME;
+var _classesEventListener2 = _interopRequireDefault(_classesEventListener);
 
-var eventListener = new EventListener();
+var _internalsConstants = require('../internals/constants');
+
+var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
+
+var INDEX_ATTRIBUTE_NAME = _internalsConstants2.default.INDEX_ATTRIBUTE_NAME;
+var ORDER_ATTRIBUTE_NAME = _internalsConstants2.default.ORDER_ATTRIBUTE_NAME;
+var STAGE_ATTRIBUTE_NAME = _internalsConstants2.default.STAGE_ATTRIBUTE_NAME;
+
+var eventListener = new _classesEventListener2.default();
 
 function walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache) {
 	if (nodeTree.tagName && nodeTree.tagName.toLowerCase() !== ashNodeTree.tagName) {
@@ -25,7 +33,7 @@ function walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache) {
 	nodeTree[ORDER_ATTRIBUTE_NAME] = ashNodeTree.order;
 	nodeTree[STAGE_ATTRIBUTE_NAME] = ashNodeTree.stage;
 
-	if (ashNodeTree.properties && ashNodeTree.properties.events && typeof ashNodeTree.properties.events === "object") {
+	if (ashNodeTree.properties && ashNodeTree.properties.events && typeof ashNodeTree.properties.events === 'object') {
 		eventsCache.push({
 			events: ashNodeTree.properties.events,
 			node: nodeTree
@@ -60,4 +68,5 @@ function validateNodeTree(nodeTree, ashNodeTree, stage) {
 	return isNodeTreeValid;
 }
 
-module.exports = validateNodeTree;
+exports.default = validateNodeTree;
+module.exports = exports.default;

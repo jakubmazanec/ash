@@ -1,5 +1,8 @@
-"use strict";
+'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 /**
  * Checks if `value` is object-like.
  *
@@ -8,7 +11,8 @@
  * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
  */
 function isObjectLike(value) {
-  return value && typeof value == "object" || false;
+  return value && typeof value == 'object' || false;
 }
 
-module.exports = isObjectLike;
+exports.default = isObjectLike;
+module.exports = exports.default;

@@ -1,20 +1,28 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 
-var isAshNode = _interopRequire(require("../internals/isAshNode"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var constants = _interopRequire(require("../internals/constants"));
+var _internalsIsAshNode = require('../internals/isAshNode');
 
-var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
-var ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
-var LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
+var _internalsIsAshNode2 = _interopRequireDefault(_internalsIsAshNode);
+
+var _internalsConstants = require('../internals/constants');
+
+var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
+
+var INDEX_ATTRIBUTE_NAME = _internalsConstants2.default.INDEX_ATTRIBUTE_NAME;
+var ORDER_ATTRIBUTE_NAME = _internalsConstants2.default.ORDER_ATTRIBUTE_NAME;
+var LEVEL_SEPARATOR = _internalsConstants2.default.LEVEL_SEPARATOR;
 
 function escapeAttributeValue(s, preserveCR) {
-	preserveCR = preserveCR ? "&#13;" : "\n";
-	return ("" + s).replace(/&/g, "&amp;") /* This MUST be the 1st replacement. */
-	.replace(/'/g, "&apos;") /* The 4 other predefined entities, required. */
-	.replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+	preserveCR = preserveCR ? '&#13;' : '\n';
+	return ('' + s).replace(/&/g, '&amp;') /* This MUST be the 1st replacement. */
+	.replace(/'/g, '&apos;') /* The 4 other predefined entities, required. */
+	.replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 	/*
  You may add other replacements here for HTML only
  (but it's not necessary).
@@ -25,61 +33,61 @@ function escapeAttributeValue(s, preserveCR) {
 }
 
 function walkStringifyAshNodeTree(ashNodeTree, index /*, parentIndex*/) {
-	var html = "";
-	var openingTag = "<";
-	var closingTag = "";
-	var content = "";
+	var html = '';
+	var openingTag = '<';
+	var closingTag = '';
+	var content = '';
 	var parentIndex = arguments[2];
 	var i, key1, key2;
 
-	if (isAshNode(ashNodeTree)) {
+	if (_internalsIsAshNode2.default(ashNodeTree)) {
 		openingTag += ashNodeTree.tagName;
-		closingTag = "</" + ashNodeTree.tagName + ">";
+		closingTag = '</' + ashNodeTree.tagName + '>';
 
 		if (parentIndex) {
-			openingTag += " " + INDEX_ATTRIBUTE_NAME + "=\"" + parentIndex + LEVEL_SEPARATOR + index + "\"";
-			openingTag += " " + ORDER_ATTRIBUTE_NAME + "=\"" + index + "\"";
+			openingTag += ' ' + INDEX_ATTRIBUTE_NAME + '="' + parentIndex + LEVEL_SEPARATOR + index + '"';
+			openingTag += ' ' + ORDER_ATTRIBUTE_NAME + '="' + index + '"';
 			parentIndex = parentIndex + LEVEL_SEPARATOR + index;
 		} else {
-			openingTag += " " + INDEX_ATTRIBUTE_NAME + "=\"" + index + "\"";
-			openingTag += " " + ORDER_ATTRIBUTE_NAME + "=\"" + index + "\"";
-			parentIndex = "" + index;
+			openingTag += ' ' + INDEX_ATTRIBUTE_NAME + '="' + index + '"';
+			openingTag += ' ' + ORDER_ATTRIBUTE_NAME + '="' + index + '"';
+			parentIndex = '' + index;
 		}
 
 		if (ashNodeTree.properties) {
 			for (key1 in ashNodeTree.properties) {
-				if (ashNodeTree.properties.hasOwnProperty(key1) && key1 != "events") {
-					if (key1 == "style") {
-						openingTag += " style=\"";
+				if (ashNodeTree.properties.hasOwnProperty(key1) && key1 != 'events') {
+					if (key1 == 'style') {
+						openingTag += ' style="';
 
 						// add style definitions
 						for (key2 in ashNodeTree.properties.style) {
 							if (ashNodeTree.properties.style.hasOwnProperty(key2)) {
-								if (typeof ashNodeTree.properties.style[key2] === "string") {
-									openingTag += key2 + ":" + ashNodeTree.properties.style[key2] + ";";
+								if (typeof ashNodeTree.properties.style[key2] === 'string') {
+									openingTag += key2 + ':' + ashNodeTree.properties.style[key2] + ';';
 								} else {}
 							}
 						}
 
-						openingTag += "\"";
+						openingTag += '"';
 					} else {
-						if (typeof ashNodeTree.properties[key1] === "string") {
-							if (key1.toLowerCase() == "classname") {
-								openingTag += " class=\"" + escapeAttributeValue(ashNodeTree.properties[key1]) + "\"";
+						if (typeof ashNodeTree.properties[key1] === 'string') {
+							if (key1.toLowerCase() == 'classname') {
+								openingTag += ' class="' + escapeAttributeValue(ashNodeTree.properties[key1]) + '"';
 							} else {
-								openingTag += " " + key1 + "=\"" + escapeAttributeValue(ashNodeTree.properties[key1]) + "\"";
+								openingTag += ' ' + key1 + '="' + escapeAttributeValue(ashNodeTree.properties[key1]) + '"';
 							}
-						} else if (typeof ashNodeTree.properties[key1] === "boolean") {
-							openingTag += " " + key1;
-						} else if (typeof ashNodeTree.properties[key1] === "number") {
-							openingTag += " " + key1 + "=\"" + ashNodeTree.properties[key1] + "\"";
+						} else if (typeof ashNodeTree.properties[key1] === 'boolean') {
+							openingTag += ' ' + key1;
+						} else if (typeof ashNodeTree.properties[key1] === 'number') {
+							openingTag += ' ' + key1 + '="' + ashNodeTree.properties[key1] + '"';
 						}
 					}
 				}
 			}
 		}
 
-		openingTag += ">";
+		openingTag += '>';
 
 		if (ashNodeTree.children && ashNodeTree.children.length) {
 			for (i = 0; i < ashNodeTree.children.length; i++) {
@@ -96,10 +104,11 @@ function walkStringifyAshNodeTree(ashNodeTree, index /*, parentIndex*/) {
 }
 
 function stringifyAshNodeTree(ashNodeTree) {
-	return walkStringifyAshNodeTree(ashNodeTree, 0, "");
+	return walkStringifyAshNodeTree(ashNodeTree, 0, '');
 }
 
-module.exports = stringifyAshNodeTree;
+exports.default = stringifyAshNodeTree;
+module.exports = exports.default;
 /* Forces the conversion to string. */
 
 // TODO

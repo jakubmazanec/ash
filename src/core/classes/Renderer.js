@@ -39,7 +39,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				// replace the old
 				newAshElement.parent.children[0] = newAshElement;
 			}
-		} else if (oldAshElement.type === COMPONENT_ASH_ELEMENT && newAshElement.spec === oldAshElement.spec) {
+		} else if (oldAshElement.type === COMPONENT_ASH_ELEMENT && newAshElement.Spec === oldAshElement.Spec) {
 			// old is component, new is same component
 
 			if (oldAshElement.instance.shouldUpdate(newAshElement.args ? newAshElement.args[0] : null)) {

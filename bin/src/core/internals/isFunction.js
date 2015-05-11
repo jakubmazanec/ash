@@ -1,11 +1,17 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-var isNative = _interopRequire(require("./isNative"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _isNative = require('./isNative');
+
+var _isNative2 = _interopRequireDefault(_isNative);
 
 /** `Object#toString` result references. */
-var funcTag = "[object Function]";
+var funcTag = '[object Function]';
 
 /** Used for native method references. */
 var objectProto = Object.prototype;
@@ -18,7 +24,7 @@ var objectProto = Object.prototype;
 var objToString = objectProto.toString;
 
 /** Native method references. */
-var Uint8Array = isNative(Uint8Array = global.Uint8Array) && Uint8Array;
+var Uint8Array = _isNative2.default(Uint8Array = global.Uint8Array) && Uint8Array;
 
 /**
  * Checks if `value` is classified as a `Function` object.
@@ -39,7 +45,7 @@ var Uint8Array = isNative(Uint8Array = global.Uint8Array) && Uint8Array;
 var isFunction = function (value) {
   // Avoid a Chakra JIT bug in compatibility modes of IE 11.
   // See https://github.com/jashkenas/underscore/issues/1621 for more details.
-  return typeof value == "function" || false;
+  return typeof value == 'function' || false;
 };
 
 // Fallback for environments that return incorrect `typeof` operator results.
@@ -52,4 +58,5 @@ if (isFunction(/x/) || Uint8Array && !isFunction(Uint8Array)) {
   };
 }
 
-module.exports = isFunction;
+exports.default = isFunction;
+module.exports = exports.default;

@@ -1,7 +1,10 @@
-"use strict";
+'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 function test() {
-	return "document" in global && "onreadystatechange" in global.document.createElement("script");
+	return 'document' in global && 'onreadystatechange' in global.document.createElement('script');
 }
 
 function install(handle) {
@@ -9,7 +12,7 @@ function install(handle) {
 
 		// Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
 		// into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
-		var scriptEl = global.document.createElement("script");
+		var scriptEl = global.document.createElement('script');
 
 		scriptEl.onreadystatechange = function () {
 			handle();
@@ -30,4 +33,5 @@ var stateChange = {
 	install: install
 };
 
-module.exports = stateChange;
+exports.default = stateChange;
+module.exports = exports.default;

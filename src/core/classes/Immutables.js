@@ -7,6 +7,8 @@ const IMMUTABLE_TAG = constants.IMMUTABLE_TAG;
 
 class ImmutableArray extends Array {
 	constructor() {
+		super();
+		
 		if (arguments[0] && arguments[0][IMMUTABLE_TAG]) {
 			return arguments[0];
 		}
@@ -18,9 +20,9 @@ class ImmutableArray extends Array {
 			clone = false;
 		}
 
-		if (clone && arguments.length == 1 && Array.isArray(arguments[0])) {
+		if (clone && arguments.length === 1 && Array.isArray(arguments[0])) {
 			array = arguments[0].slice(0);
-		} else if (!clone && arguments.length == 2 && Array.isArray(arguments[0])) {
+		} else if (!clone && arguments.length === 2 && Array.isArray(arguments[0])) {
 			array = arguments[0];
 		} else {
 			array = [];

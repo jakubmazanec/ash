@@ -1,5 +1,5 @@
-"use strict";
+'use strict';
 
-var ash = require("ash");
+var ash = require('ash');
 
-module.exports = new ash.Action("destroyCompleted");
+module.exports = new ash.Action('destroyCompleted');

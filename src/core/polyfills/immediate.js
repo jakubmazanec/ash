@@ -15,9 +15,9 @@ var queue = [];
 var draining;
 
 // named nextTick for less confusing stack traces
-function nextTick() {
+function next() {
 	var oldQueue;
-	var i;
+	let i;
 
 	draining = true;
 
@@ -35,12 +35,10 @@ function nextTick() {
 }
 
 var scheduleDrain;
-var i = -1;
-var len = types.length;
 
-while (++i < len) {
+for (let i = 0; i < types.length; i++) {
 	if (types[i] && types[i].test && types[i].test()) {
-		scheduleDrain = types[i].install(nextTick);
+		scheduleDrain = types[i].install(next);
 
 		break;
 	}

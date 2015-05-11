@@ -1,71 +1,80 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 
-var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var ash = _interopRequire(require("../ash"));
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var Display = _interopRequire(require("./Display"));
+var _ash = require('../ash');
+
+var _ash2 = _interopRequireDefault(_ash);
+
+var _Display = require('./Display');
+
+var _Display2 = _interopRequireDefault(_Display);
 
 var Timer = (function (_ash$Component) {
 	function Timer() {
-		this.state = { timerClicks: 0 };
-
 		_classCallCheck(this, Timer);
 
 		if (_ash$Component != null) {
 			_ash$Component.apply(this, arguments);
 		}
+
+		this.state = { timerClicks: 0 };
 	}
 
 	_inherits(Timer, _ash$Component);
 
-	_createClass(Timer, {
-		tick: {
-			/* jshint ignore:end */
+	_createClass(Timer, [{
+		key: 'tick',
 
-			value: function tick() {
-				console.log("timer tick!");
-				this.setState({ timerClicks: this.state.timerClicks + 1 });
-			}
-		},
-		onMount: {
-			value: function onMount() {}
-		},
-		onUnmount: {
-			value: function onUnmount() {}
-		},
-		onBeforeMount: {
-			value: function onBeforeMount() {}
-		},
-		render: {
+		/* jshint ignore:end */
 
-			/*shouldUpdate () {
-   	return false;
-   }*/
-
-			value: function render() {
-				return ash.e("div", null, [new Display({ timerClicks: this.state.timerClicks }), ash.e("button", {
-					style: {
-						color: this.state.timerClicks % 2 === 0 ? "red" : "blue"
-					},
-					events: {
-						click: this.tick
-					}
-				}, "+")]);
-			}
+		value: function tick() {
+			console.log('timer tick!');
+			this.setState({ timerClicks: this.state.timerClicks + 1 });
 		}
-	});
+	}, {
+		key: 'onMount',
+		value: function onMount() {}
+	}, {
+		key: 'onUnmount',
+		value: function onUnmount() {}
+	}, {
+		key: 'onBeforeMount',
+		value: function onBeforeMount() {}
+	}, {
+		key: 'render',
+
+		/*shouldUpdate () {
+  	return false;
+  }*/
+
+		value: function render() {
+			return _ash2.default.e('div', null, [new _Display2.default({ timerClicks: this.state.timerClicks }), _ash2.default.e('button', {
+				style: {
+					color: this.state.timerClicks % 2 === 0 ? 'red' : 'blue'
+				},
+				events: {
+					click: this.tick
+				}
+			}, '+')]);
+		}
+	}]);
 
 	return Timer;
-})(ash.Component);
+})(_ash2.default.Component);
 
-module.exports = ash.createElement(Timer);
+exports.default = _ash2.default.createElement(Timer);
+module.exports = exports.default;
 
 /* jshint ignore:start */
 

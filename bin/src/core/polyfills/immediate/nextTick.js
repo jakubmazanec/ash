@@ -1,5 +1,8 @@
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 function test() {
 	// Don't get fooled by e.g. browserify environments.
 	return process && !process.browser;
@@ -16,4 +19,5 @@ var nextTick = {
 	install: install
 };
 
-module.exports = nextTick;
+exports.default = nextTick;
+module.exports = exports.default;

@@ -1,5 +1,5 @@
-"use strict";
+'use strict';
 
-var ash = require("../src/index");
+var ash = require('../src/index');
 
 module.exports = ash;

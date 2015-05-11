@@ -1,19 +1,25 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var constants = _interopRequire(require("../internals/constants"));
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var _internalsConstants = require('../internals/constants');
+
+var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 
 // constants references
-var ASH_NODE = constants.ASH_NODE;
-var ASH_TEXT_NODE = constants.ASH_TEXT_NODE;
+var ASH_NODE = _internalsConstants2.default.ASH_NODE;
+var ASH_TEXT_NODE = _internalsConstants2.default.ASH_TEXT_NODE;
 
 var AshNode = function AshNode(tagName, properties) {
 	_classCallCheck(this, AshNode);
 
-	if (typeof properties !== "undefined") {
+	if (typeof properties !== 'undefined') {
 		this.type = ASH_NODE;
 		this.tagName = tagName.toLowerCase();
 		this.properties = properties || {};
@@ -34,4 +40,5 @@ var AshNode = function AshNode(tagName, properties) {
 	}
 };
 
-module.exports = AshNode;
+exports.default = AshNode;
+module.exports = exports.default;

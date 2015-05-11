@@ -1,39 +1,65 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 
-var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var createAshElementTree = _interopRequire(require("../DOM/createAshElementTree"));
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var isComponentAshElement = _interopRequire(require("../internals/isComponentAshElement"));
+var _DOMCreateAshElementTree = require('../DOM/createAshElementTree');
 
-var isAshNodeAshElement = _interopRequire(require("../internals/isAshNodeAshElement"));
+var _DOMCreateAshElementTree2 = _interopRequireDefault(_DOMCreateAshElementTree);
 
-var createAshNodeTree = _interopRequire(require("../DOM/createAshNodeTree"));
+var _internalsIsComponentAshElement = require('../internals/isComponentAshElement');
 
-var createNodeTree = _interopRequire(require("../DOM/createNodeTree"));
+var _internalsIsComponentAshElement2 = _interopRequireDefault(_internalsIsComponentAshElement);
 
-var diffAshNodeTree = _interopRequire(require("../DOM/diffAshNodeTree"));
+var _internalsIsAshNodeAshElement = require('../internals/isAshNodeAshElement');
 
-var patchNodeTree = _interopRequire(require("../DOM/patchNodeTree"));
+var _internalsIsAshNodeAshElement2 = _interopRequireDefault(_internalsIsAshNodeAshElement);
 
-var stringifyAshNodeTree = _interopRequire(require("../DOM/stringifyAshNodeTree"));
+var _DOMCreateAshNodeTree = require('../DOM/createAshNodeTree');
 
-var validateNodeTree = _interopRequire(require("../DOM/validateNodeTree"));
+var _DOMCreateAshNodeTree2 = _interopRequireDefault(_DOMCreateAshNodeTree);
 
-var constants = _interopRequire(require("../internals/constants"));
+var _DOMCreateNodeTree = require('../DOM/createNodeTree');
 
-var isElement = _interopRequire(require("../internals/isElement"));
+var _DOMCreateNodeTree2 = _interopRequireDefault(_DOMCreateNodeTree);
 
-var LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
-var LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
-var LIFECYCLE_UNMOUNTED = constants.LIFECYCLE_UNMOUNTED;
-var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
-var COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
-var ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
+var _DOMDiffAshNodeTree = require('../DOM/diffAshNodeTree');
+
+var _DOMDiffAshNodeTree2 = _interopRequireDefault(_DOMDiffAshNodeTree);
+
+var _DOMPatchNodeTree = require('../DOM/patchNodeTree');
+
+var _DOMPatchNodeTree2 = _interopRequireDefault(_DOMPatchNodeTree);
+
+var _DOMStringifyAshNodeTree = require('../DOM/stringifyAshNodeTree');
+
+var _DOMStringifyAshNodeTree2 = _interopRequireDefault(_DOMStringifyAshNodeTree);
+
+var _DOMValidateNodeTree = require('../DOM/validateNodeTree');
+
+var _DOMValidateNodeTree2 = _interopRequireDefault(_DOMValidateNodeTree);
+
+var _internalsConstants = require('../internals/constants');
+
+var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
+
+var _internalsIsElement = require('../internals/isElement');
+
+var _internalsIsElement2 = _interopRequireDefault(_internalsIsElement);
+
+var LIFECYCLE_MOUNTING = _internalsConstants2.default.LIFECYCLE_MOUNTING;
+var LIFECYCLE_MOUNTED = _internalsConstants2.default.LIFECYCLE_MOUNTED;
+var LIFECYCLE_UNMOUNTED = _internalsConstants2.default.LIFECYCLE_UNMOUNTED;
+var INDEX_ATTRIBUTE_NAME = _internalsConstants2.default.INDEX_ATTRIBUTE_NAME;
+var COMPONENT_ASH_ELEMENT = _internalsConstants2.default.COMPONENT_ASH_ELEMENT;
+var ASH_NODE_ASH_ELEMENT = _internalsConstants2.default.ASH_NODE_ASH_ELEMENT;
 
 var stageId = 0;
 var renderer;
@@ -46,18 +72,18 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 			// newAshElement must be added as a child...
 			if (newAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
-				createAshElementTree(newAshElement, stage);
+				_DOMCreateAshElementTree2.default(newAshElement, stage);
 
 				// replace the old
 				newAshElement.parent.children[newAshElement.order] = newAshElement;
 			} else if (newAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
-				createAshElementTree(newAshElement, stage);
+				_DOMCreateAshElementTree2.default(newAshElement, stage);
 
 				// replace the old
 				newAshElement.parent.children[0] = newAshElement;
 			}
-		} else if (oldAshElement.type === COMPONENT_ASH_ELEMENT && newAshElement.spec === oldAshElement.spec) {
+		} else if (oldAshElement.type === COMPONENT_ASH_ELEMENT && newAshElement.Spec === oldAshElement.Spec) {
 			// old is component, new is same component
 
 			if (oldAshElement.instance.shouldUpdate(newAshElement.args ? newAshElement.args[0] : null)) {
@@ -103,7 +129,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage);
+				_DOMCreateAshElementTree2.default(newAshElement, stage);
 
 				// replace the old
 				oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
@@ -113,7 +139,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage);
+				_DOMCreateAshElementTree2.default(newAshElement, stage);
 
 				// replace the old
 				oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
@@ -127,7 +153,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage);
+				_DOMCreateAshElementTree2.default(newAshElement, stage);
 
 				// replace the old
 				oldAshElement.parent.children[oldAshElement.order] = newAshElement;
@@ -136,7 +162,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage);
+				_DOMCreateAshElementTree2.default(newAshElement, stage);
 
 				// replace the old
 				oldAshElement.parent.children[0] = newAshElement;
@@ -149,13 +175,13 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 			// newAshElement must be added as a child...
 			if (newAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
-				createAshElementTree(newAshElement, stage);
+				_DOMCreateAshElementTree2.default(newAshElement, stage);
 
 				// replace the old
 				newAshElement.parent.children[0] = newAshElement;
 			} else if (newAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
 				// now, the component descriptor's tree is not complete
-				createAshElementTree(newAshElement, stage);
+				_DOMCreateAshElementTree2.default(newAshElement, stage);
 
 				// replace the old
 				newAshElement.parent.children[newAshElement.order] = newAshElement;
@@ -199,7 +225,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage);
+				_DOMCreateAshElementTree2.default(newAshElement, stage);
 
 				// replace the old
 				oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
@@ -209,7 +235,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stage) {
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
 				newAshElement.order = oldAshElement.order;
-				createAshElementTree(newAshElement, stage);
+				_DOMCreateAshElementTree2.default(newAshElement, stage);
 
 				// replace the old
 				oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
@@ -233,14 +259,14 @@ function updateComponentAshElement(componentAshElement, stage) {
 }
 
 function mountComponents(ashElement) {
-	if (isAshNodeAshElement(ashElement)) {
+	if (_internalsIsAshNodeAshElement2.default(ashElement)) {
 		for (var i = 0; i < ashElement.children.length; i++) {
 			if (ashElement.children[i]) {
 				// walk the child
 				mountComponents(ashElement.children[i]);
 			}
 		}
-	} else if (isComponentAshElement(ashElement)) {
+	} else if (_internalsIsComponentAshElement2.default(ashElement)) {
 		if (ashElement.instance && ashElement.instance.__lifecycle === LIFECYCLE_MOUNTING) {
 			ashElement.instance.__lifecycle = LIFECYCLE_MOUNTED;
 		}
@@ -254,7 +280,7 @@ function mountComponents(ashElement) {
 
 function getStageRootNode(stageId) {
 	for (var i = 0; i < this.stages[stageId].node.childNodes.length; i++) {
-		if (typeof this.stages[stageId].node.childNodes[i][INDEX_ATTRIBUTE_NAME] !== "undefined") {
+		if (typeof this.stages[stageId].node.childNodes[i][INDEX_ATTRIBUTE_NAME] !== 'undefined') {
 			return this.stages[stageId].node.childNodes[i];
 		}
 	}
@@ -273,15 +299,15 @@ function updateStage(stageId, component) {
 		this.stages[stageId].isDirty = true;
 		this.render();
 	} else if (this.stages[stageId] && this.stages[stageId].isUpdating) {
-		throw new Error("You cannot update components during previous update!");
+		throw new Error('You cannot update components during previous update!');
 	}
 }
 
 var Renderer = (function () {
 	function Renderer() {
-		this.stages = [];
-
 		_classCallCheck(this, Renderer);
+
+		this.stages = [];
 
 		if (renderer) {
 			return renderer;
@@ -296,155 +322,157 @@ var Renderer = (function () {
 		return renderer;
 	}
 
-	_createClass(Renderer, {
-		addComponent: {
-			value: function addComponent(componentAshElement, node) {
-				// type check
-				if (!isComponentAshElement(componentAshElement)) {
-					throw new Error(componentAshElement + " must be a Componenet Descriptor.");
-				}
-
-				if (!isElement(node)) {
-					throw new Error(node + " must be a DOM Element.");
-				}
-
-				this.stages.push({
-					id: stageId,
-					isRendering: false,
-					isDirty: true,
-					isUpdating: true,
-
-					node: node,
-					ashNodeTree: null,
-					ashElementTree: null,
-
-					getRootNode: getStageRootNode.bind(this, stageId),
-					update: updateStage.bind(this, stageId)
-				});
-
-				// create Ash Element tree for the Component Ash Element
-				this.stages[stageId].ashElementTree = createAshElementTree(componentAshElement, this.stages[stageId]);
-				stageId++;
-
-				// render
-				this.render();
-
-				return this;
+	_createClass(Renderer, [{
+		key: 'addComponent',
+		value: function addComponent(componentAshElement, node) {
+			// type check
+			if (!_internalsIsComponentAshElement2.default(componentAshElement)) {
+				throw new Error(componentAshElement + ' must be a Componenet Descriptor.');
 			}
-		},
-		componentToString: {
-			value: function componentToString(componentAshElement) {
-				// type check
-				if (!isComponentAshElement(componentAshElement)) {
-					throw new Error(componentAshElement + " must be a Componenet Descriptor.");
-				}
 
-				var stage = {
-					isRendering: false,
-					isDirty: true,
-					node: null,
-					ashNodeTree: null
-				};
-
-				// create Ash Element tree for the Component Ash Element
-				stage.ashElementTree = createAshElementTree(componentAshElement, stage);
-
-				// create ash node tree
-				stage.ashNodeTree = createAshNodeTree(stage.ashElementTree);
-
-				return stringifyAshNodeTree(stage.ashNodeTree);
+			if (!_internalsIsElement2.default(node)) {
+				throw new Error(node + ' must be a DOM Element.');
 			}
-		},
-		render: {
-			value: function render() {
-				var _this = this;
 
-				var isNodeTreeValid;
-				var isNodeTreeValidated;
-				var newAshNodeTree;
-				var patches;
+			this.stages.push({
+				id: stageId,
+				isRendering: false,
+				isDirty: true,
+				isUpdating: true,
 
-				for (var i = 0; i < this.stages.length; i++) {
-					(function (i) {
-						if (_this.stages[i].isDirty /* && !this.stages[i].isRendering*/) {
-							if (!_this.stages[i].ashNodeTree) {
-								isNodeTreeValid = false;
-								isNodeTreeValidated = false;
+				node: node,
+				ashNodeTree: null,
+				ashElementTree: null,
 
-								// remove child nodes which are not element nodes
-								for (var j = 0; j < _this.stages[i].node.childNodes.length; j++) {
-									if (_this.stages[i].node.childNodes[j].nodeType !== 1) {
-										_this.stages[i].node.removeChild(_this.stages[i].node.childNodes[j]);
-										j--;
-									}
-								}
+				getRootNode: getStageRootNode.bind(this, stageId),
+				update: updateStage.bind(this, stageId)
+			});
 
-								// create ash node tree
-								_this.stages[i].ashNodeTree = createAshNodeTree(_this.stages[i].ashElementTree);
+			// create Ash Element tree for the Component Ash Element
+			this.stages[stageId].ashElementTree = _DOMCreateAshElementTree2.default(componentAshElement, this.stages[stageId]);
+			stageId++;
 
-								// there are some element nodes?
-								if (_this.stages[i].node.childNodes.length) {
-									isNodeTreeValidated = true;
-									isNodeTreeValid = validateNodeTree(_this.stages[i].node.childNodes[0], _this.stages[i].ashNodeTree, _this.stages[i]);
-								}
+			// render
+			this.render();
 
-								// render to the Real DOM, if needed
-								if (!isNodeTreeValid || !isNodeTreeValidated) {
-									if (isNodeTreeValidated) {
-										console.warn("Existing html is invalid!");
-									}
+			return this;
+		}
+	}, {
+		key: 'componentToString',
+		value: function componentToString(componentAshElement) {
+			// type check
+			if (!_internalsIsComponentAshElement2.default(componentAshElement)) {
+				throw new Error(componentAshElement + ' must be a Componenet Descriptor.');
+			}
 
-									while (_this.stages[i].node.firstChild) {
-										_this.stages[i].node.removeChild(_this.stages[i].node.firstChild);
-									}
+			var stage = {
+				isRendering: false,
+				isDirty: true,
+				node: null,
+				ashNodeTree: null
+			};
 
-									_this.stages[i].isRendering = true;
+			// create Ash Element tree for the Component Ash Element
+			stage.ashElementTree = _DOMCreateAshElementTree2.default(componentAshElement, stage);
 
-									global.requestAnimationFrame(function (timestamp) {
-										_this.stages[i].node.appendChild(createNodeTree(_this.stages[i].ashNodeTree));
+			// create ash node tree
+			stage.ashNodeTree = _DOMCreateAshNodeTree2.default(stage.ashElementTree);
 
-										// mount components
-										mountComponents(_this.stages[i].ashElementTree);
+			return _DOMStringifyAshNodeTree2.default(stage.ashNodeTree);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var _this = this;
 
-										_this.stages[i].isRendering = false;
-									});
-								}if (isNodeTreeValid && isNodeTreeValidated) {
-									// mount components
-									mountComponents(_this.stages[i].ashElementTree);
-								}
-							} else {
-								newAshNodeTree = createAshNodeTree(_this.stages[i].ashElementTree);
-								patches = diffAshNodeTree(_this.stages[i].ashNodeTree, newAshNodeTree);
-								_this.stages[i].ashNodeTree = newAshNodeTree;
+			var isNodeTreeValid;
+			var isNodeTreeValidated;
+			var newAshNodeTree;
+			var patches;
 
-								_this.stages[i].isRendering = true;
+			var _loop = function (i) {
+				if (_this.stages[i].isDirty /* && !this.stages[i].isRendering*/) {
+					if (!_this.stages[i].ashNodeTree) {
+						isNodeTreeValid = false;
+						isNodeTreeValidated = false;
 
-								global.requestAnimationFrame(function (timestamp) {
-									var isSuccessful = patchNodeTree(_this.stages[i].getRootNode(), patches);
+						// remove child nodes which are not element nodes
+						for (var j = 0; j < _this.stages[i].node.childNodes.length; j++) {
+							if (_this.stages[i].node.childNodes[j].nodeType !== 1) {
+								_this.stages[i].node.removeChild(_this.stages[i].node.childNodes[j]);
+								j--;
+							}
+						}
 
-									if (!isSuccessful) {
-										throw new Error("Patching the DOM was unsuccesful!");
-									}
+						// create ash node tree
+						_this.stages[i].ashNodeTree = _DOMCreateAshNodeTree2.default(_this.stages[i].ashElementTree);
 
-									// mount components
-									mountComponents(_this.stages[i].ashElementTree);
+						// there are some element nodes?
+						if (_this.stages[i].node.childNodes.length) {
+							isNodeTreeValidated = true;
+							isNodeTreeValid = _DOMValidateNodeTree2.default(_this.stages[i].node.childNodes[0], _this.stages[i].ashNodeTree, _this.stages[i]);
+						}
 
-									_this.stages[i].isRendering = false;
-								});
+						// render to the Real DOM, if needed
+						if (!isNodeTreeValid || !isNodeTreeValidated) {
+							if (isNodeTreeValidated) {
+								console.warn('Existing html is invalid!');
 							}
 
-							_this.stages[i].isDirty = false;
-							_this.stages[i].isUpdating = false;
-						}
-					})(i);
-				}
+							while (_this.stages[i].node.firstChild) {
+								_this.stages[i].node.removeChild(_this.stages[i].node.firstChild);
+							}
 
-				return this;
+							_this.stages[i].isRendering = true;
+
+							global.requestAnimationFrame(function (timestamp) {
+								_this.stages[i].node.appendChild(_DOMCreateNodeTree2.default(_this.stages[i].ashNodeTree));
+
+								// mount components
+								mountComponents(_this.stages[i].ashElementTree);
+
+								_this.stages[i].isRendering = false;
+							});
+						}if (isNodeTreeValid && isNodeTreeValidated) {
+							// mount components
+							mountComponents(_this.stages[i].ashElementTree);
+						}
+					} else {
+						newAshNodeTree = _DOMCreateAshNodeTree2.default(_this.stages[i].ashElementTree);
+						patches = _DOMDiffAshNodeTree2.default(_this.stages[i].ashNodeTree, newAshNodeTree);
+						_this.stages[i].ashNodeTree = newAshNodeTree;
+
+						_this.stages[i].isRendering = true;
+
+						global.requestAnimationFrame(function (timestamp) {
+							var isSuccessful = _DOMPatchNodeTree2.default(_this.stages[i].getRootNode(), patches);
+
+							if (!isSuccessful) {
+								throw new Error('Patching the DOM was unsuccesful!');
+							}
+
+							// mount components
+							mountComponents(_this.stages[i].ashElementTree);
+
+							_this.stages[i].isRendering = false;
+						});
+					}
+
+					_this.stages[i].isDirty = false;
+					_this.stages[i].isUpdating = false;
+				}
+			};
+
+			for (var i = 0; i < this.stages.length; i++) {
+				_loop(i);
 			}
+
+			return this;
 		}
-	});
+	}]);
 
 	return Renderer;
 })();
 
-module.exports = Renderer;
+exports.default = Renderer;
+module.exports = exports.default;

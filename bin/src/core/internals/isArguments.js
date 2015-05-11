@@ -1,13 +1,21 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-var isLength = _interopRequire(require("./isLength"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var isObjectLike = _interopRequire(require("./isObjectLike"));
+var _isLength = require('./isLength');
+
+var _isLength2 = _interopRequireDefault(_isLength);
+
+var _isObjectLike = require('./isObjectLike');
+
+var _isObjectLike2 = _interopRequireDefault(_isObjectLike);
 
 /** `Object#toString` result references. */
-var ARGS_TAG = "[object Arguments]";
+var ARGS_TAG = '[object Arguments]';
 
 /**
  * Checks if `value` is classified as an `arguments` object.
@@ -26,8 +34,9 @@ var ARGS_TAG = "[object Arguments]";
  * // => false
  */
 function isArguments(value) {
-  var length = isObjectLike(value) ? value.length : undefined;
-  return isLength(length) && Object.prototype.toString.call(value) == ARGS_TAG || false;
+  var length = _isObjectLike2.default(value) ? value.length : undefined;
+  return _isLength2.default(length) && Object.prototype.toString.call(value) == ARGS_TAG || false;
 }
 
-module.exports = isArguments;
+exports.default = isArguments;
+module.exports = exports.default;

@@ -1,19 +1,27 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 
-var parseAshNodeIndex = _interopRequire(require("./parseAshNodeIndex"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var constants = _interopRequire(require("../internals/constants"));
+var _parseAshNodeIndex = require('./parseAshNodeIndex');
 
-var INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
+var _parseAshNodeIndex2 = _interopRequireDefault(_parseAshNodeIndex);
+
+var _internalsConstants = require('../internals/constants');
+
+var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
+
+var INDEX_ATTRIBUTE_NAME = _internalsConstants2.default.INDEX_ATTRIBUTE_NAME;
 
 function findNode(nodeTree, nodeIndex) {
-	var parsedAshNodeIndex = parseAshNodeIndex(nodeIndex);
+	var parsedAshNodeIndex = _parseAshNodeIndex2.default(nodeIndex);
 	var node = nodeTree;
 
 	if (!nodeTree) {
-		throw new Error(nodeTree + " cannot be falsy.");
+		throw new Error(nodeTree + ' cannot be falsy.');
 	}
 
 	if (parsedAshNodeIndex.length == 1) {
@@ -39,4 +47,5 @@ function findNode(nodeTree, nodeIndex) {
 	return false;
 }
 
-module.exports = findNode;
+exports.default = findNode;
+module.exports = exports.default;

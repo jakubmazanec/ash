@@ -1,8 +1,14 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-var isObjectLike = _interopRequire(require("./isObjectLike"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _isObjectLike = require('./isObjectLike');
+
+var _isObjectLike2 = _interopRequireDefault(_isObjectLike);
 
 /**
  * Checks if `value` is a DOM element.
@@ -21,7 +27,8 @@ var isObjectLike = _interopRequire(require("./isObjectLike"));
  * // => false
  */
 function isElement(value) {
-  return value && value.nodeType === 1 && isObjectLike(value) && Object.prototype.toString.call(value).indexOf("Element") > -1 || false;
+  return value && value.nodeType === 1 && _isObjectLike2.default(value) && Object.prototype.toString.call(value).indexOf('Element') > -1 || false;
 }
 
-module.exports = isElement;
+exports.default = isElement;
+module.exports = exports.default;
