@@ -813,9 +813,6 @@ body {
   padding: 0 1.4rem;
   font-size: 1rem;
   line-height: 1.4; }
-  body::after {
-    content: "";
-    content: 'hoj'; }
 
 body::before {
   display: none !important;

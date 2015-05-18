@@ -38,65 +38,6 @@ class Stream {
 		}
 	}
 
-	static from(fn, ...args) {
-		return new Stream().from(fn, ...args);
-	}
-
-	toString() {
-		return 'stream(' + this.value + ')';
-	}
-
-	from(fn, ...args) {
-		if (args.length) {
-			if (isFunction(fn)) {
-				this.fn = fn;
-			}
-
-			detachStreamDependencies(this);
-
-			for (let i = 0; i < args.length; i++) {
-				if (args[i] instanceof Stream) {
-					args[i].__listeners.push(this);
-					this.__dependencies.push(args[i]);
-				}
-			}
-
-			if (!this.isEndStream && this.__dependencies.length) {
-				let endStreams = [];
-
-				for (let i = 0; i < this.__dependencies.length; i++) {
-					endStreams.push(this.__dependencies[i].end);
-				}
-
-				this.endsOn(...endStreams);
-			}
-			
-			updateStream(this);
-			streamsQueue.update();
-		}
-
-		return this;
-	}
-
-	subscribe(fn) {
-		return Stream.from(fn, this);
-	}
-
-	endsOn(...endStreams) {
-		if (this.isEndStream) {
-			return this;
-		}
-
-		let endStream = new Stream({isEndStream: true});
-
-		detachStreamDependencies(this.end);
-		endStream.from(null, ...endStreams);
-		endStream.__listeners.push(this.end);
-		this.end.__dependencies.push(endStream);
-
-		return this;
-	}
-
 	get() {
 		return this.value;
 	}
@@ -106,6 +47,8 @@ class Stream {
 		if (value && value.then && isFunction(value.then)) {
 			value.then((result) => {
 				this.push(result);
+			}, (error) => {
+				this.push(error);
 			});
 
 			return this;
@@ -134,36 +77,104 @@ class Stream {
 		return this;
 	}
 
+	toString() {
+		return 'stream(' + this.value + ')';
+	}
+
+	static isStream(stream) {
+		return stream instanceof Stream;
+	}
+
+	from(arg, ...args) {
+		if (args.length) {
+			if (isFunction(arg)) {
+				this.fn = arg;
+			}
+
+			detachStreamDependencies(this);
+
+			for (let i = 0; i < args.length; i++) {
+				if (args[i] instanceof Stream) {
+					args[i].__listeners.push(this);
+					this.__dependencies.push(args[i]);
+				}
+			}
+
+			if (!this.isEndStream && this.__dependencies.length) {
+				let endStreams = [];
+
+				for (let i = 0; i < this.__dependencies.length; i++) {
+					endStreams.push(this.__dependencies[i].end);
+				}
+
+				this.endsOn(...endStreams);
+			}
+			
+			updateStream(this);
+			streamsQueue.update();
+		} else if (Array.isArray(arg)) {
+			for (let i = 0; i < arg.length; i++) {
+				this.push(arg[i]);
+			}
+		} else if (arg && arg.then && isFunction(arg.then)) {
+			this.push(arg);
+		}
+
+		return this;
+	}
+
+	static from(fn, ...args) {
+		return new Stream().from(fn, ...args);
+	}
+
+	subscribe(fn) {
+		return Stream.from(fn, this);
+	}
+
+	endsOn(...endStreams) {
+		if (this.isEndStream) {
+			return this;
+		}
+
+		let endStream = new Stream({isEndStream: true});
+
+		detachStreamDependencies(this.end);
+		endStream.from(null, ...endStreams);
+		endStream.__listeners.push(this.end);
+		this.end.__dependencies.push(endStream);
+
+		return this;
+	}
+
+	immediate() {
+		if (this.__dependenciesMet === false) {
+			this.__dependenciesMet = true;
+
+			updateStream(this);
+			streamsQueue.update();
+		}
+
+		return this;
+	}
+
 	map(fn) {
 		return Stream.from((stream) => {
 			stream.push(fn(this.get()));
 		}, this);
 	}
 
-	ap(stream1) {
-		return Stream.from((stream2) => {
-			stream2.push(this.get()(stream1.get()));
-		}, this, stream1);
+	static map(fn, stream) {
+		return stream.map(fn);
 	}
 
-	static transduce(xform, sourceStream) {
-		var xformResult = xform(new StreamTransformer());
-
-		return Stream.from((stream) => {
-			var result = xformResult['@@transducer/step'](undefined, sourceStream.get());
-
-			if (result && result['@@transducer/reduced'] === true) {
-				stream.end.push(true);
-
-				return result['@@transducer/value'];
-			}
-
-			return result;
-		}, sourceStream);
+	ap(stream) {
+		return Stream.from((self) => {
+			self.push(this.get()(stream.get()));
+		}, this, stream);
 	}
 
-	static isStream(stream) {
-		return stream instanceof Stream;
+	static ap(stream1, stream2) {
+		return stream1.ap(stream2);
 	}
 
 	reduce(fn, acc) {
@@ -181,22 +192,35 @@ class Stream {
 		return newStream;
 	}
 
-	static merge(stream1, stream2) {
-		return Stream
-			.from((stream, changed) => changed[0] ? changed[0].get() : stream1.hasValue ? stream1.get() : stream2.get(), stream1, stream2)
-			.immediate()
-			.endsOn(stream1.end, stream2.end);
+	static reduce(fn, acc, stream) {
+		return stream.reduce(fn, acc);
 	}
 
-	immediate() {
-		if (this.__dependenciesMet === false) {
-			this.__dependenciesMet = true;
-			updateStream(this);
+	merge(otherStream) {
+		return Stream
+			.from((stream, changed) => changed[0] ? changed[0].get() : this.hasValue ? this.get() : otherStream.get(), this, otherStream)
+			.immediate()
+			.endsOn(this.end, otherStream.end);
+	}
 
-			streamsQueue.update();
-		}
+	static merge(stream1, stream2) {
+		return stream1.merge(stream2);
+	}
 
-		return this;
+	static transduce(xform, sourceStream) {
+		var xformResult = xform(new StreamTransformer());
+
+		return Stream.from((stream) => {
+			var result = xformResult['@@transducer/step'](undefined, sourceStream.get());
+
+			if (result && result['@@transducer/reduced'] === true) {
+				stream.end.push(true);
+
+				return result['@@transducer/value'];
+			}
+
+			return result;
+		}, sourceStream);
 	}
 }
 

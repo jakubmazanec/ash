@@ -21,10 +21,6 @@ body
 	padding: 0 b(1);
 	
 	@include font-size(style(font-size));
-
-	@include after {
-		content: 'hoj';
-	}
 }
 
 @include json($__objects);

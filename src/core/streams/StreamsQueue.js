@@ -23,6 +23,10 @@ class StreamsQueue {
 		if (streamsQueue) {
 			return streamsQueue;
 		}
+
+		streamsQueue = this;
+
+		return this;
 	}
 
 	push(value) {

@@ -63,20 +63,63 @@ var Stream = (function () {
 	}
 
 	_createClass(Stream, [{
+		key: 'get',
+		value: function get() {
+			return this.value;
+		}
+	}, {
+		key: 'push',
+		value: function push(value) {
+			var _this = this;
+
+			// handle a Promise...
+			if (value && value.then && (0, _internalsIsFunction2.default)(value.then)) {
+				value.then(function (result) {
+					_this.push(result);
+				}, function (error) {
+					_this.push(error);
+				});
+
+				return this;
+			}
+
+			this.value = value;
+			this.hasValue = true;
+
+			if (!(0, _streamMethods.isInStream)(this)) {
+				streamsQueue.push(this);
+
+				if (!(0, _streamMethods.getInStream)()) {
+					streamsQueue.update();
+				}
+			} else {
+				for (var i = 0; i < this.__listeners.length; i++) {
+					if (this.__listeners[i].end === this) {
+						(0, _streamMethods.detachStreamDependencies)(this.__listeners[i]);
+						(0, _streamMethods.detachStreamDependencies)(this.__listeners[i].end);
+					} else {
+						this.__listeners[i].__updatedDependencies.push(this);
+					}
+				}
+			}
+
+			return this;
+		}
+	}, {
 		key: 'toString',
 		value: function toString() {
 			return 'stream(' + this.value + ')';
 		}
 	}, {
 		key: 'from',
-		value: function from(fn) {
+		value: function from(arg) {
 			for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
 				args[_key - 1] = arguments[_key];
 			}
 
 			if (args.length) {
-				if ((0, _internalsIsFunction2.default)(fn)) {
-					this.fn = fn;
+				if ((0, _internalsIsFunction2.default)(arg)) {
+					this.fn = arg;
 				}
 
 				(0, _streamMethods.detachStreamDependencies)(this);
@@ -100,6 +143,12 @@ var Stream = (function () {
 
 				(0, _streamMethods.updateStream)(this);
 				streamsQueue.update();
+			} else if (Array.isArray(arg)) {
+				for (var i = 0; i < arg.length; i++) {
+					this.push(arg[i]);
+				}
+			} else if (arg && arg.then && (0, _internalsIsFunction2.default)(arg.then)) {
+				this.push(arg);
 			}
 
 			return this;
@@ -130,42 +179,13 @@ var Stream = (function () {
 			return this;
 		}
 	}, {
-		key: 'get',
-		value: function get() {
-			return this.value;
-		}
-	}, {
-		key: 'push',
-		value: function push(value) {
-			var _this = this;
+		key: 'immediate',
+		value: function immediate() {
+			if (this.__dependenciesMet === false) {
+				this.__dependenciesMet = true;
 
-			// handle a Promise...
-			if (value && value.then && (0, _internalsIsFunction2.default)(value.then)) {
-				value.then(function (result) {
-					_this.push(result);
-				});
-
-				return this;
-			}
-
-			this.value = value;
-			this.hasValue = true;
-
-			if (!(0, _streamMethods.isInStream)(this)) {
-				streamsQueue.push(this);
-
-				if (!(0, _streamMethods.getInStream)()) {
-					streamsQueue.update();
-				}
-			} else {
-				for (var i = 0; i < this.__listeners.length; i++) {
-					if (this.__listeners[i].end === this) {
-						(0, _streamMethods.detachStreamDependencies)(this.__listeners[i]);
-						(0, _streamMethods.detachStreamDependencies)(this.__listeners[i].end);
-					} else {
-						this.__listeners[i].__updatedDependencies.push(this);
-					}
-				}
+				(0, _streamMethods.updateStream)(this);
+				streamsQueue.update();
 			}
 
 			return this;
@@ -181,12 +201,12 @@ var Stream = (function () {
 		}
 	}, {
 		key: 'ap',
-		value: function ap(stream1) {
+		value: function ap(stream) {
 			var _this3 = this;
 
-			return Stream.from(function (stream2) {
-				stream2.push(_this3.get()(stream1.get()));
-			}, this, stream1);
+			return Stream.from(function (self) {
+				self.push(_this3.get()(stream.get()));
+			}, this, stream);
 		}
 	}, {
 		key: 'reduce',
@@ -207,16 +227,13 @@ var Stream = (function () {
 			return newStream;
 		}
 	}, {
-		key: 'immediate',
-		value: function immediate() {
-			if (this.__dependenciesMet === false) {
-				this.__dependenciesMet = true;
-				(0, _streamMethods.updateStream)(this);
+		key: 'merge',
+		value: function merge(otherStream) {
+			var _this5 = this;
 
-				streamsQueue.update();
-			}
-
-			return this;
+			return Stream.from(function (stream, changed) {
+				return changed[0] ? changed[0].get() : _this5.hasValue ? _this5.get() : otherStream.get();
+			}, this, otherStream).immediate().endsOn(this.end, otherStream.end);
 		}
 	}, {
 		key: '__initializeProperties',
@@ -232,6 +249,11 @@ var Stream = (function () {
 			this.__dependenciesMet = false;
 		}
 	}], [{
+		key: 'isStream',
+		value: function isStream(stream) {
+			return stream instanceof Stream;
+		}
+	}, {
 		key: 'from',
 		value: function from(fn) {
 			var _ref2;
@@ -241,6 +263,26 @@ var Stream = (function () {
 			}
 
 			return (_ref2 = new Stream()).from.apply(_ref2, [fn].concat(args));
+		}
+	}, {
+		key: 'map',
+		value: function map(fn, stream) {
+			return stream.map(fn);
+		}
+	}, {
+		key: 'ap',
+		value: function ap(stream1, stream2) {
+			return stream1.ap(stream2);
+		}
+	}, {
+		key: 'reduce',
+		value: function reduce(fn, acc, stream) {
+			return stream.reduce(fn, acc);
+		}
+	}, {
+		key: 'merge',
+		value: function merge(stream1, stream2) {
+			return stream1.merge(stream2);
 		}
 	}, {
 		key: 'transduce',
@@ -258,18 +300,6 @@ var Stream = (function () {
 
 				return result;
 			}, sourceStream);
-		}
-	}, {
-		key: 'isStream',
-		value: function isStream(stream) {
-			return stream instanceof Stream;
-		}
-	}, {
-		key: 'merge',
-		value: function merge(stream1, stream2) {
-			return Stream.from(function (stream, changed) {
-				return changed[0] ? changed[0].get() : stream1.hasValue ? stream1.get() : stream2.get();
-			}, stream1, stream2).immediate().endsOn(stream1.end, stream2.end);
 		}
 	}]);
 

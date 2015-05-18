@@ -35,6 +35,10 @@ var StreamsQueue = (function () {
 		if (streamsQueue) {
 			return streamsQueue;
 		}
+
+		streamsQueue = this;
+
+		return this;
 	}
 
 	_createClass(StreamsQueue, [{

@@ -330,6 +330,20 @@ describe('ash.Stream', () => {
 		assert.deepEqual(result, [6, 8]);
 	});
 
+	describe('from static method', () => {
+		it('handles an array', () => {
+			var result = [];
+			var stream = ash.Stream.from([1]);
+			
+			ash.Stream.from(() => {
+				result.push(stream.get());
+			}, stream);
+			stream.from([2, undefined, 'foo']);
+
+			assert.deepEqual(result, [1, 2, undefined, 'foo']);
+		});
+	});
+
 	describe('ending a stream', () => {
 		it('works for streams without dependencies', () => {
 			var s = new ash.Stream({value: 1});

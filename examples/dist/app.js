@@ -2,12 +2,6 @@
 
 'use strict';
 
-var _inherits = require('babel-runtime/helpers/inherits').default;
-
-var _createClass = require('babel-runtime/helpers/create-class').default;
-
-var _classCallCheck = require('babel-runtime/helpers/class-call-check').default;
-
 var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default').default;
 
 var _jquery = require('jquery');
@@ -18,7 +12,7 @@ var _lodashFp = require('lodash-fp');
 
 var _lodashFp2 = _interopRequireDefault(_lodashFp);
 
-var _ash = require('./ash');
+var _ash = require('ash');
 
 var _ash2 = _interopRequireDefault(_ash);
 
@@ -30,85 +24,23 @@ var _rx = require('rx');
 
 var _rx2 = _interopRequireDefault(_rx);
 
-// global.$ = $;
-// global._ = _;
-// global.ash = ash;
-// global.flyd = flyd;
-// global.rx = rx;
-
-// var Renderer = global.Renderer = new ash.Renderer();
-
-console.log('ash.js start...');
-
-// var promise1 = new Promise((resolve) => {
-// 	setTimeout(() => {
-// 		resolve('promise 1 resolved!');
-// 	}, 2000);
-// });
-
-// var promise2 = new Promise((resolve) => {
-// 	setTimeout(() => {
-// 		resolve('promise 2 resolved!');
-// 	}, 4000);
-// });
-
-// var promise1 = 'no promise 1';
-// var promise2 = 'no promise 2';
-
-// var foo$ = flyd.stream();
-
-// console.log(foo$);
-
-// foo$(promise1);
-// foo$(promise2);
-
-// flyd.stream([foo$], function() {
-// 	console.log('Recieved response!', arguments);
-// 	console.log(foo$());
-// });
-
-// var foo$ = new ash.Stream();
-
-// console.log(foo$);
-
-// foo$.push(promise1);
-
-// foo$.push(promise2);
-
-// benchmark
-var MAX = 100000;
-
-var foo$ = new _ash2.default.Stream();
-
-console.log(foo$);
-
 // $('body').on('click', () => {
 // 	for (let i = 0; i < MAX + 1; i++) {
 // 		foo$.push(i);
 // 	}
 // });
 
-setTimeout(function () {
-	for (var i = 0; i < MAX + 1; i++) {
-		foo$.push(i);
-	}
-}, 1000);
+// setTimeout(() => {
+// 	for (let i = 0; i < MAX + 1; i++) {
+// 		foo$.push(i);
+// 	}
+// }, 1000);
 
-var bar$ = _ash2.default.Stream.from(function () {
-	if (foo$.get() >= MAX) {
-		console.log('ash Done!', MAX, foo$.get());
-	}
-}, foo$);
-
-console.log(bar$);
-
-function _ref(value, index) {
-	return _ash2.default.e(
-		'li',
-		{ key: '' + index },
-		'' + value
-	);
-}
+// var bar$ = ash.Stream.from(() => {
+// 	if (foo$.get() >= MAX) {
+// 		console.log('ash Done!', MAX, foo$.get());
+// 	}
+// }, foo$);
 
 // var testStream = new rx.ReplaySubject();
 
@@ -340,187 +272,58 @@ $('body').on('keydown', () => {
 	n2.end(true);
 });*/
 
-var List = (function (_ash$Component) {
-	function List() {
-		_classCallCheck(this, List);
+var _componentsApp = require('./components/App');
 
-		if (_ash$Component != null) {
-			_ash$Component.apply(this, arguments);
-		}
+var _componentsApp2 = _interopRequireDefault(_componentsApp);
 
-		this.state = { redOutline: false };
-		this.name = 'List';
-	}
+global.$ = _jquery2.default;
+global._ = _lodashFp2.default;
+global.ash = _ash2.default;
+global.flyd = _flyd2.default;
+global.rx = _rx2.default;
 
-	_inherits(List, _ash$Component);
+var Renderer = global.Renderer = new _ash2.default.Renderer();
 
-	_createClass(List, [{
-		key: 'render',
-		value: function render() {
-			return _ash2.default.e(
-				'ul',
-				{ style: {
-						outline: this.state.redOutline ? '1px solid red' : '1px solid blue'
-					} },
-				_ash2.default.e(
-					'button',
-					{ events: {
-							click: this.changeOutline
-						} },
-					'!!!'
-				),
-				this.props.map(_ref)
-			);
-		}
-	}, {
-		key: 'changeOutline',
-		value: function changeOutline() {
-			this.state.redOutline = !this.state.redOutline;
+console.log('ash.js start...');
 
-			this.isDirty = true;
-		}
-	}, {
-		key: 'onBeforeReceiveProps',
-		value: function onBeforeReceiveProps() {}
-	}]);
+// var promise1 = new Promise((resolve) => {
+// 	setTimeout(() => {
+// 		resolve('promise 1 resolved!');
+// 	}, 2000);
+// });
 
-	return List;
-})(_ash2.default.Component);
+// var promise2 = new Promise((resolve) => {
+// 	setTimeout(() => {
+// 		resolve('promise 2 resolved!');
+// 	}, 4000);
+// });
 
-var App = (function (_ash$Component2) {
-	function App() {
-		_classCallCheck(this, App);
+// var promise1 = 'no promise 1';
+// var promise2 = 'no promise 2';
 
-		if (_ash$Component2 != null) {
-			_ash$Component2.apply(this, arguments);
-		}
+// var foo$ = flyd.stream();
 
-		this.state = new _ash2.default.ImmutableObject({
-			list1: new _ash2.default.ImmutableArray(),
-			list2: new _ash2.default.ImmutableArray(),
-			redShadow: true
-		});
-		this.name = 'App';
-	}
+// console.log(foo$);
 
-	_inherits(App, _ash$Component2);
+// foo$(promise1);
+// foo$(promise2);
 
-	_createClass(App, [{
-		key: 'render',
-		value: function render() {
-			return _ash2.default.e(
-				'div',
-				null,
-				_ash2.default.e(
-					'div',
-					{ style: {
-							boxShadow: this.state.redShadow ? '2px 2px 5px red' : '2px 2px 5px blue'
-						} },
-					_ash2.default.e(
-						'button',
-						{ events: {
-								click: this.addToList1
-							} },
-						'+ list 1!'
-					),
-					_ash2.default.e(
-						'button',
-						{ events: {
-								click: this.addToList2
-							} },
-						'+ list 2!'
-					),
-					_ash2.default.e(
-						'button',
-						{ events: {
-								click: this.clearList1
-							} },
-						'+ clear 1!'
-					),
-					_ash2.default.e(
-						'button',
-						{ events: {
-								click: this.clearList2
-							} },
-						'+ clear 2!'
-					),
-					_ash2.default.e(
-						'button',
-						{ events: {
-								click: this.changeShadow
-							} },
-						'!!!'
-					)
-				),
-				_ash2.default.e(List, this.state.list1),
-				_ash2.default.e(List, this.state.list2)
-			);
-		}
-	}, {
-		key: 'onMount',
-		value: function onMount() {
-			console.log('App mounted!');
-		}
-	}, {
-		key: 'changeShadow',
-		value: function changeShadow() {
-			this.state = this.state.set('redShadow', !this.state.redShadow);
-			this.isDirty = true;
-		}
-	}, {
-		key: 'addToList1',
-		value: function addToList1() {
-			// console.log('App addToList1...');
+// flyd.stream([foo$], function() {
+// 	console.log('Recieved response!', arguments);
+// 	console.log(foo$());
+// });
 
-			var items = [];
+// var foo$ = new ash.Stream();
 
-			for (var i = 0; i < 5000; i++) {
-				items.push(Math.random().toFixed(1));
-			}
+// console.log(foo$);
 
-			this.state = this.state.merge({ list1: this.state.list1.concat(items) });
-			// this.state.list1 = this.state.list1.concat(items);
+// foo$.push(promise1);
 
-			this.isDirty = true;
-		}
-	}, {
-		key: 'addToList2',
-		value: function addToList2() {
-			var items = [];
+// foo$.push(promise2);
 
-			for (var i = 0; i < 5000; i++) {
-				items.push(Math.random().toFixed(1));
-			}
+// benchmark
+var MAX = 100000;
 
-			this.state = this.state.merge({ list2: this.state.list2.concat(items) });
-			// this.state.list2 = this.state.list2.concat(items);
+var foo$ = new _ash2.default.Stream();
 
-			this.isDirty = true;
-		}
-	}, {
-		key: 'clearList1',
-		value: function clearList1() {
-			this.state = this.state.merge({ list1: [] });
-			// this.state.list1 = [];
-			this.isDirty = true;
-		}
-	}, {
-		key: 'clearList2',
-		value: function clearList2() {
-			this.state = this.state.merge({ list2: [] });
-			// this.state.list2 = [];
-			this.isDirty = true;
-		}
-	}, {
-		key: 'randomFoo',
-		get: function () {
-			return Math.random();
-		}
-	}]);
-
-	return App;
-})(_ash2.default.Component);
-
-// Renderer.addComponent(<App />, global.document.querySelector('.page'));
-
-// console.log(<div>test</div>);
+Renderer.addComponent(_ash2.default.e(_componentsApp2.default, null), global.document.querySelector('.page'));
