@@ -14,7 +14,8 @@ class Component extends Observable {
 		super();
 
 		// autobind methods
-		var prototype = Object.getPrototypeOf(this);
+		let prototype = Object.getPrototypeOf(this);
+
 		Object.getOwnPropertyNames(prototype).forEach((value) => {
 			let descriptor = Object.getOwnPropertyDescriptor(prototype, value);
 
@@ -24,7 +25,7 @@ class Component extends Observable {
 		});
 
 		this.props = props;
-		this.state = this.state || {};
+		this.state = this.state || {}; // FIXME: should be just this.state = {};
 
 		this.__isDirty = false;
 		this.__previousLifecycle = LIFECYCLE_UNINITIALIZED;

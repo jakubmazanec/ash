@@ -9,9 +9,8 @@ import isAncestor from '../internals/isAncestor';
 const COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
 const ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
 
-function createElement(tagName/*, props, children*/) {
-	var props;
-	var children;
+function createElement(tagName, props/*, children...*/) {
+	var children = [];
 
 	if (typeof tagName !== 'string' && typeof tagName === 'function' && isAncestor(Component, tagName)) {
 		return new AshElement(COMPONENT_ASH_ELEMENT, tagName, arguments[1]);
@@ -57,13 +56,23 @@ function createElement(tagName/*, props, children*/) {
 		}
 	}*/
 
-	if (typeof arguments[1] !== 'object') {
-		props = null;
-	} else {
-		props = arguments[1];
+	for (let i = 2; i < arguments.length; i++) {
+		if (typeof arguments[i] === 'string') {
+			children.push(new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, arguments[i]));
+		} else if (isAshElement(arguments[i])) {
+			children.push(arguments[i]);
+		} else if (Array.isArray(arguments[i])) {
+			for (let j = 0; j < arguments[i].length; j++) {
+				if (typeof arguments[i][j] === 'string') {
+					children.push(new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, arguments[i][j]));
+				} else if (isAshElement(arguments[i][j])) {
+					children.push(arguments[i][j]);
+				}
+			}
+		}
 	}
 
-	if (!Array.isArray(arguments[2])) {
+	/*if (!Array.isArray(arguments[2])) {
 		children = [];
 
 		// children are not in an array, iterate over arguments...
@@ -87,7 +96,7 @@ function createElement(tagName/*, props, children*/) {
 				i--;
 			}
 		}
-	}
+	}*/
 
 	return new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, tagName, props, children);
 }

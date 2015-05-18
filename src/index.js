@@ -6,6 +6,7 @@ import Component from './core/classes/Component';
 import Renderer from './core/classes/Renderer';
 import Action from './core/classes/Action';
 import Store from './core/classes/Store';
+import Stream from './core/streams/Stream';
 
 import createElement from './core/internals/createElement';
 
@@ -34,6 +35,7 @@ assign(ash, {
 	'Renderer': Renderer,
 	'Action': Action,
 	'Store': Store,
+	'Stream': Stream,
 
 	'e': createElement,
 	'createElement': createElement,
@@ -41,19 +43,5 @@ assign(ash, {
 	'isImmutable': isImmutable,
 	'isAncestor': isAncestor
 });
-
-// load variables from css
-if (support.dom) {
-	var jsonString = global.getComputedStyle(global.document.body, '::before').content;
-	var removeQuotes = (s) => {
-		return s.replace(/^['"]+|\s+|\\|(;\s?})+|['"]$/g, '');
-	};
-
-	try {
-		ash.sass = JSON.parse(removeQuotes(jsonString));
-	} catch (error) {
-		ash.sass = {};
-	}
-}
 
 export default ash;

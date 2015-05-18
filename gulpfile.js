@@ -1,28 +1,22 @@
-var gulp = require('gulp');
-var util = require('gulp-util');
-var sass = require('gulp-ruby-sass');
-var prefix = require('gulp-autoprefixer');
-var livereload = require('gulp-livereload');
-var server = require('tiny-lr')();
-var browserify = require('browserify');
-var source = require('vinyl-source-stream');
-var nodemon = require('gulp-nodemon');
-var babel = require('gulp-babel');
-var uglify = require('gulp-uglify');
-var cache = require('gulp-cached');
+import gulp from 'gulp';
+import util from 'gulp-util';
+import sass from 'gulp-ruby-sass';
+import prefix from 'gulp-autoprefixer';
+// import livereload from 'gulp-livereload';
+// import server from 'tiny-lr';
+import browserify from 'browserify';
+import source from 'vinyl-source-stream';
+import nodemon from 'gulp-nodemon';
+import babel from 'gulp-babel';
+// import uglify from 'gulp-uglify';
+import cache from 'gulp-cached';
 
 // server app
-gulp.task('server', function () {
-	// nodemon({
-	// 	script: './bin/app/server.js',
-	// 	nodeArgs: ['--harmony'],
-	// 	watch: ['bin/app/**/*.js'],
-	// 	delay: 1
-	// });
+gulp.task('server', () => {
 	nodemon({
-		script: './bin/app/server.js',
+		script: './examples/dist/server.js',
 		// nodeArgs: ['--harmony_proxies'],
-		watch: ['bin/app/**/*.js'],
+		watch: ['examples/dist/**/*.js'],
 		execMap: {
 			js: 'iojs'
 		},
@@ -30,34 +24,32 @@ gulp.task('server', function () {
 	});
 });
 
-gulp.task('es6-app', function () {
-	return gulp.src('./app/**/*.js')
-		.pipe(cache('scripts-es6-app'))
+gulp.task('examples-scripts', () => {
+	return gulp.src('./examples/src/**/*.js')
+		.pipe(cache('examples-scripts'))
 		.pipe(babel())
-		.pipe(gulp.dest('bin/app'));
+		.pipe(gulp.dest('./examples/dist'));
 });
 
-gulp.task('es6-src', function () {
+gulp.task('ash-scripts', () => {
 	return gulp.src('./src/**/*.js')
-		.pipe(cache('scripts-es6-src'))
+		.pipe(cache('ash-scripts'))
 		.pipe(babel())
 		//.pipe(uglify())
-		.pipe(gulp.dest('bin/src'));
+		.pipe(gulp.dest('./dist'));
 });
 
-gulp.task('scripts', ['es6-app', 'es6-src'], function () {
-	return browserify('./bin/app/app.js')
+gulp.task('scripts', ['ash-scripts', 'examples-scripts'], () => {
+	return browserify('./examples/dist/app.js')
 		.bundle()
-		//.on('error', util.log)
 		.pipe(source('app.js'))
-		.pipe(gulp.dest('./public/js'))
-		.pipe(livereload(server));
+		.pipe(gulp.dest('./examples/public/js'));
 });
 
 
 // build styles
-gulp.task('styles', function () {
-	return sass('./assets/sass/app.scss', {
+gulp.task('styles', () => {
+	return sass('./examples/assets/sass/app.scss', {
 			precision: 8,
 			style: 'nested',
 			require: 'compass/import-once/activate',
@@ -69,29 +61,23 @@ gulp.task('styles', function () {
 			browsers: ['> 1%', 'last 2 versions'],
 			cascade: true
 		}))
-		.pipe(gulp.dest('./public/css'))
-		.pipe(livereload(server));
+		.pipe(gulp.dest('./examples/public/css'));
 });
 
 // builds fonts
-gulp.task('fonts', function () {
-	return gulp.src(['./assets/fonts/**/*'])
-		.pipe(gulp.dest('./public/fonts'));
-});
+// gulp.task('fonts', () => {
+// 	return gulp.src(['./assets/fonts/**/*'])
+// 		.pipe(gulp.dest('./public/fonts'));
+// });
 
 // watch
-gulp.task('default', ['scripts', 'styles', 'fonts'], function () {
-	// listen on port 35729
-	server.listen(35729, function (error) {
-		if (error) {
-			return console.log(error);
-		}
+gulp.task('default', ['scripts', 'styles'/*, 'fonts'*/], () => {
+	
 
 		// Watch .scss files
-		gulp.watch('./assets/sass/**/*.scss', ['styles']);
+		gulp.watch('./examples/assets/sass/**/*.scss', ['styles']);
 
 		// Watch .js files
-		gulp.watch(['./app/**/*.js', './src/**/*.js'], ['scripts']);
+		gulp.watch(['./examples/src/**/*.js', './src/**/*.js'], ['scripts']);
 
-	});
 });
