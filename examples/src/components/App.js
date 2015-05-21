@@ -1,6 +1,7 @@
 import ash from 'ash';
-
 import List from './List';
+
+
 
 export default class App extends ash.Component {
 	state = new ash.ImmutableObject({
@@ -38,7 +39,7 @@ export default class App extends ash.Component {
 	}
 
 	onMount() {
-		console.log('App mounted!');
+		// console.log('App mounted!');
 	}
 
 	changeShadow() {

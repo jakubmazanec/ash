@@ -1,28 +1,14 @@
 'use strict';
 
-var _inherits = require('babel-runtime/helpers/inherits').default;
-
-var _get = require('babel-runtime/helpers/get').default;
-
-var _createClass = require('babel-runtime/helpers/create-class').default;
-
-var _classCallCheck = require('babel-runtime/helpers/class-call-check').default;
-
-var _Object$defineProperty = require('babel-runtime/core-js/object/define-property').default;
-
-var _Object$getOwnPropertyNames = require('babel-runtime/core-js/object/get-own-property-names').default;
-
-var _Object$getOwnPropertyDescriptor = require('babel-runtime/core-js/object/get-own-property-descriptor').default;
-
-var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default').default;
-
-_Object$defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 
-var _Observable2 = require('./Observable');
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _Observable3 = _interopRequireDefault(_Observable2);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var _internalsIsAshNodeAshElement = require('../internals/isAshNodeAshElement');
 
@@ -45,7 +31,7 @@ var LIFECYCLE_MOUNTING = _internalsConstants2.default.LIFECYCLE_MOUNTING;
 var LIFECYCLE_MOUNTED = _internalsConstants2.default.LIFECYCLE_MOUNTED;
 var LIFECYCLE_UNINITIALIZED = _internalsConstants2.default.LIFECYCLE_UNINITIALIZED;
 
-var Component = (function (_Observable) {
+var Component = (function () {
 	function Component() {
 		var _this = this;
 
@@ -53,13 +39,13 @@ var Component = (function (_Observable) {
 
 		_classCallCheck(this, Component);
 
-		_get(Object.getPrototypeOf(Component.prototype), 'constructor', this).call(this);
+		this.state = {};
 
 		// autobind methods
 		var prototype = Object.getPrototypeOf(this);
 
-		_Object$getOwnPropertyNames(prototype).forEach(function (value) {
-			var descriptor = _Object$getOwnPropertyDescriptor(prototype, value);
+		Object.getOwnPropertyNames(prototype).forEach(function (value) {
+			var descriptor = Object.getOwnPropertyDescriptor(prototype, value);
 
 			if (!(descriptor && (typeof descriptor.get !== 'undefined' || typeof descriptor.set !== 'undefined')) && (0, _internalsIsFunction2.default)(_this[value]) && value !== 'constructor') {
 				_this[value] = _this[value].bind(_this);
@@ -67,14 +53,11 @@ var Component = (function (_Observable) {
 		});
 
 		this.props = props;
-		this.state = this.state || {}; // FIXME: should be just this.state = {};
 
 		this.__isDirty = false;
 		this.__previousLifecycle = LIFECYCLE_UNINITIALIZED;
 		this.__currentLifecycle = LIFECYCLE_UNMOUNTED;
 	}
-
-	_inherits(Component, _Observable);
 
 	_createClass(Component, [{
 		key: 'isDirty',
@@ -84,8 +67,8 @@ var Component = (function (_Observable) {
 		set: function (value) {
 			this.__isDirty = !!value;
 
-			if (this.__isDirty && this.__element.stage) {
-				this.__element.stage.update(this);
+			if (this.__isDirty && this.__element.stream) {
+				this.__element.stream.push(this);
 			}
 		}
 	}, {
@@ -120,7 +103,7 @@ var Component = (function (_Observable) {
 		key: 'domNode',
 		get: function () {
 			if (this.isMounted && (0, _internalsIsAshNodeAshElement2.default)(this.__element.children[0])) {
-				return (0, _DOMFindNode2.default)(this.__element.stage.getRootNode(), this.__element.children[0].instance.index);
+				return (0, _DOMFindNode2.default)(this.__element.stream.getRootNode(), this.__element.children[0].instance.id, this.__element.children[0].instance.indices);
 			}
 
 			return null;
@@ -150,7 +133,7 @@ var Component = (function (_Observable) {
 	}]);
 
 	return Component;
-})(_Observable3.default);
+})();
 
 exports.default = Component;
 module.exports = exports.default;

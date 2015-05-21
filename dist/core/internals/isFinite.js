@@ -1,14 +1,10 @@
 'use strict';
 
-var _Object$defineProperty = require('babel-runtime/core-js/object/define-property').default;
-
-var _Number$isFinite = require('babel-runtime/core-js/number/is-finite').default;
-
-var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default').default;
-
-_Object$defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, '__esModule', {
   value: true
 });
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _isNative = require('./isNative');
 
@@ -16,7 +12,7 @@ var _isNative2 = _interopRequireDefault(_isNative);
 
 /* Native method references for those with the same name as other `lodash` methods. */
 var nativeIsFinite = global.isFinite,
-    nativeNumIsFinite = (0, _isNative2.default)(nativeNumIsFinite = _Number$isFinite) && nativeNumIsFinite;
+    nativeNumIsFinite = (0, _isNative2.default)(nativeNumIsFinite = Number.isFinite) && nativeNumIsFinite;
 
 /**
  * Checks if `value` is a finite primitive number.

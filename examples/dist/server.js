@@ -1,12 +1,12 @@
 'use strict';
 
-var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default').default;
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _koa = require('koa');
 
 var _koa2 = _interopRequireDefault(_koa);
 
-var _ash = require('./ash');
+var _ash = require('ash');
 
 var _ash2 = _interopRequireDefault(_ash);
 
@@ -34,14 +34,13 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
+var _componentsApp = require('./components/App');
+
+var _componentsApp2 = _interopRequireDefault(_componentsApp);
+
 var app = (0, _koa2.default)();
-
-// import Display from './components/Display';
-// import Timer from './components/Timer';
-
-// var Renderer = new ash.Renderer();
-
-//var componentHtml = Renderer.componentToString(new Timer());
+var Renderer = new _ash2.default.Renderer();
+var componentHtml = Renderer.streamToString(_ash2.default.AshNodeStream.from(_ash2.default.e(_componentsApp2.default, null)));
 
 app.use((0, _koaLogger2.default)());
 

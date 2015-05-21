@@ -1,11 +1,8 @@
 'use strict';
 
-var _Object$defineProperty = require('babel-runtime/core-js/object/define-property').default;
-
-_Object$defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, '__esModule', {
 	value: true
 });
-
 var constants = {
 	// component lifecycle
 	LIFECYCLE_UNMOUNTED: 'Unmounted',
@@ -31,10 +28,10 @@ var constants = {
 	ASH_TEXT_NODE: 'Ash Text Node',
 
 	// misc
-	LEVEL_SEPARATOR: '.',
+	INDEX_SEPARATOR: '.',
+	ID_ATTRIBUTE_NAME: '__ash:id__',
 	INDEX_ATTRIBUTE_NAME: '__ash:index__',
-	ORDER_ATTRIBUTE_NAME: '__ash:order__',
-	STAGE_ATTRIBUTE_NAME: '__ash:stage__',
+	STREAM_ID_ATTRIBUTE_NAME: '__ash:stream__',
 
 	IMMUTABLE_TAG: '__ash:immutable__'
 };

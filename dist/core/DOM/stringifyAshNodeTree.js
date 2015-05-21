@@ -1,12 +1,11 @@
 'use strict';
 
-var _Object$defineProperty = require('babel-runtime/core-js/object/define-property').default;
-
-var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default').default;
-
-_Object$defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, '__esModule', {
 	value: true
 });
+exports.default = stringifyAshNodeTree;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _internalsIsAshNode = require('../internals/isAshNode');
 
@@ -16,12 +15,13 @@ var _internalsConstants = require('../internals/constants');
 
 var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 
+var ID_ATTRIBUTE_NAME = _internalsConstants2.default.ID_ATTRIBUTE_NAME;
 var INDEX_ATTRIBUTE_NAME = _internalsConstants2.default.INDEX_ATTRIBUTE_NAME;
-var ORDER_ATTRIBUTE_NAME = _internalsConstants2.default.ORDER_ATTRIBUTE_NAME;
-var LEVEL_SEPARATOR = _internalsConstants2.default.LEVEL_SEPARATOR;
+var INDEX_SEPARATOR = _internalsConstants2.default.INDEX_SEPARATOR;
 
-function escapeAttributeValue(s, preserveCR) {
-	preserveCR = preserveCR ? '&#13;' : '\n';
+function escapeAttributeValue(s /*, preserveCR*/) {
+	var preserveCR = arguments[1] ? '&#13;' : '\n';
+
 	return ('' + s).replace(/&/g, '&amp;') /* This MUST be the 1st replacement. */
 	.replace(/'/g, '&apos;') /* The 4 other predefined entities, required. */
 	.replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -34,32 +34,34 @@ function escapeAttributeValue(s, preserveCR) {
 	.replace(/[\r\n]/g, preserveCR);
 }
 
-function walkStringifyAshNodeTree(ashNodeTree, index /*, parentIndex*/) {
+function walkStringifyAshNodeTree(ashNodeTree, index /*, parentId*/) {
 	var html = '';
 	var openingTag = '<';
 	var closingTag = '';
 	var content = '';
-	var parentIndex = arguments[2];
-	var i, key1, key2;
+	var parentId = arguments[2];
+	var i;
+	var key1;
+	var key2;
 
 	if ((0, _internalsIsAshNode2.default)(ashNodeTree)) {
 		openingTag += ashNodeTree.tagName;
 		closingTag = '</' + ashNodeTree.tagName + '>';
 
-		if (parentIndex) {
-			openingTag += ' ' + INDEX_ATTRIBUTE_NAME + '="' + parentIndex + LEVEL_SEPARATOR + index + '"';
-			openingTag += ' ' + ORDER_ATTRIBUTE_NAME + '="' + index + '"';
-			parentIndex = parentIndex + LEVEL_SEPARATOR + index;
-		} else {
+		if (parentId) {
+			openingTag += ' ' + ID_ATTRIBUTE_NAME + '="' + parentId + INDEX_SEPARATOR + index + '"';
 			openingTag += ' ' + INDEX_ATTRIBUTE_NAME + '="' + index + '"';
-			openingTag += ' ' + ORDER_ATTRIBUTE_NAME + '="' + index + '"';
-			parentIndex = '' + index;
+			parentId = parentId + INDEX_SEPARATOR + index;
+		} else {
+			openingTag += ' ' + ID_ATTRIBUTE_NAME + '="' + index + '"';
+			openingTag += ' ' + INDEX_ATTRIBUTE_NAME + '="' + index + '"';
+			parentId = '' + index;
 		}
 
 		if (ashNodeTree.properties) {
 			for (key1 in ashNodeTree.properties) {
-				if (ashNodeTree.properties.hasOwnProperty(key1) && key1 != 'events') {
-					if (key1 == 'style') {
+				if (ashNodeTree.properties.hasOwnProperty(key1) && key1 !== 'events') {
+					if (key1 === 'style') {
 						openingTag += ' style="';
 
 						// add style definitions
@@ -74,7 +76,7 @@ function walkStringifyAshNodeTree(ashNodeTree, index /*, parentIndex*/) {
 						openingTag += '"';
 					} else {
 						if (typeof ashNodeTree.properties[key1] === 'string') {
-							if (key1.toLowerCase() == 'classname') {
+							if (key1.toLowerCase() === 'classname') {
 								openingTag += ' class="' + escapeAttributeValue(ashNodeTree.properties[key1]) + '"';
 							} else {
 								openingTag += ' ' + key1 + '="' + escapeAttributeValue(ashNodeTree.properties[key1]) + '"';
@@ -93,7 +95,7 @@ function walkStringifyAshNodeTree(ashNodeTree, index /*, parentIndex*/) {
 
 		if (ashNodeTree.children && ashNodeTree.children.length) {
 			for (i = 0; i < ashNodeTree.children.length; i++) {
-				content += walkStringifyAshNodeTree(ashNodeTree.children[i], i, parentIndex);
+				content += walkStringifyAshNodeTree(ashNodeTree.children[i], i, parentId);
 			}
 		}
 
@@ -109,7 +111,6 @@ function stringifyAshNodeTree(ashNodeTree) {
 	return walkStringifyAshNodeTree(ashNodeTree, 0, '');
 }
 
-exports.default = stringifyAshNodeTree;
 module.exports = exports.default;
 /* Forces the conversion to string. */
 

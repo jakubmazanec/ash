@@ -1,18 +1,15 @@
 'use strict';
 
-var _Object$defineProperty = require('babel-runtime/core-js/object/define-property').default;
-
-var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default').default;
-
-_Object$defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, '__esModule', {
 	value: true
 });
+exports.default = createAshElementTree;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _internalsIsAshElement = require('../internals/isAshElement');
 
 var _internalsIsAshElement2 = _interopRequireDefault(_internalsIsAshElement);
-
-//import isString from '../internals/isString';
 
 var _internalsIsComponentAshElement = require('../internals/isComponentAshElement');
 
@@ -26,10 +23,9 @@ var _internalsConstants = require('../internals/constants');
 
 var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 
-//const LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
 var LIFECYCLE_MOUNTING = _internalsConstants2.default.LIFECYCLE_MOUNTING;
 
-function walkCreateAshElementTree(ashElement, owner, order) {
+function walkCreateAshElementTree(ashElement, owner, index) {
 	// type check
 	if (!(0, _internalsIsComponentAshElement2.default)(owner)) {
 		throw new Error(owner + ' must be a Component type AshElement Object');
@@ -40,11 +36,11 @@ function walkCreateAshElementTree(ashElement, owner, order) {
 		ashElement.instantiate();
 
 		// set up ordering properties
-		ashElement.order = order;
+		ashElement.index = index;
 
-		// set up owner & stage
+		// set up owner & stream
 		ashElement.owner = owner;
-		ashElement.stage = owner.stage;
+		ashElement.stream = owner.stream;
 
 		for (var i = 0; i < ashElement.children.length; i++) {
 			if (ashElement.children[i]) {
@@ -60,11 +56,11 @@ function walkCreateAshElementTree(ashElement, owner, order) {
 		ashElement.instantiate();
 
 		// set up ordering properties
-		ashElement.order = order;
+		ashElement.index = index;
 
 		// set up owner
 		ashElement.owner = owner;
-		ashElement.stage = owner.stage;
+		ashElement.stream = owner.stream;
 
 		// create child by rendering component
 		ashElement.instance.__lifecycle = LIFECYCLE_MOUNTING;
@@ -80,19 +76,19 @@ function walkCreateAshElementTree(ashElement, owner, order) {
 	}
 }
 
-function createAshElementTree(rootAshElement, stage /*, startingLevel*/) {
+function createAshElementTree(rootAshElement, stream /*, startingLevel*/) {
 	// type check
 	if (!(0, _internalsIsAshElement2.default)(rootAshElement)) {
 		throw new Error(rootAshElement + ' must be a AshElement object.');
 	}
 
-	if (!stage) {
-		throw new Error(stage + ' must be an object.');
+	if (!stream) {
+		throw new Error(stream + ' must be an object.');
 	}
 
 	var ashElementTree = rootAshElement;
 
-	ashElementTree.stage = stage;
+	ashElementTree.stream = stream;
 	ashElementTree.isRoot = true;
 
 	if ((0, _internalsIsComponentAshElement2.default)(ashElementTree)) {
@@ -100,7 +96,7 @@ function createAshElementTree(rootAshElement, stage /*, startingLevel*/) {
 		ashElementTree.instantiate();
 
 		// set up ordering properties
-		ashElementTree.order = typeof ashElementTree.order === 'undefined' ? 0 : ashElementTree.order;
+		ashElementTree.index = typeof ashElementTree.index === 'undefined' ? 0 : ashElementTree.index;
 
 		// create child by rendering component
 		ashElementTree.instance.__lifecycle = LIFECYCLE_MOUNTING;
@@ -118,7 +114,7 @@ function createAshElementTree(rootAshElement, stage /*, startingLevel*/) {
 		ashElementTree.instantiate();
 
 		// set up ordering properties
-		ashElementTree.order = typeof ashElementTree.order === 'undefined' ? 0 : ashElementTree.order;
+		ashElementTree.index = typeof ashElementTree.index === 'undefined' ? 0 : ashElementTree.index;
 
 		for (var i = 0; i < ashElementTree.children.length; i++) {
 			// set up a parent
@@ -133,5 +129,4 @@ function createAshElementTree(rootAshElement, stage /*, startingLevel*/) {
 	return ashElementTree;
 }
 
-exports.default = createAshElementTree;
 module.exports = exports.default;

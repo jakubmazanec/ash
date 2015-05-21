@@ -1,22 +1,18 @@
 'use strict';
 
-var _inherits = require('babel-runtime/helpers/inherits').default;
-
-var _get = require('babel-runtime/helpers/get').default;
-
-var _createClass = require('babel-runtime/helpers/create-class').default;
-
-var _classCallCheck = require('babel-runtime/helpers/class-call-check').default;
-
-var _Object$defineProperty = require('babel-runtime/core-js/object/define-property').default;
-
-var _Object$freeze = require('babel-runtime/core-js/object/freeze').default;
-
-var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default').default;
-
-_Object$defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, '__esModule', {
 	value: true
 });
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
 var _internalsIsFinite = require('../internals/isFinite');
 
@@ -46,7 +42,7 @@ var ImmutableArray = (function (_Array) {
 			return arguments[0];
 		}
 
-		var array;
+		var array = undefined;
 		var clone = true;
 
 		if (arguments.length >= 2 && (arguments[arguments.length - 1] !== null && typeof arguments[arguments.length - 1] === 'object') && arguments[arguments.length - 1].clone === false) {
@@ -75,7 +71,7 @@ var ImmutableArray = (function (_Array) {
 		array.__proto__ = ImmutableArray.prototype;
 
 		// immutable tag
-		_Object$defineProperty(array, IMMUTABLE_TAG, {
+		Object.defineProperty(array, IMMUTABLE_TAG, {
 			enumerable: false,
 			configurable: false,
 			writable: false,
@@ -83,7 +79,7 @@ var ImmutableArray = (function (_Array) {
 		});
 
 		// freeze the array
-		_Object$freeze(array);
+		Object.freeze(array);
 
 		return array;
 	}
@@ -172,7 +168,7 @@ var ImmutableArray = (function (_Array) {
 })(Array);
 
 var ImmutableObject = (function () {
-	function ImmutableObject(value, options) {
+	function ImmutableObject(value /*, options*/) {
 		_classCallCheck(this, ImmutableObject);
 
 		if (value && value[IMMUTABLE_TAG]) {
@@ -192,7 +188,7 @@ var ImmutableObject = (function () {
 		}
 
 		// immutable tag
-		_Object$defineProperty(this, IMMUTABLE_TAG, {
+		Object.defineProperty(this, IMMUTABLE_TAG, {
 			enumerable: false,
 			configurable: false,
 			writable: false,
@@ -200,7 +196,7 @@ var ImmutableObject = (function () {
 		});
 
 		// freeze the object
-		_Object$freeze(this);
+		Object.freeze(this);
 
 		return this;
 	}

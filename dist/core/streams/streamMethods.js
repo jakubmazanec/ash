@@ -1,17 +1,14 @@
 'use strict';
 
-var _Object$defineProperty = require('babel-runtime/core-js/object/define-property').default;
-
-var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default').default;
-
-_Object$defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, '__esModule', {
 	value: true
 });
-
 exports.isInStream = isInStream;
 exports.getInStream = getInStream;
 exports.updateStream = updateStream;
 exports.detachStreamDependencies = detachStreamDependencies;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _internalsIsFunction = require('../internals/isFunction');
 
@@ -46,7 +43,7 @@ function updateStream(stream) {
 
 	inStream = stream;
 
-	var newValue = (0, _internalsIsFunction2.default)(stream.fn) ? stream.fn(stream, stream.__updatedDependencies) : undefined;
+	var newValue = (0, _internalsIsFunction2.default)(stream.fn) ? stream.fn(stream, stream.__updatedDependencies, stream.__dependencies) : undefined;
 
 	if (newValue !== undefined) {
 		stream.push(newValue);

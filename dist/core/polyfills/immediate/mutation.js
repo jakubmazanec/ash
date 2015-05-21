@@ -1,11 +1,8 @@
 'use strict';
 
-var _Object$defineProperty = require('babel-runtime/core-js/object/define-property').default;
-
-_Object$defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, '__esModule', {
 	value: true
 });
-
 //based off rsvp https://github.com/tildeio/rsvp.js
 //license https://github.com/tildeio/rsvp.js/blob/master/LICENSE
 //https://github.com/tildeio/rsvp.js/blob/master/lib/rsvp/asap.js

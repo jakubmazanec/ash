@@ -1,12 +1,11 @@
 'use strict';
 
-var _Object$defineProperty = require('babel-runtime/core-js/object/define-property').default;
-
-var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default').default;
-
-_Object$defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, '__esModule', {
 	value: true
 });
+exports.default = validateNodeTree;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _classesEventListener = require('../classes/EventListener');
 
@@ -16,24 +15,24 @@ var _internalsConstants = require('../internals/constants');
 
 var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 
+var ID_ATTRIBUTE_NAME = _internalsConstants2.default.ID_ATTRIBUTE_NAME;
 var INDEX_ATTRIBUTE_NAME = _internalsConstants2.default.INDEX_ATTRIBUTE_NAME;
-var ORDER_ATTRIBUTE_NAME = _internalsConstants2.default.ORDER_ATTRIBUTE_NAME;
-var STAGE_ATTRIBUTE_NAME = _internalsConstants2.default.STAGE_ATTRIBUTE_NAME;
+var STREAM_ID_ATTRIBUTE_NAME = _internalsConstants2.default.STREAM_ID_ATTRIBUTE_NAME;
 
 var eventListener = new _classesEventListener2.default();
 
-function walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache) {
+function walkValidateNodeTree(nodeTree, ashNodeTree, streamId, eventsCache) {
 	if (nodeTree.tagName && nodeTree.tagName.toLowerCase() !== ashNodeTree.tagName) {
 		return false;
 	}
 
-	if (nodeTree.getAttribute && nodeTree.getAttribute(INDEX_ATTRIBUTE_NAME) != ashNodeTree.index || nodeTree.getAttribute && nodeTree.getAttribute(ORDER_ATTRIBUTE_NAME) != ashNodeTree.order) {
+	if (nodeTree.getAttribute && nodeTree.getAttribute(ID_ATTRIBUTE_NAME) !== ashNodeTree.id || nodeTree.getAttribute && nodeTree.getAttribute(INDEX_ATTRIBUTE_NAME) >> 0 !== ashNodeTree.index) {
 		return false;
 	}
 
+	nodeTree[ID_ATTRIBUTE_NAME] = ashNodeTree.id;
 	nodeTree[INDEX_ATTRIBUTE_NAME] = ashNodeTree.index;
-	nodeTree[ORDER_ATTRIBUTE_NAME] = ashNodeTree.order;
-	nodeTree[STAGE_ATTRIBUTE_NAME] = ashNodeTree.stage;
+	nodeTree[STREAM_ID_ATTRIBUTE_NAME] = ashNodeTree.streamId;
 
 	if (ashNodeTree.properties && ashNodeTree.properties.events && typeof ashNodeTree.properties.events === 'object') {
 		eventsCache.push({
@@ -42,13 +41,15 @@ function walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache) {
 		});
 	}
 
-	if (nodeTree.childNodes.length && (!ashNodeTree.children || !ashNodeTree.children.length) || !nodeTree.childNodes.length && (ashNodeTree.children && ashNodeTree.children.length) || ashNodeTree.children && nodeTree.childNodes.length != ashNodeTree.children.length) {
+	if (nodeTree.childNodes.length && (!ashNodeTree.children || !ashNodeTree.children.length) || !nodeTree.childNodes.length && (ashNodeTree.children && ashNodeTree.children.length) || ashNodeTree.children && nodeTree.childNodes.length !== ashNodeTree.children.length) {
+
+		console.log('oj');
 		return false;
 	}
 
 	if (ashNodeTree.children && ashNodeTree.children.length) {
 		for (var i = 0; i < ashNodeTree.children.length; i++) {
-			if (!walkValidateNodeTree(nodeTree.childNodes[i], ashNodeTree.children[i], stage, eventsCache)) {
+			if (!walkValidateNodeTree(nodeTree.childNodes[i], ashNodeTree.children[i], streamId, eventsCache)) {
 				return false;
 			}
 		}
@@ -57,9 +58,9 @@ function walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache) {
 	return true;
 }
 
-function validateNodeTree(nodeTree, ashNodeTree, stage) {
+function validateNodeTree(nodeTree, ashNodeTree, streamId) {
 	var eventsCache = [];
-	var isNodeTreeValid = walkValidateNodeTree(nodeTree, ashNodeTree, stage, eventsCache);
+	var isNodeTreeValid = walkValidateNodeTree(nodeTree, ashNodeTree, streamId, eventsCache);
 
 	if (isNodeTreeValid) {
 		for (var i = 0; i < eventsCache.length; i++) {
@@ -70,5 +71,4 @@ function validateNodeTree(nodeTree, ashNodeTree, stage) {
 	return isNodeTreeValid;
 }
 
-exports.default = validateNodeTree;
 module.exports = exports.default;

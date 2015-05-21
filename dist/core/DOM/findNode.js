@@ -1,47 +1,44 @@
 'use strict';
 
-var _Object$defineProperty = require('babel-runtime/core-js/object/define-property').default;
-
-var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default').default;
-
-_Object$defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, '__esModule', {
 	value: true
 });
+exports.default = findNode;
 
-var _parseAshNodeIndex = require('./parseAshNodeIndex');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _parseAshNodeIndex2 = _interopRequireDefault(_parseAshNodeIndex);
+// import parseAshNodeIndex from './parseAshNodeIndex';
 
 var _internalsConstants = require('../internals/constants');
 
 var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 
-var INDEX_ATTRIBUTE_NAME = _internalsConstants2.default.INDEX_ATTRIBUTE_NAME;
+var ID_ATTRIBUTE_NAME = _internalsConstants2.default.ID_ATTRIBUTE_NAME;
 
-function findNode(nodeTree, nodeIndex) {
-	var parsedAshNodeIndex = (0, _parseAshNodeIndex2.default)(nodeIndex);
+function findNode(nodeTree, nodeId, ashNodeIndices) {
+	// var ashNodeIndices = parseAshNodeIndex(nodeId);
 	var node = nodeTree;
 
 	if (!nodeTree) {
 		throw new Error(nodeTree + ' cannot be falsy.');
 	}
 
-	if (parsedAshNodeIndex.length == 1) {
+	if (ashNodeIndices.length === 1) {
 		return node;
 	} else {
-		for (var i = 1, _length = parsedAshNodeIndex.length - 1; i < _length; i++) {
+		for (var i = 1, _length = ashNodeIndices.length - 1; i < _length; i++) {
 			if (!node) {
 				return false;
 			}
 
-			node = node.childNodes[parsedAshNodeIndex[i]];
+			node = node.childNodes[ashNodeIndices[i]];
 		}
 	}
 
 	for (var i = 0, _length2 = node.childNodes.length; i < _length2; i++) {
-		if (node.childNodes[i].nodeType == 1 && node.childNodes[i][INDEX_ATTRIBUTE_NAME] == nodeIndex) {
+		if (node.childNodes[i].nodeType === 1 && node.childNodes[i][ID_ATTRIBUTE_NAME] === nodeId) {
 			return node.childNodes[i];
-		} else if (node.childNodes[i].nodeType == 3 && i == parsedAshNodeIndex[parsedAshNodeIndex.length - 1]) {
+		} else if (node.childNodes[i].nodeType === 3 && i === ashNodeIndices[ashNodeIndices.length - 1]) {
 			return node.childNodes[i];
 		}
 	}
@@ -49,5 +46,4 @@ function findNode(nodeTree, nodeIndex) {
 	return false;
 }
 
-exports.default = findNode;
 module.exports = exports.default;

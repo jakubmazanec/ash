@@ -1,12 +1,10 @@
 'use strict';
 
-var _Object$defineProperty = require('babel-runtime/core-js/object/define-property').default;
-
-var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default').default;
-
-_Object$defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, '__esModule', {
 	value: true
 });
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _internalsIsAshTextNode = require('../internals/isAshTextNode');
 
@@ -20,9 +18,9 @@ var _internalsConstants = require('../internals/constants');
 
 var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 
+var ID_ATTRIBUTE_NAME = _internalsConstants2.default.ID_ATTRIBUTE_NAME;
 var INDEX_ATTRIBUTE_NAME = _internalsConstants2.default.INDEX_ATTRIBUTE_NAME;
-var ORDER_ATTRIBUTE_NAME = _internalsConstants2.default.ORDER_ATTRIBUTE_NAME;
-var STAGE_ATTRIBUTE_NAME = _internalsConstants2.default.STAGE_ATTRIBUTE_NAME;
+var STREAM_ID_ATTRIBUTE_NAME = _internalsConstants2.default.STREAM_ID_ATTRIBUTE_NAME;
 
 function createNodeTree(ashNodeTree) {
 	var nodeTree;
@@ -30,9 +28,9 @@ function createNodeTree(ashNodeTree) {
 
 	if ((0, _internalsIsAshTextNode2.default)(ashNodeTree)) {
 		nodeTree = global.document.createTextNode(ashNodeTree.text);
+		nodeTree[ID_ATTRIBUTE_NAME] = ashNodeTree.id;
 		nodeTree[INDEX_ATTRIBUTE_NAME] = ashNodeTree.index;
-		nodeTree[ORDER_ATTRIBUTE_NAME] = ashNodeTree.order;
-		nodeTree[STAGE_ATTRIBUTE_NAME] = ashNodeTree.stage;
+		nodeTree[STREAM_ID_ATTRIBUTE_NAME] = ashNodeTree.streamId;
 
 		return nodeTree;
 	}
@@ -45,12 +43,13 @@ function createNodeTree(ashNodeTree) {
 	}
 
 	// set properties
+	nodeTree[ID_ATTRIBUTE_NAME] = ashNodeTree.id;
 	nodeTree[INDEX_ATTRIBUTE_NAME] = ashNodeTree.index;
-	nodeTree[ORDER_ATTRIBUTE_NAME] = ashNodeTree.order;
-	nodeTree[STAGE_ATTRIBUTE_NAME] = ashNodeTree.stage;
+	nodeTree[STREAM_ID_ATTRIBUTE_NAME] = ashNodeTree.streamId;
+
 	(0, _setNodeProperties2.default)(nodeTree, ashNodeTree.properties, true);
+	// $(nodeTree).attr('nodeId', nodeTree[ID_ATTRIBUTE_NAME]/* + ' - ' + ashNodeTree.key*/);
 	//$(nodeTree).attr('index', nodeTree[INDEX_ATTRIBUTE_NAME]/* + ' - ' + ashNodeTree.key*/);
-	//$(nodeTree).attr('order', nodeTree[ORDER_ATTRIBUTE_NAME]/* + ' - ' + ashNodeTree.key*/);
 
 	for (var i = 0; i < ashNodeTree.children.length; i++) {
 		child = createNodeTree(ashNodeTree.children[i]);

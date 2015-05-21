@@ -1,24 +1,22 @@
 'use strict';
 
-var _createClass = require('babel-runtime/helpers/create-class').default;
-
-var _classCallCheck = require('babel-runtime/helpers/class-call-check').default;
-
-var _Object$defineProperty = require('babel-runtime/core-js/object/define-property').default;
-
-var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default').default;
-
-_Object$defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, '__esModule', {
 	value: true
 });
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var _internalsConstants = require('../internals/constants');
 
 var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 
-var _DOMParseAshNodeIndex = require('../DOM/parseAshNodeIndex');
+var _DOMParseAshNodeId = require('../DOM/parseAshNodeId');
 
-var _DOMParseAshNodeIndex2 = _interopRequireDefault(_DOMParseAshNodeIndex);
+var _DOMParseAshNodeId2 = _interopRequireDefault(_DOMParseAshNodeId);
 
 var _internalsIsFunction = require('../internals/isFunction');
 
@@ -28,15 +26,12 @@ var _internalsIsMatching = require('../internals/isMatching');
 
 var _internalsIsMatching2 = _interopRequireDefault(_internalsIsMatching);
 
-// constants references
-var INDEX_ATTRIBUTE_NAME = _internalsConstants2.default.INDEX_ATTRIBUTE_NAME;
-var STAGE_ATTRIBUTE_NAME = _internalsConstants2.default.STAGE_ATTRIBUTE_NAME;
-var LEVEL_SEPARATOR = _internalsConstants2.default.LEVEL_SEPARATOR;
+var ID_ATTRIBUTE_NAME = _internalsConstants2.default.ID_ATTRIBUTE_NAME;
+var STREAM_ID_ATTRIBUTE_NAME = _internalsConstants2.default.STREAM_ID_ATTRIBUTE_NAME;
+var INDEX_SEPARATOR = _internalsConstants2.default.INDEX_SEPARATOR;
 
+var topics = global.topics = {};
 var eventListener;
-
-// list of topics
-var topics = {};
 
 var EventListener = (function () {
 	function EventListener() {
@@ -53,7 +48,7 @@ var EventListener = (function () {
 
 	_createClass(EventListener, [{
 		key: 'addEvent',
-		value: function addEvent(node, eventName, callback, isInserted) {
+		value: function addEvent(node, eventName, callback, isNewlyInserted) {
 			if (!topics[eventName]) {
 				topics[eventName] = [];
 
@@ -61,31 +56,31 @@ var EventListener = (function () {
 			}
 
 			for (var i = 0; i < topics[eventName].length; i++) {
-				if (topics[eventName][i].stage == node[STAGE_ATTRIBUTE_NAME] && topics[eventName][i].index == node[INDEX_ATTRIBUTE_NAME]) {
+				if (topics[eventName][i].streamId === node[STREAM_ID_ATTRIBUTE_NAME] && topics[eventName][i].id === node[ID_ATTRIBUTE_NAME]) {
 					topics[eventName][i].callback = callback;
-					topics[eventName][i].isInserted = isInserted;
+					topics[eventName][i].isNewlyInserted = isNewlyInserted;
 
 					return this;
 				}
 			}
 
 			topics[eventName].push({
-				index: node[INDEX_ATTRIBUTE_NAME],
-				stage: node[STAGE_ATTRIBUTE_NAME],
+				id: node[ID_ATTRIBUTE_NAME],
+				streamId: node[STREAM_ID_ATTRIBUTE_NAME],
 				callback: callback,
-				isInserted: isInserted,
-				isReindexed: false
+				isNewlyInserted: isNewlyInserted,
+				isReindexed: {}
 			});
 
 			return this;
 		}
 	}, {
 		key: 'addEvents',
-		value: function addEvents(node, events, isInserted) {
-			for (var prop in events) {
-				if (events.hasOwnProperty(prop)) {
-					if ((0, _internalsIsFunction2.default)(events[prop])) {
-						this.addEvent(node, prop, events[prop], isInserted);
+		value: function addEvents(node, events, isNewlyInserted) {
+			for (var eventName in events) {
+				if (events.hasOwnProperty(eventName)) {
+					if ((0, _internalsIsFunction2.default)(events[eventName])) {
+						this.addEvent(node, eventName, events[eventName], isNewlyInserted);
 					}
 				}
 			}
@@ -97,18 +92,18 @@ var EventListener = (function () {
 		value: function removeEvent(node, eventName) {
 			if (eventName && topics[eventName]) {
 				for (var i = 0; i < topics[eventName].length; i++) {
-					if (topics[eventName][i].stage == node[STAGE_ATTRIBUTE_NAME] && topics[eventName][i].index == node[INDEX_ATTRIBUTE_NAME]) {
+					if (topics[eventName][i].streamId === node[STREAM_ID_ATTRIBUTE_NAME] && topics[eventName][i].id === node[ID_ATTRIBUTE_NAME]) {
 						topics[eventName].splice(i, 1);
 
 						return this;
 					}
 				}
 			} else if (!eventName) {
-				for (var prop in topics) {
-					if (topics.hasOwnProperty(prop)) {
-						for (var i = 0; i < topics[prop].length; i++) {
-							if (topics[prop][i].stage == node[STAGE_ATTRIBUTE_NAME] && topics[prop][i].index == node[INDEX_ATTRIBUTE_NAME]) {
-								topics[prop].splice(i, 1);
+				for (var topicName in topics) {
+					if (topics.hasOwnProperty(topicName)) {
+						for (var i = 0; i < topics[topicName].length; i++) {
+							if (topics[topicName][i].streamId === node[STREAM_ID_ATTRIBUTE_NAME] && topics[topicName][i].id === node[ID_ATTRIBUTE_NAME]) {
+								topics[topicName].splice(i, 1);
 
 								return this;
 							}
@@ -122,15 +117,18 @@ var EventListener = (function () {
 	}, {
 		key: 'removeEvents',
 
-		// removes all events, that has index same or matching via _.isMatching
+		// removes all events, that has id same or matching via isMatching()
 		// removeEvents('0.1') removes events '0.1', '0.1.0', '0.1.1', etc.
 		// if eventName is specified, only events with that name are removed
-		value: function removeEvents(index, stage) {
-			for (var prop in topics) {
-				if (topics.hasOwnProperty(prop)) {
-					for (var i = 0; i < topics[prop].length; i++) {
-						if (stage == topics[prop][i].stage && (0, _internalsIsMatching2.default)(index.split(LEVEL_SEPARATOR), topics[prop][i].index.split(LEVEL_SEPARATOR), true) && !topics[prop][i].isInserted) {
-							topics[prop].splice(i, 1);
+		value: function removeEvents(id, streamId) {
+			var splitId = id.split(INDEX_SEPARATOR);
+
+			for (var topicName in topics) {
+				if (topics.hasOwnProperty(topicName)) {
+					for (var i = 0; i < topics[topicName].length; i++) {
+						if (streamId === topics[topicName][i].streamId && (0, _internalsIsMatching2.default)(splitId, topics[topicName][i].id.split(INDEX_SEPARATOR), true) && !topics[topicName][i].isNewlyInserted) {
+							topics[topicName].splice(i, 1);
+
 							i--;
 						}
 					}
@@ -141,17 +139,18 @@ var EventListener = (function () {
 		}
 	}, {
 		key: 'reindexEvents',
-		value: function reindexEvents(oldIndex, newOrder, stage) {
-			for (var prop in topics) {
-				if (topics.hasOwnProperty(prop)) {
-					var levels = undefined;
+		value: function reindexEvents(oldId, oldIndices, newIndex, streamId) {
+			var splitOldId = oldId.split(INDEX_SEPARATOR);
 
-					for (var i = 0; i < topics[prop].length; i++) {
-						if (stage == topics[prop][i].stage && (0, _internalsIsMatching2.default)(oldIndex.split(LEVEL_SEPARATOR), topics[prop][i].index.split(LEVEL_SEPARATOR), true) && !topics[prop][i].isInserted && !topics[prop][i].isReindexed) {
-							levels = (0, _DOMParseAshNodeIndex2.default)(topics[prop][i].index);
-							levels[(0, _DOMParseAshNodeIndex2.default)(oldIndex).length - 1] = newOrder;
-							topics[prop][i].index = levels.join(LEVEL_SEPARATOR);
-							topics[prop][i].isReindexed = true;
+			for (var topicName in topics) {
+				if (topics.hasOwnProperty(topicName)) {
+					for (var i = 0; i < topics[topicName].length; i++) {
+						if (streamId === topics[topicName][i].streamId && (0, _internalsIsMatching2.default)(splitOldId, topics[topicName][i].id.split(INDEX_SEPARATOR), true) && !topics[topicName][i].isNewlyInserted && !topics[topicName][i].isReindexed[oldIndices.length - 1]) {
+							var indices = (0, _DOMParseAshNodeId2.default)(topics[topicName][i].id);
+
+							indices[oldIndices.length - 1] = newIndex;
+							topics[topicName][i].id = indices.join(INDEX_SEPARATOR);
+							topics[topicName][i].isReindexed[oldIndices.length - 1] = true;
 						}
 					}
 				}
@@ -161,13 +160,13 @@ var EventListener = (function () {
 		}
 	}, {
 		key: 'markEvents',
-		value: function markEvents(stage) {
-			for (var prop in topics) {
-				if (topics.hasOwnProperty(prop)) {
-					for (var i = 0; i < topics[prop].length; i++) {
-						if (stage == topics[prop][i].stage) {
-							topics[prop][i].isInserted = false;
-							topics[prop][i].isReindexed = false;
+		value: function markEvents(streamId) {
+			for (var topicName in topics) {
+				if (topics.hasOwnProperty(topicName)) {
+					for (var i = 0; i < topics[topicName].length; i++) {
+						if (streamId === topics[topicName][i].streamId) {
+							topics[topicName][i].isNewlyInserted = false;
+							topics[topicName][i].isReindexed = {};
 						}
 					}
 				}
@@ -178,20 +177,22 @@ var EventListener = (function () {
 	}, {
 		key: 'callback',
 		value: function callback(eventName, eventObject) {
-			var index = eventObject.target[INDEX_ATTRIBUTE_NAME];
+			var id = eventObject.target[ID_ATTRIBUTE_NAME];
+			var streamId = eventObject.target[STREAM_ID_ATTRIBUTE_NAME];
 
-			if (index) {
-				var levels = (0, _DOMParseAshNodeIndex2.default)(index);
+			if (id) {
+				var indices = (0, _DOMParseAshNodeId2.default)(id);
 
-				while (levels.length) {
+				while (indices.length) {
 					for (var i = 0; i < topics[eventName].length; i++) {
-						if (topics[eventName][i].index == index && topics[eventName][i].stage == eventObject.target[STAGE_ATTRIBUTE_NAME]) {
+						if (topics[eventName][i].id === id && topics[eventName][i].streamId === streamId) {
 							topics[eventName][i].callback(eventObject);
 						}
 					}
 
-					levels.pop();
-					index = levels.join(LEVEL_SEPARATOR);
+					indices.pop();
+
+					id = indices.join(INDEX_SEPARATOR);
 				}
 			}
 		}

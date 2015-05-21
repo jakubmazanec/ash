@@ -1,18 +1,18 @@
 /*eslint-disable no-unused-vars, vars-on-top, no-console, no-multiple-empty-lines */
 
-import $ from 'jquery';
-import _ from 'lodash-fp';
+// import $ from 'jquery';
+// import _ from 'lodash-fp';
 import ash from 'ash';
-import flyd from 'flyd';
-import rx from 'rx';
+// import flyd from 'flyd';
+// import rx from 'rx';
 
 
 
-global.$ = $;
-global._ = _;
+// global.$ = $;
+// global._ = _;
 global.ash = ash;
-global.flyd = flyd;
-global.rx = rx;
+// global.flyd = flyd;
+// global.rx = rx;
 
 var Renderer = global.Renderer = new ash.Renderer();
 
@@ -56,9 +56,9 @@ console.log('ash.js start...');
 // foo$.push(promise2);
 
 // benchmark
-const MAX = 100000;
+// const MAX = 100000;
 
-var foo$ = new ash.Stream();
+// var foo$ = new ash.Stream();
 
 // $('body').on('click', () => {
 // 	for (let i = 0; i < MAX + 1; i++) {
@@ -322,10 +322,54 @@ $('body').on('keydown', () => {
 
 
 
+
+
 import App from './components/App';
 
 
+class ReorderApp extends ash.Component {
+	state = {
+		reversed: false,
+		items: []
+	};
 
-Renderer.addComponent(<App />, global.document.querySelector('.page'));
+	render() {
+		var items = this.state.items.map((value, index) => <button key={'' + index}/* events={{click: this.hello.bind(null, index, value)}}*/>{'' + value}</button>);
+
+		if (this.state.reversed) {
+			// items = items.reverse();
+		}
+
+		return <div>
+			<button key="btn" events={{
+					click: this.addItem
+				}}>{/*'' + this.state.reversed*/}</button>
+				{this.state.reversed ? <b>!</b> : null}
+				<div key="inr">
+					{this.state.reversed ? <b>!</b> : null}
+					<div key="itm">{items}</div>
+				</div>
+		</div>;
+	}
+
+	addItem() {
+		console.log('adding item...');
+
+		this.state.items.push('' + (Math.random() * 100 >> 0));
+		this.state.reversed = !this.state.reversed;
+
+		this.isDirty = true;
+	}
+
+	hello(index, value) {
+		console.log('Hello, this is', value, 'at', index);
+	}
+}
 
 
+var viewStream = ash.AshNodeStream.from(<App />);
+// var viewStream = ash.AshNodeStream.from(<ReorderApp />);
+
+console.log('viewStream', viewStream);
+
+Renderer.addStream(viewStream, global.document.querySelector('.page'));

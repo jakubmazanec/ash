@@ -1,20 +1,17 @@
 'use strict';
 
-var _classCallCheck = require('babel-runtime/helpers/class-call-check').default;
-
-var _Object$defineProperty = require('babel-runtime/core-js/object/define-property').default;
-
-var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default').default;
-
-_Object$defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, '__esModule', {
 	value: true
 });
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var _internalsConstants = require('../internals/constants');
 
 var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 
-// constants references
 var ASH_NODE = _internalsConstants2.default.ASH_NODE;
 var ASH_TEXT_NODE = _internalsConstants2.default.ASH_TEXT_NODE;
 
@@ -25,8 +22,11 @@ var AshNode = function AshNode(tagName, properties) {
 		this.type = ASH_NODE;
 		this.tagName = tagName.toLowerCase();
 		this.properties = properties || {};
-		this.children = [];
+		// this.parent = null;
+		// this.children = [];
+		this.id = null;
 		this.index = null;
+		this.indices = null;
 		this.key = null;
 
 		// find element's key
@@ -38,7 +38,10 @@ var AshNode = function AshNode(tagName, properties) {
 	} else {
 		this.type = ASH_TEXT_NODE;
 		this.text = tagName;
+		// this.parent = null;
+		this.id = null;
 		this.index = null;
+		this.indices = null;
 	}
 };
 

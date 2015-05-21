@@ -1,7 +1,5 @@
 'use strict';
 
-var _Object$keys = require('babel-runtime/core-js/object/keys').default;
-
 var _ = require('_');
 var ash = require('ash');
 
@@ -12,7 +10,7 @@ var Footer = ash.Component.create({
 
 	render: function () {
 		var allTodos = this.props.allTodos;
-		var total = _Object$keys(allTodos).length;
+		var total = Object.keys(allTodos).length;
 
 		if (total === 0) {
 			return null;

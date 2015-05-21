@@ -1,28 +1,60 @@
 /*eslint-disable no-unused-vars, vars-on-top, no-console, no-multiple-empty-lines */
 
+// import $ from 'jquery';
+// import _ from 'lodash-fp';
 'use strict';
 
-var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default').default;
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _jquery = require('jquery');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _jquery2 = _interopRequireDefault(_jquery);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _lodashFp = require('lodash-fp');
-
-var _lodashFp2 = _interopRequireDefault(_lodashFp);
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
 var _ash = require('ash');
 
 var _ash2 = _interopRequireDefault(_ash);
 
-var _flyd = require('flyd');
+// var promise1 = new Promise((resolve) => {
+// 	setTimeout(() => {
+// 		resolve('promise 1 resolved!');
+// 	}, 2000);
+// });
 
-var _flyd2 = _interopRequireDefault(_flyd);
+// var promise2 = new Promise((resolve) => {
+// 	setTimeout(() => {
+// 		resolve('promise 2 resolved!');
+// 	}, 4000);
+// });
 
-var _rx = require('rx');
+// var promise1 = 'no promise 1';
+// var promise2 = 'no promise 2';
 
-var _rx2 = _interopRequireDefault(_rx);
+// var foo$ = flyd.stream();
+
+// console.log(foo$);
+
+// foo$(promise1);
+// foo$(promise2);
+
+// flyd.stream([foo$], function() {
+// 	console.log('Recieved response!', arguments);
+// 	console.log(foo$());
+// });
+
+// var foo$ = new ash.Stream();
+
+// console.log(foo$);
+
+// foo$.push(promise1);
+
+// foo$.push(promise2);
+
+// benchmark
+// const MAX = 100000;
+
+// var foo$ = new ash.Stream();
 
 // $('body').on('click', () => {
 // 	for (let i = 0; i < MAX + 1; i++) {
@@ -276,54 +308,102 @@ var _componentsApp = require('./components/App');
 
 var _componentsApp2 = _interopRequireDefault(_componentsApp);
 
-global.$ = _jquery2.default;
-global._ = _lodashFp2.default;
+// import flyd from 'flyd';
+// import rx from 'rx';
+
+// global.$ = $;
+// global._ = _;
 global.ash = _ash2.default;
-global.flyd = _flyd2.default;
-global.rx = _rx2.default;
+// global.flyd = flyd;
+// global.rx = rx;
 
 var Renderer = global.Renderer = new _ash2.default.Renderer();
 
 console.log('ash.js start...');
+function _ref(value, index) {
+	return _ash2.default.e(
+		'button',
+		{ key: '' + index /* events={{click: this.hello.bind(null, index, value)}}*/ },
+		'' + value
+	);
+}
 
-// var promise1 = new Promise((resolve) => {
-// 	setTimeout(() => {
-// 		resolve('promise 1 resolved!');
-// 	}, 2000);
-// });
+var ReorderApp = (function (_ash$Component) {
+	function ReorderApp() {
+		_classCallCheck(this, ReorderApp);
 
-// var promise2 = new Promise((resolve) => {
-// 	setTimeout(() => {
-// 		resolve('promise 2 resolved!');
-// 	}, 4000);
-// });
+		if (_ash$Component != null) {
+			_ash$Component.apply(this, arguments);
+		}
 
-// var promise1 = 'no promise 1';
-// var promise2 = 'no promise 2';
+		this.state = {
+			reversed: false,
+			items: []
+		};
+	}
 
-// var foo$ = flyd.stream();
+	_inherits(ReorderApp, _ash$Component);
 
-// console.log(foo$);
+	_createClass(ReorderApp, [{
+		key: 'render',
+		value: function render() {
+			var items = this.state.items.map(_ref);
 
-// foo$(promise1);
-// foo$(promise2);
+			if (this.state.reversed) {}
 
-// flyd.stream([foo$], function() {
-// 	console.log('Recieved response!', arguments);
-// 	console.log(foo$());
-// });
+			return _ash2.default.e(
+				'div',
+				null,
+				_ash2.default.e('button', { key: 'btn', events: {
+						click: this.addItem
+					} }),
+				this.state.reversed ? _ash2.default.e(
+					'b',
+					null,
+					'!'
+				) : null,
+				_ash2.default.e(
+					'div',
+					{ key: 'inr' },
+					this.state.reversed ? _ash2.default.e(
+						'b',
+						null,
+						'!'
+					) : null,
+					_ash2.default.e(
+						'div',
+						{ key: 'itm' },
+						items
+					)
+				)
+			);
+		}
+	}, {
+		key: 'addItem',
+		value: function addItem() {
+			console.log('adding item...');
 
-// var foo$ = new ash.Stream();
+			this.state.items.push('' + (Math.random() * 100 >> 0));
+			this.state.reversed = !this.state.reversed;
 
-// console.log(foo$);
+			this.isDirty = true;
+		}
+	}, {
+		key: 'hello',
+		value: function hello(index, value) {
+			console.log('Hello, this is', value, 'at', index);
+		}
+	}]);
 
-// foo$.push(promise1);
+	return ReorderApp;
+})(_ash2.default.Component);
 
-// foo$.push(promise2);
+var viewStream = _ash2.default.AshNodeStream.from(_ash2.default.e(_componentsApp2.default, null));
+// var viewStream = ash.AshNodeStream.from(<ReorderApp />);
 
-// benchmark
-var MAX = 100000;
+console.log('viewStream', viewStream);
 
-var foo$ = new _ash2.default.Stream();
+Renderer.addStream(viewStream, global.document.querySelector('.page'));
 
-Renderer.addComponent(_ash2.default.e(_componentsApp2.default, null), global.document.querySelector('.page'));
+// items = items.reverse();
+/*'' + this.state.reversed*/

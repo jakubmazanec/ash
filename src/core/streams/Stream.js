@@ -118,6 +118,8 @@ class Stream {
 			}
 		} else if (arg && arg.then && isFunction(arg.then)) {
 			this.push(arg);
+		} else {
+			this.push(arg);
 		}
 
 		return this;

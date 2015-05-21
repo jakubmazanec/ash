@@ -1,18 +1,10 @@
 'use strict';
 
-var _Object$defineProperty = require('babel-runtime/core-js/object/define-property').default;
-
-var _Reflect$ownKeys = require('babel-runtime/core-js/reflect/own-keys').default;
-
-var _Object$getOwnPropertyDescriptor = require('babel-runtime/core-js/object/get-own-property-descriptor').default;
-
-var _Symbol = require('babel-runtime/core-js/symbol').default;
-
-var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default').default;
-
-_Object$defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, '__esModule', {
   value: true
 });
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _isFunction = require('./isFunction');
 
@@ -48,17 +40,17 @@ function autobind() {
  */
 function boundClass(target) {
   // (Using reflect to get all keys including symbols)
-  _Reflect$ownKeys(target.prototype).forEach(function (key) {
+  Reflect.ownKeys(target.prototype).forEach(function (key) {
     // Ignore special case target method
     if (key === 'constructor') {
       return;
     }
 
-    var descriptor = _Object$getOwnPropertyDescriptor(target.prototype, key);
+    var descriptor = Object.getOwnPropertyDescriptor(target.prototype, key);
 
     // Only methods need binding
     if ((0, _isFunction2.default)(descriptor.value)) {
-      _Object$defineProperty(target.prototype, key, boundMethod(target, key, descriptor));
+      Object.defineProperty(target.prototype, key, boundMethod(target, key, descriptor));
     }
   });
 
@@ -80,10 +72,10 @@ function boundMethod(target, key, descriptor) {
 
   if (typeof key === 'string') {
     // Add the key to the symbol name for easier debugging
-    newKey = _Symbol('@autobind method: ' + key);
+    newKey = Symbol('@autobind method: ' + key);
   } else if (typeof key === 'symbol') {
     // A symbol cannot be coerced to a string
-    newKey = _Symbol('@autobind method: (symbol)');
+    newKey = Symbol('@autobind method: (symbol)');
   } else {
     throw new Error('Unexpected key type: ' + typeof key);
   }

@@ -31,7 +31,7 @@ export function updateStream(stream) {
 
 	inStream = stream;
 
-	let newValue = isFunction(stream.fn) ? stream.fn(stream, stream.__updatedDependencies) : undefined;
+	let newValue = isFunction(stream.fn) ? stream.fn(stream, stream.__updatedDependencies, stream.__dependencies) : undefined;
 
 	if (newValue !== undefined) {
 		stream.push(newValue);

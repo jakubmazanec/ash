@@ -13,8 +13,8 @@ class ImmutableArray extends Array {
 			return arguments[0];
 		}
 
-		var array;
-		var clone = true;
+		let array;
+		let clone = true;
 
 		if (arguments.length >= 2 && (arguments[arguments.length - 1] !== null && typeof arguments[arguments.length - 1] === 'object') && arguments[arguments.length - 1].clone === false) {
 			clone = false;
@@ -118,7 +118,7 @@ class ImmutableArray extends Array {
 			throw new Error(index + ' ("index") must be non-negative finite number.');
 		}
 
-		var array = this.slice(0);
+		let array = this.slice(0);
 
 		array[index] = value;
 
@@ -127,7 +127,7 @@ class ImmutableArray extends Array {
 }
 
 class ImmutableObject {
-	constructor(value, options) {
+	constructor(value/*, options*/) {
 		if (value && value[IMMUTABLE_TAG]) {
 			return value;
 		}

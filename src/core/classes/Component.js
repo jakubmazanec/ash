@@ -1,18 +1,19 @@
-import Observable from './Observable';
 import isAshNodeAshElement from '../internals/isAshNodeAshElement';
 import constants from '../internals/constants';
 import findNode from '../DOM/findNode';
 import isFunction from '../internals/isFunction';
+
+
 
 const LIFECYCLE_UNMOUNTED = constants.LIFECYCLE_UNMOUNTED;
 const LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
 const LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
 const LIFECYCLE_UNINITIALIZED = constants.LIFECYCLE_UNINITIALIZED;
 
-class Component extends Observable {
-	constructor(props = {}) {
-		super();
+export default class Component {
+	state = {};
 
+	constructor(props = {}) {
 		// autobind methods
 		let prototype = Object.getPrototypeOf(this);
 
@@ -25,7 +26,6 @@ class Component extends Observable {
 		});
 
 		this.props = props;
-		this.state = this.state || {}; // FIXME: should be just this.state = {};
 
 		this.__isDirty = false;
 		this.__previousLifecycle = LIFECYCLE_UNINITIALIZED;
@@ -39,8 +39,8 @@ class Component extends Observable {
 	set isDirty(value) {
 		this.__isDirty = !!value;
 
-		if (this.__isDirty && this.__element.stage) {
-			this.__element.stage.update(this);
+		if (this.__isDirty && this.__element.stream) {
+			this.__element.stream.push(this);
 		}
 	}
 
@@ -73,7 +73,7 @@ class Component extends Observable {
 
 	get domNode() {
 		if (this.isMounted && isAshNodeAshElement(this.__element.children[0])) {
-			return findNode(this.__element.stage.getRootNode(), this.__element.children[0].instance.index);
+			return findNode(this.__element.stream.getRootNode(), this.__element.children[0].instance.id, this.__element.children[0].instance.indices);
 		}
 
 		return null;
@@ -95,5 +95,3 @@ class Component extends Observable {
 		return null;
 	}
 }
-
-export default Component;

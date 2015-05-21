@@ -2,9 +2,9 @@ import isAshTextNode from '../internals/isAshTextNode';
 import setNodeProperties from './setNodeProperties';
 import constants from '../internals/constants';
 
+const ID_ATTRIBUTE_NAME = constants.ID_ATTRIBUTE_NAME;
 const INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
-const ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
-const STAGE_ATTRIBUTE_NAME = constants.STAGE_ATTRIBUTE_NAME;
+const STREAM_ID_ATTRIBUTE_NAME = constants.STREAM_ID_ATTRIBUTE_NAME;
 
 function createNodeTree(ashNodeTree) {
 	var nodeTree;
@@ -12,9 +12,9 @@ function createNodeTree(ashNodeTree) {
 
 	if (isAshTextNode(ashNodeTree)) {
 		nodeTree = global.document.createTextNode(ashNodeTree.text);
+		nodeTree[ID_ATTRIBUTE_NAME] = ashNodeTree.id;
 		nodeTree[INDEX_ATTRIBUTE_NAME] = ashNodeTree.index;
-		nodeTree[ORDER_ATTRIBUTE_NAME] = ashNodeTree.order;
-		nodeTree[STAGE_ATTRIBUTE_NAME] = ashNodeTree.stage;
+		nodeTree[STREAM_ID_ATTRIBUTE_NAME] = ashNodeTree.streamId;
 
 		return nodeTree;
 	}
@@ -27,12 +27,13 @@ function createNodeTree(ashNodeTree) {
 	}
 
 	// set properties
+	nodeTree[ID_ATTRIBUTE_NAME] = ashNodeTree.id;
 	nodeTree[INDEX_ATTRIBUTE_NAME] = ashNodeTree.index;
-	nodeTree[ORDER_ATTRIBUTE_NAME] = ashNodeTree.order;
-	nodeTree[STAGE_ATTRIBUTE_NAME] = ashNodeTree.stage;
+	nodeTree[STREAM_ID_ATTRIBUTE_NAME] = ashNodeTree.streamId;
+	
 	setNodeProperties(nodeTree, ashNodeTree.properties, true);
+	// $(nodeTree).attr('nodeId', nodeTree[ID_ATTRIBUTE_NAME]/* + ' - ' + ashNodeTree.key*/);
 	//$(nodeTree).attr('index', nodeTree[INDEX_ATTRIBUTE_NAME]/* + ' - ' + ashNodeTree.key*/);
-	//$(nodeTree).attr('order', nodeTree[ORDER_ATTRIBUTE_NAME]/* + ' - ' + ashNodeTree.key*/);
 
 	for (let i = 0; i < ashNodeTree.children.length; i++) {
 		child = createNodeTree(ashNodeTree.children[i]);

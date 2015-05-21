@@ -1,17 +1,8 @@
 'use strict';
 
-var _Object$defineProperty = require('babel-runtime/core-js/object/define-property').default;
-
-var _Object$getOwnPropertyNames = require('babel-runtime/core-js/object/get-own-property-names').default;
-
-var _Object$defineProperties = require('babel-runtime/core-js/object/define-properties').default;
-
-var _Object$freeze = require('babel-runtime/core-js/object/freeze').default;
-
-_Object$defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, '__esModule', {
 	value: true
 });
-
 /**
  * An object environment feature flags.
  *
@@ -29,7 +20,7 @@ var support = {};
   * @memberOf ash.support
   * @type boolean
   */
-	support.modernJavascript = typeof _Object$getOwnPropertyNames && typeof Object.getPrototypeOf === 'function' && typeof _Object$defineProperties === 'function' && typeof _Object$freeze === 'function' && typeof _Object$freeze === 'function' && typeof Function.prototype.bind === 'function' && typeof Array.isArray === 'function' && { __proto__: [] } instanceof Array;
+	support.modernJavascript = typeof Object.getOwnPropertyNames && typeof Object.getPrototypeOf === 'function' && typeof Object.defineProperties === 'function' && typeof Object.freeze === 'function' && typeof Object.freeze === 'function' && typeof Function.prototype.bind === 'function' && typeof Array.isArray === 'function' && { __proto__: [] } instanceof Array;
 
 	/**
   */

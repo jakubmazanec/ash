@@ -15,8 +15,8 @@ import cache from 'gulp-cached';
 gulp.task('server', () => {
 	nodemon({
 		script: './examples/dist/server.js',
-		// nodeArgs: ['--harmony_proxies'],
-		watch: ['examples/dist/**/*.js'],
+		nodeArgs: ['--trace_opt_verbose', '--trace'],
+		watch: ['examples/dist/**/*.js', 'dist/**/*.js'],
 		execMap: {
 			js: 'iojs'
 		},
@@ -79,5 +79,13 @@ gulp.task('default', ['scripts', 'styles'/*, 'fonts'*/], () => {
 
 		// Watch .js files
 		gulp.watch(['./examples/src/**/*.js', './src/**/*.js'], ['scripts']);
+
+});
+
+gulp.task('node-only', ['ash-scripts', 'examples-scripts'], () => {
+
+		// Watch .js files
+		gulp.watch(['./src/**/*.js'], ['ash-scripts']);
+		gulp.watch(['./examples/src/**/*.js'], ['examples-scripts']);
 
 });
