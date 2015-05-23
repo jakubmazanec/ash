@@ -82,14 +82,14 @@ function createElement(tagName, props /*, children...*/) {
  }*/
 
 	for (var i = 2; i < arguments.length; i++) {
-		if (typeof arguments[i] === 'string') {
-			children.push(new _classesAshElement2.default(ASH_NODE_ASH_ELEMENT, _classesAshNode2.default, arguments[i]));
+		if (typeof arguments[i] === 'string' || typeof arguments[i] === 'number') {
+			children.push(new _classesAshElement2.default(ASH_NODE_ASH_ELEMENT, _classesAshNode2.default, '' + arguments[i]));
 		} else if ((0, _isAshElement2.default)(arguments[i])) {
 			children.push(arguments[i]);
 		} else if (Array.isArray(arguments[i])) {
 			for (var j = 0; j < arguments[i].length; j++) {
-				if (typeof arguments[i][j] === 'string') {
-					children.push(new _classesAshElement2.default(ASH_NODE_ASH_ELEMENT, _classesAshNode2.default, arguments[i][j]));
+				if (typeof arguments[i][j] === 'string' || typeof arguments[i] === 'number') {
+					children.push(new _classesAshElement2.default(ASH_NODE_ASH_ELEMENT, _classesAshNode2.default, '' + arguments[i][j]));
 				} else if ((0, _isAshElement2.default)(arguments[i][j])) {
 					children.push(arguments[i][j]);
 				}

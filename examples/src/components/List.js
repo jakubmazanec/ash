@@ -20,6 +20,7 @@ export default class List extends ash.Component {
 
 	changeOutline() {
 		this.state.redOutline = !this.state.redOutline;
+		
 
 		this.isDirty = true;
 	}

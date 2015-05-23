@@ -192,7 +192,7 @@ function diffAshNodeTree(oldAshNode, newAshNode /*, patches*/) {
 	if (!newAshNode.isDirty) {
 		// diff the children...
 		if (!((!oldAshNode.children || !oldAshNode.children.length) && (!newAshNode.children || !newAshNode.children.length))) {
-			diffChildren(oldAshNode.children, newAshNode.children, patches);
+			diffChildren(oldAshNode.children, newAshNode.children, oldAshNode, newAshNode, patches);
 		}
 
 		return patches;
@@ -271,6 +271,7 @@ function diffAshNodeTree(oldAshNode, newAshNode /*, patches*/) {
 	}
 
 	if (differentProperties) {
+
 		patches.push({
 			type: PATCH_PROPERTIES,
 			id: oldAshNode.id,

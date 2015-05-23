@@ -112,7 +112,7 @@ var Renderer = (function () {
 
 			renderStream.id = ashNodeStream.id;
 			renderStream.node = node;
-			renderStream.getRootNode = function () {
+			renderStream.getRootNode = ashNodeStream.getRootNode = function () {
 				for (var i = 0; i < node.childNodes.length; i++) {
 					if (typeof node.childNodes[i][ID_ATTRIBUTE_NAME] !== 'undefined') {
 						return node.childNodes[i];

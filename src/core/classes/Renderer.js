@@ -65,7 +65,7 @@ class Renderer {
 
 		renderStream.id = ashNodeStream.id;
 		renderStream.node = node;
-		renderStream.getRootNode = () => {
+		renderStream.getRootNode = ashNodeStream.getRootNode = () => {
 			for (let i = 0; i < node.childNodes.length; i++) {
 				if (typeof node.childNodes[i][ID_ATTRIBUTE_NAME] !== 'undefined') {
 					return node.childNodes[i];

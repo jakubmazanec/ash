@@ -202,8 +202,6 @@ function patchNodeTree(nodeTree /*, patches*/) {
 	// sort patches by their order
 	patches.sort(comparePatches);
 
-	// console.log(patches);
-
 	// now lets proof-check - inserting into nodes that will be reordered...
 	/*for (let i = patches.length - 1; i >= 0; i--) {
  	if (patches[i].type === PATCH_INSERT) {

@@ -57,14 +57,14 @@ function createElement(tagName, props/*, children...*/) {
 	}*/
 
 	for (let i = 2; i < arguments.length; i++) {
-		if (typeof arguments[i] === 'string') {
-			children.push(new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, arguments[i]));
+		if (typeof arguments[i] === 'string' || typeof arguments[i] === 'number') {
+			children.push(new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, '' + arguments[i]));
 		} else if (isAshElement(arguments[i])) {
 			children.push(arguments[i]);
 		} else if (Array.isArray(arguments[i])) {
 			for (let j = 0; j < arguments[i].length; j++) {
-				if (typeof arguments[i][j] === 'string') {
-					children.push(new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, arguments[i][j]));
+				if (typeof arguments[i][j] === 'string' || typeof arguments[i] === 'number') {
+					children.push(new AshElement(ASH_NODE_ASH_ELEMENT, AshNode, '' + arguments[i][j]));
 				} else if (isAshElement(arguments[i][j])) {
 					children.push(arguments[i][j]);
 				}
