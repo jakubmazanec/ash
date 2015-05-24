@@ -1,4 +1,4 @@
-const constants = {
+export default {
 	// component lifecycle
 	LIFECYCLE_UNMOUNTED: 'Unmounted',
 	LIFECYCLE_MOUNTING: 'Mounting',
@@ -23,12 +23,10 @@ const constants = {
 	ASH_TEXT_NODE: 'Ash Text Node',
 
 	// misc
-	LEVEL_SEPARATOR: '.',
+	INDEX_SEPARATOR: '.',
+	ID_ATTRIBUTE_NAME: '__ash:id__',
 	INDEX_ATTRIBUTE_NAME: '__ash:index__',
-	ORDER_ATTRIBUTE_NAME: '__ash:order__',
-	STAGE_ATTRIBUTE_NAME: '__ash:stage__',
+	STREAM_ID_ATTRIBUTE_NAME: '__ash:stream__',
 
 	IMMUTABLE_TAG: '__ash:immutable__'
 };
-
-export default constants;

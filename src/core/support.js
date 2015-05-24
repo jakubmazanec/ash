@@ -7,7 +7,7 @@
  */
 var support = {};
 
-(() => {
+() => {
 
 	/**
 	 * Detect if modern javascript is supported.
@@ -21,7 +21,7 @@ var support = {};
 	/**
 	 */
 
-	support.browser = (global.history && global.history.pushState) && global.requestAnimationFrame && global.getComputedStyle;
+	support.browser = global.history && global.history.pushState && global.requestAnimationFrame && global.getComputedStyle;
 
 
 	/**
@@ -36,7 +36,7 @@ var support = {};
 		support.dom = false;
 	}
 
-}(0, 0));
+}(0, 0);
 
 // add supported class to <html>
 if (support.modernJavascript && support.browser && support.dom) {
@@ -44,7 +44,6 @@ if (support.modernJavascript && support.browser && support.dom) {
 	global.document.documentElement.className += ' js ash--supported';
 	global.document.documentElement.className = global.document.documentElement.className.trim();
 }
-
 
 if (!support.modernJavascript) {
 	throw new Error('Unsupported javascript engine.');

@@ -7,20 +7,22 @@ const IMMUTABLE_TAG = constants.IMMUTABLE_TAG;
 
 class ImmutableArray extends Array {
 	constructor() {
+		super();
+		
 		if (arguments[0] && arguments[0][IMMUTABLE_TAG]) {
 			return arguments[0];
 		}
 
-		var array;
-		var clone = true;
+		let array;
+		let clone = true;
 
 		if (arguments.length >= 2 && (arguments[arguments.length - 1] !== null && typeof arguments[arguments.length - 1] === 'object') && arguments[arguments.length - 1].clone === false) {
 			clone = false;
 		}
 
-		if (clone && arguments.length == 1 && Array.isArray(arguments[0])) {
+		if (clone && arguments.length === 1 && Array.isArray(arguments[0])) {
 			array = arguments[0].slice(0);
-		} else if (!clone && arguments.length == 2 && Array.isArray(arguments[0])) {
+		} else if (!clone && arguments.length === 2 && Array.isArray(arguments[0])) {
 			array = arguments[0];
 		} else {
 			array = [];
@@ -116,7 +118,7 @@ class ImmutableArray extends Array {
 			throw new Error(index + ' ("index") must be non-negative finite number.');
 		}
 
-		var array = this.slice(0);
+		let array = this.slice(0);
 
 		array[index] = value;
 
@@ -125,7 +127,7 @@ class ImmutableArray extends Array {
 }
 
 class ImmutableObject {
-	constructor(value, options) {
+	constructor(value/*, options*/) {
 		if (value && value[IMMUTABLE_TAG]) {
 			return value;
 		}

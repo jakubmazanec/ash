@@ -1,12 +1,15 @@
 import isAshNode from '../internals/isAshNode';
 import constants from '../internals/constants';
 
-const INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
-const ORDER_ATTRIBUTE_NAME = constants.ORDER_ATTRIBUTE_NAME;
-const LEVEL_SEPARATOR = constants.LEVEL_SEPARATOR;
 
-function escapeAttributeValue(s, preserveCR) {
-	preserveCR = preserveCR ? '&#13;' : '\n';
+
+const ID_ATTRIBUTE_NAME = constants.ID_ATTRIBUTE_NAME;
+const INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
+const INDEX_SEPARATOR = constants.INDEX_SEPARATOR;
+
+function escapeAttributeValue(s/*, preserveCR*/) {
+	var preserveCR = arguments[1] ? '&#13;' : '\n';
+
 	return ('' + s) /* Forces the conversion to string. */
 		.replace(/&/g, '&amp;') /* This MUST be the 1st replacement. */
 		.replace(/'/g, '&apos;') /* The 4 other predefined entities, required. */
@@ -22,32 +25,34 @@ function escapeAttributeValue(s, preserveCR) {
 		.replace(/[\r\n]/g, preserveCR);
 }
 
-function walkStringifyAshNodeTree(ashNodeTree, index/*, parentIndex*/) {
+function walkStringifyAshNodeTree(ashNodeTree, index/*, parentId*/) {
 	var html = '';
 	var openingTag = '<';
 	var closingTag = '';
 	var content = '';
-	var parentIndex = arguments[2];
-	var i, key1, key2;
+	var parentId = arguments[2];
+	var i;
+	var key1;
+	var key2;
 
 	if (isAshNode(ashNodeTree)) {
 		openingTag += ashNodeTree.tagName;
 		closingTag = '</' + ashNodeTree.tagName + '>';
 
-		if (parentIndex) {
-			openingTag += ' ' + INDEX_ATTRIBUTE_NAME + '="' + parentIndex + LEVEL_SEPARATOR + index + '"';
-			openingTag += ' ' + ORDER_ATTRIBUTE_NAME + '="' + index + '"';
-			parentIndex = parentIndex + LEVEL_SEPARATOR + index;
-		} else {
+		if (parentId) {
+			openingTag += ' ' + ID_ATTRIBUTE_NAME + '="' + parentId + INDEX_SEPARATOR + index + '"';
 			openingTag += ' ' + INDEX_ATTRIBUTE_NAME + '="' + index + '"';
-			openingTag += ' ' + ORDER_ATTRIBUTE_NAME + '="' + index + '"';
-			parentIndex = '' + index;
+			parentId = parentId + INDEX_SEPARATOR + index;
+		} else {
+			openingTag += ' ' + ID_ATTRIBUTE_NAME + '="' + index + '"';
+			openingTag += ' ' + INDEX_ATTRIBUTE_NAME + '="' + index + '"';
+			parentId = '' + index;
 		}
 
 		if (ashNodeTree.properties) {
 			for (key1 in ashNodeTree.properties) {
-				if (ashNodeTree.properties.hasOwnProperty(key1) && key1 != 'events') {
-					if (key1 == 'style') {
+				if (ashNodeTree.properties.hasOwnProperty(key1) && key1 !== 'events') {
+					if (key1 === 'style') {
 						openingTag += ' style="';
 
 						// add style definitions
@@ -64,7 +69,7 @@ function walkStringifyAshNodeTree(ashNodeTree, index/*, parentIndex*/) {
 						openingTag += '"';
 					} else {
 						if (typeof ashNodeTree.properties[key1] === 'string') {
-							if (key1.toLowerCase() == 'classname') {
+							if (key1.toLowerCase() === 'classname') {
 								openingTag += ' class="' + escapeAttributeValue(ashNodeTree.properties[key1]) + '"';
 							} else {
 								openingTag += ' ' + key1 + '="' + escapeAttributeValue(ashNodeTree.properties[key1]) + '"';
@@ -83,7 +88,7 @@ function walkStringifyAshNodeTree(ashNodeTree, index/*, parentIndex*/) {
 
 		if (ashNodeTree.children && ashNodeTree.children.length) {
 			for (i = 0; i < ashNodeTree.children.length; i++) {
-				content += walkStringifyAshNodeTree(ashNodeTree.children[i], i, parentIndex);
+				content += walkStringifyAshNodeTree(ashNodeTree.children[i], i, parentId);
 			}
 		}
 
@@ -95,9 +100,6 @@ function walkStringifyAshNodeTree(ashNodeTree, index/*, parentIndex*/) {
 	return html;
 }
 
-function stringifyAshNodeTree(ashNodeTree)
-{
+export default function stringifyAshNodeTree(ashNodeTree) {
 	return walkStringifyAshNodeTree(ashNodeTree, 0, '');
 }
-
-export default stringifyAshNodeTree;

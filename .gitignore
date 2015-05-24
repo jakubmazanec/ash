@@ -116,3 +116,9 @@ fonts
 ### developer's files ###
 
 $
+
+
+
+### Examples dist
+
+examples/dist/*

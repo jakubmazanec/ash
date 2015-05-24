@@ -1,0 +1,29 @@
+{
+	"sourceMaps": false,
+	"whitelist": [
+		"es7.classProperties",
+		"es7.decorators",
+		"es7.functionBind",
+		"es7.exponentiationOperator",
+
+		"es6.templateLiterals",
+		"es6.classes",
+		"es6.constants",
+		"es6.blockScoping",
+		"es6.arrowFunctions",
+		"es6.modules",
+		"es6.properties.shorthand",
+		"es6.properties.computed",
+		"es6.destructuring",
+		"es6.parameters.default",
+		"es6.parameters.rest",
+		"es6.spread",
+
+		"strict",
+
+		"react"
+	],
+	"optional": ["runtime"],
+	"jsxPragma": "ash.e",
+	"plugins": ["closure-elimination"]
+}

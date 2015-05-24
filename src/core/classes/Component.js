@@ -1,18 +1,27 @@
-import Observable from './Observable';
 import isAshNodeAshElement from '../internals/isAshNodeAshElement';
 import constants from '../internals/constants';
 import findNode from '../DOM/findNode';
 import isFunction from '../internals/isFunction';
+import Stream from '../streams/Stream';
+
+
 
 const LIFECYCLE_UNMOUNTED = constants.LIFECYCLE_UNMOUNTED;
 const LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
 const LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
 const LIFECYCLE_UNINITIALIZED = constants.LIFECYCLE_UNINITIALIZED;
 
-class Component extends Observable {
-	constructor(props) {
+export default class Component {
+	state = {};
+	
+	__isDirty = false;
+	__previousLifecycle = LIFECYCLE_UNINITIALIZED;
+	__currentLifecycle = LIFECYCLE_UNMOUNTED;
+
+	constructor(props = {}) {
 		// autobind methods
-		var prototype = Object.getPrototypeOf(this);
+		let prototype = Object.getPrototypeOf(this);
+
 		Object.getOwnPropertyNames(prototype).forEach((value) => {
 			let descriptor = Object.getOwnPropertyDescriptor(prototype, value);
 
@@ -21,12 +30,14 @@ class Component extends Observable {
 			}
 		});
 
-		this.props = props || {};
-		this.state = this.state || {};
+		this.props = props;
 
-		this.__isDirty = false;
-		this.__previousLifecycle = LIFECYCLE_UNINITIALIZED;
-		this.__currentLifecycle = LIFECYCLE_UNMOUNTED;
+		// references to the component streams
+		Object.getOwnPropertyNames(this.constructor).filter((value) => value !== 'caller' && value !== 'callee' && value !== 'arguments').forEach((value) => {
+			if (this.constructor[value] instanceof Stream && !this[value]) {
+				this[value] = this.constructor[value];
+			}
+		});
 	}
 
 	get isDirty() {
@@ -36,9 +47,15 @@ class Component extends Observable {
 	set isDirty(value) {
 		this.__isDirty = !!value;
 
-		if (this.__isDirty && this.__element.stage) {
-			this.__element.stage.update(this);
+		if (this.__isDirty && this.__element.stream) {
+			this.__element.stream.push(this);
 		}
+	}
+
+	update() {
+		this.isDirty = true;
+
+		return this;
 	}
 
 	get __lifecycle() {
@@ -70,7 +87,7 @@ class Component extends Observable {
 
 	get domNode() {
 		if (this.isMounted && isAshNodeAshElement(this.__element.children[0])) {
-			return findNode(this.__element.stage.getRootNode(), this.__element.children[0].instance.index);
+			return findNode(this.__element.stream.getRootNode(), this.__element.children[0].instance.id, this.__element.children[0].instance.indices);
 		}
 
 		return null;
@@ -92,5 +109,3 @@ class Component extends Observable {
 		return null;
 	}
 }
-
-export default Component;

@@ -1,6 +1,7 @@
 import constants from '../internals/constants';
 
-// constants references
+
+
 const ASH_NODE = constants.ASH_NODE;
 const ASH_TEXT_NODE = constants.ASH_TEXT_NODE;
 
@@ -10,8 +11,9 @@ class AshNode {
 			this.type = ASH_NODE;
 			this.tagName = tagName.toLowerCase();
 			this.properties = properties || {};
-			this.children = [];
+			this.id = null;
 			this.index = null;
+			this.indices = null;
 			this.key = null;
 
 			// find element's key
@@ -23,7 +25,9 @@ class AshNode {
 		} else {
 			this.type = ASH_TEXT_NODE;
 			this.text = tagName;
+			this.id = null;
 			this.index = null;
+			this.indices = null;
 		}
 	}
 }
