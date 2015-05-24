@@ -22,19 +22,9 @@ var _ash = require('ash');
 
 var _ash2 = _interopRequireDefault(_ash);
 
-// import React from 'react';
-// import m from 'mithril';
-// import flyd from 'flyd';
-// import rx from 'rx';
+var _immutable = require('immutable');
 
-// global.$ = $;
-// global._ = _;
-// global.ash = ash;
-// global.React = React;
-// global.flyd = flyd;
-// global.rx = rx;
-
-var Renderer = global.Renderer = new _ash2.default.Renderer();
+var _immutable2 = _interopRequireDefault(_immutable);
 
 // console.log('ash.js start...');
 
@@ -326,8 +316,25 @@ $('body').on('keydown', () => {
 	n2.end(true);
 });*/
 
-/*import App from './components/App';
-import AppReact from './components/AppReact';
+var _componentsApp = require('./components/App');
+
+var _componentsApp2 = _interopRequireDefault(_componentsApp);
+
+// import React from 'react';
+// import m from 'mithril';
+// import flyd from 'flyd';
+// import rx from 'rx';
+
+// global.$ = $;
+// global._ = _;
+// global.ash = ash;
+// global.React = React;
+// global.flyd = flyd;
+// global.rx = rx;
+global.Immutable = _immutable2.default;
+
+var Renderer = global.Renderer = new _ash2.default.Renderer();
+/*import AppReact from './components/AppReact';
 
 
 class ReorderApp extends ash.Component {
@@ -370,17 +377,16 @@ class ReorderApp extends ash.Component {
 }*/
 // var viewStream = ash.AshNodeStream.from(<ReorderApp />);
 
-/*var viewStream = ash.AshNodeStream.from(<App />);
-
+var viewStream = _ash2.default.AshNodeStream.from(_ash2.default.e(_componentsApp2.default, null));
 
 console.log('viewStream', viewStream);
 
 Renderer.addStream(viewStream, global.document.querySelector('.page'));
 
-React.render(
-	React.createElement(AppReact),
-	global.document.querySelector('.pageReact')
-);*/
+// React.render(
+// 	React.createElement(AppReact),
+// 	global.document.querySelector('.pageReact')
+// );
 
 /*var items = [];
 
@@ -410,11 +416,11 @@ class BenchmarkApp1Ash extends ash.Component {
 }
 
 class BenchmarkApp1React extends React.Component {
-  render() {
-    return React.DOM.div({}, this.props.data.map(function (item) {
-      return React.DOM.input({value: item.name});
-    }));
-  }
+	render() {
+		return React.DOM.div({}, this.props.data.map(function (item) {
+			return React.DOM.input({value: item.name});
+		}));
+	}
 }
 
 setTimeout(() => {
@@ -917,22 +923,24 @@ var TodoApp = (function (_ash$Component3) {
 	return TodoApp;
 })(_ash2.default.Component);
 
-Renderer.addStream(_ash2.default.AshNodeStream.from(_ash2.default.e(TodoApp, null)), global.document.querySelector('#todoapp'));
+// Renderer.addStream(ash.AshNodeStream.from(<TodoApp />), global.document.querySelector('#todoapp'));
 
-function resolveIfReady() {
+/*function resolveIfReady() {
 	console.log('resolveIfReady...');
-	var newTodo = document.querySelector('#new-todo');
-	if (newTodo) {
-		for (var i = 0; i < 100; i++) {
-			var keydownEvent = document.createEvent('Event');
-			keydownEvent.initEvent('keydown', true, true);
-			keydownEvent.which = 13; // VK_ENTER
-			newTodo.value = 'Something to do ' + i;
-			newTodo.dispatchEvent(keydownEvent);
+		var newTodo = document.querySelector('#new-todo');
+
+		if (newTodo) {
+			for (var i = 0; i < 100; i++) {
+				var keydownEvent = document.createEvent('Event');
+
+				keydownEvent.initEvent('keydown', true, true);
+				keydownEvent.which = 13; // VK_ENTER
+				newTodo.value = 'Something to do ' + i;
+				newTodo.dispatchEvent(keydownEvent);
+			}
+		} else {
+			setTimeout(resolveIfReady, 50);
 		}
-	} else {
-		setTimeout(resolveIfReady, 50);
-	}
 }
 
-resolveIfReady();
+setTimeout(resolveIfReady, 1000);*/

@@ -10,9 +10,10 @@ Object.defineProperty(exports, '__esModule', {
  * @param {*} value The value to check.
  * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
  */
+exports.default = isObjectLike;
+
 function isObjectLike(value) {
-  return value && typeof value == 'object' || false;
+  return value && typeof value === 'object' || false;
 }
 
-exports.default = isObjectLike;
 module.exports = exports.default;

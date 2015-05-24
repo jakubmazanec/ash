@@ -4,15 +4,17 @@ Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 
+/**
+ * Finds if ancestor is parent of ancestor class of value.
+ */
+exports.default = isAncestor;
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _isFunction = require('./isFunction');
 
 var _isFunction2 = _interopRequireDefault(_isFunction);
 
-/**
- * Finds if ancestor is parent of ancestor class of value.
- */
 function isAncestor(ancestor, value) {
 	if (!(0, _isFunction2.default)(ancestor) || !(0, _isFunction2.default)(value) || ancestor === Function || value === Function) {
 		return false;
@@ -34,7 +36,8 @@ function isAncestor(ancestor, value) {
 		return true;
 	}
 
-	var prototype, lastPrototype;
+	var prototype = undefined,
+	    lastPrototype = undefined;
 
 	while (prototype !== ancestor) {
 		lastPrototype = prototype;
@@ -54,5 +57,4 @@ function isAncestor(ancestor, value) {
 	return false;
 }
 
-exports.default = isAncestor;
 module.exports = exports.default;

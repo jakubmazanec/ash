@@ -60,7 +60,7 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParen
 	}
 }
 
-function createAshNodeTree(componentAshElement) {
+export default function createAshNodeTree(componentAshElement) {
 	// type check
 	if (!isComponentAshElement(componentAshElement)) {
 		throw new Error(componentAshElement + ' must be a Component Descriptor object.');
@@ -96,5 +96,3 @@ function createAshNodeTree(componentAshElement) {
 
 	return ashNodeTree;
 }
-
-export default createAshNodeTree;

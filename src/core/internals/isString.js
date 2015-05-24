@@ -1,7 +1,6 @@
 import isObjectLike from './isObjectLike';
 
-/** `Object#toString` result references. */
-const STRING_TAG = '[object String]';
+
 
 /**
  * Checks if `value` is classified as a `String` primitive or object.
@@ -19,8 +18,6 @@ const STRING_TAG = '[object String]';
  * _.isString(1);
  * // => false
  */
-function isString(value) {
-  return typeof value == 'string' || (isObjectLike(value) && Object.prototype.toString.call(value) == STRING_TAG) || false;
+export default function isString(value) {
+  return typeof value === 'string' || isObjectLike(value) && Object.prototype.toString.call(value) === '[object String]' || false;
 }
-
-export default isString;

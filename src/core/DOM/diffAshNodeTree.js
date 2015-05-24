@@ -1,7 +1,5 @@
 import constants from '../internals/constants';
 
-
-
 const PATCH_ASH_NODE = constants.PATCH_ASH_NODE;
 const PATCH_ASH_TEXT_NODE = constants.PATCH_ASH_TEXT_NODE;
 const PATCH_PROPERTIES = constants.PATCH_PROPERTIES;
@@ -136,35 +134,15 @@ function diffChildren(oldChildren, newChildren, oldAshNode, newAshNode, patches)
 				node: newChildren[j],
 				id: newChildren[j].id,
 				indices: newChildren[j].indices,
-				// parentId: newChildren[j].parent.id,
-				// parentIndices: newChildren[j].parent.indices,
-				// parentId: oldChildren[0].parent.id,
-				// parentIndices: oldChildren[0].parent.indices,
 				parentId: oldAshNode.id,
 				parentIndices: oldAshNode.indices,
 			});
-
-			
 
 			for (let k = 0; k < patches[patches.length - 1].indices.length; k++) {
 				if (patches.maxIndex < patches[patches.length - 1].indices[k]) {
 					patches.maxIndex = patches[patches.length - 1].indices[k];
 				}
 			}
-
-			// let parentIndex = newChildren[j].index2;
-			// let parentIndices = newChildren[j].indices.slice(0, -1);
-
-			// let parentIndex = parseAshNodeIndex(newChildren[j].index);
-			// console.log(newChildren[j].index, JSON.stringify(parentIndex), JSON.stringify(newChildren[j].index2));
-
-
-			// parentIndex.pop();
-			// patches[patches.length - 1].parentIndices = parentIndices;
-			// patches[patches.length - 1].parentId = parentIndices.join(INDEX_SEPARATOR);
-
-
-			// console.log(newChildren[j].index, JSON.stringify(parentIndex), JSON.stringify(newChildren[j].index2));
 		}
 	}
 	
@@ -204,7 +182,6 @@ export default function diffAshNodeTree(oldAshNode, newAshNode/*, patches*/) {
 					if (newAshNode.properties[newProperty].hasOwnProperty(newSubproperty) && newAshNode.properties[newProperty][newSubproperty] !== oldAshNode.properties[newProperty][newSubproperty]) {
 						propertiesToChange[newProperty] = propertiesToChange[newProperty] || {};
 						propertiesToChange[newProperty][newSubproperty] = newAshNode.properties[newProperty][newSubproperty];
-
 						differentProperties = true;
 					}
 				}
@@ -220,7 +197,6 @@ export default function diffAshNodeTree(oldAshNode, newAshNode/*, patches*/) {
 
 			} else {
 				propertiesToChange[newProperty] = newAshNode.properties[newProperty];
-
 				differentProperties = true;
 			}
 		}
@@ -269,7 +245,6 @@ export default function diffAshNodeTree(oldAshNode, newAshNode/*, patches*/) {
 	}
 
 	if (differentProperties) {
-
 		patches.push({
 			type: PATCH_PROPERTIES,
 			id: oldAshNode.id,

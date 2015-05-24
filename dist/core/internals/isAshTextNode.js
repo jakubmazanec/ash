@@ -3,6 +3,7 @@
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
+exports.default = isAshTextNode;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -16,5 +17,4 @@ function isAshTextNode(value) {
 	return value && value.type === ASH_TEXT_NODE;
 }
 
-exports.default = isAshTextNode;
 module.exports = exports.default;

@@ -20,6 +20,22 @@ var _List = require('./List');
 
 var _List2 = _interopRequireDefault(_List);
 
+var _storesList1Store = require('../stores/list1Store');
+
+var _storesList1Store2 = _interopRequireDefault(_storesList1Store);
+
+var _storesList2Store = require('../stores/list2Store');
+
+var _storesList2Store2 = _interopRequireDefault(_storesList2Store);
+
+var _storesAppStore = require('../stores/appStore');
+
+var _storesAppStore2 = _interopRequireDefault(_storesAppStore);
+
+var _immutable = require('immutable');
+
+var _immutable2 = _interopRequireDefault(_immutable);
+
 var App = (function (_ash$Component) {
 	function App() {
 		_classCallCheck(this, App);
@@ -27,13 +43,6 @@ var App = (function (_ash$Component) {
 		if (_ash$Component != null) {
 			_ash$Component.apply(this, arguments);
 		}
-
-		this.state = new _ash2.default.ImmutableObject({
-			list1: new _ash2.default.ImmutableArray(),
-			list2: new _ash2.default.ImmutableArray(),
-			redShadow: true
-		});
-		this.name = 'App';
 	}
 
 	_inherits(App, _ash$Component);
@@ -47,7 +56,7 @@ var App = (function (_ash$Component) {
 				_ash2.default.e(
 					'div',
 					{ style: {
-							boxShadow: this.state.redShadow ? '2px 2px 5px red' : '2px 2px 5px blue'
+							boxShadow: _storesAppStore2.default.get().get('appShadow') ? '2px 2px 5px red' : '2px 2px 5px blue'
 						} },
 					_ash2.default.e(
 						'button',
@@ -85,68 +94,95 @@ var App = (function (_ash$Component) {
 						'!!!'
 					)
 				),
-				_ash2.default.e(_List2.default, this.state.list1),
-				_ash2.default.e(_List2.default, this.state.list2)
+				_ash2.default.e(_List2.default, { label: 'List1', list: _storesList1Store2.default.get(), shadow: _storesAppStore2.default.get().get('list1Shadow'), changeShadow: this.changeList1Shadow }),
+				_ash2.default.e(_List2.default, { label: 'List2', list: _storesList2Store2.default.get(), shadow: _storesAppStore2.default.get().get('list2Shadow'), changeShadow: this.changeList2Shadow })
 			);
 		}
 	}, {
 		key: 'onMount',
-		value: function onMount() {}
+		value: function onMount() {
+			_storesList1Store2.default.subscribe(this.onList1StoreUpdate);
+			_storesList2Store2.default.subscribe(this.onList2StoreUpdate);
+			_storesAppStore2.default.subscribe(this.onAppStoreUpdate);
+		}
+	}, {
+		key: 'onList1StoreUpdate',
+		value: function onList1StoreUpdate(stream, changed, dependencies) {
+			// console.log('onList1StoreUpdate...', changed);
+
+			this.update();
+		}
+	}, {
+		key: 'onList2StoreUpdate',
+		value: function onList2StoreUpdate(stream, changed, dependencies) {
+			// console.log('onList2StoreUpdate...', changed);
+
+			this.update();
+		}
+	}, {
+		key: 'onAppStoreUpdate',
+		value: function onAppStoreUpdate(stream, changed, dependencies) {
+			// console.log('onAppStoreUpdate...', changed);
+
+			this.update();
+		}
 	}, {
 		key: 'changeShadow',
 		value: function changeShadow() {
-			this.state = this.state.set('redShadow', !this.state.redShadow);
-			this.isDirty = true;
+			_storesAppStore2.default.push(_storesAppStore2.default.get().set('appShadow', !_storesAppStore2.default.get().get('appShadow')));
 		}
 	}, {
 		key: 'addToList1',
 		value: function addToList1() {
-			// console.log('App addToList1...');
+			var _list1Store$get;
 
+			// console.log('App addToList1...');
 			var items = [];
 
 			for (var i = 0; i < 5000; i++) {
 				items.push(Math.random().toFixed(1));
 			}
 
-			this.state = this.state.merge({ list1: this.state.list1.concat(items) });
-			// this.state.list1 = this.state.list1.concat(items);
-
-			this.isDirty = true;
+			_storesList1Store2.default.push((_list1Store$get = _storesList1Store2.default.get()).push.apply(_list1Store$get, items));
 		}
 	}, {
 		key: 'addToList2',
 		value: function addToList2() {
+			var _list2Store$get;
+
+			// console.log('App addToList2...');
 			var items = [];
 
 			for (var i = 0; i < 5000; i++) {
 				items.push(Math.random().toFixed(1));
 			}
 
-			this.state = this.state.merge({ list2: this.state.list2.concat(items) });
-			// this.state.list2 = this.state.list2.concat(items);
-
-			this.isDirty = true;
+			_storesList2Store2.default.push((_list2Store$get = _storesList2Store2.default.get()).push.apply(_list2Store$get, items));
 		}
 	}, {
 		key: 'clearList1',
 		value: function clearList1() {
-			this.state = this.state.merge({ list1: [] });
-			// this.state.list1 = [];
-			this.isDirty = true;
+			_storesList1Store2.default.push(new _immutable2.default.List());
 		}
 	}, {
 		key: 'clearList2',
 		value: function clearList2() {
-			this.state = this.state.merge({ list2: [] });
-			// this.state.list2 = [];
-			this.isDirty = true;
+			_storesList2Store2.default.push(new _immutable2.default.List());
 		}
 	}, {
-		key: 'randomFoo',
-		get: function () {
-			return Math.random();
+		key: 'changeList1Shadow',
+		value: function changeList1Shadow() {
+			_storesAppStore2.default.push(_storesAppStore2.default.get().set('list1Shadow', !_storesAppStore2.default.get().get('list1Shadow')));
 		}
+	}, {
+		key: 'changeList2Shadow',
+		value: function changeList2Shadow() {
+			_storesAppStore2.default.push(_storesAppStore2.default.get().set('list2Shadow', !_storesAppStore2.default.get().get('list2Shadow')));
+		}
+	}], [{
+		key: 'list1',
+		value: new _ash2.default.Stream(),
+		enumerable: true
 	}]);
 
 	return App;
@@ -154,5 +190,3 @@ var App = (function (_ash$Component) {
 
 exports.default = App;
 module.exports = exports.default;
-
-// console.log('App mounted!');

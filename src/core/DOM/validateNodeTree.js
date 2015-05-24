@@ -1,6 +1,8 @@
 import EventListener from '../classes/EventListener';
 import constants from '../internals/constants';
 
+
+
 const ID_ATTRIBUTE_NAME = constants.ID_ATTRIBUTE_NAME;
 const INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
 const STREAM_ID_ATTRIBUTE_NAME = constants.STREAM_ID_ATTRIBUTE_NAME;
@@ -28,8 +30,6 @@ function walkValidateNodeTree(nodeTree, ashNodeTree, streamId, eventsCache) {
 	}
 
 	if ((nodeTree.childNodes.length && (!ashNodeTree.children || !ashNodeTree.children.length)) || (!nodeTree.childNodes.length && (ashNodeTree.children && ashNodeTree.children.length)) || (ashNodeTree.children && nodeTree.childNodes.length !== ashNodeTree.children.length)) {
-		
-		console.log('oj');
 		return false;
 	}
 

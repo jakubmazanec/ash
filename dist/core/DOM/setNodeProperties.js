@@ -29,9 +29,9 @@ function setNodeProperties(node, properties, isNewlyInserted) {
 			} else if (prop === 'events' && (0, _internalsIsObject2.default)(properties[prop])) {
 				eventListener.addEvents(node, properties[prop], isNewlyInserted);
 			} else if (prop === 'className' || prop === 'class') {
-				if (typeof node.className === 'string') {
+				if (typeof node.className === 'string' && properties[prop]) {
 					node.className = properties[prop];
-				} else {
+				} else if (properties[prop]) {
 					node.setAttribute('class', properties[prop]);
 				}
 			} else if (!(0, _internalsIsObject2.default)(properties[prop])) {
@@ -39,20 +39,19 @@ function setNodeProperties(node, properties, isNewlyInserted) {
 					node.setAttributeNS('http://www.w3.org/1999/xlink', prop.substring(6), properties[prop]);
 				} else if (prop.substring(0, 4) === 'xml:') {
 					node.setAttributeNS('http://www.w3.org/2000/svg', prop.substring(4), properties[prop]);
-				} else {
-					if (prop === 'checked') {
-						node.checked = !!properties[prop];
-						if (node.checked) {
-							node.setAttribute('checked', 'checked');
-						} else {
-							node.removeAttribute('checked');
-						}
-					} else if (prop === 'value') {
-						node.value = properties[prop];
-						node.setAttribute(prop, properties[prop]);
+				} else if (prop === 'checked') {
+					node.checked = !!properties[prop];
+
+					if (node.checked) {
+						node.setAttribute('checked', 'checked');
 					} else {
-						node.setAttribute(prop, properties[prop]);
+						node.removeAttribute('checked');
 					}
+				} else if (prop === 'value') {
+					node.value = properties[prop];
+					node.setAttribute(prop, properties[prop]);
+				} else {
+					node.setAttribute(prop, properties[prop]);
 				}
 			}
 		}

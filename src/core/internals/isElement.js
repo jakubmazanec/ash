@@ -1,5 +1,7 @@
 import isObjectLike from './isObjectLike';
 
+
+
 /**
  * Checks if `value` is a DOM element.
  *
@@ -16,9 +18,6 @@ import isObjectLike from './isObjectLike';
  * _.isElement('<body>');
  * // => false
  */
-function isElement(value) {
-	return (value && value.nodeType === 1 && isObjectLike(value) &&
-		Object.prototype.toString.call(value).indexOf('Element') > -1) || false;
+export default function isElement(value) {
+	return value && value.nodeType === 1 && isObjectLike(value) && Object.prototype.toString.call(value).indexOf('Element') > -1 || false;
 }
-
-export default isElement;

@@ -19,9 +19,10 @@ Object.defineProperty(exports, '__esModule', {
  * _.isUndefined(null);
  * // => false
  */
+exports.default = isUndefined;
+
 function isUndefined(value) {
   return typeof value === 'undefined';
 }
 
-exports.default = isUndefined;
 module.exports = exports.default;

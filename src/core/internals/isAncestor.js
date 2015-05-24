@@ -1,9 +1,11 @@
 import isFunction from './isFunction';
 
+
+
 /**
  * Finds if ancestor is parent of ancestor class of value.
  */
-function isAncestor(ancestor, value) {
+export default function isAncestor(ancestor, value) {
 	if (!isFunction(ancestor) || !isFunction(value) || ancestor === Function || value === Function) {
 		return false;
 	}
@@ -24,7 +26,7 @@ function isAncestor(ancestor, value) {
 		return true;
 	}
 
-	var prototype, lastPrototype;
+	let prototype, lastPrototype;
 
 	while (prototype !== ancestor) {
 		lastPrototype = prototype;
@@ -43,5 +45,3 @@ function isAncestor(ancestor, value) {
 
 	return false;
 }
-
-export default isAncestor;

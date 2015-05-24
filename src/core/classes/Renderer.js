@@ -1,5 +1,3 @@
-import isComponentAshElement from '../internals/isComponentAshElement';
-import isAshNodeAshElement from '../internals/isAshNodeAshElement';
 import createNodeTree from '../DOM/createNodeTree';
 import diffAshNodeTree from '../DOM/diffAshNodeTree';
 import patchNodeTree from '../DOM/patchNodeTree';
@@ -9,31 +7,13 @@ import constants from '../internals/constants';
 import isElement from '../internals/isElement';
 import Stream from '../streams/Stream';
 import AshNodeStream from '../streams/AshNodeStream';
+import mountComponents from '../DOM/mountComponents';
 
 
-const LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
-const LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
+
 const ID_ATTRIBUTE_NAME = constants.ID_ATTRIBUTE_NAME;
 
 var renderer;
-
-function mountComponents(ashElement) {
-	if (isAshNodeAshElement(ashElement)) {
-		for (let i = 0; i < ashElement.children.length; i++) {
-			if (ashElement.children[i]) {
-				mountComponents(ashElement.children[i]);
-			}
-		}
-	} else if (isComponentAshElement(ashElement)) {
-		if (ashElement.instance && ashElement.instance.__lifecycle === LIFECYCLE_MOUNTING) {
-			ashElement.instance.__lifecycle = LIFECYCLE_MOUNTED;
-		}
-
-		if (ashElement.children[0]) {
-			mountComponents(ashElement.children[0]);
-		}
-	}
-}
 
 class Renderer {
 	streams = [];
@@ -43,10 +23,7 @@ class Renderer {
 			return renderer;
 		}
 
-		// save singleton
 		renderer = this;
-
-		// render loop is always bound to renderer
 		renderer.render = ::renderer.render;
 
 		return renderer;
@@ -58,7 +35,7 @@ class Renderer {
 		}
 
 		if (!isElement(node)) {
-			throw new Error(node + ' must be a DOM Element.');
+			throw new Error(`${node} (node) must be a DOM Element.`);
 		}
 
 		let renderStream = new Stream();
@@ -76,7 +53,6 @@ class Renderer {
 		};
 
 		renderStream.from(this.render, ashNodeStream);
-
 		this.streams.push(renderStream);
 
 		return this;
@@ -121,8 +97,6 @@ class Renderer {
 					throw new Error('Existing html is invalid!');
 				}
 
-
-
 				while (stream.node.firstChild) {
 					stream.node.removeChild(stream.node.firstChild);
 				}
@@ -131,35 +105,27 @@ class Renderer {
 
 				global.requestAnimationFrame(() => {
 					stream.node.appendChild(createNodeTree(stream.ashNodeTree));
-
-					// mount components
 					mountComponents(ashNodeStream.ashElementTree);
 
 					stream.isRendering = false;
 				});
-			} if (isNodeTreeValid && isNodeTreeValidated) {
-				// mount components
+			}
+
+			if (isNodeTreeValid && isNodeTreeValidated) {
 				mountComponents(ashNodeStream.ashElementTree);
 			}
 		} else {
 			let newAshNodeTree = ashNodeStream.get();
 			let patches = diffAshNodeTree(stream.ashNodeTree, newAshNodeTree);
+			let isSuccessful = patchNodeTree(stream.getRootNode(), patches);
+
+			if (!isSuccessful) {
+				throw new Error('Patching the DOM was unsuccesful!');
+			}
 
 			stream.ashNodeTree = newAshNodeTree;
-			stream.isRendering = true;
 
-			global.requestAnimationFrame(() => {
-				var isSuccessful = patchNodeTree(stream.getRootNode(), patches);
-
-				if (!isSuccessful) {
-					throw new Error('Patching the DOM was unsuccesful!');
-				}
-
-				// mount components
-				mountComponents(ashNodeStream.ashElementTree);
-				
-				stream.isRendering = false;
-			});
+			mountComponents(ashNodeStream.ashElementTree);
 		}
 	}
 }

@@ -3,6 +3,7 @@
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
+exports.default = createAshNodeTree;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -115,5 +116,4 @@ function createAshNodeTree(componentAshElement) {
 	return ashNodeTree;
 }
 
-exports.default = createAshNodeTree;
 module.exports = exports.default;

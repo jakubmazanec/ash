@@ -1,6 +1,8 @@
 import isLength from './isLength';
 import isObjectLike from './isObjectLike';
 
+
+
 /** `Object#toString` result references. */
 const ARGS_TAG = '[object Arguments]';
 
@@ -20,9 +22,8 @@ const ARGS_TAG = '[object Arguments]';
  * _.isArguments([1, 2, 3]);
  * // => false
  */
-function isArguments(value) {
+export default function isArguments(value) {
 	var length = isObjectLike(value) ? value.length : undefined;
-	return (isLength(length) && Object.prototype.toString.call(value) == ARGS_TAG) || false;
-}
 
-export default isArguments;
+	return isLength(length) && Object.prototype.toString.call(value) === ARGS_TAG || false;
+}

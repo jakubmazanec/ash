@@ -48,7 +48,7 @@
 		"curly": [2, "all"], // specify curly brace conventions for all control statements
 		"default-case": 0, // require default case in switch statements (off by default)
 		"dot-notation": [2, {"allowKeywords": true, "allowPattern": ""}], // encourages use of dot notation whenever possible
-		"dot-location": [2, "property"], // enforces consistent newlines before or after dots (off by default)
+		"dot-location": [0, "property"], // enforces consistent newlines before or after dots (off by default)
 		"eqeqeq": [2, "allow-null"], // require the use of === and !==
 		"guard-for-in": 2, // make sure for-in loops have an if statement (off by default)
 		"no-alert": 1, // disallow the use of alert, confirm, and prompt
@@ -147,7 +147,7 @@
 		"no-underscore-dangle": 0, // disallow dangling underscores in identifiers
 		"no-unneeded-ternary": 1, // disallow the use of Boolean literals in conditional expressions (off by default)
 		"no-wrap-func": 1, // disallow wrapping of non-IIFE statements in parens
-		"one-var": [1, "never"], // allow or disallow one variable declaration per function (off by default)
+		"one-var": [0, "never"], // allow or disallow one variable declaration per function (off by default)
 		"operator-assignment": [1, "always"], // require assignment operator shorthand where possible or prohibit it entirely (off by default)
 		"operator-linebreak": [1, "after"], // enforce operators to be placed before or after line breaks (off by default)
 		"padded-blocks": 0, // enforce padding within blocks (off by default)

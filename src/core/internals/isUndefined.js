@@ -14,8 +14,6 @@
  * _.isUndefined(null);
  * // => false
  */
-function isUndefined(value) {
+export default function isUndefined(value) {
   return typeof value === 'undefined';
 }
-
-export default isUndefined; 

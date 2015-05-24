@@ -11,8 +11,6 @@ class AshNode {
 			this.type = ASH_NODE;
 			this.tagName = tagName.toLowerCase();
 			this.properties = properties || {};
-			// this.parent = null;
-			// this.children = [];
 			this.id = null;
 			this.index = null;
 			this.indices = null;
@@ -27,7 +25,6 @@ class AshNode {
 		} else {
 			this.type = ASH_TEXT_NODE;
 			this.text = tagName;
-			// this.parent = null;
 			this.id = null;
 			this.index = null;
 			this.indices = null;

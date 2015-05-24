@@ -1,6 +1,8 @@
 import isAshNode from '../internals/isAshNode';
 import constants from '../internals/constants';
 
+
+
 const ID_ATTRIBUTE_NAME = constants.ID_ATTRIBUTE_NAME;
 const INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
 const INDEX_SEPARATOR = constants.INDEX_SEPARATOR;

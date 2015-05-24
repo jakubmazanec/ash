@@ -42,8 +42,6 @@ function walkValidateNodeTree(nodeTree, ashNodeTree, streamId, eventsCache) {
 	}
 
 	if (nodeTree.childNodes.length && (!ashNodeTree.children || !ashNodeTree.children.length) || !nodeTree.childNodes.length && (ashNodeTree.children && ashNodeTree.children.length) || ashNodeTree.children && nodeTree.childNodes.length !== ashNodeTree.children.length) {
-
-		console.log('oj');
 		return false;
 	}
 

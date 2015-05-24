@@ -7,8 +7,6 @@ exports.default = findNode;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-// import parseAshNodeIndex from './parseAshNodeIndex';
-
 var _internalsConstants = require('../internals/constants');
 
 var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
@@ -16,7 +14,6 @@ var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 var ID_ATTRIBUTE_NAME = _internalsConstants2.default.ID_ATTRIBUTE_NAME;
 
 function findNode(nodeTree, nodeId, ashNodeIndices) {
-	// var ashNodeIndices = parseAshNodeIndex(nodeId);
 	var node = nodeTree;
 
 	if (!nodeTree) {

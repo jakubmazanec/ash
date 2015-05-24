@@ -31,41 +31,34 @@ var List = (function (_ash$Component) {
 		if (_ash$Component != null) {
 			_ash$Component.apply(this, arguments);
 		}
-
-		this.state = { redOutline: false };
-		this.name = 'List';
 	}
 
 	_inherits(List, _ash$Component);
 
 	_createClass(List, [{
+		key: 'shouldUpdate',
+		value: function shouldUpdate(newProps) {
+			// console.log('List shouldUpdate...', this.props.label, this.props.list !== newProps.list, this.props.shadow !== newProps.shadow);
+			return this.props.list !== newProps.list || this.props.shadow !== newProps.shadow;
+		}
+	}, {
 		key: 'render',
 		value: function render() {
 			return _ash2.default.e(
 				'ul',
 				{ style: {
-						outline: this.state.redOutline ? '1px solid red' : '1px solid blue'
+						outline: this.props.shadow ? '1px solid red' : '1px solid blue'
 					} },
 				_ash2.default.e(
 					'button',
 					{ events: {
-							click: this.changeOutline
+							click: this.props.changeShadow
 						} },
 					'!!!'
 				),
-				this.props.map(_ref)
+				this.props.list.toArray().map(_ref)
 			);
 		}
-	}, {
-		key: 'changeOutline',
-		value: function changeOutline() {
-			this.state.redOutline = !this.state.redOutline;
-
-			this.isDirty = true;
-		}
-	}, {
-		key: 'onBeforeReceiveProps',
-		value: function onBeforeReceiveProps() {}
 	}]);
 
 	return List;

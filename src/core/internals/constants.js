@@ -1,4 +1,4 @@
-const constants = {
+export default {
 	// component lifecycle
 	LIFECYCLE_UNMOUNTED: 'Unmounted',
 	LIFECYCLE_MOUNTING: 'Mounting',
@@ -30,5 +30,3 @@ const constants = {
 
 	IMMUTABLE_TAG: '__ash:immutable__'
 };
-
-export default constants;

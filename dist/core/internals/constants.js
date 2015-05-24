@@ -3,7 +3,7 @@
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
-var constants = {
+exports.default = {
 	// component lifecycle
 	LIFECYCLE_UNMOUNTED: 'Unmounted',
 	LIFECYCLE_MOUNTING: 'Mounting',
@@ -35,6 +35,4 @@ var constants = {
 
 	IMMUTABLE_TAG: '__ash:immutable__'
 };
-
-exports.default = constants;
 module.exports = exports.default;

@@ -4,15 +4,6 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _isObjectLike = require('./isObjectLike');
-
-var _isObjectLike2 = _interopRequireDefault(_isObjectLike);
-
-/** `Object#toString` result references. */
-var STRING_TAG = '[object String]';
-
 /**
  * Checks if `value` is classified as a `String` primitive or object.
  *
@@ -29,9 +20,16 @@ var STRING_TAG = '[object String]';
  * _.isString(1);
  * // => false
  */
+exports.default = isString;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _isObjectLike = require('./isObjectLike');
+
+var _isObjectLike2 = _interopRequireDefault(_isObjectLike);
+
 function isString(value) {
-  return typeof value == 'string' || (0, _isObjectLike2.default)(value) && Object.prototype.toString.call(value) == STRING_TAG || false;
+  return typeof value === 'string' || (0, _isObjectLike2.default)(value) && Object.prototype.toString.call(value) === '[object String]' || false;
 }
 
-exports.default = isString;
 module.exports = exports.default;

@@ -53,17 +53,6 @@ var INDEX_SEPARATOR = _internalsConstants2.default.INDEX_SEPARATOR;
 
 var eventListener = new _classesEventListener2.default();
 
-/*var v8 = require('v8-natives');
-(function (fn) {
-	switch (v8.getOptimizationStatus(fn)) {
-		case 1: console.log(fn.name + ' is optimized'); break;
-		case 2: console.log(fn.name + ' is not optimized'); break;
-		case 3: console.log(fn.name + ' is always optimized'); break;
-		case 4: console.log(fn.name + ' is never optimized'); break;
-		case 6: console.log(fn.name + ' is maybe deoptimized'); break;
-	}
-})(compareNodes);*/
-
 function zeroPadNumber(number, length) {
 	var n = Math.pow(10, length);
 
@@ -201,40 +190,6 @@ function patchNodeTree(nodeTree /*, patches*/) {
 
 	// sort patches by their order
 	patches.sort(comparePatches);
-
-	// now lets proof-check - inserting into nodes that will be reordered...
-	/*for (let i = patches.length - 1; i >= 0; i--) {
- 	if (patches[i].type === PATCH_INSERT) {
- 		let indices = patches[i].indices.slice(0);
- 
- 		while (indices.length >= 3) {
- 			indices.pop();
- 
- 			let id = indices.join(INDEX_SEPARATOR);
- 
- 			for (let j = i; j >= 0; j--) {
- 				if (patches[j].type === PATCH_ORDER && patches[j].newId === id) {
- 
- 					let newIndices = patches[i].indices.slice(0);
- 
- 					for (let k = 0; k < patches[j].indices.length; k++) {
- 						newIndices[k] = patches[j].indices[k];
- 					}
- 
- 					patches[i].id = newIndices.join(INDEX_SEPARATOR);
- 					patches[i].indices = newIndices;
- 					newIndices = patches[i].parentIndices.slice(0);
- 
- 					for (let k = 0; k < patches[j].indices.length; k++) {
- 						newIndices[k] = patches[j].indices[k];
- 					}
- 
- 					patches[i].parentId = newIndices.join(INDEX_SEPARATOR);
- 				}
- 			}
- 		}
- 	}
- }*/
 
 	// now iterate over patches...
 	var lastLevel = patches[patches.length - 1].indices.length;

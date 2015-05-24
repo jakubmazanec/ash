@@ -23,6 +23,8 @@ Object.defineProperty(exports, "__esModule", {
  * ash.isMatching([1, 2, 3], [1, 4, 2, 5, 3], true); // -> false
  * ash.isMatching([1, 2, 3], [1, 2, 3, 5, 5], true); // -> true
  */
+exports.default = isMatching;
+
 function isMatching(chain1, chain2, options) {
 	if (!Array.isArray(chain1) || !Array.isArray(chain2)) {
 		return false;
@@ -46,7 +48,7 @@ function isMatching(chain1, chain2, options) {
 					break;
 				} // if
 
-				if (j == chain2.length - 1) {
+				if (j === chain2.length - 1) {
 					return false; // item from chain1 is not in chain2, therefore there is no match
 				} // if
 			} // for
@@ -61,7 +63,6 @@ function isMatching(chain1, chain2, options) {
 	}
 
 	return true;
-} // isMatching
+}
 
-exports.default = isMatching;
 module.exports = exports.default;

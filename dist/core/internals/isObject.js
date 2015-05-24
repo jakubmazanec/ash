@@ -25,12 +25,12 @@ Object.defineProperty(exports, '__esModule', {
  * _.isObject(1);
  * // => false
  */
+exports.default = isObject;
+
 function isObject(value) {
   // Avoid a V8 JIT bug in Chrome 19-20.
   // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
-  var type = typeof value;
-  return type == 'function' || value && type == 'object' || false;
+  return typeof value === 'function' || value && typeof value === 'object' || false;
 }
 
-exports.default = isObject;
 module.exports = exports.default;

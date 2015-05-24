@@ -18,14 +18,14 @@
  * ash.isMatching([1, 2, 3], [1, 4, 2, 5, 3], true); // -> false
  * ash.isMatching([1, 2, 3], [1, 2, 3, 5, 5], true); // -> true
  */
-function isMatching(chain1, chain2, options) {
+export default function isMatching(chain1, chain2, options) {
 	if (!Array.isArray(chain1) || !Array.isArray(chain2)) {
 		return false;
 	} // if
 
-	var indexes = [];
+	let indexes = [];
 
-	if (options === true || (options && options.strict)) {
+	if (options === true || options && options.strict) {
 		for (let i = 0; i < chain1.length; i++) {
 			if (chain1[i] !== chain2[i]) {
 				return false;
@@ -41,7 +41,7 @@ function isMatching(chain1, chain2, options) {
 					break;
 				} // if
 
-				if (j == chain2.length - 1) {
+				if (j === chain2.length - 1) {
 					return false; // item from chain1 is not in chain2, therefore there is no match
 				} // if
 			} // for
@@ -56,6 +56,4 @@ function isMatching(chain1, chain2, options) {
 	}
 
 	return true;
-} // isMatching
-
-export default isMatching;
+}

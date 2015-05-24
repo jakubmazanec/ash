@@ -10,14 +10,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _internalsIsComponentAshElement = require('../internals/isComponentAshElement');
-
-var _internalsIsComponentAshElement2 = _interopRequireDefault(_internalsIsComponentAshElement);
-
-var _internalsIsAshNodeAshElement = require('../internals/isAshNodeAshElement');
-
-var _internalsIsAshNodeAshElement2 = _interopRequireDefault(_internalsIsAshNodeAshElement);
-
 var _DOMCreateNodeTree = require('../DOM/createNodeTree');
 
 var _DOMCreateNodeTree2 = _interopRequireDefault(_DOMCreateNodeTree);
@@ -54,29 +46,13 @@ var _streamsAshNodeStream = require('../streams/AshNodeStream');
 
 var _streamsAshNodeStream2 = _interopRequireDefault(_streamsAshNodeStream);
 
-var LIFECYCLE_MOUNTING = _internalsConstants2.default.LIFECYCLE_MOUNTING;
-var LIFECYCLE_MOUNTED = _internalsConstants2.default.LIFECYCLE_MOUNTED;
+var _DOMMountComponents = require('../DOM/mountComponents');
+
+var _DOMMountComponents2 = _interopRequireDefault(_DOMMountComponents);
+
 var ID_ATTRIBUTE_NAME = _internalsConstants2.default.ID_ATTRIBUTE_NAME;
 
 var renderer;
-
-function mountComponents(ashElement) {
-	if ((0, _internalsIsAshNodeAshElement2.default)(ashElement)) {
-		for (var i = 0; i < ashElement.children.length; i++) {
-			if (ashElement.children[i]) {
-				mountComponents(ashElement.children[i]);
-			}
-		}
-	} else if ((0, _internalsIsComponentAshElement2.default)(ashElement)) {
-		if (ashElement.instance && ashElement.instance.__lifecycle === LIFECYCLE_MOUNTING) {
-			ashElement.instance.__lifecycle = LIFECYCLE_MOUNTED;
-		}
-
-		if (ashElement.children[0]) {
-			mountComponents(ashElement.children[0]);
-		}
-	}
-}
 
 var Renderer = (function () {
 	function Renderer() {
@@ -88,10 +64,7 @@ var Renderer = (function () {
 			return renderer;
 		}
 
-		// save singleton
 		renderer = this;
-
-		// render loop is always bound to renderer
 		renderer.render = renderer.render.bind(renderer);
 
 		return renderer;
@@ -105,7 +78,7 @@ var Renderer = (function () {
 			}
 
 			if (!(0, _internalsIsElement2.default)(node)) {
-				throw new Error(node + ' must be a DOM Element.');
+				throw new Error('' + node + ' (node) must be a DOM Element.');
 			}
 
 			var renderStream = new _streamsStream2.default();
@@ -123,7 +96,6 @@ var Renderer = (function () {
 			};
 
 			renderStream.from(this.render, ashNodeStream);
-
 			this.streams.push(renderStream);
 
 			return this;
@@ -144,9 +116,7 @@ var Renderer = (function () {
 
 			function _ref() {
 				stream.node.appendChild((0, _DOMCreateNodeTree2.default)(stream.ashNodeTree));
-
-				// mount components
-				mountComponents(ashNodeStream.ashElementTree);
+				(0, _DOMMountComponents2.default)(ashNodeStream.ashElementTree);
 
 				stream.isRendering = false;
 			}
@@ -186,31 +156,23 @@ var Renderer = (function () {
 					stream.isRendering = true;
 
 					global.requestAnimationFrame(_ref);
-				}if (isNodeTreeValid && isNodeTreeValidated) {
-					// mount components
-					mountComponents(ashNodeStream.ashElementTree);
+				}
+
+				if (isNodeTreeValid && isNodeTreeValidated) {
+					(0, _DOMMountComponents2.default)(ashNodeStream.ashElementTree);
 				}
 			} else {
-				(function () {
-					var newAshNodeTree = ashNodeStream.get();
-					var patches = (0, _DOMDiffAshNodeTree2.default)(stream.ashNodeTree, newAshNodeTree);
+				var newAshNodeTree = ashNodeStream.get();
+				var patches = (0, _DOMDiffAshNodeTree2.default)(stream.ashNodeTree, newAshNodeTree);
+				var isSuccessful = (0, _DOMPatchNodeTree2.default)(stream.getRootNode(), patches);
 
-					stream.ashNodeTree = newAshNodeTree;
-					stream.isRendering = true;
+				if (!isSuccessful) {
+					throw new Error('Patching the DOM was unsuccesful!');
+				}
 
-					global.requestAnimationFrame(function () {
-						var isSuccessful = (0, _DOMPatchNodeTree2.default)(stream.getRootNode(), patches);
+				stream.ashNodeTree = newAshNodeTree;
 
-						if (!isSuccessful) {
-							throw new Error('Patching the DOM was unsuccesful!');
-						}
-
-						// mount components
-						mountComponents(ashNodeStream.ashElementTree);
-
-						stream.isRendering = false;
-					});
-				})();
+				(0, _DOMMountComponents2.default)(ashNodeStream.ashElementTree);
 			}
 		}
 	}]);

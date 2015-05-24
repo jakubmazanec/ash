@@ -1,4 +1,4 @@
-function assign(/*target, ...source*/) {
+export default function assign(/*target, ...source*/) {
 	var sources = [];
 	var target = arguments[0] || {};
 
@@ -22,5 +22,3 @@ function assign(/*target, ...source*/) {
 
 	return target;
 }
-
-export default assign;

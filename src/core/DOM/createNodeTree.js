@@ -6,7 +6,7 @@ const ID_ATTRIBUTE_NAME = constants.ID_ATTRIBUTE_NAME;
 const INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
 const STREAM_ID_ATTRIBUTE_NAME = constants.STREAM_ID_ATTRIBUTE_NAME;
 
-function createNodeTree(ashNodeTree) {
+export default function createNodeTree(ashNodeTree) {
 	var nodeTree;
 	var child;
 
@@ -45,5 +45,3 @@ function createNodeTree(ashNodeTree) {
 
 	return nodeTree;
 }
-
-export default createNodeTree;

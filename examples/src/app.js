@@ -3,6 +3,7 @@
 import $ from 'jquery';
 import _ from 'lodash-fp';
 import ash from 'ash';
+import Immutable from 'immutable';
 // import React from 'react';
 // import m from 'mithril';
 // import flyd from 'flyd';
@@ -16,6 +17,7 @@ import ash from 'ash';
 // global.React = React;
 // global.flyd = flyd;
 // global.rx = rx;
+global.Immutable = Immutable;
 
 var Renderer = global.Renderer = new ash.Renderer();
 
@@ -327,8 +329,8 @@ $('body').on('keydown', () => {
 
 
 
-/*import App from './components/App';
-import AppReact from './components/AppReact';
+import App from './components/App';
+/*import AppReact from './components/AppReact';
 
 
 class ReorderApp extends ash.Component {
@@ -372,17 +374,17 @@ class ReorderApp extends ash.Component {
 // var viewStream = ash.AshNodeStream.from(<ReorderApp />);
 
 
-/*var viewStream = ash.AshNodeStream.from(<App />);
+var viewStream = ash.AshNodeStream.from(<App />);
 
 
 console.log('viewStream', viewStream);
 
 Renderer.addStream(viewStream, global.document.querySelector('.page'));
 
-React.render(
-	React.createElement(AppReact),
-	global.document.querySelector('.pageReact')
-);*/
+// React.render(
+// 	React.createElement(AppReact),
+// 	global.document.querySelector('.pageReact')
+// );
 
 
 /*var items = [];
@@ -413,11 +415,11 @@ class BenchmarkApp1Ash extends ash.Component {
 }
 
 class BenchmarkApp1React extends React.Component {
-  render() {
-    return React.DOM.div({}, this.props.data.map(function (item) {
-      return React.DOM.input({value: item.name});
-    }));
-  }
+	render() {
+		return React.DOM.div({}, this.props.data.map(function (item) {
+			return React.DOM.input({value: item.name});
+		}));
+	}
 }
 
 setTimeout(() => {
@@ -806,24 +808,26 @@ class TodoApp extends ash.Component {
 	}
 }
 
-Renderer.addStream(ash.AshNodeStream.from(<TodoApp />), global.document.querySelector('#todoapp'));
+// Renderer.addStream(ash.AshNodeStream.from(<TodoApp />), global.document.querySelector('#todoapp'));
 
 
 
-function resolveIfReady() {
+/*function resolveIfReady() {
 	console.log('resolveIfReady...');
-    var newTodo = document.querySelector('#new-todo');
-    if (newTodo) {
-    	for (var i = 0; i < 100; i++) {
+		var newTodo = document.querySelector('#new-todo');
+
+		if (newTodo) {
+			for (var i = 0; i < 100; i++) {
 				var keydownEvent = document.createEvent('Event');
+
 				keydownEvent.initEvent('keydown', true, true);
 				keydownEvent.which = 13; // VK_ENTER
 				newTodo.value = 'Something to do ' + i;
 				newTodo.dispatchEvent(keydownEvent);
 			}
-    } else {
-    	setTimeout(resolveIfReady, 50);
-    }
+		} else {
+			setTimeout(resolveIfReady, 50);
+		}
 }
 
-resolveIfReady();
+setTimeout(resolveIfReady, 1000);*/

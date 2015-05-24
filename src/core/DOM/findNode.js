@@ -1,10 +1,10 @@
-// import parseAshNodeIndex from './parseAshNodeIndex';
 import constants from '../internals/constants';
+
+
 
 const ID_ATTRIBUTE_NAME = constants.ID_ATTRIBUTE_NAME;
 
 export default function findNode(nodeTree, nodeId, ashNodeIndices) {
-	// var ashNodeIndices = parseAshNodeIndex(nodeId);
 	var node = nodeTree;
 
 	if (!nodeTree) {

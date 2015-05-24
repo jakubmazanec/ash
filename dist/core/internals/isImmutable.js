@@ -3,6 +3,7 @@
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
+exports.default = isImmutable;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -16,5 +17,4 @@ function isImmutable(value) {
 	return value && value[IMMUTABLE_TAG];
 }
 
-exports.default = isImmutable;
 module.exports = exports.default;

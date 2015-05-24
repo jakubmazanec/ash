@@ -2,6 +2,7 @@ import isAshNodeAshElement from '../internals/isAshNodeAshElement';
 import constants from '../internals/constants';
 import findNode from '../DOM/findNode';
 import isFunction from '../internals/isFunction';
+import Stream from '../streams/Stream';
 
 
 
@@ -12,6 +13,10 @@ const LIFECYCLE_UNINITIALIZED = constants.LIFECYCLE_UNINITIALIZED;
 
 export default class Component {
 	state = {};
+	
+	__isDirty = false;
+	__previousLifecycle = LIFECYCLE_UNINITIALIZED;
+	__currentLifecycle = LIFECYCLE_UNMOUNTED;
 
 	constructor(props = {}) {
 		// autobind methods
@@ -27,9 +32,12 @@ export default class Component {
 
 		this.props = props;
 
-		this.__isDirty = false;
-		this.__previousLifecycle = LIFECYCLE_UNINITIALIZED;
-		this.__currentLifecycle = LIFECYCLE_UNMOUNTED;
+		// references to the component streams
+		Object.getOwnPropertyNames(this.constructor).filter((value) => value !== 'caller' && value !== 'callee' && value !== 'arguments').forEach((value) => {
+			if (this.constructor[value] instanceof Stream && !this[value]) {
+				this[value] = this.constructor[value];
+			}
+		});
 	}
 
 	get isDirty() {
@@ -42,6 +50,12 @@ export default class Component {
 		if (this.__isDirty && this.__element.stream) {
 			this.__element.stream.push(this);
 		}
+	}
+
+	update() {
+		this.isDirty = true;
+
+		return this;
 	}
 
 	get __lifecycle() {
