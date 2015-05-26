@@ -3,10 +3,6 @@
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
-
-/**
- * Finds if ancestor is parent of ancestor class of value.
- */
 exports.default = isAncestor;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -14,6 +10,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 var _isFunction = require('./isFunction');
 
 var _isFunction2 = _interopRequireDefault(_isFunction);
+
+/**
+ * Finds if ancestor is parent of ancestor class of value.
+ */
 
 function isAncestor(ancestor, value) {
 	if (!(0, _isFunction2.default)(ancestor) || !(0, _isFunction2.default)(value) || ancestor === Function || value === Function) {

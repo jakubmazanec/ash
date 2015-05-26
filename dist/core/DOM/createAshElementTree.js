@@ -76,17 +76,17 @@ function walkCreateAshElementTree(ashElement, owner, index) {
 	}
 }
 
-function createAshElementTree(rootAshElement, stream /*, startingLevel*/) {
+function createAshElementTree(ashElement, stream /*, startingLevel*/) {
 	// type check
-	if (!(0, _internalsIsAshElement2.default)(rootAshElement)) {
-		throw new Error(rootAshElement + ' must be a AshElement object.');
+	if (!(0, _internalsIsAshElement2.default)(ashElement)) {
+		throw new Error('' + ashElement + ' (ashElement) must be an AshElement object instance.');
 	}
 
 	if (!stream) {
-		throw new Error(stream + ' must be an object.');
+		throw new Error('' + stream + ' (stream) must be a Stream object instance.');
 	}
 
-	var ashElementTree = rootAshElement;
+	var ashElementTree = ashElement;
 
 	ashElementTree.stream = stream;
 	ashElementTree.isRoot = true;

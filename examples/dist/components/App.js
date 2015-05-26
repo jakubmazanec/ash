@@ -50,6 +50,15 @@ var App = (function (_ash$Component) {
 	_createClass(App, [{
 		key: 'render',
 		value: function render() {
+			/*return <section>
+   	<header style={{
+   		boxShadow: appStore.get().get('appShadow') ? '2px 2px 5px red' : '2px 2px 5px blue'
+   	}}>
+   		<a href="#" events={{click: this.addToList1}}>+ list 1!</a>
+   	</header>
+   	<List label="List1" list={list1Store.get()} shadow={appStore.get().get('list1Shadow')} changeShadow={this.changeList1Shadow} />
+   </section>;*/
+
 			return _ash2.default.e(
 				'div',
 				null,
@@ -133,9 +142,10 @@ var App = (function (_ash$Component) {
 		}
 	}, {
 		key: 'addToList1',
-		value: function addToList1() {
+		value: function addToList1(event) {
 			var _list1Store$get;
 
+			event.preventDefault();
 			// console.log('App addToList1...');
 			var items = [];
 

@@ -11,16 +11,15 @@ import Immutable from 'immutable';
 
 
 
-// global.$ = $;
-// global._ = _;
-// global.ash = ash;
+global.$ = $;
+global._ = _;
+global.ash = ash;
 // global.React = React;
 // global.flyd = flyd;
 // global.rx = rx;
 global.Immutable = Immutable;
 
 var Renderer = global.Renderer = new ash.Renderer();
-
 
 
 // console.log('ash.js start...');
@@ -330,7 +329,7 @@ $('body').on('keydown', () => {
 
 
 import App from './components/App';
-/*import AppReact from './components/AppReact';
+import AppReact from './components/AppReact';
 
 
 class ReorderApp extends ash.Component {
@@ -340,7 +339,7 @@ class ReorderApp extends ash.Component {
 	};
 
 	render() {
-		var items = this.state.items.map((value, index) => <button key={'' + index} events={{click: this.hello.bind(null, index, value)}}>{'' + value}</button>);
+		var items = this.state.items.map((value, index) => <button key={'' + index} events={{click: this.hello.bind(null, index, value)}}>{'' + value + '. '}</button>);
 
 		if (this.state.reversed) {
 			items = items.reverse();
@@ -359,7 +358,7 @@ class ReorderApp extends ash.Component {
 	}
 
 	addItem() {
-		console.log('adding item...');
+		// console.log('adding item...');
 
 		this.state.items.push('' + (Math.random() * 100 >> 0));
 		this.state.reversed = !this.state.reversed;
@@ -370,21 +369,42 @@ class ReorderApp extends ash.Component {
 	hello(index, value) {
 		console.log('Hello, this is', value, 'at', index);
 	}
-}*/
+}
 // var viewStream = ash.AshNodeStream.from(<ReorderApp />);
 
 
-var viewStream = ash.AshNodeStream.from(<App />);
+// var viewStream = ash.AshNodeStream.from(<App />);
+
+// global.viewStream = viewStream;
+
+// Renderer.addStream(viewStream, global.document.querySelector('.page'));
 
 
-console.log('viewStream', viewStream);
+var stream2 = new ash.Stream();
+var stream1 = ash.Stream.from(function (s, changed, deps) {
+	console.log('stream1 fn...');
+	
+	console.log(arguments.length, arguments, s, changed, deps);
 
-Renderer.addStream(viewStream, global.document.querySelector('.page'));
+	return changed[0].get() * 2;
+}, stream2);
+
+console.log('stream1 = ', stream1);
+console.log('stream2 = ', stream2);
+
+
+// stream1.from(stream2);
+
+stream2.push(1);
+
+console.log(stream1.get());
+
 
 // React.render(
 // 	React.createElement(AppReact),
 // 	global.document.querySelector('.pageReact')
 // );
+
 
 
 /*var items = [];

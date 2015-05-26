@@ -1,8 +1,3 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
 /**
  * Checks if `value` is `undefined`.
  *
@@ -19,6 +14,11 @@ Object.defineProperty(exports, '__esModule', {
  * _.isUndefined(null);
  * // => false
  */
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 exports.default = isUndefined;
 
 function isUndefined(value) {

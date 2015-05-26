@@ -24,6 +24,6 @@
 		"react"
 	],
 	"optional": ["runtime"],
-	"jsxPragma": "ash.e",
-	"plugins": ["closure-elimination"]
+	"jsxPragma": "ash.e"
+	// "plugins": ["closure-elimination"]
 }

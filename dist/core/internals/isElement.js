@@ -3,6 +3,13 @@
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
+exports.default = isElement;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _isObjectLike = require('./isObjectLike');
+
+var _isObjectLike2 = _interopRequireDefault(_isObjectLike);
 
 /**
  * Checks if `value` is a DOM element.
@@ -20,13 +27,6 @@ Object.defineProperty(exports, '__esModule', {
  * _.isElement('<body>');
  * // => false
  */
-exports.default = isElement;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _isObjectLike = require('./isObjectLike');
-
-var _isObjectLike2 = _interopRequireDefault(_isObjectLike);
 
 function isElement(value) {
   return value && value.nodeType === 1 && (0, _isObjectLike2.default)(value) && Object.prototype.toString.call(value).indexOf('Element') > -1 || false;

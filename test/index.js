@@ -30,6 +30,15 @@ describe('ash.Stream', () => {
 		assert.equal(stream, stream.push(23));
 	});
 
+	it('updates dependencies', () => {
+    var x = ash.Stream.from(3);
+    var x2 = ash.Stream.from(() => {
+      return x.get() * 2;
+    }, x);
+
+    assert.equal(x2.get(), x.get() * 2);
+  });
+
 	it('can set result by returning value', () => {
 		var stream1 = new ash.Stream();
 		var stream2 = new ash.Stream();
@@ -164,6 +173,23 @@ describe('ash.Stream', () => {
 		stream2.push(22);
 
 		assert.deepEqual(result, [11, 21, 13]);
+	});
+
+	it('stream dependencies can be injected later', () => {
+		var stream2 = new ash.Stream();
+		var stream1 = ash.Stream.from((stream, changed) => {
+			
+			console.log(changed);
+
+			return changed[0].get() * 2;
+		});
+		
+
+		stream1.from(stream2);
+
+		stream2.push(1);
+
+		assert.equal(stream1.get(), 2);
 	});
 
 	it('can get its own value', () => {

@@ -2,7 +2,6 @@ import isObject from '../internals/isObject';
 import EventListener from '../classes/EventListener';
 
 
-
 var eventListener = new EventListener();
 
 export default function setNodeProperties(node, properties, isNewlyInserted) {
@@ -38,7 +37,7 @@ export default function setNodeProperties(node, properties, isNewlyInserted) {
 				} else if (prop === 'value') {
 					node.value = properties[prop];
 					node.setAttribute(prop, properties[prop]);
-				} else {
+				} else if (prop !== 'key') {
 					node.setAttribute(prop, properties[prop]);
 				}
 			}

@@ -6,6 +6,8 @@ Object.defineProperty(exports, '__esModule', {
 exports.isInStream = isInStream;
 exports.getInStream = getInStream;
 exports.updateStream = updateStream;
+exports.findStreamDependencies = findStreamDependencies;
+exports.updateStreamDependencies = updateStreamDependencies;
 exports.detachStreamDependencies = detachStreamDependencies;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -51,7 +53,45 @@ function updateStream(stream) {
 
 	inStream = null;
 
-	stream.__updatedDependencies = [];
+	// stream.__updatedDependencies = [];
+	while (stream.__updatedDependencies.length) {
+		stream.__updatedDependencies.shift();
+	}
+}
+
+function findStreamDependencies(stream, dependenciesCache) {
+	if (!stream.__queued) {
+		stream.__queued = true;
+
+		for (var i = 0; i < stream.__listeners.length; i++) {
+			findStreamDependencies(stream.__listeners[i], dependenciesCache);
+		}
+
+		dependenciesCache.push(stream);
+	}
+}
+
+function updateStreamDependencies(stream) {
+	var dependenciesCache = [];
+
+	for (var i = 0; i < stream.__listeners.length; i++) {
+		if (stream.__listeners[i].end === stream) {
+			detachStreamDependencies(stream.__listeners[i]);
+			detachStreamDependencies(stream.__listeners[i].end);
+		} else {
+			stream.__listeners[i].__updatedDependencies.push(stream);
+
+			findStreamDependencies(stream.__listeners[i], dependenciesCache);
+		}
+	}
+
+	for (var i = dependenciesCache.length - 1; i >= 0; i--) {
+		if (dependenciesCache[i].__updatedDependencies !== undefined && dependenciesCache[i].__updatedDependencies.length) {
+			updateStream(dependenciesCache[i]);
+		}
+
+		dependenciesCache[i].__queued = false;
+	}
 }
 
 function detachStreamDependencies(stream) {

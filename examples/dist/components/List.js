@@ -16,14 +16,6 @@ var _ash = require('ash');
 
 var _ash2 = _interopRequireDefault(_ash);
 
-function _ref(value, index) {
-	return _ash2.default.e(
-		'li',
-		{ key: '' + index },
-		'' + value
-	);
-}
-
 var List = (function (_ash$Component) {
 	function List() {
 		_classCallCheck(this, List);
@@ -38,6 +30,7 @@ var List = (function (_ash$Component) {
 	_createClass(List, [{
 		key: 'shouldUpdate',
 		value: function shouldUpdate(newProps) {
+			// console.log('should list update?', this.props.list !== newProps.list || this.props.shadow !== newProps.shadow);
 			// console.log('List shouldUpdate...', this.props.label, this.props.list !== newProps.list, this.props.shadow !== newProps.shadow);
 			return this.props.list !== newProps.list || this.props.shadow !== newProps.shadow;
 		}
@@ -56,7 +49,13 @@ var List = (function (_ash$Component) {
 						} },
 					'!!!'
 				),
-				this.props.list.toArray().map(_ref)
+				this.props.list.map(function (value, index) {
+					return _ash2.default.e(
+						'li',
+						{ key: '' + index },
+						'' + value
+					);
+				})
 			);
 		}
 	}]);
@@ -66,3 +65,4 @@ var List = (function (_ash$Component) {
 
 exports.default = List;
 module.exports = exports.default;
+/*toArray().*/

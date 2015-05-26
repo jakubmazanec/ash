@@ -320,68 +320,133 @@ var _componentsApp = require('./components/App');
 
 var _componentsApp2 = _interopRequireDefault(_componentsApp);
 
+var _componentsAppReact = require('./components/AppReact');
+
+var _componentsAppReact2 = _interopRequireDefault(_componentsAppReact);
+
 // import React from 'react';
 // import m from 'mithril';
 // import flyd from 'flyd';
 // import rx from 'rx';
 
-// global.$ = $;
-// global._ = _;
-// global.ash = ash;
+global.$ = _jquery2.default;
+global._ = _lodashFp2.default;
+global.ash = _ash2.default;
 // global.React = React;
 // global.flyd = flyd;
 // global.rx = rx;
 global.Immutable = _immutable2.default;
 
 var Renderer = global.Renderer = new _ash2.default.Renderer();
-/*import AppReact from './components/AppReact';
+var ReorderApp = (function (_ash$Component) {
+	function ReorderApp() {
+		_classCallCheck(this, ReorderApp);
 
-
-class ReorderApp extends ash.Component {
-	state = {
-		reversed: false,
-		items: []
-	};
-
-	render() {
-		var items = this.state.items.map((value, index) => <button key={'' + index} events={{click: this.hello.bind(null, index, value)}}>{'' + value}</button>);
-
-		if (this.state.reversed) {
-			items = items.reverse();
+		if (_ash$Component != null) {
+			_ash$Component.apply(this, arguments);
 		}
 
-		return <div>
-			<button key="btn" events={{
-					click: this.addItem
-				}}>{'' + this.state.reversed}</button>
-				{this.state.reversed ? <b>!</b> : null}
-				<div key="inr">
-					{this.state.reversed ? <b>!</b> : null}
-					<div key="itm">{items}</div>
-				</div>
-		</div>;
+		this.state = {
+			reversed: false,
+			items: []
+		};
 	}
 
-	addItem() {
-		console.log('adding item...');
+	_inherits(ReorderApp, _ash$Component);
 
-		this.state.items.push('' + (Math.random() * 100 >> 0));
-		this.state.reversed = !this.state.reversed;
+	_createClass(ReorderApp, [{
+		key: 'render',
+		value: function render() {
+			var _this = this;
 
-		this.isDirty = true;
-	}
+			var items = this.state.items.map(function (value, index) {
+				return _ash2.default.e(
+					'button',
+					{ key: '' + index, events: { click: _this.hello.bind(null, index, value) } },
+					'' + value + '. '
+				);
+			});
 
-	hello(index, value) {
-		console.log('Hello, this is', value, 'at', index);
-	}
-}*/
+			if (this.state.reversed) {
+				items = items.reverse();
+			}
+
+			return _ash2.default.e(
+				'div',
+				null,
+				_ash2.default.e(
+					'button',
+					{ key: 'btn', events: {
+							click: this.addItem
+						} },
+					'' + this.state.reversed
+				),
+				this.state.reversed ? _ash2.default.e(
+					'b',
+					null,
+					'!'
+				) : null,
+				_ash2.default.e(
+					'div',
+					{ key: 'inr' },
+					this.state.reversed ? _ash2.default.e(
+						'b',
+						null,
+						'!'
+					) : null,
+					_ash2.default.e(
+						'div',
+						{ key: 'itm' },
+						items
+					)
+				)
+			);
+		}
+	}, {
+		key: 'addItem',
+		value: function addItem() {
+			// console.log('adding item...');
+
+			this.state.items.push('' + (Math.random() * 100 >> 0));
+			this.state.reversed = !this.state.reversed;
+
+			this.isDirty = true;
+		}
+	}, {
+		key: 'hello',
+		value: function hello(index, value) {
+			console.log('Hello, this is', value, 'at', index);
+		}
+	}]);
+
+	return ReorderApp;
+})(_ash2.default.Component);
+
 // var viewStream = ash.AshNodeStream.from(<ReorderApp />);
 
-var viewStream = _ash2.default.AshNodeStream.from(_ash2.default.e(_componentsApp2.default, null));
+// var viewStream = ash.AshNodeStream.from(<App />);
 
-console.log('viewStream', viewStream);
+// global.viewStream = viewStream;
 
-Renderer.addStream(viewStream, global.document.querySelector('.page'));
+// Renderer.addStream(viewStream, global.document.querySelector('.page'));
+
+var stream2 = new _ash2.default.Stream();
+var stream1 = _ash2.default.Stream.from(function (s, changed, deps) {
+	console.log('stream1 fn...');
+
+	console.log(arguments.length, arguments, s, changed, deps);
+
+	return changed[0].get() * 2;
+}, stream2);
+
+console.log('stream1 = ', stream1);
+console.log('stream2 = ', stream2);
+
+// stream1.from(stream2);
+
+stream2.push(1);
+
+console.log(stream1.get());
 
 // React.render(
 // 	React.createElement(AppReact),
@@ -489,25 +554,18 @@ var COMPLETED_TODOS = 'completed';
 var ENTER_KEY = 13;
 var ESCAPE_KEY = 27;
 
-function _ref() {
-	var node = (0, _jquery2.default)(this.domNode).find('.edit')[0];
-
-	node.focus();
-	node.setSelectionRange(node.value.length, node.value.length);
-}
-
-var TodoItem = (function (_ash$Component) {
+var TodoItem = (function (_ash$Component2) {
 	function TodoItem() {
 		_classCallCheck(this, TodoItem);
 
-		if (_ash$Component != null) {
-			_ash$Component.apply(this, arguments);
+		if (_ash$Component2 != null) {
+			_ash$Component2.apply(this, arguments);
 		}
 
 		this.state = { editText: this.props.todo.title };
 	}
 
-	_inherits(TodoItem, _ash$Component);
+	_inherits(TodoItem, _ash$Component2);
 
 	_createClass(TodoItem, [{
 		key: 'setState',
@@ -535,7 +593,12 @@ var TodoItem = (function (_ash$Component) {
 			// parent's `onEdit` (which in this case triggeres a re-render), and
 			// immediately manipulate the DOM as if the rendering's over. Put it as a
 			// callback. Refer to app.js' `edit` method
-			this.props.onEdit(_ref.bind(this));
+			this.props.onEdit((function () {
+				var node = (0, _jquery2.default)(this.domNode).find('.edit')[0];
+
+				node.focus();
+				node.setSelectionRange(node.value.length, node.value.length);
+			}).bind(this));
 
 			this.setState({ editText: this.props.todo.title });
 		}
@@ -595,16 +658,16 @@ var TodoItem = (function (_ash$Component) {
 	return TodoItem;
 })(_ash2.default.Component);
 
-var TodoFooter = (function (_ash$Component2) {
+var TodoFooter = (function (_ash$Component3) {
 	function TodoFooter() {
 		_classCallCheck(this, TodoFooter);
 
-		if (_ash$Component2 != null) {
-			_ash$Component2.apply(this, arguments);
+		if (_ash$Component3 != null) {
+			_ash$Component3.apply(this, arguments);
 		}
 	}
 
-	_inherits(TodoFooter, _ash$Component2);
+	_inherits(TodoFooter, _ash$Component3);
 
 	_createClass(TodoFooter, [{
 		key: 'setState',
@@ -700,20 +763,12 @@ var TodoFooter = (function (_ash$Component2) {
 	return TodoFooter;
 })(_ash2.default.Component);
 
-function _ref2(todo) {
-	return !todo.completed;
-}
-
-function _ref3(accum, todo) {
-	return todo.completed ? accum : accum + 1;
-}
-
-var TodoApp = (function (_ash$Component3) {
+var TodoApp = (function (_ash$Component4) {
 	function TodoApp() {
 		_classCallCheck(this, TodoApp);
 
-		if (_ash$Component3 != null) {
-			_ash$Component3.apply(this, arguments);
+		if (_ash$Component4 != null) {
+			_ash$Component4.apply(this, arguments);
 		}
 
 		this.state = {
@@ -723,7 +778,7 @@ var TodoApp = (function (_ash$Component3) {
 		};
 	}
 
-	_inherits(TodoApp, _ash$Component3);
+	_inherits(TodoApp, _ash$Component4);
 
 	_createClass(TodoApp, [{
 		key: 'setState',
@@ -824,7 +879,9 @@ var TodoApp = (function (_ash$Component3) {
 	}, {
 		key: 'clearCompleted',
 		value: function clearCompleted() {
-			var newTodos = this.state.todos.filter(_ref2);
+			var newTodos = this.state.todos.filter(function (todo) {
+				return !todo.completed;
+			});
 
 			this.setState({ todos: newTodos });
 		}
@@ -836,13 +893,13 @@ var TodoApp = (function (_ash$Component3) {
   }*/
 
 		value: function render() {
-			var _this = this;
+			var _this2 = this;
 
 			var footer = null;
 			var main = null;
 
 			var shownTodos = this.state.todos.filter(function (todo) {
-				switch (_this.state.nowShowing) {
+				switch (_this2.state.nowShowing) {
 					case ACTIVE_TODOS:
 						return !todo.completed;
 					case COMPLETED_TODOS:
@@ -856,16 +913,18 @@ var TodoApp = (function (_ash$Component3) {
 				return _ash2.default.e(TodoItem, {
 					key: todo.id,
 					todo: todo,
-					onToggle: _this.toggle.bind(_this, todo),
-					onDestroy: _this.destroy.bind(_this, todo),
-					onEdit: _this.edit.bind(_this, todo),
-					editing: _this.state.editing === todo.id,
-					onSave: _this.save.bind(_this, todo),
-					onCancel: _this.cancel
+					onToggle: _this2.toggle.bind(_this2, todo),
+					onDestroy: _this2.destroy.bind(_this2, todo),
+					onEdit: _this2.edit.bind(_this2, todo),
+					editing: _this2.state.editing === todo.id,
+					onSave: _this2.save.bind(_this2, todo),
+					onCancel: _this2.cancel
 				});
 			});
 
-			var activeTodoCount = this.state.todos.reduce(_ref3, 0);
+			var activeTodoCount = this.state.todos.reduce(function (accum, todo) {
+				return todo.completed ? accum : accum + 1;
+			}, 0);
 
 			var completedCount = this.state.todos.length - activeTodoCount;
 

@@ -11,6 +11,15 @@ export default class App extends ash.Component {
 	static list1 = new ash.Stream();
 
 	render() {
+		/*return <section>
+			<header style={{
+				boxShadow: appStore.get().get('appShadow') ? '2px 2px 5px red' : '2px 2px 5px blue'
+			}}>
+				<a href="#" events={{click: this.addToList1}}>+ list 1!</a>
+			</header>
+			<List label="List1" list={list1Store.get()} shadow={appStore.get().get('list1Shadow')} changeShadow={this.changeList1Shadow} />
+		</section>;*/
+
 		return <div>
 			<div style={{
 				boxShadow: appStore.get().get('appShadow') ? '2px 2px 5px red' : '2px 2px 5px blue'
@@ -18,18 +27,18 @@ export default class App extends ash.Component {
 				<button events={{
 					click: this.addToList1
 				}}>+ list 1!</button>
-				<button events={{
-					click: this.addToList2
-				}}>+ list 2!</button>
-				<button events={{
-					click: this.clearList1
-				}}>+ clear 1!</button>
-				<button events={{
-					click: this.clearList2
-				}}>+ clear 2!</button>
-				<button events={{
-					click: this.changeShadow
-				}}>!!!</button>
+					<button events={{
+						click: this.addToList2
+					}}>+ list 2!</button>
+					<button events={{
+						click: this.clearList1
+					}}>+ clear 1!</button>
+					<button events={{
+						click: this.clearList2
+					}}>+ clear 2!</button>
+					<button events={{
+						click: this.changeShadow
+					}}>!!!</button>
 			</div>
 			<List label="List1" list={list1Store.get()} shadow={appStore.get().get('list1Shadow')} changeShadow={this.changeList1Shadow} />
 			<List label="List2" list={list2Store.get()} shadow={appStore.get().get('list2Shadow')} changeShadow={this.changeList2Shadow} />
@@ -64,7 +73,8 @@ export default class App extends ash.Component {
 		appStore.push(appStore.get().set('appShadow', !appStore.get().get('appShadow')));
 	}
 
-	addToList1() {
+	addToList1(event) {
+		event.preventDefault();
 		// console.log('App addToList1...');
 		var items = [];
 

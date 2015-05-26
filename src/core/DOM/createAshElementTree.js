@@ -4,7 +4,6 @@ import isAshNodeAshElement from '../internals/isAshNodeAshElement';
 import constants from '../internals/constants';
 
 
-
 const LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
 
 function walkCreateAshElementTree(ashElement, owner, index) {
@@ -58,17 +57,17 @@ function walkCreateAshElementTree(ashElement, owner, index) {
 	}
 }
 
-export default function createAshElementTree(rootAshElement, stream/*, startingLevel*/) {
+export default function createAshElementTree(ashElement, stream/*, startingLevel*/) {
 	// type check
-	if (!isAshElement(rootAshElement)) {
-		throw new Error(rootAshElement + ' must be a AshElement object.');
+	if (!isAshElement(ashElement)) {
+		throw new Error(`${ashElement} (ashElement) must be an AshElement object instance.`);
 	}
 
 	if (!stream) {
-		throw new Error(stream + ' must be an object.');
+		throw new Error(`${stream} (stream) must be a Stream object instance.`);
 	}
 
-	let ashElementTree = rootAshElement;
+	let ashElementTree = ashElement;
 
 	ashElementTree.stream = stream;
 	ashElementTree.isRoot = true;

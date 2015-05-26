@@ -12,17 +12,17 @@ var _streamMethods = require('./streamMethods');
 
 var streamsQueue;
 
-function findStreamDependencies(stream, dependenciesCache) {
+/*function findStreamDependencies(stream, dependenciesCache) {
 	if (!stream.__queued) {
 		stream.__queued = true;
 
-		for (var i = 0; i < stream.__listeners.length; i++) {
+		for (let i = 0; i < stream.__listeners.length; i++) {
 			findStreamDependencies(stream.__listeners[i], dependenciesCache);
 		}
 
 		dependenciesCache.push(stream);
 	}
-}
+}*/
 
 var StreamsQueue = (function () {
 	function StreamsQueue() {
@@ -47,31 +47,32 @@ var StreamsQueue = (function () {
 			return this;
 		}
 	}, {
+		key: 'length',
+		get: function () {
+			return this.streams.length;
+		}
+	}, {
 		key: 'update',
 		value: function update() {
 			while (this.streams.length > 0) {
-				var dependenciesCache = [];
-
-				for (var i = 0; i < this.streams[0].__listeners.length; i++) {
-					if (this.streams[0].__listeners[i].end === this.streams[0]) {
-						(0, _streamMethods.detachStreamDependencies)(this.streams[0].__listeners[i]);
-						(0, _streamMethods.detachStreamDependencies)(this.streams[0].__listeners[i].end);
-					} else {
-						this.streams[0].__listeners[i].__updatedDependencies.push(this.streams[0]);
-
-						findStreamDependencies(this.streams[0].__listeners[i], dependenciesCache);
-					}
-				}
-
-				for (var i = dependenciesCache.length - 1; i >= 0; i--) {
-					if (dependenciesCache[i].__updatedDependencies !== undefined && dependenciesCache[i].__updatedDependencies.length) {
-						(0, _streamMethods.updateStream)(dependenciesCache[i]);
-					}
-
-					dependenciesCache[i].__queued = false;
-				}
-
-				this.streams.shift();
+				(0, _streamMethods.updateStreamDependencies)(this.streams.shift());
+				/*let dependenciesCache = [];
+    		for (let i = 0; i < this.streams[0].__listeners.length; i++) {
+    	if (this.streams[0].__listeners[i].end === this.streams[0]) {
+    		detachStreamDependencies(this.streams[0].__listeners[i]);
+    		detachStreamDependencies(this.streams[0].__listeners[i].end);
+    	} else {
+    		this.streams[0].__listeners[i].__updatedDependencies.push(this.streams[0]);
+    				findStreamDependencies(this.streams[0].__listeners[i], dependenciesCache);
+    	}
+    }
+    		for (let i = dependenciesCache.length - 1; i >= 0; i--) {
+    	if (dependenciesCache[i].__updatedDependencies !== undefined && dependenciesCache[i].__updatedDependencies.length) {
+    		updateStream(dependenciesCache[i]);
+    	}
+    			dependenciesCache[i].__queued = false;
+    }
+    		this.streams.shift();*/
 			}
 		}
 	}]);
@@ -81,3 +82,4 @@ var StreamsQueue = (function () {
 
 exports.default = StreamsQueue;
 module.exports = exports.default;
+/*updateStream, detachStreamDependencies*/

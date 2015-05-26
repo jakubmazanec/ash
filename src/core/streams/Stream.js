@@ -1,7 +1,7 @@
 import StreamTransformer from './StreamTransformer';
 import StreamsQueue from './StreamsQueue';
 import isFunction from '../internals/isFunction';
-import {detachStreamDependencies, isInStream, getInStream, updateStream} from './streamMethods';
+import {detachStreamDependencies, isInStream, getInStream, updateStream, updateStreamDependencies} from './streamMethods';
 
 
 
@@ -57,7 +57,7 @@ class Stream {
 		this.value = value;
 		this.hasValue = true;
 
-		if (!isInStream(this)) {
+		/*if (!isInStream(this)) {
 			streamsQueue.push(this);
 
 			if (!getInStream()) {
@@ -72,6 +72,25 @@ class Stream {
 					this.__listeners[i].__updatedDependencies.push(this);
 				}
 			}
+		}*/
+
+		if (!getInStream()) {
+			updateStreamDependencies(this);
+
+			if (streamsQueue.length) {
+				streamsQueue.update();
+			}
+		} else if (isInStream(this)) {
+			for (let i = 0; i < this.__listeners.length; i++) {
+				if (this.__listeners[i].end !== this) {
+					this.__listeners[i].__updatedDependencies.push(this);
+				}	else {
+					detachStreamDependencies(this.__listeners[i]);
+					detachStreamDependencies(this.__listeners[i].end);
+				}
+			}
+		} else {
+			streamsQueue.push(this);
 		}
 
 		return this;
@@ -86,12 +105,15 @@ class Stream {
 	}
 
 	from(arg, ...args) {
-		if (args.length) {
+		if (args.length || isFunction(arg) || arg instanceof Stream) {
+			detachStreamDependencies(this);
+
 			if (isFunction(arg)) {
 				this.fn = arg;
+			} else if (arg instanceof Stream) {
+				arg.__listeners.push(this);
+				this.__dependencies.push(arg);
 			}
-
-			detachStreamDependencies(this);
 
 			for (let i = 0; i < args.length; i++) {
 				if (args[i] instanceof Stream) {
@@ -110,8 +132,10 @@ class Stream {
 				this.endsOn(...endStreams);
 			}
 			
-			updateStream(this);
-			streamsQueue.update();
+			if (this.__dependencies.length) {
+				updateStream(this);
+				streamsQueue.update();
+			}
 		} else if (Array.isArray(arg)) {
 			for (let i = 0; i < arg.length; i++) {
 				this.push(arg[i]);

@@ -2,6 +2,7 @@ import isAshNodeAshElement from '../internals/isAshNodeAshElement';
 import constants from '../internals/constants';
 import findNode from '../DOM/findNode';
 import isFunction from '../internals/isFunction';
+import isAncestor from '../internals/isAncestor';
 import Stream from '../streams/Stream';
 
 
@@ -38,6 +39,10 @@ export default class Component {
 				this[value] = this.constructor[value];
 			}
 		});
+	}
+
+	static isAncestorOf(value) {
+		return isAncestor(Component, value);
 	}
 
 	get isDirty() {

@@ -10,8 +10,6 @@ var _coreSupport = require('./core/support');
 
 var _coreSupport2 = _interopRequireDefault(_coreSupport);
 
-var _coreClassesImmutables = require('./core/classes/Immutables');
-
 var _coreClassesComponent = require('./core/classes/Component');
 
 var _coreClassesComponent2 = _interopRequireDefault(_coreClassesComponent);
@@ -55,9 +53,6 @@ var VERSION = '0.1.0';
 	VERSION: VERSION,
 	support: _coreSupport2.default,
 
-	ImmutableArray: _coreClassesImmutables.ImmutableArray,
-	ImmutableObject: _coreClassesImmutables.ImmutableObject,
-
 	Component: _coreClassesComponent2.default,
 	Renderer: _coreClassesRenderer2.default,
 	Stream: _coreStreamsStream2.default,
@@ -66,7 +61,6 @@ var VERSION = '0.1.0';
 	e: _coreInternalsCreateElement2.default,
 	createElement: _coreInternalsCreateElement2.default,
 
-	isImmutable: _coreInternalsIsImmutable2.default,
 	isAncestor: _coreInternalsIsAncestor2.default
 });
 

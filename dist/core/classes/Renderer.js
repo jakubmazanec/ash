@@ -114,13 +114,6 @@ var Renderer = (function () {
 		value: function render(stream, changed, dependencies) {
 			var ashNodeStream = dependencies[0];
 
-			function _ref() {
-				stream.node.appendChild((0, _DOMCreateNodeTree2.default)(stream.ashNodeTree));
-				(0, _DOMMountComponents2.default)(ashNodeStream.ashElementTree);
-
-				stream.isRendering = false;
-			}
-
 			if (!stream.ashNodeTree) {
 				var isNodeTreeValid = false;
 				var isNodeTreeValidated = false;
@@ -153,9 +146,10 @@ var Renderer = (function () {
 						stream.node.removeChild(stream.node.firstChild);
 					}
 
-					stream.isRendering = true;
-
-					global.requestAnimationFrame(_ref);
+					global.requestAnimationFrame(function () {
+						stream.node.appendChild((0, _DOMCreateNodeTree2.default)(stream.ashNodeTree));
+						(0, _DOMMountComponents2.default)(ashNodeStream.ashElementTree);
+					});
 				}
 
 				if (isNodeTreeValid && isNodeTreeValidated) {

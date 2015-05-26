@@ -1,10 +1,10 @@
-import {updateStream, detachStreamDependencies} from './streamMethods';
+import {/*updateStream, detachStreamDependencies*/updateStreamDependencies} from './streamMethods';
 
 
 
 var streamsQueue;
 
-function findStreamDependencies(stream, dependenciesCache) {
+/*function findStreamDependencies(stream, dependenciesCache) {
 	if (!stream.__queued) {
 		stream.__queued = true;
 
@@ -14,7 +14,7 @@ function findStreamDependencies(stream, dependenciesCache) {
 
 		dependenciesCache.push(stream);
 	}
-}
+}*/
 
 class StreamsQueue {
 	streams = [];
@@ -35,9 +35,14 @@ class StreamsQueue {
 		return this;
 	}
 
+	get length() {
+		return this.streams.length;
+	}
+
 	update() {
 		while (this.streams.length > 0) {
-			let dependenciesCache = [];
+			updateStreamDependencies(this.streams.shift());
+			/*let dependenciesCache = [];
 
 			for (let i = 0; i < this.streams[0].__listeners.length; i++) {
 				if (this.streams[0].__listeners[i].end === this.streams[0]) {
@@ -58,7 +63,7 @@ class StreamsQueue {
 				dependenciesCache[i].__queued = false;
 			}
 
-			this.streams.shift();
+			this.streams.shift();*/
 		}
 	}
 }

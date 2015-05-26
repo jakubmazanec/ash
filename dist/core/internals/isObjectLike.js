@@ -1,8 +1,3 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
 /**
  * Checks if `value` is object-like.
  *
@@ -10,6 +5,11 @@ Object.defineProperty(exports, '__esModule', {
  * @param {*} value The value to check.
  * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
  */
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 exports.default = isObjectLike;
 
 function isObjectLike(value) {

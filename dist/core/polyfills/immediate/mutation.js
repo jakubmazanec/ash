@@ -1,12 +1,12 @@
+//based off rsvp https://github.com/tildeio/rsvp.js
+//license https://github.com/tildeio/rsvp.js/blob/master/LICENSE
+//https://github.com/tildeio/rsvp.js/blob/master/lib/rsvp/asap.js
+
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
-//based off rsvp https://github.com/tildeio/rsvp.js
-//license https://github.com/tildeio/rsvp.js/blob/master/LICENSE
-//https://github.com/tildeio/rsvp.js/blob/master/lib/rsvp/asap.js
-
 var Mutation = global.MutationObserver || global.WebKitMutationObserver;
 
 function test() {

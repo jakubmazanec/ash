@@ -9,12 +9,13 @@
   "author": "Jakub Mazanec <jakub@mazanec.info>",
   "license": "MIT",
   "repository": "jakubmazanec/ash",
-  "main": "bin/src/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "mocha --compilers js:gulp-babel/node_modules/babel-core/register"
   },
   "devDependencies": {
     "babel-plugin-closure-elimination": "0.0.1",
+    "babel-runtime": "^5.4.7",
     "browserify": "^5.11.1",
     "envify": "^3.2.0",
     "flyd": "^0.1.4",
@@ -29,7 +30,7 @@
     "gulp-util": "^3.0.1",
     "immutable": "^3.7.2",
     "jquery": "^2.1.1",
-    "koa": "^0.10.0",
+    "koa": "^0.21.0",
     "koa-compress": "^1.0.7",
     "koa-logger": "^1.2.2",
     "koa-route": "^2.1.0",
@@ -46,8 +47,5 @@
     "v8-natives": "0.0.2",
     "vinyl-source-stream": "^1.0.0"
   },
-  "dependencies": {
-    "babel-runtime": "^5.4.0",
-    "koa": "^0.20.0"
-  }
+  "dependencies": {}
 }

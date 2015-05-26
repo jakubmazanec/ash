@@ -2,6 +2,7 @@ import ash from 'ash';
 
 export default class List extends ash.Component {
 	shouldUpdate(newProps) {
+		// console.log('should list update?', this.props.list !== newProps.list || this.props.shadow !== newProps.shadow);
 		// console.log('List shouldUpdate...', this.props.label, this.props.list !== newProps.list, this.props.shadow !== newProps.shadow);
 		return this.props.list !== newProps.list || this.props.shadow !== newProps.shadow;
 	}
@@ -15,7 +16,7 @@ export default class List extends ash.Component {
 			}}>
 				!!!
 			</button>
-			{this.props.list.toArray().map((value, index) => <li key={'' + index}>{'' + value}</li>)}
+			{this.props.list./*toArray().*/map((value, index) => <li key={'' + index}>{'' + value}</li>)}
 		</ul>;
 	}
 }

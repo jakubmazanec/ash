@@ -3,8 +3,6 @@
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
-
-// apply patches to dom tree
 exports.default = patchNodeTree;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -137,6 +135,9 @@ function flushCache(reindexCache, reorderCache) {
 		reorderCache.shift();
 	}
 }
+
+// apply patches to dom tree
+
 function patchNodeTree(nodeTree /*, patches*/) {
 	var patches = arguments[1];
 	var node;
@@ -145,7 +146,7 @@ function patchNodeTree(nodeTree /*, patches*/) {
 
 	// type check
 	if (!(0, _internalsIsElement2.default)(nodeTree)) {
-		return false;
+		throw new Error('Patching the DOM was unsuccesful!');
 	}
 
 	if (!patches.length) {
@@ -210,63 +211,53 @@ function patchNodeTree(nodeTree /*, patches*/) {
 			node = (0, _findNode2.default)(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
-				return false;
+				throw new Error('Patching the DOM was unsuccesful!');
 			}
 
 			node.parentNode.replaceChild((0, _createNodeTree2.default)(patches[i].node), node);
-		}
-
-		if (patches[i].type === PATCH_ASH_TEXT_NODE) {
+		} else if (patches[i].type === PATCH_ASH_TEXT_NODE) {
 			node = (0, _findNode2.default)(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
-				return false;
+				throw new Error('Patching the DOM was unsuccesful!');
 			}
 
 			node.nodeValue = patches[i].text;
-		}
-
-		if (patches[i].type === PATCH_PROPERTIES) {
+		} else if (patches[i].type === PATCH_PROPERTIES) {
 			node = (0, _findNode2.default)(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
-				return false;
+				throw new Error('Patching the DOM was unsuccesful!');
 			}
 
 			(0, _setNodeProperties2.default)(node, patches[i].propertiesToChange, false);
 			(0, _removeNodeProperties2.default)(node, patches[i].propertiesToRemove);
-		}
-
-		if (patches[i].type === PATCH_REMOVE) {
+		} else if (patches[i].type === PATCH_REMOVE) {
 			node = (0, _findNode2.default)(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
-				return false;
+				throw new Error('Patching the DOM was unsuccesful!');
 			}
 
 			// remove old events
 			eventListener.removeEvents(patches[i].id, patches[i].streamId);
 
 			node.parentNode.removeChild(node);
-		}
-
-		if (patches[i].type === PATCH_INSERT) {
+		} else if (patches[i].type === PATCH_INSERT) {
 			node = (0, _findNode2.default)(nodeTree, patches[i].parentId, patches[i].parentIndices);
 
 			if (!node) {
-				return false;
+				throw new Error('Patching the DOM was unsuccesful!');
 			}
 
 			node.appendChild((0, _createNodeTree2.default)(patches[i].node));
 
 			reorderCache.push(node);
-		}
-
-		if (patches[i].type === PATCH_ORDER) {
+		} else if (patches[i].type === PATCH_ORDER) {
 			node = (0, _findNode2.default)(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
-				return false;
+				throw new Error('Patching the DOM was unsuccesful!');
 			}
 
 			// reindex events

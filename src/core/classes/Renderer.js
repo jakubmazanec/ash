@@ -101,13 +101,9 @@ class Renderer {
 					stream.node.removeChild(stream.node.firstChild);
 				}
 
-				stream.isRendering = true;
-
 				global.requestAnimationFrame(() => {
 					stream.node.appendChild(createNodeTree(stream.ashNodeTree));
 					mountComponents(ashNodeStream.ashElementTree);
-
-					stream.isRendering = false;
 				});
 			}
 

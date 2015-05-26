@@ -27,17 +27,39 @@ var _classesComponent = require('../classes/Component');
 
 var _classesComponent2 = _interopRequireDefault(_classesComponent);
 
-var _internalsIsAncestor = require('../internals/isAncestor');
-
-var _internalsIsAncestor2 = _interopRequireDefault(_internalsIsAncestor);
-
 var COMPONENT_ASH_ELEMENT = _constants2.default.COMPONENT_ASH_ELEMENT;
 var ASH_NODE_ASH_ELEMENT = _constants2.default.ASH_NODE_ASH_ELEMENT;
+
+function iterate(iterable) {
+	var result = [];
+
+	if (typeof iterable.__iterator === 'function') {
+		var iterator = iterable.__iterator();
+		var iterationResult = iterator.next();
+
+		while (!iterationResult.done) {
+			result.push(iterationResult.value[1]);
+
+			iterationResult = iterator.next();
+		}
+	} else if (typeof global.Symbol === 'function' && typeof iterable[global.Symbol.iterator]) {
+		var iterator = iterable[global.Symbol.iterator]();
+		var iterationResult = iterator.next();
+
+		while (!iterationResult.done) {
+			result.push(iterationResult.value);
+
+			iterationResult = iterator.next();
+		}
+	}
+
+	return result;
+}
 
 function createElement(tagName, props /*, children...*/) {
 	var children = [];
 
-	if (typeof tagName !== 'string' && typeof tagName === 'function' && (0, _internalsIsAncestor2.default)(_classesComponent2.default, tagName)) {
+	if (typeof tagName !== 'string' && typeof tagName === 'function' && _classesComponent2.default.isAncestorOf(tagName)) {
 		return new _classesAshElement2.default(COMPONENT_ASH_ELEMENT, tagName, arguments[1]);
 	} else if (typeof tagName === 'string' && !tagName.length) {
 		throw new Error(tagName + ' (tagName) must be non-empty string or Component class.');
@@ -59,6 +81,16 @@ function createElement(tagName, props /*, children...*/) {
 					children.push(new _classesAshElement2.default(ASH_NODE_ASH_ELEMENT, _classesAshNode2.default, '' + arguments[i][j]));
 				} else if ((0, _isAshElement2.default)(arguments[i][j])) {
 					children.push(arguments[i][j]);
+				}
+			}
+		} else if (arguments[i] && typeof arguments[i].__iterator === 'function' || arguments[i] && typeof global.Symbol === 'function' && typeof arguments[i][global.Symbol.iterator]) {
+			var iteratorResult = iterate(arguments[i]);
+
+			for (var j = 0; j < iteratorResult.length; j++) {
+				if (typeof iteratorResult[j] === 'string' || typeof iteratorResult === 'number') {
+					children.push(new _classesAshElement2.default(ASH_NODE_ASH_ELEMENT, _classesAshNode2.default, '' + iteratorResult[j]));
+				} else if ((0, _isAshElement2.default)(iteratorResult[j])) {
+					children.push(iteratorResult[j]);
 				}
 			}
 		}

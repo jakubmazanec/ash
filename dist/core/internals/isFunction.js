@@ -1,8 +1,3 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
 /**
  * Checks if `value` is classified as a `Function` object.
  *
@@ -19,6 +14,11 @@ Object.defineProperty(exports, '__esModule', {
  * _.isFunction(/abc/);
  * // => false
  */
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 var isFunction = function (value) {
   // Avoid a Chakra JIT bug in compatibility modes of IE 11.
   // See https://github.com/jashkenas/underscore/issues/1621 for more details.

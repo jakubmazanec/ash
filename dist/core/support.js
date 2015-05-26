@@ -1,8 +1,3 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-	value: true
-});
 /**
  * An object environment feature flags.
  *
@@ -10,6 +5,11 @@ Object.defineProperty(exports, '__esModule', {
  * @memberOf ash
  * @type Object
  */
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 var support = {};
 
 (function () {

@@ -115,7 +115,7 @@ export default function patchNodeTree(nodeTree/*, patches*/) {
 
 	// type check
 	if (!isElement(nodeTree)) {
-		return false;
+		throw new Error('Patching the DOM was unsuccesful!');
 	}
 
 	if (!patches.length) {
@@ -180,63 +180,53 @@ export default function patchNodeTree(nodeTree/*, patches*/) {
 			node = findNode(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
-				return false;
+				throw new Error('Patching the DOM was unsuccesful!');
 			}
 
 			node.parentNode.replaceChild(createNodeTree(patches[i].node), node);
-		}
-
-		if (patches[i].type === PATCH_ASH_TEXT_NODE) {
+		} else if (patches[i].type === PATCH_ASH_TEXT_NODE) {
 			node = findNode(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
-				return false;
+				throw new Error('Patching the DOM was unsuccesful!');
 			}
 
 			node.nodeValue = patches[i].text;
-		}
-
-		if (patches[i].type === PATCH_PROPERTIES) {
+		} else if (patches[i].type === PATCH_PROPERTIES) {
 			node = findNode(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
-				return false;
+				throw new Error('Patching the DOM was unsuccesful!');
 			}
 
 			setNodeProperties(node, patches[i].propertiesToChange, false);
 			removeNodeProperties(node, patches[i].propertiesToRemove);
-		}
-
-		if (patches[i].type === PATCH_REMOVE) {
+		} else if (patches[i].type === PATCH_REMOVE) {
 			node = findNode(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
-				return false;
+				throw new Error('Patching the DOM was unsuccesful!');
 			}
 
 			// remove old events
 			eventListener.removeEvents(patches[i].id, patches[i].streamId);
 
 			node.parentNode.removeChild(node);
-		}
-
-		if (patches[i].type === PATCH_INSERT) {
+		} else if (patches[i].type === PATCH_INSERT) {
 			node = findNode(nodeTree, patches[i].parentId, patches[i].parentIndices);
 
 			if (!node) {
-				return false;
+				throw new Error('Patching the DOM was unsuccesful!');
 			}
 			
 			node.appendChild(createNodeTree(patches[i].node));
 
 			reorderCache.push(node);
-		}
-
-		if (patches[i].type === PATCH_ORDER) {
+		} else if (patches[i].type === PATCH_ORDER) {
 			node = findNode(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
-				return false;
+				throw new Error('Patching the DOM was unsuccesful!');
 			}
 
 			// reindex events

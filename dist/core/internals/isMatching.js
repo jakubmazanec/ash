@@ -1,8 +1,3 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
 /**
  * Checks if the chains of ; i.e all categories from the template chain must be present in the second chain, and in the same order.
  * Strict comparison (===) is used.
@@ -23,6 +18,11 @@ Object.defineProperty(exports, "__esModule", {
  * ash.isMatching([1, 2, 3], [1, 4, 2, 5, 3], true); // -> false
  * ash.isMatching([1, 2, 3], [1, 2, 3, 5, 5], true); // -> true
  */
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 exports.default = isMatching;
 
 function isMatching(chain1, chain2, options) {

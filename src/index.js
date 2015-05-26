@@ -1,6 +1,5 @@
 import support from './core/support';
 
-import {ImmutableArray, ImmutableObject} from './core/classes/Immutables';
 import Component from './core/classes/Component';
 import Renderer from './core/classes/Renderer';
 import Stream from './core/streams/Stream';
@@ -25,9 +24,6 @@ assign(ash, {
 	VERSION,
 	support,
 
-	ImmutableArray,
-	ImmutableObject,
-
 	Component,
 	Renderer,
 	Stream,
@@ -36,7 +32,6 @@ assign(ash, {
 	e: createElement,
 	createElement,
 
-	isImmutable,
 	isAncestor
 });
 

@@ -1,8 +1,3 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
 /**
  * Checks if `value` is the language type of `Object`.
  * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
@@ -25,6 +20,11 @@ Object.defineProperty(exports, '__esModule', {
  * _.isObject(1);
  * // => false
  */
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 exports.default = isObject;
 
 function isObject(value) {

@@ -26,6 +26,10 @@ var _internalsIsFunction = require('../internals/isFunction');
 
 var _internalsIsFunction2 = _interopRequireDefault(_internalsIsFunction);
 
+var _internalsIsAncestor = require('../internals/isAncestor');
+
+var _internalsIsAncestor2 = _interopRequireDefault(_internalsIsAncestor);
+
 var _streamsStream = require('../streams/Stream');
 
 var _streamsStream2 = _interopRequireDefault(_streamsStream);
@@ -34,10 +38,6 @@ var LIFECYCLE_UNMOUNTED = _internalsConstants2.default.LIFECYCLE_UNMOUNTED;
 var LIFECYCLE_MOUNTING = _internalsConstants2.default.LIFECYCLE_MOUNTING;
 var LIFECYCLE_MOUNTED = _internalsConstants2.default.LIFECYCLE_MOUNTED;
 var LIFECYCLE_UNINITIALIZED = _internalsConstants2.default.LIFECYCLE_UNINITIALIZED;
-
-function _ref(value) {
-	return value !== 'caller' && value !== 'callee' && value !== 'arguments';
-}
 
 var Component = (function () {
 	function Component() {
@@ -66,7 +66,9 @@ var Component = (function () {
 		this.props = props;
 
 		// references to the component streams
-		Object.getOwnPropertyNames(this.constructor).filter(_ref).forEach(function (value) {
+		Object.getOwnPropertyNames(this.constructor).filter(function (value) {
+			return value !== 'caller' && value !== 'callee' && value !== 'arguments';
+		}).forEach(function (value) {
 			if (_this.constructor[value] instanceof _streamsStream2.default && !_this[value]) {
 				_this[value] = _this.constructor[value];
 			}
@@ -150,6 +152,11 @@ var Component = (function () {
 		key: 'render',
 		value: function render() {
 			return null;
+		}
+	}], [{
+		key: 'isAncestorOf',
+		value: function isAncestorOf(value) {
+			return (0, _internalsIsAncestor2.default)(Component, value);
 		}
 	}]);
 
