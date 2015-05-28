@@ -3,7 +3,6 @@
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
-exports.isInStream = isInStream;
 exports.getInStream = getInStream;
 exports.updateStream = updateStream;
 exports.findStreamDependencies = findStreamDependencies;
@@ -17,10 +16,6 @@ var _internalsIsFunction = require('../internals/isFunction');
 var _internalsIsFunction2 = _interopRequireDefault(_internalsIsFunction);
 
 var inStream;
-
-function isInStream(stream) {
-	return stream === inStream;
-}
 
 function getInStream() {
 	return inStream;
@@ -53,7 +48,6 @@ function updateStream(stream) {
 
 	inStream = null;
 
-	// stream.__updatedDependencies = [];
 	while (stream.__updatedDependencies.length) {
 		stream.__updatedDependencies.shift();
 	}

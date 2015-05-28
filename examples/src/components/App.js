@@ -8,7 +8,12 @@ import Immutable from 'immutable';
 
 
 export default class App extends ash.Component {
-	static list1 = new ash.Stream();
+	static list1 = new ash.Stream({
+		transformFn: (number, event) => {
+			return {event, number};
+		}
+	});
+	static list2 = new ash.Stream();
 
 	render() {
 		/*return <section>
@@ -25,20 +30,21 @@ export default class App extends ash.Component {
 				boxShadow: appStore.get().get('appShadow') ? '2px 2px 5px red' : '2px 2px 5px blue'
 			}}>
 				<button events={{
-					click: this.addToList1
+					// click: this.addToList1
+					click: this.list1.push.bind(null, 1)
 				}}>+ list 1!</button>
-					<button events={{
-						click: this.addToList2
-					}}>+ list 2!</button>
-					<button events={{
-						click: this.clearList1
-					}}>+ clear 1!</button>
-					<button events={{
-						click: this.clearList2
-					}}>+ clear 2!</button>
-					<button events={{
-						click: this.changeShadow
-					}}>!!!</button>
+				<button events={{
+					click: this.addToList2
+				}}>+ list 2!</button>
+				<button events={{
+					click: this.clearList1
+				}}>+ clear 1!</button>
+				<button events={{
+					click: this.clearList2
+				}}>+ clear 2!</button>
+				<button events={{
+					click: this.changeShadow
+				}}>!!!</button>
 			</div>
 			<List label="List1" list={list1Store.get()} shadow={appStore.get().get('list1Shadow')} changeShadow={this.changeList1Shadow} />
 			<List label="List2" list={list2Store.get()} shadow={appStore.get().get('list2Shadow')} changeShadow={this.changeList2Shadow} />
@@ -46,9 +52,12 @@ export default class App extends ash.Component {
 	}
 
 	onMount() {
-		list1Store.subscribe(this.onList1StoreUpdate);
-		list2Store.subscribe(this.onList2StoreUpdate);
-		appStore.subscribe(this.onAppStoreUpdate);
+		// list1Store.subscribe(this.onList1StoreUpdate);
+		// list2Store.subscribe(this.onList2StoreUpdate);
+		// appStore.subscribe(this.onAppStoreUpdate);
+		list1Store.subscribe(this.update);
+		list2Store.subscribe(this.update);
+		appStore.subscribe(this.update);
 	}
 
 	onList1StoreUpdate(stream, changed, dependencies) {
@@ -76,24 +85,27 @@ export default class App extends ash.Component {
 	addToList1(event) {
 		event.preventDefault();
 		// console.log('App addToList1...');
-		var items = [];
 
-		for (let i = 0; i < 5000; i++) {
-			items.push(Math.random().toFixed(1));
-		}
+		this.list1.push(100);
+		// var items = [];
 
-		list1Store.push(list1Store.get().push(...items));
+		// for (let i = 0; i < 5000; i++) {
+		// 	items.push(Math.random().toFixed(1));
+		// }
+
+		// list1Store.push(list1Store.get().push(...items));
 	}
 
 	addToList2() {
 		// console.log('App addToList2...');
-		var items = [];
+		this.list2.push(5000);
+		// var items = [];
 
-		for (let i = 0; i < 5000; i++) {
-			items.push(Math.random().toFixed(1));
-		}
+		// for (let i = 0; i < 5000; i++) {
+		// 	items.push(Math.random().toFixed(1));
+		// }
 
-		list2Store.push(list2Store.get().push(...items));
+		// list2Store.push(list2Store.get().push(...items));
 	}
 
 	clearList1() {

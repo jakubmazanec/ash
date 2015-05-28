@@ -1,15 +1,15 @@
-import ash from 'ash';
 import React from 'react';
 import ListReact from './ListReact';
+import Immutable from 'immutable';
 
 
 
 export default class App extends React.Component {
-	state = new ash.ImmutableObject({
-		list1: new ash.ImmutableArray(),
-		list2: new ash.ImmutableArray(),
+	state = {
+		list1: new Immutable.List(),
+		list2: new Immutable.List(),
 		redShadow: true
-	});
+	};
 
 	render() {
 		return React.createElement('div', null,
@@ -40,11 +40,11 @@ export default class App extends React.Component {
 
 		var items = [];
 
-		for (let i = 0; i < 5000; i++) {
+		for (let i = 0; i < 100; i++) {
 			items.push(Math.random().toFixed(1));
 		}
 
-		this.state = this.state.merge({list1: this.state.list1.concat(items)});
+		this.state.list1 = this.state.list1.concat(items);
 		// this.state.list1 = this.state.list1.concat(items);
 
 		this.forceUpdate();
@@ -57,7 +57,7 @@ export default class App extends React.Component {
 			items.push(Math.random().toFixed(1));
 		}
 
-		this.state = this.state.merge({list2: this.state.list2.concat(items)});
+		this.state.list2 = this.state.list2.concat(items);
 		// this.state.list2 = this.state.list2.concat(items);
 
 		this.forceUpdate();

@@ -34,10 +34,6 @@ var _coreInternalsAssign = require('./core/internals/assign');
 
 var _coreInternalsAssign2 = _interopRequireDefault(_coreInternalsAssign);
 
-var _coreInternalsIsImmutable = require('./core/internals/isImmutable');
-
-var _coreInternalsIsImmutable2 = _interopRequireDefault(_coreInternalsIsImmutable);
-
 var _coreInternalsIsAncestor = require('./core/internals/isAncestor');
 
 var _coreInternalsIsAncestor2 = _interopRequireDefault(_coreInternalsIsAncestor);

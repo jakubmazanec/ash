@@ -2,14 +2,13 @@ import gulp from 'gulp';
 import util from 'gulp-util';
 import sass from 'gulp-ruby-sass';
 import prefix from 'gulp-autoprefixer';
-// import livereload from 'gulp-livereload';
-// import server from 'tiny-lr';
 import browserify from 'browserify';
 import source from 'vinyl-source-stream';
 import nodemon from 'gulp-nodemon';
 import babel from 'gulp-babel';
-// import uglify from 'gulp-uglify';
 import cache from 'gulp-cached';
+import uglify from 'gulp-uglify';
+import buffer from 'vinyl-buffer';
 
 // server app
 gulp.task('server', () => {
@@ -32,19 +31,70 @@ gulp.task('examples-scripts', () => {
 });
 
 gulp.task('ash-scripts', () => {
-	return gulp.src('./src/**/*.js')
+	return util.env.production ? gulp.src('./src/**/*.js')
 		.pipe(cache('ash-scripts'))
 		.pipe(babel())
-		//.pipe(uglify())
+		.pipe(uglify())
+		.pipe(gulp.dest('./dist')) : gulp.src('./src/**/*.js')
+		.pipe(cache('ash-scripts'))
+		.pipe(babel())
 		.pipe(gulp.dest('./dist'));
 });
 
 gulp.task('scripts', ['ash-scripts', 'examples-scripts'], () => {
-	return browserify('./examples/dist/app.js')
+	return util.env.production ? browserify('./examples/dist/app.js')
+		.bundle()
+		.pipe(source('app.js'))
+		.pipe(buffer())
+		.pipe(uglify())
+		.pipe(gulp.dest('./examples/public/js')) : browserify('./examples/dist/app.js')
 		.bundle()
 		.pipe(source('app.js'))
 		.pipe(gulp.dest('./examples/public/js'));
 });
+
+/*gulp.task('scripts-tour', function () {
+	return util.env.production ? browserify('./js/main.js')
+		.bundle()
+		.on('error', function (error) {
+			console.log('Scripts-browser task:');
+			console.log(error.toString());
+			this.emit('end');
+		})
+		.pipe(source('tour_bin.js'))
+		.pipe(buffer())
+		.pipe(uglify())
+		.pipe(gulp.dest('./js')) : browserify('./js/main.js')
+		.bundle()
+		.on('error', function (error) {
+			console.log('Scripts-browser task:');
+			console.log(error.toString());
+			this.emit('end');
+		})
+		.pipe(source('tour_bin.js'))
+		.pipe(gulp.dest('./js'))
+});*/
+
+
+/*return util.env.production ? browserify('./app/index.js')
+		.transform({global: true}, 'uglifyify')
+		.transform(envify(
+		{
+			NODE_ENV: 'production'
+		}))
+		.bundle()
+		.pipe(source('app.js'))
+		.pipe(gulp.dest('./public/js'))
+		.pipe(livereload(server)) : browserify('./app/index.js')
+		.transform(envify(
+		{
+			NODE_ENV: 'development'
+		}))
+		.bundle()
+		.pipe(source('app.js'))
+		.pipe(gulp.dest('./public/js'))
+		.pipe(livereload(server));*/
+
 
 
 // build styles
@@ -71,7 +121,8 @@ gulp.task('styles', () => {
 // });
 
 // watch
-gulp.task('default', ['scripts', 'styles'/*, 'fonts'*/], () => {
+gulp.task('default', ['scripts', 'styles'], () => {
+// gulp.task('default', ['scripts', 'styles', 'fonts'], () => {
 	
 
 		// Watch .scss files

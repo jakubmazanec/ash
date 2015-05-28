@@ -49,7 +49,7 @@ var List = (function (_ash$Component) {
 						} },
 					'!!!'
 				),
-				this.props.list.map(function (value, index) {
+				this.props.list.toArray().map(function (value, index) {
 					return _ash2.default.e(
 						'li',
 						{ key: '' + index },
@@ -65,4 +65,3 @@ var List = (function (_ash$Component) {
 
 exports.default = List;
 module.exports = exports.default;
-/*toArray().*/

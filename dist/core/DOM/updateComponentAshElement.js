@@ -212,8 +212,6 @@ function updateComponentAshElement(componentAshElement, stream) {
 	componentAshElement.isDirty = true;
 
 	walkUpdateComponentAshElement(componentAshElement.children[0], render, stream);
-
-	componentAshElement.instance.isDirty = false;
 }
 
 module.exports = exports.default;

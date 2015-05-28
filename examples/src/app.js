@@ -329,7 +329,7 @@ $('body').on('keydown', () => {
 
 
 import App from './components/App';
-import AppReact from './components/AppReact';
+// import AppReact from './components/AppReact';
 
 
 class ReorderApp extends ash.Component {
@@ -372,32 +372,21 @@ class ReorderApp extends ash.Component {
 }
 // var viewStream = ash.AshNodeStream.from(<ReorderApp />);
 
-
-// var viewStream = ash.AshNodeStream.from(<App />);
-
-// global.viewStream = viewStream;
-
-// Renderer.addStream(viewStream, global.document.querySelector('.page'));
+import addToList1Action from './actions/addToList1Action';
+import addToList2Action from './actions/addToList2Action';
 
 
-var stream2 = new ash.Stream();
-var stream1 = ash.Stream.from(function (s, changed, deps) {
-	console.log('stream1 fn...');
-	
-	console.log(arguments.length, arguments, s, changed, deps);
+var viewStream = ash.AshNodeStream.from(<App />);
 
-	return changed[0].get() * 2;
-}, stream2);
+global.viewStream = viewStream;
 
-console.log('stream1 = ', stream1);
-console.log('stream2 = ', stream2);
+addToList1Action.from(App.list1);
+addToList2Action.from(App.list2);
+
+Renderer.addStream(viewStream, global.document.querySelector('.page'));
 
 
-// stream1.from(stream2);
 
-stream2.push(1);
-
-console.log(stream1.get());
 
 
 // React.render(

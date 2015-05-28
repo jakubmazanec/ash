@@ -3,10 +3,6 @@ import isFunction from '../internals/isFunction';
 
 var inStream;
 
-export function isInStream(stream) {
-	return stream === inStream;
-}
-
 export function getInStream() {
 	return inStream;
 }
@@ -38,7 +34,6 @@ export function updateStream(stream) {
 
 	inStream = null;
 
-	// stream.__updatedDependencies = [];
 	while (stream.__updatedDependencies.length) {
 		stream.__updatedDependencies.shift();
 	}

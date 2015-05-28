@@ -8,6 +8,7 @@ export default class List extends React.Component {
 	}
 
 	render() {
+		// console.log(this.props);
 		return React.createElement('ul', {
 			style: {
 				outline: this.state.redOutline ? '1px solid red' : '1px solid blue'
@@ -16,7 +17,7 @@ export default class List extends React.Component {
 			React.createElement('button', {
 				onClick: this.changeOutline.bind(this)
 			}, '!!!'),
-			this.props.list.map((value, index) => React.createElement('li', {key: '' + index}, '' + value))
+			this.props.list.toArray().map((value, index) => React.createElement('li', {key: '' + index}, '' + value))
 		);
 	}
 

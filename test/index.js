@@ -177,13 +177,7 @@ describe('ash.Stream', () => {
 
 	it('stream dependencies can be injected later', () => {
 		var stream2 = new ash.Stream();
-		var stream1 = ash.Stream.from((stream, changed) => {
-			
-			console.log(changed);
-
-			return changed[0].get() * 2;
-		});
-		
+		var stream1 = ash.Stream.from((stream, changed) => return changed[0].get() * 2;);
 
 		stream1.from(stream2);
 

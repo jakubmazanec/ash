@@ -16,7 +16,7 @@ export default class List extends ash.Component {
 			}}>
 				!!!
 			</button>
-			{this.props.list./*toArray().*/map((value, index) => <li key={'' + index}>{'' + value}</li>)}
+			{this.props.list.toArray().map((value, index) => <li key={'' + index}>{'' + value}</li>)}
 		</ul>;
 	}
 }

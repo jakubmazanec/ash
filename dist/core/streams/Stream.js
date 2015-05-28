@@ -33,6 +33,7 @@ var Stream = (function () {
 		var _ref2$isEndStream = _ref2.isEndStream;
 		var isEndStream = _ref2$isEndStream === undefined ? false : _ref2$isEndStream;
 		var value = _ref2.value;
+		var transformFn = _ref2.transformFn;
 
 		_classCallCheck(this, Stream);
 
@@ -44,17 +45,21 @@ var Stream = (function () {
 		}
 
 		// autobind push method
-		// this.push = this.push.bind(this);
+		this.push = this.update = this.push.bind(this);
 
-		this.isEndStream = !!isEndStream;
-
-		if (!this.isEndStream) {
+		if (!isEndStream) {
 			this.end = new Stream({ isEndStream: true });
+
 			this.end.__listeners.push(this);
 		} else {
+			this.isEndStream = true;
 			this.fn = function () {
 				return true;
 			};
+		}
+
+		if ((0, _internalsIsFunction2.default)(transformFn)) {
+			this.transformFn = transformFn;
 		}
 	}
 
@@ -65,12 +70,16 @@ var Stream = (function () {
 		}
 	}, {
 		key: 'push',
-		value: function push(value) {
+		value: function push() {
 			var _this = this;
 
-			// handle a Promise...
-			if (value && value.then && (0, _internalsIsFunction2.default)(value.then)) {
-				value.then(function (result) {
+			for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+				args[_key] = arguments[_key];
+			}
+
+			if (args[0] && args[0].then && (0, _internalsIsFunction2.default)(args[0].then)) {
+				// handle a Promise...
+				args[0].then(function (result) {
 					_this.push(result);
 				}, function (error) {
 					_this.push(error);
@@ -79,32 +88,18 @@ var Stream = (function () {
 				return this;
 			}
 
-			this.value = value;
+			this.value = this.transformFn ? this.transformFn.apply(this, args) : args[0];
 			this.hasValue = true;
 
-			/*if (!isInStream(this)) {
-   	streamsQueue.push(this);
-   			if (!getInStream()) {
-   		streamsQueue.update();
-   	}
-   } else {
-   	for (let i = 0; i < this.__listeners.length; i++) {
-   		if (this.__listeners[i].end === this) {
-   			detachStreamDependencies(this.__listeners[i]);
-   			detachStreamDependencies(this.__listeners[i].end);
-   		} else {
-   			this.__listeners[i].__updatedDependencies.push(this);
-   		}
-   	}
-   }*/
+			var inStream = (0, _streamMethods.getInStream)();
 
-			if (!(0, _streamMethods.getInStream)()) {
+			if (!inStream) {
 				(0, _streamMethods.updateStreamDependencies)(this);
 
 				if (streamsQueue.length) {
 					streamsQueue.update();
 				}
-			} else if ((0, _streamMethods.isInStream)(this)) {
+			} else if (inStream === this) {
 				for (var i = 0; i < this.__listeners.length; i++) {
 					if (this.__listeners[i].end !== this) {
 						this.__listeners[i].__updatedDependencies.push(this);
@@ -127,8 +122,8 @@ var Stream = (function () {
 	}, {
 		key: 'from',
 		value: function from(arg) {
-			for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-				args[_key - 1] = arguments[_key];
+			for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+				args[_key2 - 1] = arguments[_key2];
 			}
 
 			if (args.length || (0, _internalsIsFunction2.default)(arg) || arg instanceof Stream) {
@@ -182,8 +177,8 @@ var Stream = (function () {
 	}, {
 		key: 'endsOn',
 		value: function endsOn() {
-			for (var _len2 = arguments.length, endStreams = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-				endStreams[_key2] = arguments[_key2];
+			for (var _len3 = arguments.length, endStreams = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+				endStreams[_key3] = arguments[_key3];
 			}
 
 			if (this.isEndStream) {
@@ -252,7 +247,7 @@ var Stream = (function () {
 		value: function merge(otherStream) {
 			var _this5 = this;
 
-			return Stream.from(function (stream, changed) {
+			return Stream.from(function (self, changed) {
 				return changed[0] ? changed[0].get() : _this5.hasValue ? _this5.get() : otherStream.get();
 			}, this, otherStream).immediate().endsOn(this.end, otherStream.end);
 		}
@@ -263,6 +258,8 @@ var Stream = (function () {
 			this.hasValue = false;
 			this.end = undefined;
 			this.fn = undefined;
+			this.transformFn = null;
+			this.isEndStream = false;
 			this.__queued = false;
 			this.__listeners = [];
 			this.__dependencies = [];
@@ -279,8 +276,8 @@ var Stream = (function () {
 		value: function from(fn) {
 			var _ref;
 
-			for (var _len3 = arguments.length, args = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
-				args[_key3 - 1] = arguments[_key3];
+			for (var _len4 = arguments.length, args = Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
+				args[_key4 - 1] = arguments[_key4];
 			}
 
 			return (_ref = new Stream()).from.apply(_ref, [fn].concat(args));

@@ -70,7 +70,7 @@ var App = (function (_ash$Component) {
 					_ash2.default.e(
 						'button',
 						{ events: {
-								click: this.addToList1
+								click: this.list1.push.bind(null, 1)
 							} },
 						'+ list 1!'
 					),
@@ -110,9 +110,12 @@ var App = (function (_ash$Component) {
 	}, {
 		key: 'onMount',
 		value: function onMount() {
-			_storesList1Store2.default.subscribe(this.onList1StoreUpdate);
-			_storesList2Store2.default.subscribe(this.onList2StoreUpdate);
-			_storesAppStore2.default.subscribe(this.onAppStoreUpdate);
+			// list1Store.subscribe(this.onList1StoreUpdate);
+			// list2Store.subscribe(this.onList2StoreUpdate);
+			// appStore.subscribe(this.onAppStoreUpdate);
+			_storesList1Store2.default.subscribe(this.update);
+			_storesList2Store2.default.subscribe(this.update);
+			_storesAppStore2.default.subscribe(this.update);
 		}
 	}, {
 		key: 'onList1StoreUpdate',
@@ -143,31 +146,30 @@ var App = (function (_ash$Component) {
 	}, {
 		key: 'addToList1',
 		value: function addToList1(event) {
-			var _list1Store$get;
-
 			event.preventDefault();
 			// console.log('App addToList1...');
-			var items = [];
 
-			for (var i = 0; i < 5000; i++) {
-				items.push(Math.random().toFixed(1));
-			}
+			this.list1.push(100);
+			// var items = [];
 
-			_storesList1Store2.default.push((_list1Store$get = _storesList1Store2.default.get()).push.apply(_list1Store$get, items));
+			// for (let i = 0; i < 5000; i++) {
+			// 	items.push(Math.random().toFixed(1));
+			// }
+
+			// list1Store.push(list1Store.get().push(...items));
 		}
 	}, {
 		key: 'addToList2',
 		value: function addToList2() {
-			var _list2Store$get;
-
 			// console.log('App addToList2...');
-			var items = [];
+			this.list2.push(5000);
+			// var items = [];
 
-			for (var i = 0; i < 5000; i++) {
-				items.push(Math.random().toFixed(1));
-			}
+			// for (let i = 0; i < 5000; i++) {
+			// 	items.push(Math.random().toFixed(1));
+			// }
 
-			_storesList2Store2.default.push((_list2Store$get = _storesList2Store2.default.get()).push.apply(_list2Store$get, items));
+			// list2Store.push(list2Store.get().push(...items));
 		}
 	}, {
 		key: 'clearList1',
@@ -191,6 +193,14 @@ var App = (function (_ash$Component) {
 		}
 	}], [{
 		key: 'list1',
+		value: new _ash2.default.Stream({
+			transformFn: function (number, event) {
+				return { event: event, number: number };
+			}
+		}),
+		enumerable: true
+	}, {
+		key: 'list2',
 		value: new _ash2.default.Stream(),
 		enumerable: true
 	}]);
@@ -200,3 +210,5 @@ var App = (function (_ash$Component) {
 
 exports.default = App;
 module.exports = exports.default;
+
+// click: this.addToList1

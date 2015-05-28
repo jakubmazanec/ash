@@ -47,8 +47,6 @@ var Component = (function () {
 
 		_classCallCheck(this, Component);
 
-		this.state = {};
-		this.__isDirty = false;
 		this.__previousLifecycle = LIFECYCLE_UNINITIALIZED;
 		this.__currentLifecycle = LIFECYCLE_UNMOUNTED;
 
@@ -64,6 +62,7 @@ var Component = (function () {
 		});
 
 		this.props = props;
+		this.update = this.update.bind(this);
 
 		// references to the component streams
 		Object.getOwnPropertyNames(this.constructor).filter(function (value) {
@@ -76,21 +75,15 @@ var Component = (function () {
 	}
 
 	_createClass(Component, [{
-		key: 'isDirty',
-		get: function () {
-			return this.__isDirty;
-		},
-		set: function (value) {
-			this.__isDirty = !!value;
-
-			if (this.__isDirty && this.__element.stream) {
-				this.__element.stream.push(this);
-			}
-		}
-	}, {
 		key: 'update',
 		value: function update() {
-			this.isDirty = true;
+			if (this.__element.stream) {
+				this.__element.stream.push(this);
+			}
+
+			if (arguments[0] instanceof _streamsStream2.default) {
+				return undefined;
+			}
 
 			return this;
 		}

@@ -8,7 +8,6 @@ import AshNodeStream from './core/streams/AshNodeStream';
 import createElement from './core/internals/createElement';
 
 import assign from './core/internals/assign';
-import isImmutable from './core/internals/isImmutable';
 import isAncestor from './core/internals/isAncestor';
 
 

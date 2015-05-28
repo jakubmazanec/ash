@@ -1,8 +1,7 @@
 import StreamTransformer from './StreamTransformer';
 import StreamsQueue from './StreamsQueue';
 import isFunction from '../internals/isFunction';
-import {detachStreamDependencies, isInStream, getInStream, updateStream, updateStreamDependencies} from './streamMethods';
-
+import {detachStreamDependencies, getInStream, updateStream, updateStreamDependencies} from './streamMethods';
 
 
 var streamsQueue = new StreamsQueue();
@@ -12,6 +11,8 @@ class Stream {
 	hasValue = false;
 	end = undefined;
 	fn = undefined;
+	transformFn = null;
+	isEndStream = false;
 
 	__queued = false;
 	__listeners = [];
@@ -19,22 +20,26 @@ class Stream {
 	__updatedDependencies = [];
 	__dependenciesMet = false;
 
-	constructor({isEndStream = false, value} = {}) {
+	constructor({isEndStream = false, value, transformFn} = {}) {
 		if (value !== undefined || typeof arguments[0] === 'object' && arguments[0].hasOwnProperty('value')) {
 			this.value = value;
 			this.hasValue = true;
 		}
 
 		// autobind push method
-		// this.push = this.push.bind(this);
+		this.push = this.update = ::this.push;
 
-		this.isEndStream = !!isEndStream;
-
-		if (!this.isEndStream) {
+		if (!isEndStream) {
 			this.end = new Stream({isEndStream: true});
+
 			this.end.__listeners.push(this);
 		} else {
+			this.isEndStream = true;
 			this.fn = () => true;
+		}
+
+		if (isFunction(transformFn)) {
+			this.transformFn = transformFn;
 		}
 	}
 
@@ -42,10 +47,10 @@ class Stream {
 		return this.value;
 	}
 
-	push(value) {
-		// handle a Promise...
-		if (value && value.then && isFunction(value.then)) {
-			value.then((result) => {
+	push(...args) {
+		if (args[0] && args[0].then && isFunction(args[0].then)) {
+			// handle a Promise...
+			args[0].then((result) => {
 				this.push(result);
 			}, (error) => {
 				this.push(error);
@@ -54,33 +59,18 @@ class Stream {
 			return this;
 		}
 
-		this.value = value;
+		this.value = this.transformFn ? this.transformFn(...args) : args[0];
 		this.hasValue = true;
 
-		/*if (!isInStream(this)) {
-			streamsQueue.push(this);
+		let inStream = getInStream();
 
-			if (!getInStream()) {
-				streamsQueue.update();
-			}
-		} else {
-			for (let i = 0; i < this.__listeners.length; i++) {
-				if (this.__listeners[i].end === this) {
-					detachStreamDependencies(this.__listeners[i]);
-					detachStreamDependencies(this.__listeners[i].end);
-				} else {
-					this.__listeners[i].__updatedDependencies.push(this);
-				}
-			}
-		}*/
-
-		if (!getInStream()) {
+		if (!inStream) {
 			updateStreamDependencies(this);
 
 			if (streamsQueue.length) {
 				streamsQueue.update();
 			}
-		} else if (isInStream(this)) {
+		} else if (inStream === this) {
 			for (let i = 0; i < this.__listeners.length; i++) {
 				if (this.__listeners[i].end !== this) {
 					this.__listeners[i].__updatedDependencies.push(this);
@@ -224,7 +214,7 @@ class Stream {
 
 	merge(otherStream) {
 		return Stream
-			.from((stream, changed) => changed[0] ? changed[0].get() : this.hasValue ? this.get() : otherStream.get(), this, otherStream)
+			.from((self, changed) => changed[0] ? changed[0].get() : this.hasValue ? this.get() : otherStream.get(), this, otherStream)
 			.immediate()
 			.endsOn(this.end, otherStream.end);
 	}

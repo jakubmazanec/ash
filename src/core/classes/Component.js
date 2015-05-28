@@ -13,9 +13,6 @@ const LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
 const LIFECYCLE_UNINITIALIZED = constants.LIFECYCLE_UNINITIALIZED;
 
 export default class Component {
-	state = {};
-	
-	__isDirty = false;
 	__previousLifecycle = LIFECYCLE_UNINITIALIZED;
 	__currentLifecycle = LIFECYCLE_UNMOUNTED;
 
@@ -27,11 +24,12 @@ export default class Component {
 			let descriptor = Object.getOwnPropertyDescriptor(prototype, value);
 
 			if (!(descriptor && (typeof descriptor.get !== 'undefined' || typeof descriptor.set !== 'undefined')) && isFunction(this[value]) && value !== 'constructor') {
-				this[value] = this[value].bind(this);
+				this[value] = ::this[value];
 			}
 		});
 
 		this.props = props;
+		this.update = ::this.update;
 
 		// references to the component streams
 		Object.getOwnPropertyNames(this.constructor).filter((value) => value !== 'caller' && value !== 'callee' && value !== 'arguments').forEach((value) => {
@@ -45,20 +43,14 @@ export default class Component {
 		return isAncestor(Component, value);
 	}
 
-	get isDirty() {
-		return this.__isDirty;
-	}
-
-	set isDirty(value) {
-		this.__isDirty = !!value;
-
-		if (this.__isDirty && this.__element.stream) {
+	update() {
+		if (this.__element.stream) {
 			this.__element.stream.push(this);
 		}
-	}
 
-	update() {
-		this.isDirty = true;
+		if (arguments[0] instanceof Stream) {
+			return undefined;
+		}
 
 		return this;
 	}

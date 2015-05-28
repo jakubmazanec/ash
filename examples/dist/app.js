@@ -320,9 +320,15 @@ var _componentsApp = require('./components/App');
 
 var _componentsApp2 = _interopRequireDefault(_componentsApp);
 
-var _componentsAppReact = require('./components/AppReact');
+// var viewStream = ash.AshNodeStream.from(<ReorderApp />);
 
-var _componentsAppReact2 = _interopRequireDefault(_componentsAppReact);
+var _actionsAddToList1Action = require('./actions/addToList1Action');
+
+var _actionsAddToList1Action2 = _interopRequireDefault(_actionsAddToList1Action);
+
+var _actionsAddToList2Action = require('./actions/addToList2Action');
+
+var _actionsAddToList2Action2 = _interopRequireDefault(_actionsAddToList2Action);
 
 // import React from 'react';
 // import m from 'mithril';
@@ -338,6 +344,8 @@ global.ash = _ash2.default;
 global.Immutable = _immutable2.default;
 
 var Renderer = global.Renderer = new _ash2.default.Renderer();
+// import AppReact from './components/AppReact';
+
 var ReorderApp = (function (_ash$Component) {
 	function ReorderApp() {
 		_classCallCheck(this, ReorderApp);
@@ -422,31 +430,14 @@ var ReorderApp = (function (_ash$Component) {
 	return ReorderApp;
 })(_ash2.default.Component);
 
-// var viewStream = ash.AshNodeStream.from(<ReorderApp />);
+var viewStream = _ash2.default.AshNodeStream.from(_ash2.default.e(_componentsApp2.default, null));
 
-// var viewStream = ash.AshNodeStream.from(<App />);
+global.viewStream = viewStream;
 
-// global.viewStream = viewStream;
+_actionsAddToList1Action2.default.from(_componentsApp2.default.list1);
+_actionsAddToList2Action2.default.from(_componentsApp2.default.list2);
 
-// Renderer.addStream(viewStream, global.document.querySelector('.page'));
-
-var stream2 = new _ash2.default.Stream();
-var stream1 = _ash2.default.Stream.from(function (s, changed, deps) {
-	console.log('stream1 fn...');
-
-	console.log(arguments.length, arguments, s, changed, deps);
-
-	return changed[0].get() * 2;
-}, stream2);
-
-console.log('stream1 = ', stream1);
-console.log('stream2 = ', stream2);
-
-// stream1.from(stream2);
-
-stream2.push(1);
-
-console.log(stream1.get());
+Renderer.addStream(viewStream, global.document.querySelector('.page'));
 
 // React.render(
 // 	React.createElement(AppReact),
