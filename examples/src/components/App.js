@@ -31,7 +31,7 @@ export default class App extends ash.Component {
 			}}>
 				<button events={{
 					// click: this.addToList1
-					click: this.list1.push.bind(null, 1)
+					click: this.list1.update.bind(null, 1)
 				}}>+ list 1!</button>
 				<button events={{
 					click: this.addToList2

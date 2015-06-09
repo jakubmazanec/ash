@@ -6,7 +6,6 @@ import createAshElementTree from '../DOM/createAshElementTree';
 import updateComponentAshElement from '../DOM/updateComponentAshElement';
 
 
-
 var streamId = 0;
 
 export default class AshNodeStream extends Stream {

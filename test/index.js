@@ -7,10 +7,10 @@ import ash from '../dist';
 
 describe('ash.Stream', () => {
 	it('can be set with initial value', () => {
-    var num = new ash.Stream({value: 12});
+		var num = new ash.Stream({value: 12});
 
-    assert.equal(num.get(), 12);
-  });
+		assert.equal(num.get(), 12);
+	});
 
 	it('can be set', () => {
 		var stream = new ash.Stream();
@@ -31,13 +31,13 @@ describe('ash.Stream', () => {
 	});
 
 	it('updates dependencies', () => {
-    var x = ash.Stream.from(3);
-    var x2 = ash.Stream.from(() => {
-      return x.get() * 2;
-    }, x);
+		var x = ash.Stream.from(3);
+		var x2 = ash.Stream.from(() => {
+			return x.get() * 2;
+		}, x);
 
-    assert.equal(x2.get(), x.get() * 2);
-  });
+		assert.equal(x2.get(), x.get() * 2);
+	});
 
 	it('can set result by returning value', () => {
 		var stream1 = new ash.Stream();
@@ -177,7 +177,7 @@ describe('ash.Stream', () => {
 
 	it('stream dependencies can be injected later', () => {
 		var stream2 = new ash.Stream();
-		var stream1 = ash.Stream.from((stream, changed) => return changed[0].get() * 2;);
+		var stream1 = ash.Stream.from((stream, changed) => changed[0].get() * 2);
 
 		stream1.from(stream2);
 
@@ -486,17 +486,17 @@ describe('ash.Stream', () => {
 		});
 
 		it('end stream can be set on top level stream', () => {
-      var killer = new ash.Stream();
-      var s = new ash.Stream({value: 1});
+			var killer = new ash.Stream();
+			var s = new ash.Stream({value: 1});
 
-      s.endsOn(killer);
+			s.endsOn(killer);
 
-      assert.notEqual(s.end.get(), true);
-      
-      killer.push(true);
+			assert.notEqual(s.end.get(), true);
+			
+			killer.push(true);
 
-      assert.equal(s.end.get(), true);
-    });
+			assert.equal(s.end.get(), true);
+		});
 	});
 
 	describe('promise integration', () => {
@@ -762,8 +762,8 @@ describe('ash.Stream', () => {
 		});
 	});
 
-	/*describe('of', function() {
-		it('returns a stream with the passed value', function() {
+	describe('of', () => {
+		/*it('returns a stream with the passed value', function() {
 			var s1 = stream(2);
 			var s2 = s1.of(3);
 			assert.equal(s2(), 3);
@@ -788,8 +788,62 @@ describe('ash.Stream', () => {
 			var a = stream();
 			var u = stream()(function(x) { return 3*x; });
 			assert.equal(u.ap(a.of(y))(), a.of(function(f) { return f(y); }).ap(u)());
+		});*/
+		it('can create dependent stream inside stream', () => {
+			var one = new ash.Stream();
+
+			ash.Stream.from((self) => {
+				self.push(ash.Stream.from(() => {}));
+			}, one);
+
+			one.push(1);
 		});
-	});*/
+
+		it('can create immediate dependent stream inside stream', () => {
+			var one = new ash.Stream();
+
+			ash.Stream.from((self) => {
+				self.push(ash.Stream.from(() => {}).immediate());
+			}, one);
+
+			one.push(1);
+		});
+
+		it('creating a stream inside a stream all dependencies are updated', () => {
+			var result = [];
+			var str = new ash.Stream();
+
+			ash.Stream.map((x) => {
+				result.push(x);
+			}, str);
+
+			ash.Stream.map((x) => {
+				// create a stream, the first dependant on `str` should still be updated
+				ash.Stream.from(() => {});
+			}, str);
+
+			str.push(1);
+			str.push(2);
+			str.push(3);
+
+			assert.deepEqual(result, [1, 2, 3]);
+
+
+			/*var result = [];
+			var str = flyd.stream();
+			flyd.map(function(x) {
+				result.push(x);
+			}, str);
+			flyd.map(function(x) {
+				// create a stream, the first dependant on `str` should still be updated
+				flyd.stream([], function(self) {});
+			}, str);
+			str(1);
+			str(2);
+			str(3);
+			assert.deepEqual(result, [1, 2, 3]);*/
+		});
+	});
 
 	describe('transducer.js transducer support', () => {
 		it('creates new stream with map applied', () => {

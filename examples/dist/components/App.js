@@ -70,7 +70,7 @@ var App = (function (_ash$Component) {
 					_ash2.default.e(
 						'button',
 						{ events: {
-								click: this.list1.push.bind(null, 1)
+								click: this.list1.update.bind(null, 1)
 							} },
 						'+ list 1!'
 					),

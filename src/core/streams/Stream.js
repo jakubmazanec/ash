@@ -1,12 +1,16 @@
 import StreamTransformer from './StreamTransformer';
-import StreamsQueue from './StreamsQueue';
+import {getStreamsQueue} from './streamsQueue';
 import isFunction from '../internals/isFunction';
-import {detachStreamDependencies, getInStream, updateStream, updateStreamDependencies} from './streamMethods';
+import {getInStream} from './inStream';
+import detachStreamDependencies from './methods/detachStreamDependencies';
+import updateStream from './methods/updateStream';
+import updateStreamDependencies from './methods/updateStreamDependencies';
+import updateStreamsQueue from './methods/updateStreamsQueue';
 
 
-var streamsQueue = new StreamsQueue();
+var streamsQueue = getStreamsQueue();
 
-class Stream {
+export default class Stream {
 	value = undefined;
 	hasValue = false;
 	end = undefined;
@@ -26,8 +30,8 @@ class Stream {
 			this.hasValue = true;
 		}
 
-		// autobind push method
-		this.push = this.update = ::this.push;
+		// autobind push method as update method
+		this.update = ::this.push;
 
 		if (!isEndStream) {
 			this.end = new Stream({isEndStream: true});
@@ -66,10 +70,7 @@ class Stream {
 
 		if (!inStream) {
 			updateStreamDependencies(this);
-
-			if (streamsQueue.length) {
-				streamsQueue.update();
-			}
+			updateStreamsQueue(streamsQueue);
 		} else if (inStream === this) {
 			for (let i = 0; i < this.__listeners.length; i++) {
 				if (this.__listeners[i].end !== this) {
@@ -124,7 +125,7 @@ class Stream {
 			
 			if (this.__dependencies.length) {
 				updateStream(this);
-				streamsQueue.update();
+				updateStreamsQueue(streamsQueue);
 			}
 		} else if (Array.isArray(arg)) {
 			for (let i = 0; i < arg.length; i++) {
@@ -167,7 +168,7 @@ class Stream {
 			this.__dependenciesMet = true;
 
 			updateStream(this);
-			streamsQueue.update();
+			updateStreamsQueue(streamsQueue);
 		}
 
 		return this;
@@ -239,6 +240,3 @@ class Stream {
 		}, sourceStream);
 	}
 }
-
-
-export default Stream;

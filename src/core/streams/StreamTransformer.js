@@ -1,4 +1,4 @@
-class StreamTransformer {
+export default class StreamTransformer {
 	['@@transducer/init']() {}
 
 	['@@transducer/result']() {}
@@ -7,5 +7,3 @@ class StreamTransformer {
 		return v;
 	}
 }
-
-export default StreamTransformer;

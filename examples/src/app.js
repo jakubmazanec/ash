@@ -22,6 +22,23 @@ global.Immutable = Immutable;
 var Renderer = global.Renderer = new ash.Renderer();
 
 
+
+var s1 = global.s1 = new ash.Stream();
+var s2 = global.s2 = new ash.Stream();
+var s3 = global.s3 = new ash.Stream();
+
+s1.name = 's1';
+s2.name = 's2';
+s3.name = 's3';
+
+// s1.push(3);
+// s2.push(4);
+s3.from(() => {
+	console.log('s3 fn...');
+	return s1.get() + s2.get();
+}, s1, s2);
+
+
 // console.log('ash.js start...');
 
 // var promise1 = new Promise((resolve) => {
@@ -328,7 +345,7 @@ $('body').on('keydown', () => {
 
 
 
-import App from './components/App';
+// import App from './components/App';
 // import AppReact from './components/AppReact';
 
 
@@ -372,18 +389,18 @@ class ReorderApp extends ash.Component {
 }
 // var viewStream = ash.AshNodeStream.from(<ReorderApp />);
 
-import addToList1Action from './actions/addToList1Action';
-import addToList2Action from './actions/addToList2Action';
+// import addToList1Action from './actions/addToList1Action';
+// import addToList2Action from './actions/addToList2Action';
 
 
-var viewStream = ash.AshNodeStream.from(<App />);
+// var viewStream = ash.AshNodeStream.from(<App />);
 
-global.viewStream = viewStream;
+// global.viewStream = viewStream;
 
-addToList1Action.from(App.list1);
-addToList2Action.from(App.list2);
+// addToList1Action.from(App.list1);
+// addToList2Action.from(App.list2);
 
-Renderer.addStream(viewStream, global.document.querySelector('.page'));
+// Renderer.addStream(viewStream, global.document.querySelector('.page'));
 
 
 

@@ -14,17 +14,31 @@ var _StreamTransformer = require('./StreamTransformer');
 
 var _StreamTransformer2 = _interopRequireDefault(_StreamTransformer);
 
-var _StreamsQueue = require('./StreamsQueue');
-
-var _StreamsQueue2 = _interopRequireDefault(_StreamsQueue);
+var _streamsQueue = require('./streamsQueue');
 
 var _internalsIsFunction = require('../internals/isFunction');
 
 var _internalsIsFunction2 = _interopRequireDefault(_internalsIsFunction);
 
-var _streamMethods = require('./streamMethods');
+var _inStream = require('./inStream');
 
-var streamsQueue = new _StreamsQueue2.default();
+var _methodsDetachStreamDependencies = require('./methods/detachStreamDependencies');
+
+var _methodsDetachStreamDependencies2 = _interopRequireDefault(_methodsDetachStreamDependencies);
+
+var _methodsUpdateStream = require('./methods/updateStream');
+
+var _methodsUpdateStream2 = _interopRequireDefault(_methodsUpdateStream);
+
+var _methodsUpdateStreamDependencies = require('./methods/updateStreamDependencies');
+
+var _methodsUpdateStreamDependencies2 = _interopRequireDefault(_methodsUpdateStreamDependencies);
+
+var _methodsUpdateStreamsQueue = require('./methods/updateStreamsQueue');
+
+var _methodsUpdateStreamsQueue2 = _interopRequireDefault(_methodsUpdateStreamsQueue);
+
+var streamsQueue = (0, _streamsQueue.getStreamsQueue)();
 
 var Stream = (function () {
 	function Stream() {
@@ -44,8 +58,8 @@ var Stream = (function () {
 			this.hasValue = true;
 		}
 
-		// autobind push method
-		this.push = this.update = this.push.bind(this);
+		// autobind push method as update method
+		this.update = this.push.bind(this);
 
 		if (!isEndStream) {
 			this.end = new Stream({ isEndStream: true });
@@ -91,21 +105,18 @@ var Stream = (function () {
 			this.value = this.transformFn ? this.transformFn.apply(this, args) : args[0];
 			this.hasValue = true;
 
-			var inStream = (0, _streamMethods.getInStream)();
+			var inStream = (0, _inStream.getInStream)();
 
 			if (!inStream) {
-				(0, _streamMethods.updateStreamDependencies)(this);
-
-				if (streamsQueue.length) {
-					streamsQueue.update();
-				}
+				(0, _methodsUpdateStreamDependencies2.default)(this);
+				(0, _methodsUpdateStreamsQueue2.default)(streamsQueue);
 			} else if (inStream === this) {
 				for (var i = 0; i < this.__listeners.length; i++) {
 					if (this.__listeners[i].end !== this) {
 						this.__listeners[i].__updatedDependencies.push(this);
 					} else {
-						(0, _streamMethods.detachStreamDependencies)(this.__listeners[i]);
-						(0, _streamMethods.detachStreamDependencies)(this.__listeners[i].end);
+						(0, _methodsDetachStreamDependencies2.default)(this.__listeners[i]);
+						(0, _methodsDetachStreamDependencies2.default)(this.__listeners[i].end);
 					}
 				}
 			} else {
@@ -127,7 +138,7 @@ var Stream = (function () {
 			}
 
 			if (args.length || (0, _internalsIsFunction2.default)(arg) || arg instanceof Stream) {
-				(0, _streamMethods.detachStreamDependencies)(this);
+				(0, _methodsDetachStreamDependencies2.default)(this);
 
 				if ((0, _internalsIsFunction2.default)(arg)) {
 					this.fn = arg;
@@ -154,8 +165,8 @@ var Stream = (function () {
 				}
 
 				if (this.__dependencies.length) {
-					(0, _streamMethods.updateStream)(this);
-					streamsQueue.update();
+					(0, _methodsUpdateStream2.default)(this);
+					(0, _methodsUpdateStreamsQueue2.default)(streamsQueue);
 				}
 			} else if (Array.isArray(arg)) {
 				for (var i = 0; i < arg.length; i++) {
@@ -187,7 +198,7 @@ var Stream = (function () {
 
 			var endStream = new Stream({ isEndStream: true });
 
-			(0, _streamMethods.detachStreamDependencies)(this.end);
+			(0, _methodsDetachStreamDependencies2.default)(this.end);
 			endStream.from.apply(endStream, [null].concat(endStreams));
 			endStream.__listeners.push(this.end);
 			this.end.__dependencies.push(endStream);
@@ -200,8 +211,8 @@ var Stream = (function () {
 			if (this.__dependenciesMet === false) {
 				this.__dependenciesMet = true;
 
-				(0, _streamMethods.updateStream)(this);
-				streamsQueue.update();
+				(0, _methodsUpdateStream2.default)(this);
+				(0, _methodsUpdateStreamsQueue2.default)(streamsQueue);
 			}
 
 			return this;

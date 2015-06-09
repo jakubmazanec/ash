@@ -26,6 +26,36 @@ var _immutable = require('immutable');
 
 var _immutable2 = _interopRequireDefault(_immutable);
 
+// import React from 'react';
+// import m from 'mithril';
+// import flyd from 'flyd';
+// import rx from 'rx';
+
+global.$ = _jquery2.default;
+global._ = _lodashFp2.default;
+global.ash = _ash2.default;
+// global.React = React;
+// global.flyd = flyd;
+// global.rx = rx;
+global.Immutable = _immutable2.default;
+
+var Renderer = global.Renderer = new _ash2.default.Renderer();
+
+var s1 = global.s1 = new _ash2.default.Stream();
+var s2 = global.s2 = new _ash2.default.Stream();
+var s3 = global.s3 = new _ash2.default.Stream();
+
+s1.name = 's1';
+s2.name = 's2';
+s3.name = 's3';
+
+// s1.push(3);
+// s2.push(4);
+s3.from(function () {
+	console.log('s3 fn...');
+	return s1.get() + s2.get();
+}, s1, s2);
+
 // console.log('ash.js start...');
 
 // var promise1 = new Promise((resolve) => {
@@ -316,34 +346,7 @@ $('body').on('keydown', () => {
 	n2.end(true);
 });*/
 
-var _componentsApp = require('./components/App');
-
-var _componentsApp2 = _interopRequireDefault(_componentsApp);
-
-// var viewStream = ash.AshNodeStream.from(<ReorderApp />);
-
-var _actionsAddToList1Action = require('./actions/addToList1Action');
-
-var _actionsAddToList1Action2 = _interopRequireDefault(_actionsAddToList1Action);
-
-var _actionsAddToList2Action = require('./actions/addToList2Action');
-
-var _actionsAddToList2Action2 = _interopRequireDefault(_actionsAddToList2Action);
-
-// import React from 'react';
-// import m from 'mithril';
-// import flyd from 'flyd';
-// import rx from 'rx';
-
-global.$ = _jquery2.default;
-global._ = _lodashFp2.default;
-global.ash = _ash2.default;
-// global.React = React;
-// global.flyd = flyd;
-// global.rx = rx;
-global.Immutable = _immutable2.default;
-
-var Renderer = global.Renderer = new _ash2.default.Renderer();
+// import App from './components/App';
 // import AppReact from './components/AppReact';
 
 var ReorderApp = (function (_ash$Component) {
@@ -430,14 +433,19 @@ var ReorderApp = (function (_ash$Component) {
 	return ReorderApp;
 })(_ash2.default.Component);
 
-var viewStream = _ash2.default.AshNodeStream.from(_ash2.default.e(_componentsApp2.default, null));
+// var viewStream = ash.AshNodeStream.from(<ReorderApp />);
 
-global.viewStream = viewStream;
+// import addToList1Action from './actions/addToList1Action';
+// import addToList2Action from './actions/addToList2Action';
 
-_actionsAddToList1Action2.default.from(_componentsApp2.default.list1);
-_actionsAddToList2Action2.default.from(_componentsApp2.default.list2);
+// var viewStream = ash.AshNodeStream.from(<App />);
 
-Renderer.addStream(viewStream, global.document.querySelector('.page'));
+// global.viewStream = viewStream;
+
+// addToList1Action.from(App.list1);
+// addToList2Action.from(App.list2);
+
+// Renderer.addStream(viewStream, global.document.querySelector('.page'));
 
 // React.render(
 // 	React.createElement(AppReact),
