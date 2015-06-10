@@ -23,7 +23,7 @@ var Renderer = global.Renderer = new ash.Renderer();
 
 
 
-var s1 = global.s1 = new ash.Stream();
+/*var s1 = global.s1 = new ash.Stream();
 var s2 = global.s2 = new ash.Stream();
 var s3 = global.s3 = new ash.Stream();
 
@@ -36,7 +36,7 @@ s3.name = 's3';
 s3.from(() => {
 	console.log('s3 fn...');
 	return s1.get() + s2.get();
-}, s1, s2);
+}, s1, s2);*/
 
 
 // console.log('ash.js start...');
@@ -348,6 +348,28 @@ $('body').on('keydown', () => {
 // import App from './components/App';
 // import AppReact from './components/AppReact';
 
+class FooSubComponent extends ash.Component {
+	state = {
+		width: 1
+	};
+
+	render() {
+		return <section>
+			<button key="btn" style={{
+				outline: this.state.width + 'px solid #f0c'
+			}} events={{
+				click: this.change
+			}}>Morw wdith!</button>
+		</section>;
+	}
+
+	change() {
+		this.state.width++;
+
+		this.update();
+	}
+}
+
 
 class ReorderApp extends ash.Component {
 	state = {
@@ -359,48 +381,134 @@ class ReorderApp extends ash.Component {
 		var items = this.state.items.map((value, index) => <button key={'' + index} events={{click: this.hello.bind(null, index, value)}}>{'' + value + '. '}</button>);
 
 		if (this.state.reversed) {
-			items = items.reverse();
+			// items = items.reverse();
 		}
 
 		return <div>
-			<button key="btn" events={{
+			<button key="btn" style={{
+				outline: this.state.reversed ? '1px solid red' : '1px solid blue'
+			}} events={{
 					click: this.addItem
 				}}>{'' + this.state.reversed}</button>
-				{this.state.reversed ? <b>!</b> : null}
+				{/*this.state.reversed ? <b>!</b> : null*/}
 				<div key="inr">
 					{this.state.reversed ? <b>!</b> : null}
 					<div key="itm">{items}</div>
 				</div>
+			<FooSubComponent />
 		</div>;
 	}
 
 	addItem() {
-		// console.log('adding item...');
+		console.log('adding item...');
 
 		this.state.items.push('' + (Math.random() * 100 >> 0));
 		this.state.reversed = !this.state.reversed;
 
-		this.isDirty = true;
+		this.update();
 	}
 
 	hello(index, value) {
 		console.log('Hello, this is', value, 'at', index);
 	}
 }
+
+
+
+class Menu extends ash.Component {
+	state = {
+		left: 0,
+		width: 0
+	};
+
+	render() {
+		console.log('Menu render...', this.state);
+
+		return <nav>
+			<a href="/en/what-we-do" events={{mouseenter: this.onLinkMouseEnter, mouseleave: this.refreshSelectedLink}}>What we do</a>
+			<a href="/en/pricing" events={{mouseenter: this.onLinkMouseEnter, mouseleave: this.refreshSelectedLink}}>Pricing</a>
+			<a href="/en/blog" events={{mouseenter: this.onLinkMouseEnter, mouseleave: this.refreshSelectedLink}}>Blog</a>
+			<a href="/en/about-us" events={{mouseenter: this.onLinkMouseEnter, mouseleave: this.refreshSelectedLink}}>About us</a>
+			<a href="/en/career" events={{mouseenter: this.onLinkMouseEnter, mouseleave: this.refreshSelectedLink}}>Career</a>
+			<a href="#" events={{mouseenter: this.onLinkMouseEnter, mouseleave: this.refreshSelectedLink}}>Koi</a>
+			<span style={{
+				left: this.state.left + 'px',
+				width: this.state.width + 'px'
+			}}></span>
+		</nav>;
+	}
+
+	getSelectedMenuLink() {
+		var menuNode = this.domNode;
+
+		for (let i = 0; i < menuNode.childNodes.length; i++) {
+			if (menuNode.childNodes[i].className && menuNode.childNodes[i].className.indexOf('is-selected') >= 0) {
+				return menuNode.childNodes[i];
+			}
+		}
+
+		return menuNode.childNodes[0];
+	}
+
+	refreshSelectedLink() {
+		var $selected = $(this.getSelectedMenuLink());
+
+		this.state.left = $selected.position().left + 0.5 * ($selected.outerWidth(true) - $selected.width());
+		this.state.width = $selected.width();
+
+		// this.update();
+	}
+
+	onLinkMouseEnter(event) {
+		var $link = $(event.target);
+
+		this.state.left = $link.position().left + 0.5 * ($link.outerWidth(true) - $link.width());
+		this.state.width = $link.width();
+
+		this.update();
+	}
+
+	onMount() {
+		this.refreshSelectedLink();
+	}
+}
+
+class Header extends ash.Component {
+	render() { // {/*<Menu isHorizontal={true} />*/}
+		return <header>
+			<FooSubComponent />
+		</header>;
+	}
+}
+
+class App extends ash.Component {
+	render() {
+		return <div>
+			<Header />
+		</div>;
+	}
+}
+
+
+
+
+
+
+
 // var viewStream = ash.AshNodeStream.from(<ReorderApp />);
 
 // import addToList1Action from './actions/addToList1Action';
 // import addToList2Action from './actions/addToList2Action';
 
 
-// var viewStream = ash.AshNodeStream.from(<App />);
+var viewStream = ash.AshNodeStream.from(<App />);
 
-// global.viewStream = viewStream;
+global.viewStream = viewStream;
 
 // addToList1Action.from(App.list1);
 // addToList2Action.from(App.list2);
 
-// Renderer.addStream(viewStream, global.document.querySelector('.page'));
+Renderer.addStream(viewStream, global.document.querySelector('.page'));
 
 
 

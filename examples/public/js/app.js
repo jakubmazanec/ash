@@ -43,9 +43,9 @@ global.Immutable = _immutable2.default;
 
 var Renderer = global.Renderer = new _ash2.default.Renderer();
 
-var s1 = global.s1 = new _ash2.default.Stream();
-var s2 = global.s2 = new _ash2.default.Stream();
-var s3 = global.s3 = new _ash2.default.Stream();
+/*var s1 = global.s1 = new ash.Stream();
+var s2 = global.s2 = new ash.Stream();
+var s3 = global.s3 = new ash.Stream();
 
 s1.name = 's1';
 s2.name = 's2';
@@ -53,10 +53,10 @@ s3.name = 's3';
 
 // s1.push(3);
 // s2.push(4);
-s3.from(function () {
+s3.from(() => {
 	console.log('s3 fn...');
 	return s1.get() + s2.get();
-}, s1, s2);
+}, s1, s2);*/
 
 // console.log('ash.js start...');
 
@@ -351,12 +351,56 @@ $('body').on('keydown', () => {
 // import App from './components/App';
 // import AppReact from './components/AppReact';
 
-var ReorderApp = (function (_ash$Component) {
-	function ReorderApp() {
-		_classCallCheck(this, ReorderApp);
+var FooSubComponent = (function (_ash$Component) {
+	function FooSubComponent() {
+		_classCallCheck(this, FooSubComponent);
 
 		if (_ash$Component != null) {
 			_ash$Component.apply(this, arguments);
+		}
+
+		this.state = {
+			width: 1
+		};
+	}
+
+	_inherits(FooSubComponent, _ash$Component);
+
+	_createClass(FooSubComponent, [{
+		key: 'render',
+		value: function render() {
+			return _ash2.default.e(
+				'section',
+				null,
+				_ash2.default.e(
+					'button',
+					{ key: 'btn', style: {
+							outline: this.state.width + 'px solid #f0c'
+						}, events: {
+							click: this.change
+						} },
+					'Morw wdith!'
+				)
+			);
+		}
+	}, {
+		key: 'change',
+		value: function change() {
+			this.state.width++;
+
+			this.update();
+		}
+	}]);
+
+	return FooSubComponent;
+})(_ash2.default.Component);
+
+var ReorderApp = (function (_ash$Component2) {
+	function ReorderApp() {
+		_classCallCheck(this, ReorderApp);
+
+		if (_ash$Component2 != null) {
+			_ash$Component2.apply(this, arguments);
 		}
 
 		this.state = {
@@ -365,7 +409,7 @@ var ReorderApp = (function (_ash$Component) {
 		};
 	}
 
-	_inherits(ReorderApp, _ash$Component);
+	_inherits(ReorderApp, _ash$Component2);
 
 	_createClass(ReorderApp, [{
 		key: 'render',
@@ -380,25 +424,20 @@ var ReorderApp = (function (_ash$Component) {
 				);
 			});
 
-			if (this.state.reversed) {
-				items = items.reverse();
-			}
+			if (this.state.reversed) {}
 
 			return _ash2.default.e(
 				'div',
 				null,
 				_ash2.default.e(
 					'button',
-					{ key: 'btn', events: {
+					{ key: 'btn', style: {
+							outline: this.state.reversed ? '1px solid red' : '1px solid blue'
+						}, events: {
 							click: this.addItem
 						} },
 					'' + this.state.reversed
 				),
-				this.state.reversed ? _ash2.default.e(
-					'b',
-					null,
-					'!'
-				) : null,
 				_ash2.default.e(
 					'div',
 					{ key: 'inr' },
@@ -412,18 +451,19 @@ var ReorderApp = (function (_ash$Component) {
 						{ key: 'itm' },
 						items
 					)
-				)
+				),
+				_ash2.default.e(FooSubComponent, null)
 			);
 		}
 	}, {
 		key: 'addItem',
 		value: function addItem() {
-			// console.log('adding item...');
+			console.log('adding item...');
 
 			this.state.items.push('' + (Math.random() * 100 >> 0));
 			this.state.reversed = !this.state.reversed;
 
-			this.isDirty = true;
+			this.update();
 		}
 	}, {
 		key: 'hello',
@@ -435,19 +475,173 @@ var ReorderApp = (function (_ash$Component) {
 	return ReorderApp;
 })(_ash2.default.Component);
 
+var Menu = (function (_ash$Component3) {
+	function Menu() {
+		_classCallCheck(this, Menu);
+
+		if (_ash$Component3 != null) {
+			_ash$Component3.apply(this, arguments);
+		}
+
+		this.state = {
+			left: 0,
+			width: 0
+		};
+	}
+
+	_inherits(Menu, _ash$Component3);
+
+	_createClass(Menu, [{
+		key: 'render',
+		value: function render() {
+			console.log('Menu render...', this.state);
+
+			return _ash2.default.e(
+				'nav',
+				null,
+				_ash2.default.e(
+					'a',
+					{ href: '/en/what-we-do', events: { mouseenter: this.onLinkMouseEnter, mouseleave: this.refreshSelectedLink } },
+					'What we do'
+				),
+				_ash2.default.e(
+					'a',
+					{ href: '/en/pricing', events: { mouseenter: this.onLinkMouseEnter, mouseleave: this.refreshSelectedLink } },
+					'Pricing'
+				),
+				_ash2.default.e(
+					'a',
+					{ href: '/en/blog', events: { mouseenter: this.onLinkMouseEnter, mouseleave: this.refreshSelectedLink } },
+					'Blog'
+				),
+				_ash2.default.e(
+					'a',
+					{ href: '/en/about-us', events: { mouseenter: this.onLinkMouseEnter, mouseleave: this.refreshSelectedLink } },
+					'About us'
+				),
+				_ash2.default.e(
+					'a',
+					{ href: '/en/career', events: { mouseenter: this.onLinkMouseEnter, mouseleave: this.refreshSelectedLink } },
+					'Career'
+				),
+				_ash2.default.e(
+					'a',
+					{ href: '#', events: { mouseenter: this.onLinkMouseEnter, mouseleave: this.refreshSelectedLink } },
+					'Koi'
+				),
+				_ash2.default.e('span', { style: {
+						left: this.state.left + 'px',
+						width: this.state.width + 'px'
+					} })
+			);
+		}
+	}, {
+		key: 'getSelectedMenuLink',
+		value: function getSelectedMenuLink() {
+			var menuNode = this.domNode;
+
+			for (var i = 0; i < menuNode.childNodes.length; i++) {
+				if (menuNode.childNodes[i].className && menuNode.childNodes[i].className.indexOf('is-selected') >= 0) {
+					return menuNode.childNodes[i];
+				}
+			}
+
+			return menuNode.childNodes[0];
+		}
+	}, {
+		key: 'refreshSelectedLink',
+		value: function refreshSelectedLink() {
+			var $selected = (0, _jquery2.default)(this.getSelectedMenuLink());
+
+			this.state.left = $selected.position().left + 0.5 * ($selected.outerWidth(true) - $selected.width());
+			this.state.width = $selected.width();
+
+			// this.update();
+		}
+	}, {
+		key: 'onLinkMouseEnter',
+		value: function onLinkMouseEnter(event) {
+			var $link = (0, _jquery2.default)(event.target);
+
+			this.state.left = $link.position().left + 0.5 * ($link.outerWidth(true) - $link.width());
+			this.state.width = $link.width();
+
+			this.update();
+		}
+	}, {
+		key: 'onMount',
+		value: function onMount() {
+			this.refreshSelectedLink();
+		}
+	}]);
+
+	return Menu;
+})(_ash2.default.Component);
+
+var Header = (function (_ash$Component4) {
+	function Header() {
+		_classCallCheck(this, Header);
+
+		if (_ash$Component4 != null) {
+			_ash$Component4.apply(this, arguments);
+		}
+	}
+
+	_inherits(Header, _ash$Component4);
+
+	_createClass(Header, [{
+		key: 'render',
+		value: function render() {
+			// {/*<Menu isHorizontal={true} />*/}
+			return _ash2.default.e(
+				'header',
+				null,
+				_ash2.default.e(FooSubComponent, null)
+			);
+		}
+	}]);
+
+	return Header;
+})(_ash2.default.Component);
+
+var App = (function (_ash$Component5) {
+	function App() {
+		_classCallCheck(this, App);
+
+		if (_ash$Component5 != null) {
+			_ash$Component5.apply(this, arguments);
+		}
+	}
+
+	_inherits(App, _ash$Component5);
+
+	_createClass(App, [{
+		key: 'render',
+		value: function render() {
+			return _ash2.default.e(
+				'div',
+				null,
+				_ash2.default.e(Header, null)
+			);
+		}
+	}]);
+
+	return App;
+})(_ash2.default.Component);
+
 // var viewStream = ash.AshNodeStream.from(<ReorderApp />);
 
 // import addToList1Action from './actions/addToList1Action';
 // import addToList2Action from './actions/addToList2Action';
 
-// var viewStream = ash.AshNodeStream.from(<App />);
+var viewStream = _ash2.default.AshNodeStream.from(_ash2.default.e(App, null));
 
-// global.viewStream = viewStream;
+global.viewStream = viewStream;
 
 // addToList1Action.from(App.list1);
 // addToList2Action.from(App.list2);
 
-// Renderer.addStream(viewStream, global.document.querySelector('.page'));
+Renderer.addStream(viewStream, global.document.querySelector('.page'));
 
 // React.render(
 // 	React.createElement(AppReact),
@@ -555,18 +749,18 @@ var COMPLETED_TODOS = 'completed';
 var ENTER_KEY = 13;
 var ESCAPE_KEY = 27;
 
-var TodoItem = (function (_ash$Component2) {
+var TodoItem = (function (_ash$Component6) {
 	function TodoItem() {
 		_classCallCheck(this, TodoItem);
 
-		if (_ash$Component2 != null) {
-			_ash$Component2.apply(this, arguments);
+		if (_ash$Component6 != null) {
+			_ash$Component6.apply(this, arguments);
 		}
 
 		this.state = { editText: this.props.todo.title };
 	}
 
-	_inherits(TodoItem, _ash$Component2);
+	_inherits(TodoItem, _ash$Component6);
 
 	_createClass(TodoItem, [{
 		key: 'setState',
@@ -659,16 +853,16 @@ var TodoItem = (function (_ash$Component2) {
 	return TodoItem;
 })(_ash2.default.Component);
 
-var TodoFooter = (function (_ash$Component3) {
+var TodoFooter = (function (_ash$Component7) {
 	function TodoFooter() {
 		_classCallCheck(this, TodoFooter);
 
-		if (_ash$Component3 != null) {
-			_ash$Component3.apply(this, arguments);
+		if (_ash$Component7 != null) {
+			_ash$Component7.apply(this, arguments);
 		}
 	}
 
-	_inherits(TodoFooter, _ash$Component3);
+	_inherits(TodoFooter, _ash$Component7);
 
 	_createClass(TodoFooter, [{
 		key: 'setState',
@@ -764,12 +958,12 @@ var TodoFooter = (function (_ash$Component3) {
 	return TodoFooter;
 })(_ash2.default.Component);
 
-var TodoApp = (function (_ash$Component4) {
+var TodoApp = (function (_ash$Component8) {
 	function TodoApp() {
 		_classCallCheck(this, TodoApp);
 
-		if (_ash$Component4 != null) {
-			_ash$Component4.apply(this, arguments);
+		if (_ash$Component8 != null) {
+			_ash$Component8.apply(this, arguments);
 		}
 
 		this.state = {
@@ -779,7 +973,7 @@ var TodoApp = (function (_ash$Component4) {
 		};
 	}
 
-	_inherits(TodoApp, _ash$Component4);
+	_inherits(TodoApp, _ash$Component8);
 
 	_createClass(TodoApp, [{
 		key: 'setState',
@@ -983,6 +1177,9 @@ var TodoApp = (function (_ash$Component4) {
 	return TodoApp;
 })(_ash2.default.Component);
 
+// items = items.reverse();
+/*this.state.reversed ? <b>!</b> : null*/
+
 // Renderer.addStream(ash.AshNodeStream.from(<TodoApp />), global.document.querySelector('#todoapp'));
 
 /*function resolveIfReady() {
@@ -1171,12 +1368,13 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParen
 			ashElement.instance.index = index;
 			ashElement.instance.indices = parentIndices.concat(index);
 			ashElement.instance.streamId = ashElement.stream.id;
-			ashElement.instance.isDirty = isParentComponentDirty;
+			ashElement.instance.isDirty = true;
 			ashElement.instance.parent = ashNodeTree;
 
 			ashNodeTree.children.push(ashElement.instance);
+			// ashNodeTree.children[ashElement.instance.index] = ashElement.instance;
 		} else {
-			ashElement.instance.isDirty = isParentComponentDirty;
+			ashElement.instance.isDirty = false;
 
 			if (ashNodeTree.children[ashElement.instance.index] !== ashElement.instance) {
 				ashNodeTree.children[ashElement.instance.index] = ashElement.instance;
@@ -1188,7 +1386,15 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParen
 			walkCreateAshNodeTree(ashNodeTree.children[ashNodeTree.children.length - 1], ashElement.children[i], i, ashNodeTree.children[ashNodeTree.children.length - 1].id, isParentComponentDirty, ashNodeTree.children[ashNodeTree.children.length - 1].indices);
 		}
 	} else if (ashElement && ashElement.children[0]) {
+
 		var isDirty = ashElement.isDirty;
+
+		if (isDirty) {
+			ashNodeTree.oldChildren = ashNodeTree.children;
+			ashNodeTree.children = [];
+		} else {
+			ashNodeTree.oldChildren = null;
+		}
 
 		ashElement.isDirty = false;
 
@@ -1322,148 +1528,6 @@ var PATCH_PROPERTIES = _internalsConstants2.default.PATCH_PROPERTIES;
 var PATCH_ORDER = _internalsConstants2.default.PATCH_ORDER;
 var PATCH_INSERT = _internalsConstants2.default.PATCH_INSERT;
 var PATCH_REMOVE = _internalsConstants2.default.PATCH_REMOVE;
-
-/*function diffChildren(oldChildren, newChildren, oldAshNode, newAshNode, patches) {
-	// lets fill in keys, if needed; simple first-to-first correspondence
-	var oldChildIndex = 0;
-	var newChildIndex = 0;
-	var lastKey = 0;
-	var key = '__key:' + lastKey + '__';
-	var isChildDirty = false;
-
-	for (let i = 0, length = Math.max(oldChildren.length, newChildren.length); i < length; i++) {
-		if (newChildren[i] && newChildren[i].isDirty) {
-			isChildDirty = true;
-		}
-
-		if (oldChildren[i] && oldChildren[i].key) {
-			oldChildren[i].tempKey = oldChildren[i].key;
-		}
-
-		if (newChildren[i] && newChildren[i].key) {
-			newChildren[i].tempKey = newChildren[i].key;
-		}
-
-		while (oldChildren[oldChildIndex] && oldChildren[oldChildIndex].key) {
-			oldChildIndex++;
-		}
-
-		while (newChildren[newChildIndex] && newChildren[newChildIndex].key) {
-			newChildIndex++;
-		}
-
-		if (oldChildren[oldChildIndex]) {
-			oldChildren[oldChildIndex].tempKey = key;
-		}
-
-		if (newChildren[newChildIndex]) {
-			newChildren[newChildIndex].tempKey = key;
-		}
-		
-		lastKey++;
-		key = '__key:' + lastKey + '__';
-		oldChildIndex++;
-		newChildIndex++;
-	}
-
-	// no children are dirty
-	if (!isChildDirty && oldChildren.length === newChildren.length) {
-		for (let i = 0; i < oldChildren.length; i++) {
-			// now walk inside those children...
-			walkDiffAshNodeTree(oldChildren[i], newChildren[i], patches);
-		}
-
-		return patches;
-	}
-	
-	// keys are in; let's compare order of children
-	let foundIndex;
-
-	// first iterate over old children
-	for (let i = 0; i < oldChildren.length; i++) {
-		let isChildFound = false;
-
-		for (let j = 0; j < newChildren.length; j++) {
-			if (oldChildren[i].tempKey === newChildren[j].tempKey) {
-				isChildFound = true;
-				foundIndex = j;
-
-				break;
-			}
-		}
-
-		// node with matching key was found?
-		if (isChildFound) {
-			// is order same?
-			if (i !== foundIndex) {
-				patches.push({
-					type: PATCH_ORDER,
-					newId: newChildren[foundIndex].id,
-					id: oldChildren[i].id,
-					indices: oldChildren[i].indices,
-					streamId: oldChildren[i].streamId,
-					index: foundIndex
-				});
-
-				for (let k = 0; k < patches[patches.length - 1].indices.length; k++) {
-					if (patches.maxIndex < patches[patches.length - 1].indices[k]) {
-						patches.maxIndex = patches[patches.length - 1].indices[k];
-					}
-				}
-			}
-
-			// now walk inside those children...
-			walkDiffAshNodeTree(oldChildren[i], newChildren[foundIndex], patches);
-		} else {
-			// node is to be removed...
-			patches.push({
-				type: PATCH_REMOVE,
-				id: oldChildren[i].id,
-				indices: oldChildren[i].indices,
-				streamId: oldChildren[i].streamId,
-			});
-
-			for (let k = 0; k < patches[patches.length - 1].indices.length; k++) {
-				if (patches.maxIndex < patches[patches.length - 1].indices[k]) {
-					patches.maxIndex = patches[patches.length - 1].indices[k];
-				}
-			}
-		}
-	}
-
-	// now iterate over new children; let's see, if there are any new...
-	for (let j = 0; j < newChildren.length; j++) {
-		let isChildFound = false;
-
-		for (let i = 0; i < oldChildren.length; i++) {
-			if (oldChildren[i].tempKey === newChildren[j].tempKey) {
-				isChildFound = true;
-
-				break;
-			}
-		}
-
-		// new child was not found
-		if (!isChildFound) {
-			patches.push({
-				type: PATCH_INSERT,
-				node: newChildren[j],
-				id: newChildren[j].id,
-				indices: newChildren[j].indices,
-				parentId: oldAshNode.id,
-				parentIndices: oldAshNode.indices,
-			});
-
-			for (let k = 0; k < patches[patches.length - 1].indices.length; k++) {
-				if (patches.maxIndex < patches[patches.length - 1].indices[k]) {
-					patches.maxIndex = patches[patches.length - 1].indices[k];
-				}
-			}
-		}
-	}
-	
-	return patches;
-}*/
 
 function diffChildren(oldChildren, newChildren, oldAshNode, newAshNode, patches) {
 	var oldChildIndex = 0;
@@ -1610,7 +1674,13 @@ function walkDiffAshNodeTree(oldAshNode, newAshNode, patches) {
 
 	if (oldAshNode === newAshNode || !newAshNode.isDirty) {
 		// diff the children...
-		if (!((!oldAshNode.children || !oldAshNode.children.length) && (!newAshNode.children || !newAshNode.children.length))) {
+		/*if (!((!oldAshNode.children || !oldAshNode.children.length) && (!newAshNode.children || !newAshNode.children.length))) {
+  	diffChildren(oldAshNode.children, newAshNode.children, oldAshNode, newAshNode, patches);
+  }*/
+
+		if (oldAshNode.oldChildren && oldAshNode.oldChildren.length) {
+			diffChildren(oldAshNode.oldChildren, newAshNode.children, oldAshNode, newAshNode, patches);
+		} else if (oldAshNode.children && oldAshNode.children.length || newAshNode.children && newAshNode.children.length) {
 			diffChildren(oldAshNode.children, newAshNode.children, oldAshNode, newAshNode, patches);
 		}
 
@@ -1705,7 +1775,12 @@ function walkDiffAshNodeTree(oldAshNode, newAshNode, patches) {
 	}
 
 	// diff the children...
-	if (!((!oldAshNode.children || !oldAshNode.children.length) && (!newAshNode.children || !newAshNode.children.length))) {
+	/*if (!((!oldAshNode.children || !oldAshNode.children.length) && (!newAshNode.children || !newAshNode.children.length))) {
+ 	diffChildren(oldAshNode.children, newAshNode.children, oldAshNode, newAshNode, patches);
+ }*/
+	if (oldAshNode.oldChildren && oldAshNode.oldChildren.length) {
+		diffChildren(oldAshNode.oldChildren, newAshNode.children, oldAshNode, newAshNode, patches);
+	} else if (oldAshNode.children && oldAshNode.children.length || newAshNode.children && newAshNode.children.length) {
 		diffChildren(oldAshNode.children, newAshNode.children, oldAshNode, newAshNode, patches);
 	}
 

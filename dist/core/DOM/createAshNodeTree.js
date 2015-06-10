@@ -30,12 +30,13 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParen
 			ashElement.instance.index = index;
 			ashElement.instance.indices = parentIndices.concat(index);
 			ashElement.instance.streamId = ashElement.stream.id;
-			ashElement.instance.isDirty = isParentComponentDirty;
+			ashElement.instance.isDirty = true;
 			ashElement.instance.parent = ashNodeTree;
 
 			ashNodeTree.children.push(ashElement.instance);
+			// ashNodeTree.children[ashElement.instance.index] = ashElement.instance;
 		} else {
-			ashElement.instance.isDirty = isParentComponentDirty;
+			ashElement.instance.isDirty = false;
 
 			if (ashNodeTree.children[ashElement.instance.index] !== ashElement.instance) {
 				ashNodeTree.children[ashElement.instance.index] = ashElement.instance;
@@ -47,7 +48,15 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParen
 			walkCreateAshNodeTree(ashNodeTree.children[ashNodeTree.children.length - 1], ashElement.children[i], i, ashNodeTree.children[ashNodeTree.children.length - 1].id, isParentComponentDirty, ashNodeTree.children[ashNodeTree.children.length - 1].indices);
 		}
 	} else if (ashElement && ashElement.children[0]) {
+
 		var isDirty = ashElement.isDirty;
+
+		if (isDirty) {
+			ashNodeTree.oldChildren = ashNodeTree.children;
+			ashNodeTree.children = [];
+		} else {
+			ashNodeTree.oldChildren = null;
+		}
 
 		ashElement.isDirty = false;
 

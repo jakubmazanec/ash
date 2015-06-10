@@ -8,148 +8,6 @@ const PATCH_ORDER = constants.PATCH_ORDER;
 const PATCH_INSERT = constants.PATCH_INSERT;
 const PATCH_REMOVE = constants.PATCH_REMOVE;
 
-/*function diffChildren(oldChildren, newChildren, oldAshNode, newAshNode, patches) {
-	// lets fill in keys, if needed; simple first-to-first correspondence
-	var oldChildIndex = 0;
-	var newChildIndex = 0;
-	var lastKey = 0;
-	var key = '__key:' + lastKey + '__';
-	var isChildDirty = false;
-
-	for (let i = 0, length = Math.max(oldChildren.length, newChildren.length); i < length; i++) {
-		if (newChildren[i] && newChildren[i].isDirty) {
-			isChildDirty = true;
-		}
-
-		if (oldChildren[i] && oldChildren[i].key) {
-			oldChildren[i].tempKey = oldChildren[i].key;
-		}
-
-		if (newChildren[i] && newChildren[i].key) {
-			newChildren[i].tempKey = newChildren[i].key;
-		}
-
-		while (oldChildren[oldChildIndex] && oldChildren[oldChildIndex].key) {
-			oldChildIndex++;
-		}
-
-		while (newChildren[newChildIndex] && newChildren[newChildIndex].key) {
-			newChildIndex++;
-		}
-
-		if (oldChildren[oldChildIndex]) {
-			oldChildren[oldChildIndex].tempKey = key;
-		}
-
-		if (newChildren[newChildIndex]) {
-			newChildren[newChildIndex].tempKey = key;
-		}
-		
-		lastKey++;
-		key = '__key:' + lastKey + '__';
-		oldChildIndex++;
-		newChildIndex++;
-	}
-
-	// no children are dirty
-	if (!isChildDirty && oldChildren.length === newChildren.length) {
-		for (let i = 0; i < oldChildren.length; i++) {
-			// now walk inside those children...
-			walkDiffAshNodeTree(oldChildren[i], newChildren[i], patches);
-		}
-
-		return patches;
-	}
-	
-	// keys are in; let's compare order of children
-	let foundIndex;
-
-	// first iterate over old children
-	for (let i = 0; i < oldChildren.length; i++) {
-		let isChildFound = false;
-
-		for (let j = 0; j < newChildren.length; j++) {
-			if (oldChildren[i].tempKey === newChildren[j].tempKey) {
-				isChildFound = true;
-				foundIndex = j;
-
-				break;
-			}
-		}
-
-		// node with matching key was found?
-		if (isChildFound) {
-			// is order same?
-			if (i !== foundIndex) {
-				patches.push({
-					type: PATCH_ORDER,
-					newId: newChildren[foundIndex].id,
-					id: oldChildren[i].id,
-					indices: oldChildren[i].indices,
-					streamId: oldChildren[i].streamId,
-					index: foundIndex
-				});
-
-				for (let k = 0; k < patches[patches.length - 1].indices.length; k++) {
-					if (patches.maxIndex < patches[patches.length - 1].indices[k]) {
-						patches.maxIndex = patches[patches.length - 1].indices[k];
-					}
-				}
-			}
-
-			// now walk inside those children...
-			walkDiffAshNodeTree(oldChildren[i], newChildren[foundIndex], patches);
-		} else {
-			// node is to be removed...
-			patches.push({
-				type: PATCH_REMOVE,
-				id: oldChildren[i].id,
-				indices: oldChildren[i].indices,
-				streamId: oldChildren[i].streamId,
-			});
-
-			for (let k = 0; k < patches[patches.length - 1].indices.length; k++) {
-				if (patches.maxIndex < patches[patches.length - 1].indices[k]) {
-					patches.maxIndex = patches[patches.length - 1].indices[k];
-				}
-			}
-		}
-	}
-
-	// now iterate over new children; let's see, if there are any new...
-	for (let j = 0; j < newChildren.length; j++) {
-		let isChildFound = false;
-
-		for (let i = 0; i < oldChildren.length; i++) {
-			if (oldChildren[i].tempKey === newChildren[j].tempKey) {
-				isChildFound = true;
-
-				break;
-			}
-		}
-
-		// new child was not found
-		if (!isChildFound) {
-			patches.push({
-				type: PATCH_INSERT,
-				node: newChildren[j],
-				id: newChildren[j].id,
-				indices: newChildren[j].indices,
-				parentId: oldAshNode.id,
-				parentIndices: oldAshNode.indices,
-			});
-
-			for (let k = 0; k < patches[patches.length - 1].indices.length; k++) {
-				if (patches.maxIndex < patches[patches.length - 1].indices[k]) {
-					patches.maxIndex = patches[patches.length - 1].indices[k];
-				}
-			}
-		}
-	}
-	
-	return patches;
-}*/
-
 function diffChildren(oldChildren, newChildren, oldAshNode, newAshNode, patches) {
 	var oldChildIndex = 0;
 	var newChildIndex = 0;
@@ -297,7 +155,13 @@ function walkDiffAshNodeTree(oldAshNode, newAshNode, patches) {
 
 	if (oldAshNode === newAshNode || !newAshNode.isDirty) {
 		// diff the children...
-		if (!((!oldAshNode.children || !oldAshNode.children.length) && (!newAshNode.children || !newAshNode.children.length))) {
+		/*if (!((!oldAshNode.children || !oldAshNode.children.length) && (!newAshNode.children || !newAshNode.children.length))) {
+			diffChildren(oldAshNode.children, newAshNode.children, oldAshNode, newAshNode, patches);
+		}*/
+
+		if (oldAshNode.oldChildren && oldAshNode.oldChildren.length) {
+			diffChildren(oldAshNode.oldChildren, newAshNode.children, oldAshNode, newAshNode, patches);
+		} else if (oldAshNode.children && oldAshNode.children.length || newAshNode.children && newAshNode.children.length) {
 			diffChildren(oldAshNode.children, newAshNode.children, oldAshNode, newAshNode, patches);
 		}
 
@@ -393,7 +257,12 @@ function walkDiffAshNodeTree(oldAshNode, newAshNode, patches) {
 	}
 
 	// diff the children...
-	if (!((!oldAshNode.children || !oldAshNode.children.length) && (!newAshNode.children || !newAshNode.children.length))) {
+	/*if (!((!oldAshNode.children || !oldAshNode.children.length) && (!newAshNode.children || !newAshNode.children.length))) {
+		diffChildren(oldAshNode.children, newAshNode.children, oldAshNode, newAshNode, patches);
+	}*/
+	if (oldAshNode.oldChildren && oldAshNode.oldChildren.length) {
+		diffChildren(oldAshNode.oldChildren, newAshNode.children, oldAshNode, newAshNode, patches);
+	} else if (oldAshNode.children && oldAshNode.children.length || newAshNode.children && newAshNode.children.length) {
 		diffChildren(oldAshNode.children, newAshNode.children, oldAshNode, newAshNode, patches);
 	}
 
