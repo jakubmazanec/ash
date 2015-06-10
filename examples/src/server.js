@@ -1,5 +1,5 @@
 import koa from 'koa';
-import ash from 'ash';
+// import ash from 'ash';
 
 import fs from 'fs';
 import compress from 'koa-compress';
@@ -8,13 +8,13 @@ import serve from 'koa-static';
 import route from 'koa-route';
 import path from 'path';
 
-import App from './components/App';
+// import App from './components/App';
 
 
 
 var app = koa();
-var Renderer = new ash.Renderer();
-var componentHtml = Renderer.streamToString(ash.AshNodeStream.from(<App />));
+// var Renderer = new ash.Renderer();
+// var componentHtml = Renderer.streamToString(ash.AshNodeStream.from(<App />));
 
 app.use(logger());
 

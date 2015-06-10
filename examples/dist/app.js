@@ -368,18 +368,22 @@ var FooSubComponent = (function (_ash$Component) {
 		key: 'render',
 		value: function render() {
 			return _ash2.default.e(
-				'section',
-				null,
-				_ash2.default.e(
-					'button',
-					{ key: 'btn', style: {
-							outline: this.state.width + 'px solid #f0c'
-						}, events: {
-							click: this.change
-						} },
-					'Morw wdith!'
-				)
+				'button',
+				{ key: 'btn', style: {
+						outline: this.state.width + 'px solid #f0c'
+					}, events: {
+						click: this.change
+					} },
+				'Morw wdith!'
 			);
+
+			/*return <section>
+   	<button key="btn" style={{
+   		outline: this.state.width + 'px solid #f0c'
+   	}} events={{
+   		click: this.change
+   	}}>Morw wdith!</button>
+   </section>;*/
 		}
 	}, {
 		key: 'change',
@@ -602,16 +606,42 @@ var Header = (function (_ash$Component4) {
 	return Header;
 })(_ash2.default.Component);
 
-var App = (function (_ash$Component5) {
-	function App() {
-		_classCallCheck(this, App);
+var Footer = (function (_ash$Component5) {
+	function Footer() {
+		_classCallCheck(this, Footer);
 
 		if (_ash$Component5 != null) {
 			_ash$Component5.apply(this, arguments);
 		}
 	}
 
-	_inherits(App, _ash$Component5);
+	_inherits(Footer, _ash$Component5);
+
+	_createClass(Footer, [{
+		key: 'render',
+		value: function render() {
+			// {/*<Menu isHorizontal={true} />*/}
+			return _ash2.default.e(
+				'footer',
+				null,
+				_ash2.default.e(FooSubComponent, null)
+			);
+		}
+	}]);
+
+	return Footer;
+})(_ash2.default.Component);
+
+var App = (function (_ash$Component6) {
+	function App() {
+		_classCallCheck(this, App);
+
+		if (_ash$Component6 != null) {
+			_ash$Component6.apply(this, arguments);
+		}
+	}
+
+	_inherits(App, _ash$Component6);
 
 	_createClass(App, [{
 		key: 'render',
@@ -619,7 +649,8 @@ var App = (function (_ash$Component5) {
 			return _ash2.default.e(
 				'div',
 				null,
-				_ash2.default.e(Header, null)
+				_ash2.default.e(Header, null),
+				_ash2.default.e(Footer, null)
 			);
 		}
 	}]);
@@ -747,18 +778,18 @@ var COMPLETED_TODOS = 'completed';
 var ENTER_KEY = 13;
 var ESCAPE_KEY = 27;
 
-var TodoItem = (function (_ash$Component6) {
+var TodoItem = (function (_ash$Component7) {
 	function TodoItem() {
 		_classCallCheck(this, TodoItem);
 
-		if (_ash$Component6 != null) {
-			_ash$Component6.apply(this, arguments);
+		if (_ash$Component7 != null) {
+			_ash$Component7.apply(this, arguments);
 		}
 
 		this.state = { editText: this.props.todo.title };
 	}
 
-	_inherits(TodoItem, _ash$Component6);
+	_inherits(TodoItem, _ash$Component7);
 
 	_createClass(TodoItem, [{
 		key: 'setState',
@@ -851,16 +882,16 @@ var TodoItem = (function (_ash$Component6) {
 	return TodoItem;
 })(_ash2.default.Component);
 
-var TodoFooter = (function (_ash$Component7) {
+var TodoFooter = (function (_ash$Component8) {
 	function TodoFooter() {
 		_classCallCheck(this, TodoFooter);
 
-		if (_ash$Component7 != null) {
-			_ash$Component7.apply(this, arguments);
+		if (_ash$Component8 != null) {
+			_ash$Component8.apply(this, arguments);
 		}
 	}
 
-	_inherits(TodoFooter, _ash$Component7);
+	_inherits(TodoFooter, _ash$Component8);
 
 	_createClass(TodoFooter, [{
 		key: 'setState',
@@ -956,12 +987,12 @@ var TodoFooter = (function (_ash$Component7) {
 	return TodoFooter;
 })(_ash2.default.Component);
 
-var TodoApp = (function (_ash$Component8) {
+var TodoApp = (function (_ash$Component9) {
 	function TodoApp() {
 		_classCallCheck(this, TodoApp);
 
-		if (_ash$Component8 != null) {
-			_ash$Component8.apply(this, arguments);
+		if (_ash$Component9 != null) {
+			_ash$Component9.apply(this, arguments);
 		}
 
 		this.state = {
@@ -971,7 +1002,7 @@ var TodoApp = (function (_ash$Component8) {
 		};
 	}
 
-	_inherits(TodoApp, _ash$Component8);
+	_inherits(TodoApp, _ash$Component9);
 
 	_createClass(TodoApp, [{
 		key: 'setState',

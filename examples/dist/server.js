@@ -6,9 +6,7 @@ var _koa = require('koa');
 
 var _koa2 = _interopRequireDefault(_koa);
 
-var _ash = require('ash');
-
-var _ash2 = _interopRequireDefault(_ash);
+// import ash from 'ash';
 
 var _fs = require('fs');
 
@@ -34,13 +32,11 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
-var _componentsApp = require('./components/App');
-
-var _componentsApp2 = _interopRequireDefault(_componentsApp);
+// import App from './components/App';
 
 var app = (0, _koa2.default)();
-var Renderer = new _ash2.default.Renderer();
-var componentHtml = Renderer.streamToString(_ash2.default.AshNodeStream.from(_ash2.default.e(_componentsApp2.default, null)));
+// var Renderer = new ash.Renderer();
+// var componentHtml = Renderer.streamToString(ash.AshNodeStream.from(<App />));
 
 app.use((0, _koaLogger2.default)());
 

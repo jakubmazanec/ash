@@ -6,8 +6,11 @@ import constants from '../internals/constants';
 const INDEX_SEPARATOR = constants.INDEX_SEPARATOR;
 
 function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParentComponentDirty, parentIndices) {
+	// console.log('--- walkCreateAshNodeTree...', index, ashElement.Spec, isParentComponentDirty);
 	if (isAshNodeAshElement(ashElement)) {
+		// console.log('AshNode ashElement', ashElement.args[0], ashElement.args[1]);
 		if (isParentComponentDirty) {
+			
 			ashElement.instantiate();
 
 			ashElement.instance.id = parentId + INDEX_SEPARATOR + index;
@@ -17,11 +20,12 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParen
 			ashElement.instance.isDirty = true;
 			ashElement.instance.parent = ashNodeTree;
 
-			ashNodeTree.children.push(ashElement.instance);
-			// ashNodeTree.children[ashElement.instance.index] = ashElement.instance;
+			// console.log('instantiate!', ashElement.instance.index, ashNodeTree.children[ashElement.instance.index]);
 
-
+			// ashNodeTree.children.push(ashElement.instance);
+			ashNodeTree.children[ashElement.instance.index] = ashElement.instance;
 		} else {
+			// console.log('just copy', ashElement.instance.index);
 			ashElement.instance.isDirty = false;
 
 			if (ashNodeTree.children[ashElement.instance.index] !== ashElement.instance) {
@@ -37,9 +41,15 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParen
 		
 		let isDirty = ashElement.isDirty;
 
+		// console.log('* Component ashElement', isDirty, 'oldChildren?', !!ashNodeTree.oldChildren, ashNodeTree.oldChildren === ashNodeTree.children);
+
 		if (isDirty) {
-			ashNodeTree.oldChildren = ashNodeTree.children;
-			ashNodeTree.children = [];
+			// if (!ashNodeTree.oldChildren) {
+			if (index === 0) {
+				// console.log('creating oldChildren!');
+				ashNodeTree.oldChildren = ashNodeTree.children;
+				ashNodeTree.children = [];
+			}
 		} else {
 			ashNodeTree.oldChildren = null;
 		}

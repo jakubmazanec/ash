@@ -22,8 +22,11 @@ var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 var INDEX_SEPARATOR = _internalsConstants2.default.INDEX_SEPARATOR;
 
 function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParentComponentDirty, parentIndices) {
+	// console.log('--- walkCreateAshNodeTree...', index, ashElement.Spec, isParentComponentDirty);
 	if ((0, _internalsIsAshNodeAshElement2.default)(ashElement)) {
+		// console.log('AshNode ashElement', ashElement.args[0], ashElement.args[1]);
 		if (isParentComponentDirty) {
+
 			ashElement.instantiate();
 
 			ashElement.instance.id = parentId + INDEX_SEPARATOR + index;
@@ -33,9 +36,12 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParen
 			ashElement.instance.isDirty = true;
 			ashElement.instance.parent = ashNodeTree;
 
-			ashNodeTree.children.push(ashElement.instance);
-			// ashNodeTree.children[ashElement.instance.index] = ashElement.instance;
+			// console.log('instantiate!', ashElement.instance.index, ashNodeTree.children[ashElement.instance.index]);
+
+			// ashNodeTree.children.push(ashElement.instance);
+			ashNodeTree.children[ashElement.instance.index] = ashElement.instance;
 		} else {
+			// console.log('just copy', ashElement.instance.index);
 			ashElement.instance.isDirty = false;
 
 			if (ashNodeTree.children[ashElement.instance.index] !== ashElement.instance) {
@@ -51,9 +57,15 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParen
 
 		var isDirty = ashElement.isDirty;
 
+		// console.log('* Component ashElement', isDirty, 'oldChildren?', !!ashNodeTree.oldChildren, ashNodeTree.oldChildren === ashNodeTree.children);
+
 		if (isDirty) {
-			ashNodeTree.oldChildren = ashNodeTree.children;
-			ashNodeTree.children = [];
+			// if (!ashNodeTree.oldChildren) {
+			if (index === 0) {
+				// console.log('creating oldChildren!');
+				ashNodeTree.oldChildren = ashNodeTree.children;
+				ashNodeTree.children = [];
+			}
 		} else {
 			ashNodeTree.oldChildren = null;
 		}

@@ -90,6 +90,7 @@ var AshNodeStream = (function (_Stream) {
 			} else if (arg instanceof _classesComponent2.default && this.isUpdating) {
 				throw new Error('You cannot update components during previous update!');
 			} else {
+				// console.log('push...', arg);
 				_get(Object.getPrototypeOf(AshNodeStream.prototype), 'push', this).call(this, arg);
 			}
 

@@ -354,13 +354,19 @@ class FooSubComponent extends ash.Component {
 	};
 
 	render() {
-		return <section>
+		return <button key="btn" style={{
+				outline: this.state.width + 'px solid #f0c'
+			}} events={{
+				click: this.change
+			}}>Morw wdith!</button>;
+
+		/*return <section>
 			<button key="btn" style={{
 				outline: this.state.width + 'px solid #f0c'
 			}} events={{
 				click: this.change
 			}}>Morw wdith!</button>
-		</section>;
+		</section>;*/
 	}
 
 	change() {
@@ -481,10 +487,19 @@ class Header extends ash.Component {
 	}
 }
 
+class Footer extends ash.Component {
+	render() { // {/*<Menu isHorizontal={true} />*/}
+		return <footer>
+			<FooSubComponent />
+		</footer>;
+	}
+}
+
 class App extends ash.Component {
 	render() {
 		return <div>
 			<Header />
+			<Footer />
 		</div>;
 	}
 }

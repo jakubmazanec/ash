@@ -29,7 +29,6 @@ export default class AshNodeStream extends Stream {
 	}
 
 	push(arg) {
-		
 		if (arg instanceof Component && !this.isUpdating) {
 			this.isUpdating = true;
 
@@ -48,6 +47,7 @@ export default class AshNodeStream extends Stream {
 		} else if (arg instanceof Component && this.isUpdating) {
 			throw new Error('You cannot update components during previous update!');
 		} else {
+			// console.log('push...', arg);
 			super.push(arg);
 		}
 
