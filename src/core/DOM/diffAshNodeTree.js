@@ -153,7 +153,9 @@ function walkDiffAshNodeTree(oldAshNode, newAshNode, patches) {
 	var propertiesToChange = {};
 	var propertiesToRemove = [];
 
-	// console.log('walkDiffAshNodeTree');
+	// console.log('walkDiffAshNodeTree...', oldAshNode.id, oldAshNode.tagName, newAshNode.id, newAshNode.tagName);
+	// console.log('oldChildren?', !!oldAshNode.oldChildren, oldAshNode.oldChildren ? oldAshNode.oldChildren.length : 'NA');
+
 
 	if (oldAshNode === newAshNode || !newAshNode.isDirty) {
 		// diff the children...
@@ -162,8 +164,10 @@ function walkDiffAshNodeTree(oldAshNode, newAshNode, patches) {
 		}*/
 
 		if (oldAshNode.oldChildren && oldAshNode.oldChildren.length) {
+			// // console.log('oldChildren found 1');
 			diffChildren(oldAshNode.oldChildren, newAshNode.children, oldAshNode, newAshNode, patches);
-			oldAshNode.oldChildren = null;
+			
+			// oldAshNode.oldChildren = newAshNode.oldChildren = null;
 		} else if (oldAshNode.children && oldAshNode.children.length || newAshNode.children && newAshNode.children.length) {
 			diffChildren(oldAshNode.children, newAshNode.children, oldAshNode, newAshNode, patches);
 		}
@@ -264,8 +268,10 @@ function walkDiffAshNodeTree(oldAshNode, newAshNode, patches) {
 		diffChildren(oldAshNode.children, newAshNode.children, oldAshNode, newAshNode, patches);
 	}*/
 	if (oldAshNode.oldChildren && oldAshNode.oldChildren.length) {
+		// // console.log('oldChildren found 1');
 		diffChildren(oldAshNode.oldChildren, newAshNode.children, oldAshNode, newAshNode, patches);
-		oldAshNode.oldChildren = null;
+
+		// oldAshNode.oldChildren = newAshNode.oldChildren = null;
 	} else if (oldAshNode.children && oldAshNode.children.length || newAshNode.children && newAshNode.children.length) {
 		diffChildren(oldAshNode.children, newAshNode.children, oldAshNode, newAshNode, patches);
 	}
@@ -276,7 +282,9 @@ function walkDiffAshNodeTree(oldAshNode, newAshNode, patches) {
 export default function diffAshNodeTree(oldAshNodeTree, newAshNodeTree) {
 	var patches = [];
 
-	// console.log('diffAshNodeTree', oldAshNodeTree, newAshNodeTree);
+	// console.log('diffAshNodeTree...');
+	// console.log('oldAshNodeTree', oldAshNodeTree);
+	// console.log('newAshNodeTree', newAshNodeTree);
 
 	patches.maxIndex = 1;
 

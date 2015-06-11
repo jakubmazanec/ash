@@ -192,6 +192,8 @@ function patchNodeTree(nodeTree /*, patches*/) {
 	// sort patches by their order
 	patches.sort(comparePatches);
 
+	// console.log('patches', patches);
+
 	// now iterate over patches...
 	var lastLevel = patches[patches.length - 1].indices.length;
 

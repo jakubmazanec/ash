@@ -22,9 +22,10 @@ var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 var INDEX_SEPARATOR = _internalsConstants2.default.INDEX_SEPARATOR;
 
 function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParentComponentDirty, parentIndices) {
-	// console.log('--- walkCreateAshNodeTree...', index, ashElement.Spec, isParentComponentDirty);
+	// console.log('>-- walkCreateAshNodeTree...', index, parentIndices, 'parentDirty?', isParentComponentDirty, 'on', ashNodeTree.id, ashNodeTree.tagName);
+	// debugger;
 	if ((0, _internalsIsAshNodeAshElement2.default)(ashElement)) {
-		// console.log('AshNode ashElement', ashElement.args[0], ashElement.args[1]);
+		// console.log('-', ashElement.args[0], ashElement.args[1]);
 		if (isParentComponentDirty) {
 
 			ashElement.instantiate();
@@ -43,6 +44,7 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParen
 		} else {
 			// console.log('just copy', ashElement.instance.index);
 			ashElement.instance.isDirty = false;
+			ashElement.instance.parent = ashNodeTree;
 
 			if (ashNodeTree.children[ashElement.instance.index] !== ashElement.instance) {
 				ashNodeTree.children[ashElement.instance.index] = ashElement.instance;
@@ -50,28 +52,58 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParen
 		}
 
 		// walk the children
+		// console.log('walk the node children...', ashElement.instance.index);
 		for (var i = 0; i < ashElement.children.length; i++) {
-			walkCreateAshNodeTree(ashNodeTree.children[ashNodeTree.children.length - 1], ashElement.children[i], i, ashNodeTree.children[ashNodeTree.children.length - 1].id, isParentComponentDirty, ashNodeTree.children[ashNodeTree.children.length - 1].indices);
+			// walkCreateAshNodeTree(ashNodeTree.children[ashNodeTree.children.length - 1], ashElement.children[i], i, ashNodeTree.children[ashNodeTree.children.length - 1].id, isParentComponentDirty, ashNodeTree.children[ashNodeTree.children.length - 1].indices);
+			walkCreateAshNodeTree(ashNodeTree.children[ashElement.instance.index], ashElement.children[i], i, ashNodeTree.children[ashElement.instance.index].id, isParentComponentDirty, ashNodeTree.children[ashElement.instance.index].indices);
 		}
 	} else if (ashElement && ashElement.children[0]) {
 
 		var isDirty = ashElement.isDirty;
 
-		// console.log('* Component ashElement', isDirty, 'oldChildren?', !!ashNodeTree.oldChildren, ashNodeTree.oldChildren === ashNodeTree.children);
+		// console.log('* Component', ashElement.Spec, 'element dirty?', isDirty);
 
-		if (isDirty) {
-			// if (!ashNodeTree.oldChildren) {
-			if (index === 0) {
-				// console.log('creating oldChildren!');
+		/*if (isDirty) {
+  	// if (!ashNodeTree.oldChildren) {
+  	if (index === 0) {
+  		// console.log('creating oldChildren', 'on', ashNodeTree.id, ashNodeTree.tagName);
+  		// console.log('old children', ashNodeTree.children.length);
+  		ashNodeTree.oldChildren = ashNodeTree.children;
+  		ashNodeTree.children = [];
+  	}
+  } else {
+  	// console.log('not dirty, set oldChildren to null', 'on', ashNodeTree.id, ashNodeTree.tagName);
+  	ashNodeTree.oldChildren = null;
+  }*/
+
+		if (index === 0 && !isParentComponentDirty) {
+			// console.log('index 0!');
+			if (isDirty) {
+				// console.log('and dirty, so creating oldChildren', 'on', ashNodeTree.id, ashNodeTree.tagName);
 				ashNodeTree.oldChildren = ashNodeTree.children;
 				ashNodeTree.children = [];
+			} else {
+				// console.log('not dirty, set oldChildren to null', 'on', ashNodeTree.id, ashNodeTree.tagName);
+				ashNodeTree.oldChildren = null;
 			}
-		} else {
-			ashNodeTree.oldChildren = null;
+		} else if (!isParentComponentDirty) {
+			// console.log('index larger than zero!');
+			if (isDirty && !ashNodeTree.oldChildren) {
+				// console.log('and dirty so no old children -> creating oldChildren', 'on', ashNodeTree.id, ashNodeTree.tagName);
+				// debugger;
+				ashNodeTree.oldChildren = ashNodeTree.children;
+				ashNodeTree.children = [];
+
+				// copy not dirty already walked children
+				for (var i = 0; i < index; i++) {
+					ashNodeTree.children[i] = ashNodeTree.oldChildren[i];
+				}
+			}
 		}
 
 		ashElement.isDirty = false;
 
+		// console.log('walk the Component chil...');
 		walkCreateAshNodeTree(ashNodeTree, ashElement.children[0], index, parentId, isDirty, parentIndices);
 	}
 }
@@ -80,6 +112,8 @@ function createAshNodeTree(componentAshElement) {
 	if (!(0, _internalsIsComponentAshElement2.default)(componentAshElement)) {
 		throw new Error('' + componentAshElement + ' (componentAshElement) must be a Component Ash Element object instance.');
 	}
+
+	// console.log('createAshNodeTree...');
 
 	var ashElement = componentAshElement;
 	var ashNodeTree = undefined;
@@ -92,15 +126,29 @@ function createAshNodeTree(componentAshElement) {
 		ashElement = ashElement.children[0];
 	}
 
-	// always re-instantiate element
-	ashElement.instantiate();
+	// console.log('>--', 'parentDirty?', isDirty, 'on');
 
-	ashElement.instance.id = '0';
-	ashElement.instance.index = 0;
-	ashElement.instance.indices = [0];
-	ashElement.instance.streamId = ashElement.stream.id;
-	ashElement.instance.isDirty = isDirty;
-	ashElement.instance.parent = null;
+	if (isDirty) {
+		ashElement.instantiate();
+
+		ashElement.instance.id = '0';
+		ashElement.instance.index = 0;
+		ashElement.instance.indices = [0];
+		ashElement.instance.streamId = ashElement.stream.id;
+		ashElement.instance.isDirty = true;
+		ashElement.instance.parent = null;
+
+		// console.log('instantiate!', ashElement.instance.index);
+	} else {
+		ashElement.instance.id = '0';
+		ashElement.instance.index = 0;
+		ashElement.instance.indices = [0];
+		ashElement.instance.streamId = ashElement.stream.id;
+		ashElement.instance.isDirty = false;
+		ashElement.instance.parent = null;
+
+		// console.log('just copy', ashElement.instance.index);
+	}
 
 	ashNodeTree = ashElement.instance;
 

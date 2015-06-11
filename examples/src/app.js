@@ -348,34 +348,6 @@ $('body').on('keydown', () => {
 // import App from './components/App';
 // import AppReact from './components/AppReact';
 
-class FooSubComponent extends ash.Component {
-	state = {
-		width: 1
-	};
-
-	render() {
-		return <button key="btn" style={{
-				outline: this.state.width + 'px solid #f0c'
-			}} events={{
-				click: this.change
-			}}>Morw wdith!</button>;
-
-		/*return <section>
-			<button key="btn" style={{
-				outline: this.state.width + 'px solid #f0c'
-			}} events={{
-				click: this.change
-			}}>Morw wdith!</button>
-		</section>;*/
-	}
-
-	change() {
-		this.state.width++;
-
-		this.update();
-	}
-}
-
 
 class ReorderApp extends ash.Component {
 	state = {
@@ -387,7 +359,7 @@ class ReorderApp extends ash.Component {
 		var items = this.state.items.map((value, index) => <button key={'' + index} events={{click: this.hello.bind(null, index, value)}}>{'' + value + '. '}</button>);
 
 		if (this.state.reversed) {
-			// items = items.reverse();
+			items = items.reverse();
 		}
 
 		return <div>
@@ -479,27 +451,98 @@ class Menu extends ash.Component {
 	}
 }
 
+class FooSubComponent extends ash.Component {
+	state = {
+		width: 1
+	};
+
+	render() {
+		/*return <button style={{
+				outline: this.state.width + 'px solid #f0c'
+			}} events={{
+				click: this.change
+			}}>Morw wdith!</button>;*/
+
+		return <section>
+			<button style={{
+				outline: this.state.width + 'px solid #f0c'
+			}} events={{
+				click: this.change
+			}}>FOO!</button>
+		</section>;
+	}
+
+	change() {
+		this.state.width++;
+
+		this.update();
+	}
+}
+
+class BarSubComponent extends ash.Component {
+	render() {
+		/*return <button style={{
+				outline: (this.props ? this.props.width || 0 : 0) + 'px solid #f0c'
+			}}>Morw wdith!</button>;*/
+
+		return <section>
+			<button style={{
+				outline: (this.props ? this.props.width || 0 : 0) + 'px solid #f0c'
+			}}>BAR!</button>
+		</section>;
+	}
+}
+
 class Header extends ash.Component {
 	render() { // {/*<Menu isHorizontal={true} />*/}
 		return <header>
+			<FooSubComponent />
+			<FooSubComponent />
 			<FooSubComponent />
 		</header>;
 	}
 }
 
 class Footer extends ash.Component {
+	state = {
+		width: 0
+	};
+
 	render() { // {/*<Menu isHorizontal={true} />*/}
 		return <footer>
-			<FooSubComponent />
+			<a href="#" events={{
+				click: this.change
+			}}>+</a>
+			<BarSubComponent />
+			<BarSubComponent width={this.state.width} />
+			{this.state.width % 2 === 0 ? 'even' : null}
+			<BarSubComponent />
+			<BarSubComponent width={this.state.width} />
 		</footer>;
+	}
+
+	change(event) {
+		event.preventDefault();
+
+		this.state.width++;
+
+		this.update();
+	}
+}
+
+class Inner extends ash.Component {
+	render() {
+		return <main>
+			<Header />
+			<Footer />
+		</main>;
 	}
 }
 
 class App extends ash.Component {
 	render() {
 		return <div>
-			<Header />
-			<Footer />
+			<Inner />
 		</div>;
 	}
 }

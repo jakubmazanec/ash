@@ -349,60 +349,12 @@ $('body').on('keydown', () => {
 // import App from './components/App';
 // import AppReact from './components/AppReact';
 
-var FooSubComponent = (function (_ash$Component) {
-	function FooSubComponent() {
-		_classCallCheck(this, FooSubComponent);
-
-		if (_ash$Component != null) {
-			_ash$Component.apply(this, arguments);
-		}
-
-		this.state = {
-			width: 1
-		};
-	}
-
-	_inherits(FooSubComponent, _ash$Component);
-
-	_createClass(FooSubComponent, [{
-		key: 'render',
-		value: function render() {
-			return _ash2.default.e(
-				'button',
-				{ key: 'btn', style: {
-						outline: this.state.width + 'px solid #f0c'
-					}, events: {
-						click: this.change
-					} },
-				'Morw wdith!'
-			);
-
-			/*return <section>
-   	<button key="btn" style={{
-   		outline: this.state.width + 'px solid #f0c'
-   	}} events={{
-   		click: this.change
-   	}}>Morw wdith!</button>
-   </section>;*/
-		}
-	}, {
-		key: 'change',
-		value: function change() {
-			this.state.width++;
-
-			this.update();
-		}
-	}]);
-
-	return FooSubComponent;
-})(_ash2.default.Component);
-
-var ReorderApp = (function (_ash$Component2) {
+var ReorderApp = (function (_ash$Component) {
 	function ReorderApp() {
 		_classCallCheck(this, ReorderApp);
 
-		if (_ash$Component2 != null) {
-			_ash$Component2.apply(this, arguments);
+		if (_ash$Component != null) {
+			_ash$Component.apply(this, arguments);
 		}
 
 		this.state = {
@@ -411,7 +363,7 @@ var ReorderApp = (function (_ash$Component2) {
 		};
 	}
 
-	_inherits(ReorderApp, _ash$Component2);
+	_inherits(ReorderApp, _ash$Component);
 
 	_createClass(ReorderApp, [{
 		key: 'render',
@@ -426,7 +378,9 @@ var ReorderApp = (function (_ash$Component2) {
 				);
 			});
 
-			if (this.state.reversed) {}
+			if (this.state.reversed) {
+				items = items.reverse();
+			}
 
 			return _ash2.default.e(
 				'div',
@@ -477,12 +431,12 @@ var ReorderApp = (function (_ash$Component2) {
 	return ReorderApp;
 })(_ash2.default.Component);
 
-var Menu = (function (_ash$Component3) {
+var Menu = (function (_ash$Component2) {
 	function Menu() {
 		_classCallCheck(this, Menu);
 
-		if (_ash$Component3 != null) {
-			_ash$Component3.apply(this, arguments);
+		if (_ash$Component2 != null) {
+			_ash$Component2.apply(this, arguments);
 		}
 
 		this.state = {
@@ -491,7 +445,7 @@ var Menu = (function (_ash$Component3) {
 		};
 	}
 
-	_inherits(Menu, _ash$Component3);
+	_inherits(Menu, _ash$Component2);
 
 	_createClass(Menu, [{
 		key: 'render',
@@ -580,16 +534,101 @@ var Menu = (function (_ash$Component3) {
 	return Menu;
 })(_ash2.default.Component);
 
-var Header = (function (_ash$Component4) {
-	function Header() {
-		_classCallCheck(this, Header);
+var FooSubComponent = (function (_ash$Component3) {
+	function FooSubComponent() {
+		_classCallCheck(this, FooSubComponent);
+
+		if (_ash$Component3 != null) {
+			_ash$Component3.apply(this, arguments);
+		}
+
+		this.state = {
+			width: 1
+		};
+	}
+
+	_inherits(FooSubComponent, _ash$Component3);
+
+	_createClass(FooSubComponent, [{
+		key: 'render',
+		value: function render() {
+			/*return <button style={{
+   		outline: this.state.width + 'px solid #f0c'
+   	}} events={{
+   		click: this.change
+   	}}>Morw wdith!</button>;*/
+
+			return _ash2.default.e(
+				'section',
+				null,
+				_ash2.default.e(
+					'button',
+					{ style: {
+							outline: this.state.width + 'px solid #f0c'
+						}, events: {
+							click: this.change
+						} },
+					'FOO!'
+				)
+			);
+		}
+	}, {
+		key: 'change',
+		value: function change() {
+			this.state.width++;
+
+			this.update();
+		}
+	}]);
+
+	return FooSubComponent;
+})(_ash2.default.Component);
+
+var BarSubComponent = (function (_ash$Component4) {
+	function BarSubComponent() {
+		_classCallCheck(this, BarSubComponent);
 
 		if (_ash$Component4 != null) {
 			_ash$Component4.apply(this, arguments);
 		}
 	}
 
-	_inherits(Header, _ash$Component4);
+	_inherits(BarSubComponent, _ash$Component4);
+
+	_createClass(BarSubComponent, [{
+		key: 'render',
+		value: function render() {
+			/*return <button style={{
+   		outline: (this.props ? this.props.width || 0 : 0) + 'px solid #f0c'
+   	}}>Morw wdith!</button>;*/
+
+			return _ash2.default.e(
+				'section',
+				null,
+				_ash2.default.e(
+					'button',
+					{ style: {
+							outline: (this.props ? this.props.width || 0 : 0) + 'px solid #f0c'
+						} },
+					'BAR!'
+				)
+			);
+		}
+	}]);
+
+	return BarSubComponent;
+})(_ash2.default.Component);
+
+var Header = (function (_ash$Component5) {
+	function Header() {
+		_classCallCheck(this, Header);
+
+		if (_ash$Component5 != null) {
+			_ash$Component5.apply(this, arguments);
+		}
+	}
+
+	_inherits(Header, _ash$Component5);
 
 	_createClass(Header, [{
 		key: 'render',
@@ -598,6 +637,8 @@ var Header = (function (_ash$Component4) {
 			return _ash2.default.e(
 				'header',
 				null,
+				_ash2.default.e(FooSubComponent, null),
+				_ash2.default.e(FooSubComponent, null),
 				_ash2.default.e(FooSubComponent, null)
 			);
 		}
@@ -606,16 +647,20 @@ var Header = (function (_ash$Component4) {
 	return Header;
 })(_ash2.default.Component);
 
-var Footer = (function (_ash$Component5) {
+var Footer = (function (_ash$Component6) {
 	function Footer() {
 		_classCallCheck(this, Footer);
 
-		if (_ash$Component5 != null) {
-			_ash$Component5.apply(this, arguments);
+		if (_ash$Component6 != null) {
+			_ash$Component6.apply(this, arguments);
 		}
+
+		this.state = {
+			width: 0
+		};
 	}
 
-	_inherits(Footer, _ash$Component5);
+	_inherits(Footer, _ash$Component6);
 
 	_createClass(Footer, [{
 		key: 'render',
@@ -624,24 +669,70 @@ var Footer = (function (_ash$Component5) {
 			return _ash2.default.e(
 				'footer',
 				null,
-				_ash2.default.e(FooSubComponent, null)
+				_ash2.default.e(
+					'a',
+					{ href: '#', events: {
+							click: this.change
+						} },
+					'+'
+				),
+				_ash2.default.e(BarSubComponent, null),
+				_ash2.default.e(BarSubComponent, { width: this.state.width }),
+				this.state.width % 2 === 0 ? 'even' : null,
+				_ash2.default.e(BarSubComponent, null),
+				_ash2.default.e(BarSubComponent, { width: this.state.width })
 			);
+		}
+	}, {
+		key: 'change',
+		value: function change(event) {
+			event.preventDefault();
+
+			this.state.width++;
+
+			this.update();
 		}
 	}]);
 
 	return Footer;
 })(_ash2.default.Component);
 
-var App = (function (_ash$Component6) {
-	function App() {
-		_classCallCheck(this, App);
+var Inner = (function (_ash$Component7) {
+	function Inner() {
+		_classCallCheck(this, Inner);
 
-		if (_ash$Component6 != null) {
-			_ash$Component6.apply(this, arguments);
+		if (_ash$Component7 != null) {
+			_ash$Component7.apply(this, arguments);
 		}
 	}
 
-	_inherits(App, _ash$Component6);
+	_inherits(Inner, _ash$Component7);
+
+	_createClass(Inner, [{
+		key: 'render',
+		value: function render() {
+			return _ash2.default.e(
+				'main',
+				null,
+				_ash2.default.e(Header, null),
+				_ash2.default.e(Footer, null)
+			);
+		}
+	}]);
+
+	return Inner;
+})(_ash2.default.Component);
+
+var App = (function (_ash$Component8) {
+	function App() {
+		_classCallCheck(this, App);
+
+		if (_ash$Component8 != null) {
+			_ash$Component8.apply(this, arguments);
+		}
+	}
+
+	_inherits(App, _ash$Component8);
 
 	_createClass(App, [{
 		key: 'render',
@@ -649,8 +740,7 @@ var App = (function (_ash$Component6) {
 			return _ash2.default.e(
 				'div',
 				null,
-				_ash2.default.e(Header, null),
-				_ash2.default.e(Footer, null)
+				_ash2.default.e(Inner, null)
 			);
 		}
 	}]);
@@ -778,18 +868,18 @@ var COMPLETED_TODOS = 'completed';
 var ENTER_KEY = 13;
 var ESCAPE_KEY = 27;
 
-var TodoItem = (function (_ash$Component7) {
+var TodoItem = (function (_ash$Component9) {
 	function TodoItem() {
 		_classCallCheck(this, TodoItem);
 
-		if (_ash$Component7 != null) {
-			_ash$Component7.apply(this, arguments);
+		if (_ash$Component9 != null) {
+			_ash$Component9.apply(this, arguments);
 		}
 
 		this.state = { editText: this.props.todo.title };
 	}
 
-	_inherits(TodoItem, _ash$Component7);
+	_inherits(TodoItem, _ash$Component9);
 
 	_createClass(TodoItem, [{
 		key: 'setState',
@@ -882,16 +972,16 @@ var TodoItem = (function (_ash$Component7) {
 	return TodoItem;
 })(_ash2.default.Component);
 
-var TodoFooter = (function (_ash$Component8) {
+var TodoFooter = (function (_ash$Component10) {
 	function TodoFooter() {
 		_classCallCheck(this, TodoFooter);
 
-		if (_ash$Component8 != null) {
-			_ash$Component8.apply(this, arguments);
+		if (_ash$Component10 != null) {
+			_ash$Component10.apply(this, arguments);
 		}
 	}
 
-	_inherits(TodoFooter, _ash$Component8);
+	_inherits(TodoFooter, _ash$Component10);
 
 	_createClass(TodoFooter, [{
 		key: 'setState',
@@ -987,12 +1077,12 @@ var TodoFooter = (function (_ash$Component8) {
 	return TodoFooter;
 })(_ash2.default.Component);
 
-var TodoApp = (function (_ash$Component9) {
+var TodoApp = (function (_ash$Component11) {
 	function TodoApp() {
 		_classCallCheck(this, TodoApp);
 
-		if (_ash$Component9 != null) {
-			_ash$Component9.apply(this, arguments);
+		if (_ash$Component11 != null) {
+			_ash$Component11.apply(this, arguments);
 		}
 
 		this.state = {
@@ -1002,7 +1092,7 @@ var TodoApp = (function (_ash$Component9) {
 		};
 	}
 
-	_inherits(TodoApp, _ash$Component9);
+	_inherits(TodoApp, _ash$Component11);
 
 	_createClass(TodoApp, [{
 		key: 'setState',
@@ -1206,7 +1296,6 @@ var TodoApp = (function (_ash$Component9) {
 	return TodoApp;
 })(_ash2.default.Component);
 
-// items = items.reverse();
 /*this.state.reversed ? <b>!</b> : null*/
 
 // Renderer.addStream(ash.AshNodeStream.from(<TodoApp />), global.document.querySelector('#todoapp'));
