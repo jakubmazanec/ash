@@ -165,13 +165,7 @@ function walkDiffAshNodeTree(oldAshNode, newAshNode, patches) {
 	// console.log('oldChildren?', !!oldAshNode.oldChildren, oldAshNode.oldChildren ? oldAshNode.oldChildren.length : 'NA');
 
 	if (oldAshNode === newAshNode || !newAshNode.isDirty) {
-		// diff the children...
-		/*if (!((!oldAshNode.children || !oldAshNode.children.length) && (!newAshNode.children || !newAshNode.children.length))) {
-  	diffChildren(oldAshNode.children, newAshNode.children, oldAshNode, newAshNode, patches);
-  }*/
-
 		if (oldAshNode.oldChildren && oldAshNode.oldChildren.length) {
-			// // console.log('oldChildren found 1');
 			diffChildren(oldAshNode.oldChildren, newAshNode.children, oldAshNode, newAshNode, patches);
 
 			// oldAshNode.oldChildren = newAshNode.oldChildren = null;
@@ -270,11 +264,7 @@ function walkDiffAshNodeTree(oldAshNode, newAshNode, patches) {
 	}
 
 	// diff the children...
-	/*if (!((!oldAshNode.children || !oldAshNode.children.length) && (!newAshNode.children || !newAshNode.children.length))) {
- 	diffChildren(oldAshNode.children, newAshNode.children, oldAshNode, newAshNode, patches);
- }*/
 	if (oldAshNode.oldChildren && oldAshNode.oldChildren.length) {
-		// // console.log('oldChildren found 1');
 		diffChildren(oldAshNode.oldChildren, newAshNode.children, oldAshNode, newAshNode, patches);
 
 		// oldAshNode.oldChildren = newAshNode.oldChildren = null;

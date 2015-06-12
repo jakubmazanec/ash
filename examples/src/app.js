@@ -392,64 +392,30 @@ class ReorderApp extends ash.Component {
 }
 
 
+var styles = {};
 
-class Menu extends ash.Component {
+export default class Menu extends ash.Component {
 	state = {
-		left: 0,
-		width: 0
+		isOpen: false
 	};
 
 	render() {
-		console.log('Menu render...', this.state);
+		return <a href="#" events={{click: this.onOpenButtonClick}}>{this.state.isOpen ? 'Close' : 'Open'}</a>;
 
-		return <nav>
-			<a href="/en/what-we-do" events={{mouseenter: this.onLinkMouseEnter, mouseleave: this.refreshSelectedLink}}>What we do</a>
-			<a href="/en/pricing" events={{mouseenter: this.onLinkMouseEnter, mouseleave: this.refreshSelectedLink}}>Pricing</a>
-			<a href="/en/blog" events={{mouseenter: this.onLinkMouseEnter, mouseleave: this.refreshSelectedLink}}>Blog</a>
-			<a href="/en/about-us" events={{mouseenter: this.onLinkMouseEnter, mouseleave: this.refreshSelectedLink}}>About us</a>
-			<a href="/en/career" events={{mouseenter: this.onLinkMouseEnter, mouseleave: this.refreshSelectedLink}}>Career</a>
-			<a href="#" events={{mouseenter: this.onLinkMouseEnter, mouseleave: this.refreshSelectedLink}}>Koi</a>
-			<span style={{
-				left: this.state.left + 'px',
-				width: this.state.width + 'px'
-			}}></span>
-		</nav>;
+		// return <nav><a href="#" events={{click: this.onOpenButtonClick}}>{this.state.isOpen ? 'Close' : 'Open'}</a></nav>;
 	}
 
-	getSelectedMenuLink() {
-		var menuNode = this.domNode;
+	onOpenButtonClick(event) {
+		event.preventDefault();
 
-		for (let i = 0; i < menuNode.childNodes.length; i++) {
-			if (menuNode.childNodes[i].className && menuNode.childNodes[i].className.indexOf('is-selected') >= 0) {
-				return menuNode.childNodes[i];
-			}
-		}
-
-		return menuNode.childNodes[0];
-	}
-
-	refreshSelectedLink() {
-		var $selected = $(this.getSelectedMenuLink());
-
-		this.state.left = $selected.position().left + 0.5 * ($selected.outerWidth(true) - $selected.width());
-		this.state.width = $selected.width();
-
-		// this.update();
-	}
-
-	onLinkMouseEnter(event) {
-		var $link = $(event.target);
-
-		this.state.left = $link.position().left + 0.5 * ($link.outerWidth(true) - $link.width());
-		this.state.width = $link.width();
+		this.state.isOpen = !this.state.isOpen;
 
 		this.update();
 	}
-
-	onMount() {
-		this.refreshSelectedLink();
-	}
 }
+
+
+
 
 class FooSubComponent extends ash.Component {
 	state = {
@@ -464,6 +430,7 @@ class FooSubComponent extends ash.Component {
 			}}>Morw wdith!</button>;*/
 
 		return <section>
+			<b>Header</b>
 			<button style={{
 				outline: this.state.width + 'px solid #f0c'
 			}} events={{
@@ -500,6 +467,15 @@ class Header extends ash.Component {
 			<FooSubComponent />
 			<FooSubComponent />
 		</header>;
+	}
+}
+
+class Main extends ash.Component {
+	render() { // {/*<Menu isHorizontal={true} />*/}
+		return <main>
+			<em>Main!</em>
+			<Menu />
+		</main>;
 	}
 }
 
@@ -542,7 +518,7 @@ class Inner extends ash.Component {
 class App extends ash.Component {
 	render() {
 		return <div>
-			<Inner />
+			<Main />
 		</div>;
 	}
 }
