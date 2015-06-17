@@ -168,7 +168,7 @@ function walkDiffAshNodeTree(oldAshNode, newAshNode, patches) {
 		if (oldAshNode.oldChildren && oldAshNode.oldChildren.length) {
 			diffChildren(oldAshNode.oldChildren, newAshNode.children, oldAshNode, newAshNode, patches);
 
-			// oldAshNode.oldChildren = newAshNode.oldChildren = null;
+			oldAshNode.oldChildren = newAshNode.oldChildren = null;
 		} else if (oldAshNode.children && oldAshNode.children.length || newAshNode.children && newAshNode.children.length) {
 			diffChildren(oldAshNode.children, newAshNode.children, oldAshNode, newAshNode, patches);
 		}
@@ -267,7 +267,7 @@ function walkDiffAshNodeTree(oldAshNode, newAshNode, patches) {
 	if (oldAshNode.oldChildren && oldAshNode.oldChildren.length) {
 		diffChildren(oldAshNode.oldChildren, newAshNode.children, oldAshNode, newAshNode, patches);
 
-		// oldAshNode.oldChildren = newAshNode.oldChildren = null;
+		oldAshNode.oldChildren = newAshNode.oldChildren = null; // we must delete old children, because in next diff they would be "old old children", and we dont want that
 	} else if (oldAshNode.children && oldAshNode.children.length || newAshNode.children && newAshNode.children.length) {
 		diffChildren(oldAshNode.children, newAshNode.children, oldAshNode, newAshNode, patches);
 	}

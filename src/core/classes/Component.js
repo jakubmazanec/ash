@@ -45,6 +45,7 @@ export default class Component {
 
 	update() {
 		if (this.__element.stream) {
+			// console.log('Component update...', this.__element.Spec, this);
 			this.__element.stream.push(this);
 		}
 
@@ -91,6 +92,9 @@ export default class Component {
 	}
 
 	shouldUpdate(newProps) {
+		// console.log('Component shouldUpdate...', this.constructor);
+		// console.log(this.props, newProps, '===?', this.props === newProps);
+
 		return this.props !== newProps;
 	}
 

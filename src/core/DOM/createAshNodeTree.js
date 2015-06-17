@@ -9,7 +9,7 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParen
 	// console.log('>-- walkCreateAshNodeTree...', index, parentIndices, 'parentDirty?', isParentComponentDirty, 'on', ashNodeTree.id, ashNodeTree.tagName);
 	// debugger;
 	if (isAshNodeAshElement(ashElement)) {
-		// console.log('-', ashElement.args[0], ashElement.args[1]);
+		// console.log('-', '<' + ashElement.args[0] + '>', ashElement.args[1]);
 		if (isParentComponentDirty) {
 			
 			ashElement.instantiate();
@@ -21,7 +21,7 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParen
 			ashElement.instance.isDirty = true;
 			ashElement.instance.parent = ashNodeTree;
 
-			// console.log('instantiate!', ashElement.instance.index, ashNodeTree.children[ashElement.instance.index]);
+			// console.log('instantiate!', ashElement.instance.index, ashNodeTree.oldChildren ? ashNodeTree.oldChildren.length : '-');
 
 			ashNodeTree.children[ashElement.instance.index] = ashElement.instance;
 		} else {
@@ -40,7 +40,7 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParen
 		}
 
 		// walk the children
-		// console.log('walk node children...', ashElement.instance.index);
+		// console.log('walk node children...', ashElement.instance.index, 'children length', ashElement.children.length);
 		for (let i = 0; i < ashElement.children.length; i++) {
 			walkCreateAshNodeTree(ashNodeTree.children[ashElement.instance.index], ashElement.children[i], i, ashNodeTree.children[ashElement.instance.index].id, isParentComponentDirty, ashNodeTree.children[ashElement.instance.index].indices);
 		}
@@ -48,7 +48,7 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParen
 		
 		let isDirty = ashElement.isDirty;
 
-		// console.log('* Component', ashElement.Spec, 'element dirty?', isDirty);
+		// console.log('* Component', ashElement.Spec, 'element dirty?', isDirty, 'old children?', ashNodeTree.oldChildren ? ashNodeTree.oldChildren.length : '-');
 
 		if (index === 0 && !isParentComponentDirty) {
 			// console.log('index 0!');
@@ -87,7 +87,9 @@ export default function createAshNodeTree(componentAshElement) {
 		throw new Error(`${componentAshElement} (componentAshElement) must be a Component Ash Element object instance.`);
 	}
 
-	// console.log('createAshNodeTree...');
+	// console.log('createAshNodeTree...', componentAshElement.Spec, componentAshElement);
+
+	// debugger;
 	
 	let ashElement = componentAshElement;
 	let ashNodeTree;

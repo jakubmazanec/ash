@@ -394,29 +394,6 @@ class ReorderApp extends ash.Component {
 
 var styles = {};
 
-export default class Menu extends ash.Component {
-	state = {
-		isOpen: false
-	};
-
-	render() {
-		return <a href="#" events={{click: this.onOpenButtonClick}}>{this.state.isOpen ? 'Close' : 'Open'}</a>;
-
-		// return <nav><a href="#" events={{click: this.onOpenButtonClick}}>{this.state.isOpen ? 'Close' : 'Open'}</a></nav>;
-	}
-
-	onOpenButtonClick(event) {
-		event.preventDefault();
-
-		this.state.isOpen = !this.state.isOpen;
-
-		this.update();
-	}
-}
-
-
-
-
 class FooSubComponent extends ash.Component {
 	state = {
 		width: 1
@@ -470,15 +447,6 @@ class Header extends ash.Component {
 	}
 }
 
-class Main extends ash.Component {
-	render() { // {/*<Menu isHorizontal={true} />*/}
-		return <main>
-			<em>Main!</em>
-			<Menu />
-		</main>;
-	}
-}
-
 class Footer extends ash.Component {
 	state = {
 		width: 0
@@ -486,18 +454,14 @@ class Footer extends ash.Component {
 
 	render() { // {/*<Menu isHorizontal={true} />*/}
 		return <footer>
-			<a href="#" events={{
+			{this.state.width % 2 === 0 ? <a href="#" events={{
 				click: this.change
-			}}>+</a>
-			<BarSubComponent />
-			<BarSubComponent width={this.state.width} />
-			{this.state.width % 2 === 0 ? 'even' : null}
-			<BarSubComponent />
-			<BarSubComponent width={this.state.width} />
+			}}>remove</a> : null}
 		</footer>;
 	}
 
 	change(event) {
+		console.log('Footer change...');
 		event.preventDefault();
 
 		this.state.width++;
@@ -506,20 +470,43 @@ class Footer extends ash.Component {
 	}
 }
 
-class Inner extends ash.Component {
+class Menu extends ash.Component {
+	render() {
+		console.log('Menu render...', this.props);
+		return <b>{this.props.isMenuOpen ? 'Close' : 'Open'}</b>;
+	}
+}
+
+class Main extends ash.Component {
 	render() {
 		return <main>
-			<Header />
-			<Footer />
+			<Menu isMenuOpen={this.props.isMenuOpen} />
+			<Footer isMenuOpen={this.props.isMenuOpen} />
 		</main>;
 	}
 }
 
 class App extends ash.Component {
+	state = {
+		isMenuOpen: false
+	};
+
 	render() {
 		return <div>
-			<Main />
+			<Main isMenuOpen={this.state.isMenuOpen} />
+			<button href="#" events={{
+				click: this.change
+			}}>+</button>
 		</div>;
+	}
+
+	change(event) {
+		console.log('App change...');
+		event.preventDefault();
+
+		this.state.isMenuOpen = !this.state.isMenuOpen;
+
+		this.update();
 	}
 }
 

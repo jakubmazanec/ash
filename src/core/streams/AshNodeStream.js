@@ -31,12 +31,16 @@ export default class AshNodeStream extends Stream {
 	push(arg) {
 		if (arg instanceof Component && !this.isUpdating) {
 			this.isUpdating = true;
+			arg.__element.isDirty = true;
+
+			// console.log('push...', arg.__element.Spec, arg.__element.isDirty);
 
 			if (!this.isRendering) {
 				this.isRendering = true;
 
 				global.requestAnimationFrame(() => {
-					updateComponentAshElement(arg.__element, this);
+					// updateComponentAshElement(arg.__element, this);
+					updateComponentAshElement(this.ashElementTree, this);
 					super.push(createAshNodeTree(this.ashElementTree));
 
 					this.isRendering = false;

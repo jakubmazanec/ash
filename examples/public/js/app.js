@@ -4,10 +4,6 @@
 
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
-	value: true
-});
-
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -439,54 +435,12 @@ var ReorderApp = (function (_ash$Component) {
 
 var styles = {};
 
-var Menu = (function (_ash$Component2) {
-	function Menu() {
-		_classCallCheck(this, Menu);
-
-		if (_ash$Component2 != null) {
-			_ash$Component2.apply(this, arguments);
-		}
-
-		this.state = {
-			isOpen: false
-		};
-	}
-
-	_inherits(Menu, _ash$Component2);
-
-	_createClass(Menu, [{
-		key: 'render',
-		value: function render() {
-			return _ash2.default.e(
-				'a',
-				{ href: '#', events: { click: this.onOpenButtonClick } },
-				this.state.isOpen ? 'Close' : 'Open'
-			);
-
-			// return <nav><a href="#" events={{click: this.onOpenButtonClick}}>{this.state.isOpen ? 'Close' : 'Open'}</a></nav>;
-		}
-	}, {
-		key: 'onOpenButtonClick',
-		value: function onOpenButtonClick(event) {
-			event.preventDefault();
-
-			this.state.isOpen = !this.state.isOpen;
-
-			this.update();
-		}
-	}]);
-
-	return Menu;
-})(_ash2.default.Component);
-
-exports.default = Menu;
-
-var FooSubComponent = (function (_ash$Component3) {
+var FooSubComponent = (function (_ash$Component2) {
 	function FooSubComponent() {
 		_classCallCheck(this, FooSubComponent);
 
-		if (_ash$Component3 != null) {
-			_ash$Component3.apply(this, arguments);
+		if (_ash$Component2 != null) {
+			_ash$Component2.apply(this, arguments);
 		}
 
 		this.state = {
@@ -494,7 +448,7 @@ var FooSubComponent = (function (_ash$Component3) {
 		};
 	}
 
-	_inherits(FooSubComponent, _ash$Component3);
+	_inherits(FooSubComponent, _ash$Component2);
 
 	_createClass(FooSubComponent, [{
 		key: 'render',
@@ -536,16 +490,16 @@ var FooSubComponent = (function (_ash$Component3) {
 	return FooSubComponent;
 })(_ash2.default.Component);
 
-var BarSubComponent = (function (_ash$Component4) {
+var BarSubComponent = (function (_ash$Component3) {
 	function BarSubComponent() {
 		_classCallCheck(this, BarSubComponent);
 
-		if (_ash$Component4 != null) {
-			_ash$Component4.apply(this, arguments);
+		if (_ash$Component3 != null) {
+			_ash$Component3.apply(this, arguments);
 		}
 	}
 
-	_inherits(BarSubComponent, _ash$Component4);
+	_inherits(BarSubComponent, _ash$Component3);
 
 	_createClass(BarSubComponent, [{
 		key: 'render',
@@ -571,16 +525,16 @@ var BarSubComponent = (function (_ash$Component4) {
 	return BarSubComponent;
 })(_ash2.default.Component);
 
-var Header = (function (_ash$Component5) {
+var Header = (function (_ash$Component4) {
 	function Header() {
 		_classCallCheck(this, Header);
 
-		if (_ash$Component5 != null) {
-			_ash$Component5.apply(this, arguments);
+		if (_ash$Component4 != null) {
+			_ash$Component4.apply(this, arguments);
 		}
 	}
 
-	_inherits(Header, _ash$Component5);
+	_inherits(Header, _ash$Component4);
 
 	_createClass(Header, [{
 		key: 'render',
@@ -599,43 +553,12 @@ var Header = (function (_ash$Component5) {
 	return Header;
 })(_ash2.default.Component);
 
-var Main = (function (_ash$Component6) {
-	function Main() {
-		_classCallCheck(this, Main);
-
-		if (_ash$Component6 != null) {
-			_ash$Component6.apply(this, arguments);
-		}
-	}
-
-	_inherits(Main, _ash$Component6);
-
-	_createClass(Main, [{
-		key: 'render',
-		value: function render() {
-			// {/*<Menu isHorizontal={true} />*/}
-			return _ash2.default.e(
-				'main',
-				null,
-				_ash2.default.e(
-					'em',
-					null,
-					'Main!'
-				),
-				_ash2.default.e(Menu, null)
-			);
-		}
-	}]);
-
-	return Main;
-})(_ash2.default.Component);
-
-var Footer = (function (_ash$Component7) {
+var Footer = (function (_ash$Component5) {
 	function Footer() {
 		_classCallCheck(this, Footer);
 
-		if (_ash$Component7 != null) {
-			_ash$Component7.apply(this, arguments);
+		if (_ash$Component5 != null) {
+			_ash$Component5.apply(this, arguments);
 		}
 
 		this.state = {
@@ -643,7 +566,7 @@ var Footer = (function (_ash$Component7) {
 		};
 	}
 
-	_inherits(Footer, _ash$Component7);
+	_inherits(Footer, _ash$Component5);
 
 	_createClass(Footer, [{
 		key: 'render',
@@ -652,23 +575,19 @@ var Footer = (function (_ash$Component7) {
 			return _ash2.default.e(
 				'footer',
 				null,
-				_ash2.default.e(
+				this.state.width % 2 === 0 ? _ash2.default.e(
 					'a',
 					{ href: '#', events: {
 							click: this.change
 						} },
-					'+'
-				),
-				_ash2.default.e(BarSubComponent, null),
-				_ash2.default.e(BarSubComponent, { width: this.state.width }),
-				this.state.width % 2 === 0 ? 'even' : null,
-				_ash2.default.e(BarSubComponent, null),
-				_ash2.default.e(BarSubComponent, { width: this.state.width })
+					'remove'
+				) : null
 			);
 		}
 	}, {
 		key: 'change',
 		value: function change(event) {
+			console.log('Footer change...');
 			event.preventDefault();
 
 			this.state.width++;
@@ -680,42 +599,72 @@ var Footer = (function (_ash$Component7) {
 	return Footer;
 })(_ash2.default.Component);
 
-var Inner = (function (_ash$Component8) {
-	function Inner() {
-		_classCallCheck(this, Inner);
+var Menu = (function (_ash$Component6) {
+	function Menu() {
+		_classCallCheck(this, Menu);
 
-		if (_ash$Component8 != null) {
-			_ash$Component8.apply(this, arguments);
+		if (_ash$Component6 != null) {
+			_ash$Component6.apply(this, arguments);
 		}
 	}
 
-	_inherits(Inner, _ash$Component8);
+	_inherits(Menu, _ash$Component6);
 
-	_createClass(Inner, [{
+	_createClass(Menu, [{
+		key: 'render',
+		value: function render() {
+			console.log('Menu render...', this.props);
+			return _ash2.default.e(
+				'b',
+				null,
+				this.props.isMenuOpen ? 'Close' : 'Open'
+			);
+		}
+	}]);
+
+	return Menu;
+})(_ash2.default.Component);
+
+var Main = (function (_ash$Component7) {
+	function Main() {
+		_classCallCheck(this, Main);
+
+		if (_ash$Component7 != null) {
+			_ash$Component7.apply(this, arguments);
+		}
+	}
+
+	_inherits(Main, _ash$Component7);
+
+	_createClass(Main, [{
 		key: 'render',
 		value: function render() {
 			return _ash2.default.e(
 				'main',
 				null,
-				_ash2.default.e(Header, null),
-				_ash2.default.e(Footer, null)
+				_ash2.default.e(Menu, { isMenuOpen: this.props.isMenuOpen }),
+				_ash2.default.e(Footer, { isMenuOpen: this.props.isMenuOpen })
 			);
 		}
 	}]);
 
-	return Inner;
+	return Main;
 })(_ash2.default.Component);
 
-var App = (function (_ash$Component9) {
+var App = (function (_ash$Component8) {
 	function App() {
 		_classCallCheck(this, App);
 
-		if (_ash$Component9 != null) {
-			_ash$Component9.apply(this, arguments);
+		if (_ash$Component8 != null) {
+			_ash$Component8.apply(this, arguments);
 		}
+
+		this.state = {
+			isMenuOpen: false
+		};
 	}
 
-	_inherits(App, _ash$Component9);
+	_inherits(App, _ash$Component8);
 
 	_createClass(App, [{
 		key: 'render',
@@ -723,8 +672,25 @@ var App = (function (_ash$Component9) {
 			return _ash2.default.e(
 				'div',
 				null,
-				_ash2.default.e(Main, null)
+				_ash2.default.e(Main, { isMenuOpen: this.state.isMenuOpen }),
+				_ash2.default.e(
+					'button',
+					{ href: '#', events: {
+							click: this.change
+						} },
+					'+'
+				)
 			);
+		}
+	}, {
+		key: 'change',
+		value: function change(event) {
+			console.log('App change...');
+			event.preventDefault();
+
+			this.state.isMenuOpen = !this.state.isMenuOpen;
+
+			this.update();
 		}
 	}]);
 
@@ -851,18 +817,18 @@ var COMPLETED_TODOS = 'completed';
 var ENTER_KEY = 13;
 var ESCAPE_KEY = 27;
 
-var TodoItem = (function (_ash$Component10) {
+var TodoItem = (function (_ash$Component9) {
 	function TodoItem() {
 		_classCallCheck(this, TodoItem);
 
-		if (_ash$Component10 != null) {
-			_ash$Component10.apply(this, arguments);
+		if (_ash$Component9 != null) {
+			_ash$Component9.apply(this, arguments);
 		}
 
 		this.state = { editText: this.props.todo.title };
 	}
 
-	_inherits(TodoItem, _ash$Component10);
+	_inherits(TodoItem, _ash$Component9);
 
 	_createClass(TodoItem, [{
 		key: 'setState',
@@ -955,16 +921,16 @@ var TodoItem = (function (_ash$Component10) {
 	return TodoItem;
 })(_ash2.default.Component);
 
-var TodoFooter = (function (_ash$Component11) {
+var TodoFooter = (function (_ash$Component10) {
 	function TodoFooter() {
 		_classCallCheck(this, TodoFooter);
 
-		if (_ash$Component11 != null) {
-			_ash$Component11.apply(this, arguments);
+		if (_ash$Component10 != null) {
+			_ash$Component10.apply(this, arguments);
 		}
 	}
 
-	_inherits(TodoFooter, _ash$Component11);
+	_inherits(TodoFooter, _ash$Component10);
 
 	_createClass(TodoFooter, [{
 		key: 'setState',
@@ -1060,12 +1026,12 @@ var TodoFooter = (function (_ash$Component11) {
 	return TodoFooter;
 })(_ash2.default.Component);
 
-var TodoApp = (function (_ash$Component12) {
+var TodoApp = (function (_ash$Component11) {
 	function TodoApp() {
 		_classCallCheck(this, TodoApp);
 
-		if (_ash$Component12 != null) {
-			_ash$Component12.apply(this, arguments);
+		if (_ash$Component11 != null) {
+			_ash$Component11.apply(this, arguments);
 		}
 
 		this.state = {
@@ -1075,7 +1041,7 @@ var TodoApp = (function (_ash$Component12) {
 		};
 	}
 
-	_inherits(TodoApp, _ash$Component12);
+	_inherits(TodoApp, _ash$Component11);
 
 	_createClass(TodoApp, [{
 		key: 'setState',
@@ -1279,7 +1245,6 @@ var TodoApp = (function (_ash$Component12) {
 	return TodoApp;
 })(_ash2.default.Component);
 
-module.exports = exports.default;
 /*this.state.reversed ? <b>!</b> : null*/
 
 // Renderer.addStream(ash.AshNodeStream.from(<TodoApp />), global.document.querySelector('#todoapp'));
@@ -1465,7 +1430,7 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParen
 	// console.log('>-- walkCreateAshNodeTree...', index, parentIndices, 'parentDirty?', isParentComponentDirty, 'on', ashNodeTree.id, ashNodeTree.tagName);
 	// debugger;
 	if ((0, _internalsIsAshNodeAshElement2.default)(ashElement)) {
-		// console.log('-', ashElement.args[0], ashElement.args[1]);
+		// console.log('-', '<' + ashElement.args[0] + '>', ashElement.args[1]);
 		if (isParentComponentDirty) {
 
 			ashElement.instantiate();
@@ -1477,7 +1442,7 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParen
 			ashElement.instance.isDirty = true;
 			ashElement.instance.parent = ashNodeTree;
 
-			// console.log('instantiate!', ashElement.instance.index, ashNodeTree.children[ashElement.instance.index]);
+			// console.log('instantiate!', ashElement.instance.index, ashNodeTree.oldChildren ? ashNodeTree.oldChildren.length : '-');
 
 			ashNodeTree.children[ashElement.instance.index] = ashElement.instance;
 		} else {
@@ -1496,7 +1461,7 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParen
 		}
 
 		// walk the children
-		// console.log('walk node children...', ashElement.instance.index);
+		// console.log('walk node children...', ashElement.instance.index, 'children length', ashElement.children.length);
 		for (var i = 0; i < ashElement.children.length; i++) {
 			walkCreateAshNodeTree(ashNodeTree.children[ashElement.instance.index], ashElement.children[i], i, ashNodeTree.children[ashElement.instance.index].id, isParentComponentDirty, ashNodeTree.children[ashElement.instance.index].indices);
 		}
@@ -1504,7 +1469,7 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParen
 
 		var isDirty = ashElement.isDirty;
 
-		// console.log('* Component', ashElement.Spec, 'element dirty?', isDirty);
+		// console.log('* Component', ashElement.Spec, 'element dirty?', isDirty, 'old children?', ashNodeTree.oldChildren ? ashNodeTree.oldChildren.length : '-');
 
 		if (index === 0 && !isParentComponentDirty) {
 			// console.log('index 0!');
@@ -1543,7 +1508,9 @@ function createAshNodeTree(componentAshElement) {
 		throw new Error('' + componentAshElement + ' (componentAshElement) must be a Component Ash Element object instance.');
 	}
 
-	// console.log('createAshNodeTree...');
+	// console.log('createAshNodeTree...', componentAshElement.Spec, componentAshElement);
+
+	// debugger;
 
 	var ashElement = componentAshElement;
 	var ashNodeTree = undefined;
@@ -1831,7 +1798,7 @@ function walkDiffAshNodeTree(oldAshNode, newAshNode, patches) {
 		if (oldAshNode.oldChildren && oldAshNode.oldChildren.length) {
 			diffChildren(oldAshNode.oldChildren, newAshNode.children, oldAshNode, newAshNode, patches);
 
-			// oldAshNode.oldChildren = newAshNode.oldChildren = null;
+			oldAshNode.oldChildren = newAshNode.oldChildren = null;
 		} else if (oldAshNode.children && oldAshNode.children.length || newAshNode.children && newAshNode.children.length) {
 			diffChildren(oldAshNode.children, newAshNode.children, oldAshNode, newAshNode, patches);
 		}
@@ -1930,7 +1897,7 @@ function walkDiffAshNodeTree(oldAshNode, newAshNode, patches) {
 	if (oldAshNode.oldChildren && oldAshNode.oldChildren.length) {
 		diffChildren(oldAshNode.oldChildren, newAshNode.children, oldAshNode, newAshNode, patches);
 
-		// oldAshNode.oldChildren = newAshNode.oldChildren = null;
+		oldAshNode.oldChildren = newAshNode.oldChildren = null; // we must delete old children, because in next diff they would be "old old children", and we dont want that
 	} else if (oldAshNode.children && oldAshNode.children.length || newAshNode.children && newAshNode.children.length) {
 		diffChildren(oldAshNode.children, newAshNode.children, oldAshNode, newAshNode, patches);
 	}
@@ -2602,9 +2569,15 @@ var LIFECYCLE_UNMOUNTED = _internalsConstants2.default.LIFECYCLE_UNMOUNTED;
 var COMPONENT_ASH_ELEMENT = _internalsConstants2.default.COMPONENT_ASH_ELEMENT;
 var ASH_NODE_ASH_ELEMENT = _internalsConstants2.default.ASH_NODE_ASH_ELEMENT;
 
-function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream) {
+function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, isParentComponentDirty) {
+	// console.log('walkUpdateComponentAshElement...');
+	// console.log('oldAshElement', oldAshElement.Spec, oldAshElement.args[0], oldAshElement.args[1], 'isDirty?', oldAshElement.isDirty);
+	// console.log('newAshElement', newAshElement.Spec, newAshElement.args[0], newAshElement.args[1], 'isDirty?', newAshElement.isDirty);
+
 	if (newAshElement.type === COMPONENT_ASH_ELEMENT) {
+		// console.log('newAshElement.type === COMPONENT_ASH_ELEMENT');
 		if (oldAshElement === null) {
+			// console.log('oldAshElement === null');
 			// old is null, new is component
 
 			// newAshElement must be added as a child...
@@ -2622,10 +2595,17 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream) {
 				newAshElement.parent.children[0] = newAshElement;
 			}
 		} else if (oldAshElement.type === COMPONENT_ASH_ELEMENT && newAshElement.Spec === oldAshElement.Spec) {
+			// console.log('old is component, new is same component');
 			// old is component, new is same component
 
-			if (oldAshElement.instance.shouldUpdate(newAshElement.args ? newAshElement.args[0] : null)) {
+			var shouldUpdate = oldAshElement.instance.shouldUpdate(newAshElement.args ? newAshElement.args[0] : null);
+
+			// debugger;
+
+			if (shouldUpdate || oldAshElement.isDirty) {
 				oldAshElement.isDirty = true;
+
+				// console.log('oj');
 
 				// copy the new to the old...
 				oldAshElement.args = newAshElement.args;
@@ -2634,35 +2614,39 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream) {
 
 				// create child for the new descriptor
 				newAshElement.children[0] = oldAshElement.instance.render();
-
-				// adding children to the queue
-				if (newAshElement.children[0] && oldAshElement.children[0]) {
-					newAshElement.children[0].owner = oldAshElement;
-					newAshElement.children[0].parent = oldAshElement;
-					newAshElement.children[0].index = 0;
-
-					walkUpdateComponentAshElement(oldAshElement.children[0], newAshElement.children[0], stream);
-				} else if (newAshElement.children[0] && !oldAshElement.children[0]) {
-					newAshElement.children[0].owner = oldAshElement;
-					newAshElement.children[0].parent = oldAshElement;
-					newAshElement.children[0].index = 0;
-
-					walkUpdateComponentAshElement(null, newAshElement.children[0], stream);
-				}
-
-				// deleting old surplus children
-				if (!newAshElement.children[0] && oldAshElement.children[0]) {
-					if (oldAshElement.children[0].type === COMPONENT_ASH_ELEMENT) {
-						oldAshElement.children[0].instance.__lifecycle = LIFECYCLE_UNMOUNTED;
-					}
-
-					oldAshElement.children.pop();
-				}
 			}
+
+			// adding children to the queue
+			if (newAshElement.children[0] && oldAshElement.children[0]) {
+				newAshElement.children[0].owner = oldAshElement;
+				newAshElement.children[0].parent = oldAshElement;
+				newAshElement.children[0].index = 0;
+
+				walkUpdateComponentAshElement(oldAshElement.children[0], newAshElement.children[0], stream, shouldUpdate || oldAshElement.isDirty);
+			} else if (newAshElement.children[0] && !oldAshElement.children[0]) {
+				newAshElement.children[0].owner = oldAshElement;
+				newAshElement.children[0].parent = oldAshElement;
+				newAshElement.children[0].index = 0;
+
+				walkUpdateComponentAshElement(null, newAshElement.children[0], stream, shouldUpdate || oldAshElement.isDirty);
+			}
+
+			// deleting old surplus children
+			if (!newAshElement.children[0] && oldAshElement.children[0]) {
+				if (oldAshElement.children[0].type === COMPONENT_ASH_ELEMENT) {
+					oldAshElement.children[0].instance.__lifecycle = LIFECYCLE_UNMOUNTED;
+				}
+
+				oldAshElement.children.pop();
+			}
+
+			// walkUpdateComponentAshElement(oldAshElement.children[0] || null, newAshElement.children[0], stream, shouldUpdate || oldAshElement.isDirty);
 		} else if (oldAshElement.type === COMPONENT_ASH_ELEMENT) {
+			// console.log('oldAshElement.type === COMPONENT_ASH_ELEMENT');
 			// old is component, new is different component
 
 			if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
+				// console.log('oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT');
 				// now, the component descriptor's tree is not complete
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
@@ -2684,6 +2668,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream) {
 				oldAshElement.parent.children[0] = newAshElement;
 			}
 		} else {
+			// console.log('old is virtual node, new is component');
 			// old is virtual node, new is component
 
 			if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
@@ -2708,6 +2693,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream) {
 		}
 	} else {
 		if (oldAshElement === null) {
+			// console.log('old is null, new is virtual node');
 			// old is null, new is virtual node
 
 			// newAshElement must be added as a child...
@@ -2725,10 +2711,16 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream) {
 				newAshElement.parent.children[newAshElement.index] = newAshElement;
 			}
 		} else if (newAshElement.type === oldAshElement.type) {
+			// console.log('old is virtual node, new is virtual node');
 			// old is virtual node, new is virtual node
 
-			oldAshElement.args = newAshElement.args;
-			oldAshElement.instantiate();
+			if (isParentComponentDirty) {
+				oldAshElement.args = newAshElement.args;
+
+				oldAshElement.instantiate();
+
+				oldAshElement.stream = stream;
+			}
 
 			// adding children to the queue
 			for (var i = 0; i < newAshElement.children.length; i++) {
@@ -2737,13 +2729,13 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream) {
 					newAshElement.children[i].parent = oldAshElement;
 					newAshElement.children[i].index = i;
 
-					walkUpdateComponentAshElement(oldAshElement.children[i], newAshElement.children[i], stream);
+					walkUpdateComponentAshElement(oldAshElement.children[i], newAshElement.children[i], stream, isParentComponentDirty);
 				} else if (newAshElement.children[i] && !oldAshElement.children[i]) {
 					newAshElement.children[i].owner = oldAshElement.owner;
 					newAshElement.children[i].parent = oldAshElement;
 					newAshElement.children[i].index = i;
 
-					walkUpdateComponentAshElement(null, newAshElement.children[i], stream);
+					walkUpdateComponentAshElement(null, newAshElement.children[i], stream, isParentComponentDirty);
 				}
 			}
 
@@ -2756,6 +2748,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream) {
 				oldAshElement.children.pop();
 			}
 		} else {
+			// console.log('old is component, new is virtual node');
 			// old is component, new is virtual node
 
 			if (oldAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
@@ -2786,15 +2779,29 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream) {
 }
 
 function updateComponentAshElement(componentAshElement, stream) {
-	var render = componentAshElement.instance.render();
+	var render;
 
-	render.owner = componentAshElement;
-	render.parent = componentAshElement;
-	render.index = 0;
+	// console.log('updateComponentAshElement...', componentAshElement.Spec, 'isDirty?', componentAshElement.isDirty);
 
-	componentAshElement.isDirty = true;
+	if (componentAshElement.isDirty) {
+		render = componentAshElement.instance.render();
+		render.owner = componentAshElement;
+		render.parent = componentAshElement;
+		render.index = 0;
+	} else {
+		render = componentAshElement.children[0];
+	}
 
-	walkUpdateComponentAshElement(componentAshElement.children[0], render, stream);
+	// render = componentAshElement.instance.render();
+	// render.owner = componentAshElement;
+	// render.parent = componentAshElement;
+	// render.index = 0;
+
+	// componentAshElement.isDirty = true;
+
+	walkUpdateComponentAshElement(componentAshElement.children[0], render, stream, componentAshElement.isDirty);
+
+	// console.log('--- end of updateComponentAshElement ---');
 }
 
 module.exports = exports.default;
@@ -2947,6 +2954,7 @@ var AshElement = (function () {
 		key: 'instantiate',
 		value: function instantiate() {
 			if (this.type === COMPONENT_ASH_ELEMENT) {
+				// console.log('COMPONENT_ASH_ELEMENT instantiate...', this.args[0]);
 				if (this.args) {
 					this.instance = new this.Spec(this.args[0]);
 				} else {
@@ -2955,6 +2963,7 @@ var AshElement = (function () {
 
 				this.instance.__element = this;
 			} else if (this.type === ASH_NODE_ASH_ELEMENT) {
+				// console.log('ASH_NODE_ASH_ELEMENT instantiate...', this.args[0], this.args[1]);
 				if (this.args) {
 					this.instance = new this.Spec(this.args[0], this.args[1]);
 				} else {
@@ -3099,6 +3108,7 @@ var Component = (function () {
 		key: 'update',
 		value: function update() {
 			if (this.__element.stream) {
+				// console.log('Component update...', this.__element.Spec, this);
 				this.__element.stream.push(this);
 			}
 
@@ -3148,6 +3158,9 @@ var Component = (function () {
 	}, {
 		key: 'shouldUpdate',
 		value: function shouldUpdate(newProps) {
+			// console.log('Component shouldUpdate...', this.constructor);
+			// console.log(this.props, newProps, '===?', this.props === newProps);
+
 			return this.props !== newProps;
 		}
 	}, {
@@ -4196,12 +4209,16 @@ var AshNodeStream = (function (_Stream) {
 
 			if (arg instanceof _classesComponent2.default && !this.isUpdating) {
 				this.isUpdating = true;
+				arg.__element.isDirty = true;
+
+				// console.log('push...', arg.__element.Spec, arg.__element.isDirty);
 
 				if (!this.isRendering) {
 					this.isRendering = true;
 
 					global.requestAnimationFrame(function () {
-						(0, _DOMUpdateComponentAshElement2.default)(arg.__element, _this);
+						// updateComponentAshElement(arg.__element, this);
+						(0, _DOMUpdateComponentAshElement2.default)(_this.ashElementTree, _this);
 						_get(Object.getPrototypeOf(AshNodeStream.prototype), 'push', _this).call(_this, (0, _DOMCreateAshNodeTree2.default)(_this.ashElementTree));
 
 						_this.isRendering = false;
@@ -4778,7 +4795,7 @@ function updateStreamDependencies(stream) {
 	streamsQueue.isUpdating = isStreamsQueueUpdating;
 
 	if (!isStreamsQueueUpdating) {
-		// TODO: should really be: updateStreamsQueue(streamsQueue), but circular dependencies...
+		// TODO: should really be: updateStreamsQueue(streamsQueue), but circular dependencies (updateStreamDependencies)...
 		streamsQueue.isUpdating = true;
 
 		while (streamsQueue.length > 0) {

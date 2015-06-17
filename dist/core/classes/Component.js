@@ -78,6 +78,7 @@ var Component = (function () {
 		key: 'update',
 		value: function update() {
 			if (this.__element.stream) {
+				// console.log('Component update...', this.__element.Spec, this);
 				this.__element.stream.push(this);
 			}
 
@@ -127,6 +128,9 @@ var Component = (function () {
 	}, {
 		key: 'shouldUpdate',
 		value: function shouldUpdate(newProps) {
+			// console.log('Component shouldUpdate...', this.constructor);
+			// console.log(this.props, newProps, '===?', this.props === newProps);
+
 			return this.props !== newProps;
 		}
 	}, {

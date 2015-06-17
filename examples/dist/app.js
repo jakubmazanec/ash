@@ -2,10 +2,6 @@
 
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
-	value: true
-});
-
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -437,54 +433,12 @@ var ReorderApp = (function (_ash$Component) {
 
 var styles = {};
 
-var Menu = (function (_ash$Component2) {
-	function Menu() {
-		_classCallCheck(this, Menu);
-
-		if (_ash$Component2 != null) {
-			_ash$Component2.apply(this, arguments);
-		}
-
-		this.state = {
-			isOpen: false
-		};
-	}
-
-	_inherits(Menu, _ash$Component2);
-
-	_createClass(Menu, [{
-		key: 'render',
-		value: function render() {
-			return _ash2.default.e(
-				'a',
-				{ href: '#', events: { click: this.onOpenButtonClick } },
-				this.state.isOpen ? 'Close' : 'Open'
-			);
-
-			// return <nav><a href="#" events={{click: this.onOpenButtonClick}}>{this.state.isOpen ? 'Close' : 'Open'}</a></nav>;
-		}
-	}, {
-		key: 'onOpenButtonClick',
-		value: function onOpenButtonClick(event) {
-			event.preventDefault();
-
-			this.state.isOpen = !this.state.isOpen;
-
-			this.update();
-		}
-	}]);
-
-	return Menu;
-})(_ash2.default.Component);
-
-exports.default = Menu;
-
-var FooSubComponent = (function (_ash$Component3) {
+var FooSubComponent = (function (_ash$Component2) {
 	function FooSubComponent() {
 		_classCallCheck(this, FooSubComponent);
 
-		if (_ash$Component3 != null) {
-			_ash$Component3.apply(this, arguments);
+		if (_ash$Component2 != null) {
+			_ash$Component2.apply(this, arguments);
 		}
 
 		this.state = {
@@ -492,7 +446,7 @@ var FooSubComponent = (function (_ash$Component3) {
 		};
 	}
 
-	_inherits(FooSubComponent, _ash$Component3);
+	_inherits(FooSubComponent, _ash$Component2);
 
 	_createClass(FooSubComponent, [{
 		key: 'render',
@@ -534,16 +488,16 @@ var FooSubComponent = (function (_ash$Component3) {
 	return FooSubComponent;
 })(_ash2.default.Component);
 
-var BarSubComponent = (function (_ash$Component4) {
+var BarSubComponent = (function (_ash$Component3) {
 	function BarSubComponent() {
 		_classCallCheck(this, BarSubComponent);
 
-		if (_ash$Component4 != null) {
-			_ash$Component4.apply(this, arguments);
+		if (_ash$Component3 != null) {
+			_ash$Component3.apply(this, arguments);
 		}
 	}
 
-	_inherits(BarSubComponent, _ash$Component4);
+	_inherits(BarSubComponent, _ash$Component3);
 
 	_createClass(BarSubComponent, [{
 		key: 'render',
@@ -569,16 +523,16 @@ var BarSubComponent = (function (_ash$Component4) {
 	return BarSubComponent;
 })(_ash2.default.Component);
 
-var Header = (function (_ash$Component5) {
+var Header = (function (_ash$Component4) {
 	function Header() {
 		_classCallCheck(this, Header);
 
-		if (_ash$Component5 != null) {
-			_ash$Component5.apply(this, arguments);
+		if (_ash$Component4 != null) {
+			_ash$Component4.apply(this, arguments);
 		}
 	}
 
-	_inherits(Header, _ash$Component5);
+	_inherits(Header, _ash$Component4);
 
 	_createClass(Header, [{
 		key: 'render',
@@ -597,43 +551,12 @@ var Header = (function (_ash$Component5) {
 	return Header;
 })(_ash2.default.Component);
 
-var Main = (function (_ash$Component6) {
-	function Main() {
-		_classCallCheck(this, Main);
-
-		if (_ash$Component6 != null) {
-			_ash$Component6.apply(this, arguments);
-		}
-	}
-
-	_inherits(Main, _ash$Component6);
-
-	_createClass(Main, [{
-		key: 'render',
-		value: function render() {
-			// {/*<Menu isHorizontal={true} />*/}
-			return _ash2.default.e(
-				'main',
-				null,
-				_ash2.default.e(
-					'em',
-					null,
-					'Main!'
-				),
-				_ash2.default.e(Menu, null)
-			);
-		}
-	}]);
-
-	return Main;
-})(_ash2.default.Component);
-
-var Footer = (function (_ash$Component7) {
+var Footer = (function (_ash$Component5) {
 	function Footer() {
 		_classCallCheck(this, Footer);
 
-		if (_ash$Component7 != null) {
-			_ash$Component7.apply(this, arguments);
+		if (_ash$Component5 != null) {
+			_ash$Component5.apply(this, arguments);
 		}
 
 		this.state = {
@@ -641,7 +564,7 @@ var Footer = (function (_ash$Component7) {
 		};
 	}
 
-	_inherits(Footer, _ash$Component7);
+	_inherits(Footer, _ash$Component5);
 
 	_createClass(Footer, [{
 		key: 'render',
@@ -650,23 +573,19 @@ var Footer = (function (_ash$Component7) {
 			return _ash2.default.e(
 				'footer',
 				null,
-				_ash2.default.e(
+				this.state.width % 2 === 0 ? _ash2.default.e(
 					'a',
 					{ href: '#', events: {
 							click: this.change
 						} },
-					'+'
-				),
-				_ash2.default.e(BarSubComponent, null),
-				_ash2.default.e(BarSubComponent, { width: this.state.width }),
-				this.state.width % 2 === 0 ? 'even' : null,
-				_ash2.default.e(BarSubComponent, null),
-				_ash2.default.e(BarSubComponent, { width: this.state.width })
+					'remove'
+				) : null
 			);
 		}
 	}, {
 		key: 'change',
 		value: function change(event) {
+			console.log('Footer change...');
 			event.preventDefault();
 
 			this.state.width++;
@@ -678,42 +597,72 @@ var Footer = (function (_ash$Component7) {
 	return Footer;
 })(_ash2.default.Component);
 
-var Inner = (function (_ash$Component8) {
-	function Inner() {
-		_classCallCheck(this, Inner);
+var Menu = (function (_ash$Component6) {
+	function Menu() {
+		_classCallCheck(this, Menu);
 
-		if (_ash$Component8 != null) {
-			_ash$Component8.apply(this, arguments);
+		if (_ash$Component6 != null) {
+			_ash$Component6.apply(this, arguments);
 		}
 	}
 
-	_inherits(Inner, _ash$Component8);
+	_inherits(Menu, _ash$Component6);
 
-	_createClass(Inner, [{
+	_createClass(Menu, [{
+		key: 'render',
+		value: function render() {
+			console.log('Menu render...', this.props);
+			return _ash2.default.e(
+				'b',
+				null,
+				this.props.isMenuOpen ? 'Close' : 'Open'
+			);
+		}
+	}]);
+
+	return Menu;
+})(_ash2.default.Component);
+
+var Main = (function (_ash$Component7) {
+	function Main() {
+		_classCallCheck(this, Main);
+
+		if (_ash$Component7 != null) {
+			_ash$Component7.apply(this, arguments);
+		}
+	}
+
+	_inherits(Main, _ash$Component7);
+
+	_createClass(Main, [{
 		key: 'render',
 		value: function render() {
 			return _ash2.default.e(
 				'main',
 				null,
-				_ash2.default.e(Header, null),
-				_ash2.default.e(Footer, null)
+				_ash2.default.e(Menu, { isMenuOpen: this.props.isMenuOpen }),
+				_ash2.default.e(Footer, { isMenuOpen: this.props.isMenuOpen })
 			);
 		}
 	}]);
 
-	return Inner;
+	return Main;
 })(_ash2.default.Component);
 
-var App = (function (_ash$Component9) {
+var App = (function (_ash$Component8) {
 	function App() {
 		_classCallCheck(this, App);
 
-		if (_ash$Component9 != null) {
-			_ash$Component9.apply(this, arguments);
+		if (_ash$Component8 != null) {
+			_ash$Component8.apply(this, arguments);
 		}
+
+		this.state = {
+			isMenuOpen: false
+		};
 	}
 
-	_inherits(App, _ash$Component9);
+	_inherits(App, _ash$Component8);
 
 	_createClass(App, [{
 		key: 'render',
@@ -721,8 +670,25 @@ var App = (function (_ash$Component9) {
 			return _ash2.default.e(
 				'div',
 				null,
-				_ash2.default.e(Main, null)
+				_ash2.default.e(Main, { isMenuOpen: this.state.isMenuOpen }),
+				_ash2.default.e(
+					'button',
+					{ href: '#', events: {
+							click: this.change
+						} },
+					'+'
+				)
 			);
+		}
+	}, {
+		key: 'change',
+		value: function change(event) {
+			console.log('App change...');
+			event.preventDefault();
+
+			this.state.isMenuOpen = !this.state.isMenuOpen;
+
+			this.update();
 		}
 	}]);
 
@@ -849,18 +815,18 @@ var COMPLETED_TODOS = 'completed';
 var ENTER_KEY = 13;
 var ESCAPE_KEY = 27;
 
-var TodoItem = (function (_ash$Component10) {
+var TodoItem = (function (_ash$Component9) {
 	function TodoItem() {
 		_classCallCheck(this, TodoItem);
 
-		if (_ash$Component10 != null) {
-			_ash$Component10.apply(this, arguments);
+		if (_ash$Component9 != null) {
+			_ash$Component9.apply(this, arguments);
 		}
 
 		this.state = { editText: this.props.todo.title };
 	}
 
-	_inherits(TodoItem, _ash$Component10);
+	_inherits(TodoItem, _ash$Component9);
 
 	_createClass(TodoItem, [{
 		key: 'setState',
@@ -953,16 +919,16 @@ var TodoItem = (function (_ash$Component10) {
 	return TodoItem;
 })(_ash2.default.Component);
 
-var TodoFooter = (function (_ash$Component11) {
+var TodoFooter = (function (_ash$Component10) {
 	function TodoFooter() {
 		_classCallCheck(this, TodoFooter);
 
-		if (_ash$Component11 != null) {
-			_ash$Component11.apply(this, arguments);
+		if (_ash$Component10 != null) {
+			_ash$Component10.apply(this, arguments);
 		}
 	}
 
-	_inherits(TodoFooter, _ash$Component11);
+	_inherits(TodoFooter, _ash$Component10);
 
 	_createClass(TodoFooter, [{
 		key: 'setState',
@@ -1058,12 +1024,12 @@ var TodoFooter = (function (_ash$Component11) {
 	return TodoFooter;
 })(_ash2.default.Component);
 
-var TodoApp = (function (_ash$Component12) {
+var TodoApp = (function (_ash$Component11) {
 	function TodoApp() {
 		_classCallCheck(this, TodoApp);
 
-		if (_ash$Component12 != null) {
-			_ash$Component12.apply(this, arguments);
+		if (_ash$Component11 != null) {
+			_ash$Component11.apply(this, arguments);
 		}
 
 		this.state = {
@@ -1073,7 +1039,7 @@ var TodoApp = (function (_ash$Component12) {
 		};
 	}
 
-	_inherits(TodoApp, _ash$Component12);
+	_inherits(TodoApp, _ash$Component11);
 
 	_createClass(TodoApp, [{
 		key: 'setState',
@@ -1277,7 +1243,6 @@ var TodoApp = (function (_ash$Component12) {
 	return TodoApp;
 })(_ash2.default.Component);
 
-module.exports = exports.default;
 /*this.state.reversed ? <b>!</b> : null*/
 
 // Renderer.addStream(ash.AshNodeStream.from(<TodoApp />), global.document.querySelector('#todoapp'));

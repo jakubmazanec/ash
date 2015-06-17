@@ -34,7 +34,7 @@ export default function updateStreamDependencies(stream) {
 	streamsQueue.isUpdating = isStreamsQueueUpdating;
 
 	if (!isStreamsQueueUpdating) {
-		// TODO: should really be: updateStreamsQueue(streamsQueue), but circular dependencies...
+		// TODO: should really be: updateStreamsQueue(streamsQueue), but circular dependencies (updateStreamDependencies)...
 		streamsQueue.isUpdating = true;
 
 		while (streamsQueue.length > 0) {

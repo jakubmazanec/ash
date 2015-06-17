@@ -73,6 +73,7 @@ var AshElement = (function () {
 		key: 'instantiate',
 		value: function instantiate() {
 			if (this.type === COMPONENT_ASH_ELEMENT) {
+				// console.log('COMPONENT_ASH_ELEMENT instantiate...', this.args[0]);
 				if (this.args) {
 					this.instance = new this.Spec(this.args[0]);
 				} else {
@@ -81,6 +82,7 @@ var AshElement = (function () {
 
 				this.instance.__element = this;
 			} else if (this.type === ASH_NODE_ASH_ELEMENT) {
+				// console.log('ASH_NODE_ASH_ELEMENT instantiate...', this.args[0], this.args[1]);
 				if (this.args) {
 					this.instance = new this.Spec(this.args[0], this.args[1]);
 				} else {

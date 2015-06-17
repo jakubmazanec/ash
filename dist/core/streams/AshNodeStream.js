@@ -74,12 +74,16 @@ var AshNodeStream = (function (_Stream) {
 
 			if (arg instanceof _classesComponent2.default && !this.isUpdating) {
 				this.isUpdating = true;
+				arg.__element.isDirty = true;
+
+				// console.log('push...', arg.__element.Spec, arg.__element.isDirty);
 
 				if (!this.isRendering) {
 					this.isRendering = true;
 
 					global.requestAnimationFrame(function () {
-						(0, _DOMUpdateComponentAshElement2.default)(arg.__element, _this);
+						// updateComponentAshElement(arg.__element, this);
+						(0, _DOMUpdateComponentAshElement2.default)(_this.ashElementTree, _this);
 						_get(Object.getPrototypeOf(AshNodeStream.prototype), 'push', _this).call(_this, (0, _DOMCreateAshNodeTree2.default)(_this.ashElementTree));
 
 						_this.isRendering = false;
