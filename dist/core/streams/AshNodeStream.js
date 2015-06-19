@@ -76,7 +76,7 @@ var AshNodeStream = (function (_Stream) {
 				this.isUpdating = true;
 				arg.__element.isDirty = true;
 
-				// console.log('push...', arg.__element.Spec, arg.__element.isDirty);
+				// console.log('push...', arg.__element.Spec.name, arg.__element.isDirty);
 
 				if (!this.isRendering) {
 					this.isRendering = true;

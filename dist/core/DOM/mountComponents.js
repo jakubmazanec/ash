@@ -34,6 +34,8 @@ function mountComponents(ashElement) {
 			ashElement.instance.__lifecycle = LIFECYCLE_MOUNTED;
 		}
 
+		ashElement.instance.onRender();
+
 		if (ashElement.children[0]) {
 			mountComponents(ashElement.children[0]);
 		}

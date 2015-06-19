@@ -6,7 +6,7 @@ import constants from '../internals/constants';
 const INDEX_SEPARATOR = constants.INDEX_SEPARATOR;
 
 function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParentComponentDirty, parentIndices) {
-	// console.log('>-- walkCreateAshNodeTree...', index, parentIndices, 'parentDirty?', isParentComponentDirty, 'on', ashNodeTree.id, ashNodeTree.tagName);
+	// console.log('>-- walkCreateAshNodeTree...', ashElement, index, parentIndices, 'parentDirty?', isParentComponentDirty, 'on', ashNodeTree.id, ashNodeTree.tagName);
 	// debugger;
 	if (isAshNodeAshElement(ashElement)) {
 		// console.log('-', '<' + ashElement.args[0] + '>', ashElement.args[1]);
@@ -48,7 +48,7 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParen
 		
 		let isDirty = ashElement.isDirty;
 
-		// console.log('* Component', ashElement.Spec, 'element dirty?', isDirty, 'old children?', ashNodeTree.oldChildren ? ashNodeTree.oldChildren.length : '-');
+		// console.log('* Component', ashElement.Spec.name, 'element dirty?', isDirty, 'old children?', ashNodeTree.oldChildren ? ashNodeTree.oldChildren.length : '-');
 
 		if (index === 0 && !isParentComponentDirty) {
 			// console.log('index 0!');
@@ -87,7 +87,7 @@ export default function createAshNodeTree(componentAshElement) {
 		throw new Error(`${componentAshElement} (componentAshElement) must be a Component Ash Element object instance.`);
 	}
 
-	// console.log('createAshNodeTree...', componentAshElement.Spec, componentAshElement);
+	// console.log('createAshNodeTree...', componentAshElement.Spec.name, componentAshElement);
 
 	// debugger;
 	

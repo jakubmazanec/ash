@@ -440,9 +440,6 @@ class BarSubComponent extends ash.Component {
 class Header extends ash.Component {
 	render() { // {/*<Menu isHorizontal={true} />*/}
 		return <header>
-			<FooSubComponent />
-			<FooSubComponent />
-			<FooSubComponent />
 		</header>;
 	}
 }
@@ -493,11 +490,18 @@ class App extends ash.Component {
 
 	render() {
 		return <div>
-			<Main isMenuOpen={this.state.isMenuOpen} />
+			<Header />
 			<button href="#" events={{
 				click: this.change
 			}}>+</button>
 		</div>;
+	}
+
+	onMount() {
+		setTimeout(() => {
+			console.log('App onMount setTimeout fn...');
+			this.update();
+		}, 2000);
 	}
 
 	change(event) {

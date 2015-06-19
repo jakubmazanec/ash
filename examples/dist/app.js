@@ -538,13 +538,7 @@ var Header = (function (_ash$Component4) {
 		key: 'render',
 		value: function render() {
 			// {/*<Menu isHorizontal={true} />*/}
-			return _ash2.default.e(
-				'header',
-				null,
-				_ash2.default.e(FooSubComponent, null),
-				_ash2.default.e(FooSubComponent, null),
-				_ash2.default.e(FooSubComponent, null)
-			);
+			return _ash2.default.e('header', null);
 		}
 	}]);
 
@@ -670,7 +664,7 @@ var App = (function (_ash$Component8) {
 			return _ash2.default.e(
 				'div',
 				null,
-				_ash2.default.e(Main, { isMenuOpen: this.state.isMenuOpen }),
+				_ash2.default.e(Header, null),
 				_ash2.default.e(
 					'button',
 					{ href: '#', events: {
@@ -679,6 +673,16 @@ var App = (function (_ash$Component8) {
 					'+'
 				)
 			);
+		}
+	}, {
+		key: 'onMount',
+		value: function onMount() {
+			var _this2 = this;
+
+			setTimeout(function () {
+				console.log('App onMount setTimeout fn...');
+				_this2.update();
+			}, 2000);
 		}
 	}, {
 		key: 'change',
@@ -1154,13 +1158,13 @@ var TodoApp = (function (_ash$Component11) {
   }*/
 
 		value: function render() {
-			var _this2 = this;
+			var _this3 = this;
 
 			var footer = null;
 			var main = null;
 
 			var shownTodos = this.state.todos.filter(function (todo) {
-				switch (_this2.state.nowShowing) {
+				switch (_this3.state.nowShowing) {
 					case ACTIVE_TODOS:
 						return !todo.completed;
 					case COMPLETED_TODOS:
@@ -1174,12 +1178,12 @@ var TodoApp = (function (_ash$Component11) {
 				return _ash2.default.e(TodoItem, {
 					key: todo.id,
 					todo: todo,
-					onToggle: _this2.toggle.bind(_this2, todo),
-					onDestroy: _this2.destroy.bind(_this2, todo),
-					onEdit: _this2.edit.bind(_this2, todo),
-					editing: _this2.state.editing === todo.id,
-					onSave: _this2.save.bind(_this2, todo),
-					onCancel: _this2.cancel
+					onToggle: _this3.toggle.bind(_this3, todo),
+					onDestroy: _this3.destroy.bind(_this3, todo),
+					onEdit: _this3.edit.bind(_this3, todo),
+					editing: _this3.state.editing === todo.id,
+					onSave: _this3.save.bind(_this3, todo),
+					onCancel: _this3.cancel
 				});
 			});
 

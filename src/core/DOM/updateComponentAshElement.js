@@ -9,9 +9,9 @@ const COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
 const ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
 
 function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, isParentComponentDirty) {
-	// console.log('walkUpdateComponentAshElement...');
-	// console.log('oldAshElement', oldAshElement.Spec, oldAshElement.args[0], oldAshElement.args[1], 'isDirty?', oldAshElement.isDirty);
-	// console.log('newAshElement', newAshElement.Spec, newAshElement.args[0], newAshElement.args[1], 'isDirty?', newAshElement.isDirty);
+	// console.log('>-- walkUpdateComponentAshElement...');
+	// console.log('oldAshElement', oldAshElement.Spec.name, oldAshElement.args[0], oldAshElement.args[1], 'isDirty?', oldAshElement.isDirty);
+	// console.log('newAshElement', newAshElement.Spec.name, newAshElement.args[0], newAshElement.args[1], 'isDirty?', newAshElement.isDirty);
 
 	if (newAshElement.type === COMPONENT_ASH_ELEMENT) {
 		// console.log('newAshElement.type === COMPONENT_ASH_ELEMENT');
@@ -44,7 +44,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, isP
 			if (shouldUpdate || oldAshElement.isDirty) {
 				oldAshElement.isDirty = true;
 
-				// console.log('oj');
+				// console.log('instantiating oldAshElement...');
 				
 				// copy the new to the old...
 				oldAshElement.args = newAshElement.args;
@@ -53,33 +53,33 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, isP
 
 				// create child for the new descriptor
 				newAshElement.children[0] = oldAshElement.instance.render();
-			}
 
-			// adding children to the queue
-			if (newAshElement.children[0] && oldAshElement.children[0]) {
-				newAshElement.children[0].owner = oldAshElement;
-				newAshElement.children[0].parent = oldAshElement;
-				newAshElement.children[0].index = 0;
+				// adding children to the queue
+				if (newAshElement.children[0] && oldAshElement.children[0]) {
+					newAshElement.children[0].owner = oldAshElement;
+					newAshElement.children[0].parent = oldAshElement;
+					newAshElement.children[0].index = 0;
 
-				walkUpdateComponentAshElement(oldAshElement.children[0], newAshElement.children[0], stream, shouldUpdate || oldAshElement.isDirty);
-			} else if (newAshElement.children[0] && !oldAshElement.children[0]) {
-				newAshElement.children[0].owner = oldAshElement;
-				newAshElement.children[0].parent = oldAshElement;
-				newAshElement.children[0].index = 0;
+					walkUpdateComponentAshElement(oldAshElement.children[0], newAshElement.children[0], stream, true);
+				} else if (newAshElement.children[0] && !oldAshElement.children[0]) {
+					newAshElement.children[0].owner = oldAshElement;
+					newAshElement.children[0].parent = oldAshElement;
+					newAshElement.children[0].index = 0;
 
-				walkUpdateComponentAshElement(null, newAshElement.children[0], stream, shouldUpdate || oldAshElement.isDirty);
-			}
-
-			// deleting old surplus children
-			if (!newAshElement.children[0] && oldAshElement.children[0]) {
-				if (oldAshElement.children[0].type === COMPONENT_ASH_ELEMENT) {
-					oldAshElement.children[0].instance.__lifecycle = LIFECYCLE_UNMOUNTED;
+					walkUpdateComponentAshElement(null, newAshElement.children[0], stream, true);
 				}
-				
-				oldAshElement.children.pop();
-			}
 
-			// walkUpdateComponentAshElement(oldAshElement.children[0] || null, newAshElement.children[0], stream, shouldUpdate || oldAshElement.isDirty);
+				// deleting old surplus children
+				if (!newAshElement.children[0] && oldAshElement.children[0]) {
+					if (oldAshElement.children[0].type === COMPONENT_ASH_ELEMENT) {
+						oldAshElement.children[0].instance.__lifecycle = LIFECYCLE_UNMOUNTED;
+					}
+					
+					oldAshElement.children.pop();
+				}
+			} else {
+				walkUpdateComponentAshElement(oldAshElement.children[0], oldAshElement.children[0], stream, false);
+			}
 
 		}	else if (oldAshElement.type === COMPONENT_ASH_ELEMENT) {
 			// console.log('oldAshElement.type === COMPONENT_ASH_ELEMENT');
@@ -221,9 +221,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, isP
 export default function updateComponentAshElement(componentAshElement, stream) {
 	var render;
 
-	// console.log('updateComponentAshElement...', componentAshElement.Spec, 'isDirty?', componentAshElement.isDirty);
-
-
+	// console.log('updateComponentAshElement...', componentAshElement.Spec.name, 'isDirty?', componentAshElement.isDirty);
 
 	if (componentAshElement.isDirty) {
 		render = componentAshElement.instance.render();

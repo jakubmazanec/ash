@@ -3,7 +3,6 @@ import isAshNodeAshElement from '../internals/isAshNodeAshElement';
 import constants from '../internals/constants';
 
 
-
 const LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
 const LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
 
@@ -18,6 +17,8 @@ export default function mountComponents(ashElement) {
 		if (ashElement.instance && ashElement.instance.__lifecycle === LIFECYCLE_MOUNTING) {
 			ashElement.instance.__lifecycle = LIFECYCLE_MOUNTED;
 		}
+
+		ashElement.instance.onRender();
 
 		if (ashElement.children[0]) {
 			mountComponents(ashElement.children[0]);

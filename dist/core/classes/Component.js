@@ -146,6 +146,9 @@ var Component = (function () {
 		key: 'onBeforeReceiveProps',
 		value: function onBeforeReceiveProps() {}
 	}, {
+		key: 'onRender',
+		value: function onRender() {}
+	}, {
 		key: 'render',
 		value: function render() {
 			return null;

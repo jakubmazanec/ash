@@ -106,6 +106,8 @@ export default class Component {
 
 	onBeforeReceiveProps() {}
 
+	onRender() {}
+
 	render() {
 		return null;
 	}
