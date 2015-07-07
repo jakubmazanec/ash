@@ -43,7 +43,7 @@ var Component = (function () {
 	function Component() {
 		var _this = this;
 
-		var props = arguments[0] === undefined ? {} : arguments[0];
+		var props = arguments[0] === undefined ? null : arguments[0];
 
 		_classCallCheck(this, Component);
 

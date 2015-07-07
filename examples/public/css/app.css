@@ -4136,3 +4136,29 @@ textarea {
     margin: 0.2rem 0.7rem 0 -0.15rem;
     color: #265359;
     vertical-align: top; }
+
+.hide {
+  -webkit-animation: hide 1s ease-in 1 both;
+          animation: hide 1s ease-in 1 both; }
+
+@-webkit-keyframes hide {
+  0% {
+    opacity: 1; }
+  100% {
+    opacity: 0; } }
+
+@keyframes hide {
+  0% {
+    opacity: 1; }
+  100% {
+    opacity: 0; } }
+@-webkit-keyframes show {
+  0% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+@keyframes show {
+  0% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }

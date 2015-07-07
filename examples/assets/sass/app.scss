@@ -1,1 +1,25 @@
 @import 'ash/ash';
+
+.hide {
+	animation: hide 1s ease-in 1 both;
+}
+
+@keyframes hide {
+	0% {
+		opacity: 1;
+	}
+	
+	100% {
+		opacity: 0;
+	}
+}
+
+@keyframes show {
+	0% {
+		opacity: 0;
+	}
+	
+	100% {
+		opacity: 1;
+	}
+}

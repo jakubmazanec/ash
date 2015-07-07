@@ -440,6 +440,7 @@ class BarSubComponent extends ash.Component {
 class Header extends ash.Component {
 	render() { // {/*<Menu isHorizontal={true} />*/}
 		return <header>
+			<Menu isMenuOpen={this.props ? this.props.isMenuOpen : false} />
 		</header>;
 	}
 }
@@ -450,10 +451,13 @@ class Footer extends ash.Component {
 	};
 
 	render() { // {/*<Menu isHorizontal={true} />*/}
-		return <footer>
+		/*return <footer>
 			{this.state.width % 2 === 0 ? <a href="#" events={{
 				click: this.change
 			}}>remove</a> : null}
+		</footer>;*/
+
+		return <footer>
 		</footer>;
 	}
 
@@ -476,11 +480,25 @@ class Menu extends ash.Component {
 
 class Main extends ash.Component {
 	render() {
+		/*return <main class="hide" events={{webkitAnimationEnd: this.onAnimationEnd}}>
+			<Menu isMenuOpen={this.props ? this.props.isMenuOpen : false} />
+			<Footer isMenuOpen={this.props ? this.props.isMenuOpen : false} />
+		</main>;*/
+
 		return <main>
-			<Menu isMenuOpen={this.props.isMenuOpen} />
-			<Footer isMenuOpen={this.props.isMenuOpen} />
 		</main>;
 	}
+
+	onMount() {
+		/*setInterval(() => {
+			this.update();
+		}, 1000);*/
+	}
+
+	/*onAnimationEnd() {
+		console.log('Main onAnimationEnd...');
+		this.update();
+	}*/
 }
 
 class App extends ash.Component {
@@ -490,14 +508,13 @@ class App extends ash.Component {
 
 	render() {
 		return <div>
-			<Header />
-			<button href="#" events={{
-				click: this.change
-			}}>+</button>
+			<Main isMenuOpen={this.state.isMenuOpen} />
+			<Footer />
 		</div>;
 	}
 
 	onMount() {
+		// appStateStream.subscribe(this.update);
 		setTimeout(() => {
 			console.log('App onMount setTimeout fn...');
 			this.update();

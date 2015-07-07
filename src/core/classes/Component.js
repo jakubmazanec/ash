@@ -16,7 +16,7 @@ export default class Component {
 	__previousLifecycle = LIFECYCLE_UNINITIALIZED;
 	__currentLifecycle = LIFECYCLE_UNMOUNTED;
 
-	constructor(props = {}) {
+	constructor(props = null) {
 		// autobind methods
 		let prototype = Object.getPrototypeOf(this);
 

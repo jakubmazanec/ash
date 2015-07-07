@@ -55,7 +55,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, isP
 			if (shouldUpdate || oldAshElement.isDirty) {
 				oldAshElement.isDirty = true;
 
-				// console.log('instantiating oldAshElement...');
+				// console.log('copying new props to oldAshElement...');
 
 				// copy the new to the old...
 				oldAshElement.args = newAshElement.args;
@@ -63,25 +63,45 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, isP
 				oldAshElement.instance.props = newAshElement.args ? newAshElement.args[0] : null;
 
 				// create child for the new descriptor
-				newAshElement.children[0] = oldAshElement.instance.render();
+				// console.log('oldAshElement.children === newAshElement.children?', oldAshElement.children === newAshElement.children);
+				var render = oldAshElement.instance.render();
+
+				// debugger;
+
+				/*// adding children to the queue
+    if (render && oldAshElement.children[0]) {
+    	render.owner = oldAshElement;
+    	render.parent = oldAshElement;
+    	render.index = 0;
+    			walkUpdateComponentAshElement(oldAshElement.children[0], render, stream, true);
+    } else if (render && !oldAshElement.children[0]) {
+    	render.owner = oldAshElement;
+    	render.parent = oldAshElement;
+    	render.index = 0;
+    			walkUpdateComponentAshElement(null, render, stream, true);
+    }
+    		// deleting old surplus children
+    if (!render && oldAshElement.children[0]) {
+    	if (oldAshElement.children[0].type === COMPONENT_ASH_ELEMENT) {
+    		oldAshElement.children[0].instance.__lifecycle = LIFECYCLE_UNMOUNTED;
+    	}
+    	
+    	oldAshElement.children.pop();
+    }*/
 
 				// adding children to the queue
-				if (newAshElement.children[0] && oldAshElement.children[0]) {
-					newAshElement.children[0].owner = oldAshElement;
-					newAshElement.children[0].parent = oldAshElement;
-					newAshElement.children[0].index = 0;
+				if (render) {
+					render.owner = oldAshElement;
+					render.parent = oldAshElement;
+					render.index = 0;
 
-					walkUpdateComponentAshElement(oldAshElement.children[0], newAshElement.children[0], stream, true);
-				} else if (newAshElement.children[0] && !oldAshElement.children[0]) {
-					newAshElement.children[0].owner = oldAshElement;
-					newAshElement.children[0].parent = oldAshElement;
-					newAshElement.children[0].index = 0;
-
-					walkUpdateComponentAshElement(null, newAshElement.children[0], stream, true);
-				}
-
-				// deleting old surplus children
-				if (!newAshElement.children[0] && oldAshElement.children[0]) {
+					if (oldAshElement.children[0]) {
+						walkUpdateComponentAshElement(oldAshElement.children[0], render, stream, true);
+					} else {
+						walkUpdateComponentAshElement(null, render, stream, true);
+					}
+				} else if (oldAshElement.children[0]) {
+					// deleting old surplus children
 					if (oldAshElement.children[0].type === COMPONENT_ASH_ELEMENT) {
 						oldAshElement.children[0].instance.__lifecycle = LIFECYCLE_UNMOUNTED;
 					}
@@ -248,6 +268,8 @@ function updateComponentAshElement(componentAshElement, stream) {
 	// render.index = 0;
 
 	// componentAshElement.isDirty = true;
+
+	// debugger;
 
 	walkUpdateComponentAshElement(componentAshElement.children[0], render, stream, componentAshElement.isDirty);
 

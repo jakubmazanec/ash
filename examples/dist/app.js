@@ -538,7 +538,11 @@ var Header = (function (_ash$Component4) {
 		key: 'render',
 		value: function render() {
 			// {/*<Menu isHorizontal={true} />*/}
-			return _ash2.default.e('header', null);
+			return _ash2.default.e(
+				'header',
+				null,
+				_ash2.default.e(Menu, { isMenuOpen: this.props ? this.props.isMenuOpen : false })
+			);
 		}
 	}]);
 
@@ -564,17 +568,13 @@ var Footer = (function (_ash$Component5) {
 		key: 'render',
 		value: function render() {
 			// {/*<Menu isHorizontal={true} />*/}
-			return _ash2.default.e(
-				'footer',
-				null,
-				this.state.width % 2 === 0 ? _ash2.default.e(
-					'a',
-					{ href: '#', events: {
-							click: this.change
-						} },
-					'remove'
-				) : null
-			);
+			/*return <footer>
+   	{this.state.width % 2 === 0 ? <a href="#" events={{
+   		click: this.change
+   	}}>remove</a> : null}
+   </footer>;*/
+
+			return _ash2.default.e('footer', null);
 		}
 	}, {
 		key: 'change',
@@ -631,13 +631,22 @@ var Main = (function (_ash$Component7) {
 	_createClass(Main, [{
 		key: 'render',
 		value: function render() {
-			return _ash2.default.e(
-				'main',
-				null,
-				_ash2.default.e(Menu, { isMenuOpen: this.props.isMenuOpen }),
-				_ash2.default.e(Footer, { isMenuOpen: this.props.isMenuOpen })
-			);
+			/*return <main class="hide" events={{webkitAnimationEnd: this.onAnimationEnd}}>
+   	<Menu isMenuOpen={this.props ? this.props.isMenuOpen : false} />
+   	<Footer isMenuOpen={this.props ? this.props.isMenuOpen : false} />
+   </main>;*/
+
+			return _ash2.default.e('main', null);
 		}
+	}, {
+		key: 'onMount',
+		value: function onMount() {}
+
+		/*onAnimationEnd() {
+  	console.log('Main onAnimationEnd...');
+  	this.update();
+  }*/
+
 	}]);
 
 	return Main;
@@ -664,14 +673,8 @@ var App = (function (_ash$Component8) {
 			return _ash2.default.e(
 				'div',
 				null,
-				_ash2.default.e(Header, null),
-				_ash2.default.e(
-					'button',
-					{ href: '#', events: {
-							click: this.change
-						} },
-					'+'
-				)
+				_ash2.default.e(Main, { isMenuOpen: this.state.isMenuOpen }),
+				_ash2.default.e(Footer, null)
 			);
 		}
 	}, {
@@ -679,6 +682,7 @@ var App = (function (_ash$Component8) {
 		value: function onMount() {
 			var _this2 = this;
 
+			// appStateStream.subscribe(this.update);
 			setTimeout(function () {
 				console.log('App onMount setTimeout fn...');
 				_this2.update();
@@ -1248,6 +1252,9 @@ var TodoApp = (function (_ash$Component11) {
 })(_ash2.default.Component);
 
 /*this.state.reversed ? <b>!</b> : null*/
+/*setInterval(() => {
+	this.update();
+}, 1000);*/
 
 // Renderer.addStream(ash.AshNodeStream.from(<TodoApp />), global.document.querySelector('#todoapp'));
 

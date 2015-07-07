@@ -540,7 +540,11 @@ var Header = (function (_ash$Component4) {
 		key: 'render',
 		value: function render() {
 			// {/*<Menu isHorizontal={true} />*/}
-			return _ash2.default.e('header', null);
+			return _ash2.default.e(
+				'header',
+				null,
+				_ash2.default.e(Menu, { isMenuOpen: this.props ? this.props.isMenuOpen : false })
+			);
 		}
 	}]);
 
@@ -566,17 +570,13 @@ var Footer = (function (_ash$Component5) {
 		key: 'render',
 		value: function render() {
 			// {/*<Menu isHorizontal={true} />*/}
-			return _ash2.default.e(
-				'footer',
-				null,
-				this.state.width % 2 === 0 ? _ash2.default.e(
-					'a',
-					{ href: '#', events: {
-							click: this.change
-						} },
-					'remove'
-				) : null
-			);
+			/*return <footer>
+   	{this.state.width % 2 === 0 ? <a href="#" events={{
+   		click: this.change
+   	}}>remove</a> : null}
+   </footer>;*/
+
+			return _ash2.default.e('footer', null);
 		}
 	}, {
 		key: 'change',
@@ -633,13 +633,22 @@ var Main = (function (_ash$Component7) {
 	_createClass(Main, [{
 		key: 'render',
 		value: function render() {
-			return _ash2.default.e(
-				'main',
-				null,
-				_ash2.default.e(Menu, { isMenuOpen: this.props.isMenuOpen }),
-				_ash2.default.e(Footer, { isMenuOpen: this.props.isMenuOpen })
-			);
+			/*return <main class="hide" events={{webkitAnimationEnd: this.onAnimationEnd}}>
+   	<Menu isMenuOpen={this.props ? this.props.isMenuOpen : false} />
+   	<Footer isMenuOpen={this.props ? this.props.isMenuOpen : false} />
+   </main>;*/
+
+			return _ash2.default.e('main', null);
 		}
+	}, {
+		key: 'onMount',
+		value: function onMount() {}
+
+		/*onAnimationEnd() {
+  	console.log('Main onAnimationEnd...');
+  	this.update();
+  }*/
+
 	}]);
 
 	return Main;
@@ -666,14 +675,8 @@ var App = (function (_ash$Component8) {
 			return _ash2.default.e(
 				'div',
 				null,
-				_ash2.default.e(Header, null),
-				_ash2.default.e(
-					'button',
-					{ href: '#', events: {
-							click: this.change
-						} },
-					'+'
-				)
+				_ash2.default.e(Main, { isMenuOpen: this.state.isMenuOpen }),
+				_ash2.default.e(Footer, null)
 			);
 		}
 	}, {
@@ -681,6 +684,7 @@ var App = (function (_ash$Component8) {
 		value: function onMount() {
 			var _this2 = this;
 
+			// appStateStream.subscribe(this.update);
 			setTimeout(function () {
 				console.log('App onMount setTimeout fn...');
 				_this2.update();
@@ -1250,6 +1254,9 @@ var TodoApp = (function (_ash$Component11) {
 })(_ash2.default.Component);
 
 /*this.state.reversed ? <b>!</b> : null*/
+/*setInterval(() => {
+	this.update();
+}, 1000);*/
 
 // Renderer.addStream(ash.AshNodeStream.from(<TodoApp />), global.document.querySelector('#todoapp'));
 
@@ -2611,7 +2618,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, isP
 			if (shouldUpdate || oldAshElement.isDirty) {
 				oldAshElement.isDirty = true;
 
-				// console.log('instantiating oldAshElement...');
+				// console.log('copying new props to oldAshElement...');
 
 				// copy the new to the old...
 				oldAshElement.args = newAshElement.args;
@@ -2619,25 +2626,45 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, isP
 				oldAshElement.instance.props = newAshElement.args ? newAshElement.args[0] : null;
 
 				// create child for the new descriptor
-				newAshElement.children[0] = oldAshElement.instance.render();
+				// console.log('oldAshElement.children === newAshElement.children?', oldAshElement.children === newAshElement.children);
+				var render = oldAshElement.instance.render();
+
+				// debugger;
+
+				/*// adding children to the queue
+    if (render && oldAshElement.children[0]) {
+    	render.owner = oldAshElement;
+    	render.parent = oldAshElement;
+    	render.index = 0;
+    			walkUpdateComponentAshElement(oldAshElement.children[0], render, stream, true);
+    } else if (render && !oldAshElement.children[0]) {
+    	render.owner = oldAshElement;
+    	render.parent = oldAshElement;
+    	render.index = 0;
+    			walkUpdateComponentAshElement(null, render, stream, true);
+    }
+    		// deleting old surplus children
+    if (!render && oldAshElement.children[0]) {
+    	if (oldAshElement.children[0].type === COMPONENT_ASH_ELEMENT) {
+    		oldAshElement.children[0].instance.__lifecycle = LIFECYCLE_UNMOUNTED;
+    	}
+    	
+    	oldAshElement.children.pop();
+    }*/
 
 				// adding children to the queue
-				if (newAshElement.children[0] && oldAshElement.children[0]) {
-					newAshElement.children[0].owner = oldAshElement;
-					newAshElement.children[0].parent = oldAshElement;
-					newAshElement.children[0].index = 0;
+				if (render) {
+					render.owner = oldAshElement;
+					render.parent = oldAshElement;
+					render.index = 0;
 
-					walkUpdateComponentAshElement(oldAshElement.children[0], newAshElement.children[0], stream, true);
-				} else if (newAshElement.children[0] && !oldAshElement.children[0]) {
-					newAshElement.children[0].owner = oldAshElement;
-					newAshElement.children[0].parent = oldAshElement;
-					newAshElement.children[0].index = 0;
-
-					walkUpdateComponentAshElement(null, newAshElement.children[0], stream, true);
-				}
-
-				// deleting old surplus children
-				if (!newAshElement.children[0] && oldAshElement.children[0]) {
+					if (oldAshElement.children[0]) {
+						walkUpdateComponentAshElement(oldAshElement.children[0], render, stream, true);
+					} else {
+						walkUpdateComponentAshElement(null, render, stream, true);
+					}
+				} else if (oldAshElement.children[0]) {
+					// deleting old surplus children
 					if (oldAshElement.children[0].type === COMPONENT_ASH_ELEMENT) {
 						oldAshElement.children[0].instance.__lifecycle = LIFECYCLE_UNMOUNTED;
 					}
@@ -2804,6 +2831,8 @@ function updateComponentAshElement(componentAshElement, stream) {
 	// render.index = 0;
 
 	// componentAshElement.isDirty = true;
+
+	// debugger;
 
 	walkUpdateComponentAshElement(componentAshElement.children[0], render, stream, componentAshElement.isDirty);
 
@@ -3079,7 +3108,7 @@ var Component = (function () {
 	function Component() {
 		var _this = this;
 
-		var props = arguments[0] === undefined ? {} : arguments[0];
+		var props = arguments[0] === undefined ? null : arguments[0];
 
 		_classCallCheck(this, Component);
 
