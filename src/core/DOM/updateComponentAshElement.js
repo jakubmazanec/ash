@@ -55,7 +55,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, isP
 
 				// create child for the new descriptor
 				// console.log('oldAshElement.children === newAshElement.children?', oldAshElement.children === newAshElement.children);
-				let render = oldAshElement.instance.render();
+				let render = oldAshElement.instance.render(oldAshElement.instance.props, oldAshElement.instance.state);
 
 				// debugger;
 
@@ -249,7 +249,7 @@ export default function updateComponentAshElement(componentAshElement, stream) {
 	// console.log('updateComponentAshElement...', componentAshElement.Spec.name, 'isDirty?', componentAshElement.isDirty);
 
 	if (componentAshElement.isDirty) {
-		render = componentAshElement.instance.render();
+		render = componentAshElement.instance.render(componentAshElement.instance.props, componentAshElement.instance.state);
 		render.owner = componentAshElement;
 		render.parent = componentAshElement;
 		render.index = 0;

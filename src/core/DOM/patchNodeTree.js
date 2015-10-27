@@ -175,6 +175,8 @@ export default function patchNodeTree(nodeTree/*, patches*/) {
 		}
 
 		if (patches[i].type === PATCH_ASH_NODE) {
+			// console.log('applying patch', 'PATCH_ASH_NODE', patches[i]);
+
 			// remove old events
 			eventListener.removeEvents(patches[i].id, patches[i].streamId);
 
@@ -185,8 +187,16 @@ export default function patchNodeTree(nodeTree/*, patches*/) {
 				throw new Error('Patching the DOM was unsuccesful!');
 			}
 
-			node.parentNode.replaceChild(createNodeTree(patches[i].node), node);
+			// new node, but change the order and index - they must be from the node-to-be-removed, because patch for order is separate...
+			let newNode = createNodeTree(patches[i].node);
+
+			newNode[ID_ATTRIBUTE_NAME] = node[ID_ATTRIBUTE_NAME];
+			newNode[INDEX_ATTRIBUTE_NAME] = node[INDEX_ATTRIBUTE_NAME];
+
+			node.parentNode.replaceChild(newNode, node);
 		} else if (patches[i].type === PATCH_ASH_TEXT_NODE) {
+			// console.log('applying patch', 'PATCH_ASH_TEXT_NODE', patches[i]);
+
 			node = findNode(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
@@ -195,6 +205,8 @@ export default function patchNodeTree(nodeTree/*, patches*/) {
 
 			node.nodeValue = patches[i].text;
 		} else if (patches[i].type === PATCH_PROPERTIES) {
+			// console.log('applying patch', 'PATCH_PROPERTIES', patches[i]);
+
 			node = findNode(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
@@ -204,6 +216,8 @@ export default function patchNodeTree(nodeTree/*, patches*/) {
 			setNodeProperties(node, patches[i].propertiesToChange, false);
 			removeNodeProperties(node, patches[i].propertiesToRemove);
 		} else if (patches[i].type === PATCH_REMOVE) {
+			// console.log('applying patch', 'PATCH_REMOVE', patches[i]);
+
 			node = findNode(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
@@ -215,6 +229,8 @@ export default function patchNodeTree(nodeTree/*, patches*/) {
 
 			node.parentNode.removeChild(node);
 		} else if (patches[i].type === PATCH_INSERT) {
+			// console.log('applying patch', 'PATCH_INSERT', patches[i]);
+
 			node = findNode(nodeTree, patches[i].parentId, patches[i].parentIndices);
 
 			if (!node) {
@@ -225,6 +241,8 @@ export default function patchNodeTree(nodeTree/*, patches*/) {
 
 			reorderCache.push(node);
 		} else if (patches[i].type === PATCH_ORDER) {
+			// console.log('applying patch', 'PATCH_ORDER', patches[i]);
+
 			node = findNode(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
@@ -243,6 +261,8 @@ export default function patchNodeTree(nodeTree/*, patches*/) {
 
 			reorderCache.push(node.parentNode);
 		}
+
+		// debugger;
 	}
 
 	flushCache(reindexCache, reorderCache);

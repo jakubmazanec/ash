@@ -348,202 +348,24 @@ $('body').on('keydown', () => {
 	n2.end(true);
 });*/
 
-// import App from './components/App';
-// import AppReact from './components/AppReact';
-
-var ReorderApp = (function (_ash$Component) {
-	function ReorderApp() {
-		_classCallCheck(this, ReorderApp);
+var Header = (function (_ash$Component) {
+	function Header() {
+		_classCallCheck(this, Header);
 
 		if (_ash$Component != null) {
 			_ash$Component.apply(this, arguments);
 		}
-
-		this.state = {
-			reversed: false,
-			items: []
-		};
 	}
 
-	_inherits(ReorderApp, _ash$Component);
-
-	_createClass(ReorderApp, [{
-		key: 'render',
-		value: function render() {
-			var _this = this;
-
-			var items = this.state.items.map(function (value, index) {
-				return _ash2.default.e(
-					'button',
-					{ key: '' + index, events: { click: _this.hello.bind(null, index, value) } },
-					'' + value + '. '
-				);
-			});
-
-			if (this.state.reversed) {
-				items = items.reverse();
-			}
-
-			return _ash2.default.e(
-				'div',
-				null,
-				_ash2.default.e(
-					'button',
-					{ key: 'btn', style: {
-							outline: this.state.reversed ? '1px solid red' : '1px solid blue'
-						}, events: {
-							click: this.addItem
-						} },
-					'' + this.state.reversed
-				),
-				_ash2.default.e(
-					'div',
-					{ key: 'inr' },
-					this.state.reversed ? _ash2.default.e(
-						'b',
-						null,
-						'!'
-					) : null,
-					_ash2.default.e(
-						'div',
-						{ key: 'itm' },
-						items
-					)
-				),
-				_ash2.default.e(FooSubComponent, null)
-			);
-		}
-	}, {
-		key: 'addItem',
-		value: function addItem() {
-			console.log('adding item...');
-
-			this.state.items.push('' + (Math.random() * 100 >> 0));
-			this.state.reversed = !this.state.reversed;
-
-			this.update();
-		}
-	}, {
-		key: 'hello',
-		value: function hello(index, value) {
-			console.log('Hello, this is', value, 'at', index);
-		}
-	}]);
-
-	return ReorderApp;
-})(_ash2.default.Component);
-
-var styles = {};
-
-var FooSubComponent = (function (_ash$Component2) {
-	function FooSubComponent() {
-		_classCallCheck(this, FooSubComponent);
-
-		if (_ash$Component2 != null) {
-			_ash$Component2.apply(this, arguments);
-		}
-
-		this.state = {
-			width: 1
-		};
-	}
-
-	_inherits(FooSubComponent, _ash$Component2);
-
-	_createClass(FooSubComponent, [{
-		key: 'render',
-		value: function render() {
-			/*return <button style={{
-   		outline: this.state.width + 'px solid #f0c'
-   	}} events={{
-   		click: this.change
-   	}}>Morw wdith!</button>;*/
-
-			return _ash2.default.e(
-				'section',
-				null,
-				_ash2.default.e(
-					'b',
-					null,
-					'Header'
-				),
-				_ash2.default.e(
-					'button',
-					{ style: {
-							outline: this.state.width + 'px solid #f0c'
-						}, events: {
-							click: this.change
-						} },
-					'FOO!'
-				)
-			);
-		}
-	}, {
-		key: 'change',
-		value: function change() {
-			this.state.width++;
-
-			this.update();
-		}
-	}]);
-
-	return FooSubComponent;
-})(_ash2.default.Component);
-
-var BarSubComponent = (function (_ash$Component3) {
-	function BarSubComponent() {
-		_classCallCheck(this, BarSubComponent);
-
-		if (_ash$Component3 != null) {
-			_ash$Component3.apply(this, arguments);
-		}
-	}
-
-	_inherits(BarSubComponent, _ash$Component3);
-
-	_createClass(BarSubComponent, [{
-		key: 'render',
-		value: function render() {
-			/*return <button style={{
-   		outline: (this.props ? this.props.width || 0 : 0) + 'px solid #f0c'
-   	}}>Morw wdith!</button>;*/
-
-			return _ash2.default.e(
-				'section',
-				null,
-				_ash2.default.e(
-					'button',
-					{ style: {
-							outline: (this.props ? this.props.width || 0 : 0) + 'px solid #f0c'
-						} },
-					'BAR!'
-				)
-			);
-		}
-	}]);
-
-	return BarSubComponent;
-})(_ash2.default.Component);
-
-var Header = (function (_ash$Component4) {
-	function Header() {
-		_classCallCheck(this, Header);
-
-		if (_ash$Component4 != null) {
-			_ash$Component4.apply(this, arguments);
-		}
-	}
-
-	_inherits(Header, _ash$Component4);
+	_inherits(Header, _ash$Component);
 
 	_createClass(Header, [{
 		key: 'render',
 		value: function render() {
-			// {/*<Menu isHorizontal={true} />*/}
 			return _ash2.default.e(
 				'header',
 				null,
-				_ash2.default.e(Menu, { isMenuOpen: this.props ? this.props.isMenuOpen : false })
+				'Test component!'
 			);
 		}
 	}]);
@@ -551,123 +373,129 @@ var Header = (function (_ash$Component4) {
 	return Header;
 })(_ash2.default.Component);
 
-var Footer = (function (_ash$Component5) {
-	function Footer() {
-		_classCallCheck(this, Footer);
+var FooContent = (function (_ash$Component2) {
+	function FooContent() {
+		_classCallCheck(this, FooContent);
+
+		if (_ash$Component2 != null) {
+			_ash$Component2.apply(this, arguments);
+		}
+	}
+
+	_inherits(FooContent, _ash$Component2);
+
+	_createClass(FooContent, [{
+		key: 'render',
+		value: function render() {
+			return _ash2.default.e(
+				'section',
+				null,
+				_ash2.default.e(
+					'div',
+					{ key: 'content' },
+					_ash2.default.e(
+						'h1',
+						null,
+						'Blog'
+					)
+				),
+				_ash2.default.e(
+					'p',
+					null,
+					'Spinner!'
+				)
+			);
+		}
+	}]);
+
+	return FooContent;
+})(_ash2.default.Component);
+
+var BarContent = (function (_ash$Component3) {
+	function BarContent() {
+		_classCallCheck(this, BarContent);
+
+		if (_ash$Component3 != null) {
+			_ash$Component3.apply(this, arguments);
+		}
+	}
+
+	_inherits(BarContent, _ash$Component3);
+
+	_createClass(BarContent, [{
+		key: 'render',
+		value: function render() {
+			return _ash2.default.e(
+				'section',
+				null,
+				_ash2.default.e(
+					'h1',
+					null,
+					'About us'
+				),
+				_ash2.default.e(
+					'h2',
+					null,
+					'Eva'
+				)
+			);
+		}
+	}]);
+
+	return BarContent;
+})(_ash2.default.Component);
+
+var Content = (function (_ash$Component4) {
+	function Content() {
+		_classCallCheck(this, Content);
+
+		if (_ash$Component4 != null) {
+			_ash$Component4.apply(this, arguments);
+		}
+	}
+
+	_inherits(Content, _ash$Component4);
+
+	_createClass(Content, [{
+		key: 'render',
+		value: function render(props, state) {
+			var elements = undefined;
+
+			console.log('Content render...', props, state);
+
+			if (this.props.show === 'foo') {
+				elements = _ash2.default.e(FooContent, null);
+			} else if (this.props.show === 'bar') {
+				elements = _ash2.default.e(BarContent, null);
+			} else {
+				elements = '---';
+			}
+
+			return _ash2.default.e(
+				'main',
+				null,
+				elements
+			);
+		}
+	}]);
+
+	return Content;
+})(_ash2.default.Component);
+
+var App = (function (_ash$Component5) {
+	function App() {
+		_classCallCheck(this, App);
 
 		if (_ash$Component5 != null) {
 			_ash$Component5.apply(this, arguments);
 		}
 
 		this.state = {
-			width: 0
+			show: 'bar'
 		};
 	}
 
-	_inherits(Footer, _ash$Component5);
-
-	_createClass(Footer, [{
-		key: 'render',
-		value: function render() {
-			// {/*<Menu isHorizontal={true} />*/}
-			/*return <footer>
-   	{this.state.width % 2 === 0 ? <a href="#" events={{
-   		click: this.change
-   	}}>remove</a> : null}
-   </footer>;*/
-
-			return _ash2.default.e('footer', null);
-		}
-	}, {
-		key: 'change',
-		value: function change(event) {
-			console.log('Footer change...');
-			event.preventDefault();
-
-			this.state.width++;
-
-			this.update();
-		}
-	}]);
-
-	return Footer;
-})(_ash2.default.Component);
-
-var Menu = (function (_ash$Component6) {
-	function Menu() {
-		_classCallCheck(this, Menu);
-
-		if (_ash$Component6 != null) {
-			_ash$Component6.apply(this, arguments);
-		}
-	}
-
-	_inherits(Menu, _ash$Component6);
-
-	_createClass(Menu, [{
-		key: 'render',
-		value: function render() {
-			console.log('Menu render...', this.props);
-			return _ash2.default.e(
-				'b',
-				null,
-				this.props.isMenuOpen ? 'Close' : 'Open'
-			);
-		}
-	}]);
-
-	return Menu;
-})(_ash2.default.Component);
-
-var Main = (function (_ash$Component7) {
-	function Main() {
-		_classCallCheck(this, Main);
-
-		if (_ash$Component7 != null) {
-			_ash$Component7.apply(this, arguments);
-		}
-	}
-
-	_inherits(Main, _ash$Component7);
-
-	_createClass(Main, [{
-		key: 'render',
-		value: function render() {
-			/*return <main class="hide" events={{webkitAnimationEnd: this.onAnimationEnd}}>
-   	<Menu isMenuOpen={this.props ? this.props.isMenuOpen : false} />
-   	<Footer isMenuOpen={this.props ? this.props.isMenuOpen : false} />
-   </main>;*/
-
-			return _ash2.default.e('main', null);
-		}
-	}, {
-		key: 'onMount',
-		value: function onMount() {}
-
-		/*onAnimationEnd() {
-  	console.log('Main onAnimationEnd...');
-  	this.update();
-  }*/
-
-	}]);
-
-	return Main;
-})(_ash2.default.Component);
-
-var App = (function (_ash$Component8) {
-	function App() {
-		_classCallCheck(this, App);
-
-		if (_ash$Component8 != null) {
-			_ash$Component8.apply(this, arguments);
-		}
-
-		this.state = {
-			isMenuOpen: false
-		};
-	}
-
-	_inherits(App, _ash$Component8);
+	_inherits(App, _ash$Component5);
 
 	_createClass(App, [{
 		key: 'render',
@@ -675,28 +503,34 @@ var App = (function (_ash$Component8) {
 			return _ash2.default.e(
 				'div',
 				null,
-				_ash2.default.e(Main, { isMenuOpen: this.state.isMenuOpen }),
-				_ash2.default.e(Footer, null)
+				_ash2.default.e(Content, { show: this.state.show }),
+				_ash2.default.e(
+					'a',
+					{ href: '#', events: { click: this.showFoo } },
+					'FooContent'
+				),
+				_ash2.default.e(
+					'a',
+					{ href: '#', events: { click: this.showBar } },
+					'BarContent'
+				)
 			);
 		}
 	}, {
-		key: 'onMount',
-		value: function onMount() {
-			var _this2 = this;
-
-			// appStateStream.subscribe(this.update);
-			setTimeout(function () {
-				console.log('App onMount setTimeout fn...');
-				_this2.update();
-			}, 2000);
-		}
-	}, {
-		key: 'change',
-		value: function change(event) {
-			console.log('App change...');
+		key: 'showFoo',
+		value: function showFoo(event) {
 			event.preventDefault();
 
-			this.state.isMenuOpen = !this.state.isMenuOpen;
+			this.state.show = 'foo';
+
+			this.update();
+		}
+	}, {
+		key: 'showBar',
+		value: function showBar(event) {
+			event.preventDefault();
+
+			this.state.show = 'bar';
 
 			this.update();
 		}
@@ -825,18 +659,18 @@ var COMPLETED_TODOS = 'completed';
 var ENTER_KEY = 13;
 var ESCAPE_KEY = 27;
 
-var TodoItem = (function (_ash$Component9) {
+var TodoItem = (function (_ash$Component6) {
 	function TodoItem() {
 		_classCallCheck(this, TodoItem);
 
-		if (_ash$Component9 != null) {
-			_ash$Component9.apply(this, arguments);
+		if (_ash$Component6 != null) {
+			_ash$Component6.apply(this, arguments);
 		}
 
 		this.state = { editText: this.props.todo.title };
 	}
 
-	_inherits(TodoItem, _ash$Component9);
+	_inherits(TodoItem, _ash$Component6);
 
 	_createClass(TodoItem, [{
 		key: 'setState',
@@ -929,16 +763,16 @@ var TodoItem = (function (_ash$Component9) {
 	return TodoItem;
 })(_ash2.default.Component);
 
-var TodoFooter = (function (_ash$Component10) {
+var TodoFooter = (function (_ash$Component7) {
 	function TodoFooter() {
 		_classCallCheck(this, TodoFooter);
 
-		if (_ash$Component10 != null) {
-			_ash$Component10.apply(this, arguments);
+		if (_ash$Component7 != null) {
+			_ash$Component7.apply(this, arguments);
 		}
 	}
 
-	_inherits(TodoFooter, _ash$Component10);
+	_inherits(TodoFooter, _ash$Component7);
 
 	_createClass(TodoFooter, [{
 		key: 'setState',
@@ -1034,12 +868,12 @@ var TodoFooter = (function (_ash$Component10) {
 	return TodoFooter;
 })(_ash2.default.Component);
 
-var TodoApp = (function (_ash$Component11) {
+var TodoApp = (function (_ash$Component8) {
 	function TodoApp() {
 		_classCallCheck(this, TodoApp);
 
-		if (_ash$Component11 != null) {
-			_ash$Component11.apply(this, arguments);
+		if (_ash$Component8 != null) {
+			_ash$Component8.apply(this, arguments);
 		}
 
 		this.state = {
@@ -1049,7 +883,7 @@ var TodoApp = (function (_ash$Component11) {
 		};
 	}
 
-	_inherits(TodoApp, _ash$Component11);
+	_inherits(TodoApp, _ash$Component8);
 
 	_createClass(TodoApp, [{
 		key: 'setState',
@@ -1164,13 +998,13 @@ var TodoApp = (function (_ash$Component11) {
   }*/
 
 		value: function render() {
-			var _this3 = this;
+			var _this = this;
 
 			var footer = null;
 			var main = null;
 
 			var shownTodos = this.state.todos.filter(function (todo) {
-				switch (_this3.state.nowShowing) {
+				switch (_this.state.nowShowing) {
 					case ACTIVE_TODOS:
 						return !todo.completed;
 					case COMPLETED_TODOS:
@@ -1184,12 +1018,12 @@ var TodoApp = (function (_ash$Component11) {
 				return _ash2.default.e(TodoItem, {
 					key: todo.id,
 					todo: todo,
-					onToggle: _this3.toggle.bind(_this3, todo),
-					onDestroy: _this3.destroy.bind(_this3, todo),
-					onEdit: _this3.edit.bind(_this3, todo),
-					editing: _this3.state.editing === todo.id,
-					onSave: _this3.save.bind(_this3, todo),
-					onCancel: _this3.cancel
+					onToggle: _this.toggle.bind(_this, todo),
+					onDestroy: _this.destroy.bind(_this, todo),
+					onEdit: _this.edit.bind(_this, todo),
+					editing: _this.state.editing === todo.id,
+					onSave: _this.save.bind(_this, todo),
+					onCancel: _this.cancel
 				});
 			});
 
@@ -1252,11 +1086,6 @@ var TodoApp = (function (_ash$Component11) {
 
 	return TodoApp;
 })(_ash2.default.Component);
-
-/*this.state.reversed ? <b>!</b> : null*/
-/*setInterval(() => {
-	this.update();
-}, 1000);*/
 
 // Renderer.addStream(ash.AshNodeStream.from(<TodoApp />), global.document.querySelector('#todoapp'));
 
@@ -1347,7 +1176,7 @@ function walkCreateAshElementTree(ashElement, owner, index) {
 
 		// create child by rendering component
 		ashElement.instance.__lifecycle = LIFECYCLE_MOUNTING;
-		ashElement.children[0] = ashElement.instance.render();
+		ashElement.children[0] = ashElement.instance.render(ashElement.instance.props, ashElement.instance.state);
 
 		if (ashElement.children[0]) {
 			// set up parent
@@ -1665,6 +1494,8 @@ function diffChildren(oldChildren, newChildren, oldAshNode, newAshNode, patches)
 	var key = 0;
 	var isChildDirty = false;
 
+	// console.log('diffChildren...');
+
 	// lets fill in keys, if needed; simple first-to-first correspondence
 	for (var i = 0, _length = Math.max(oldChildren.length, newChildren.length); i < _length; i++) {
 		if (newChildren[i] && newChildren[i].isDirty) {
@@ -1702,6 +1533,7 @@ function diffChildren(oldChildren, newChildren, oldAshNode, newAshNode, patches)
 
 	// no children are dirty
 	if (!isChildDirty && oldChildren.length === newChildren.length) {
+		// console.log('no children dirty!');
 		for (var i = 0; i < oldChildren.length; i++) {
 			// now walk inside those children...
 			walkDiffAshNodeTree(oldChildren[i], newChildren[i], patches);
@@ -1709,6 +1541,8 @@ function diffChildren(oldChildren, newChildren, oldAshNode, newAshNode, patches)
 
 		return patches;
 	}
+
+	// debugger;
 
 	// keys are in; let's compare order of children
 	var foundIndex = undefined;
@@ -1922,6 +1756,8 @@ function diffAshNodeTree(oldAshNodeTree, newAshNodeTree) {
 	// console.log('diffAshNodeTree...');
 	// console.log('oldAshNodeTree', oldAshNodeTree);
 	// console.log('newAshNodeTree', newAshNodeTree);
+
+	// debugger;
 
 	patches.maxIndex = 1;
 
@@ -2250,6 +2086,8 @@ function patchNodeTree(nodeTree /*, patches*/) {
 		}
 
 		if (patches[i].type === PATCH_ASH_NODE) {
+			// console.log('applying patch', 'PATCH_ASH_NODE', patches[i]);
+
 			// remove old events
 			eventListener.removeEvents(patches[i].id, patches[i].streamId);
 
@@ -2260,8 +2098,16 @@ function patchNodeTree(nodeTree /*, patches*/) {
 				throw new Error('Patching the DOM was unsuccesful!');
 			}
 
-			node.parentNode.replaceChild((0, _createNodeTree2.default)(patches[i].node), node);
+			// new node, but change the order and index - they must be from the node-to-be-removed, because patch for order is separate...
+			var newNode = (0, _createNodeTree2.default)(patches[i].node);
+
+			newNode[ID_ATTRIBUTE_NAME] = node[ID_ATTRIBUTE_NAME];
+			newNode[INDEX_ATTRIBUTE_NAME] = node[INDEX_ATTRIBUTE_NAME];
+
+			node.parentNode.replaceChild(newNode, node);
 		} else if (patches[i].type === PATCH_ASH_TEXT_NODE) {
+			// console.log('applying patch', 'PATCH_ASH_TEXT_NODE', patches[i]);
+
 			node = (0, _findNode2.default)(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
@@ -2270,6 +2116,8 @@ function patchNodeTree(nodeTree /*, patches*/) {
 
 			node.nodeValue = patches[i].text;
 		} else if (patches[i].type === PATCH_PROPERTIES) {
+			// console.log('applying patch', 'PATCH_PROPERTIES', patches[i]);
+
 			node = (0, _findNode2.default)(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
@@ -2279,6 +2127,8 @@ function patchNodeTree(nodeTree /*, patches*/) {
 			(0, _setNodeProperties2.default)(node, patches[i].propertiesToChange, false);
 			(0, _removeNodeProperties2.default)(node, patches[i].propertiesToRemove);
 		} else if (patches[i].type === PATCH_REMOVE) {
+			// console.log('applying patch', 'PATCH_REMOVE', patches[i]);
+
 			node = (0, _findNode2.default)(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
@@ -2290,6 +2140,8 @@ function patchNodeTree(nodeTree /*, patches*/) {
 
 			node.parentNode.removeChild(node);
 		} else if (patches[i].type === PATCH_INSERT) {
+			// console.log('applying patch', 'PATCH_INSERT', patches[i]);
+
 			node = (0, _findNode2.default)(nodeTree, patches[i].parentId, patches[i].parentIndices);
 
 			if (!node) {
@@ -2300,6 +2152,8 @@ function patchNodeTree(nodeTree /*, patches*/) {
 
 			reorderCache.push(node);
 		} else if (patches[i].type === PATCH_ORDER) {
+			// console.log('applying patch', 'PATCH_ORDER', patches[i]);
+
 			node = (0, _findNode2.default)(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
@@ -2318,6 +2172,8 @@ function patchNodeTree(nodeTree /*, patches*/) {
 
 			reorderCache.push(node.parentNode);
 		}
+
+		// debugger;
 	}
 
 	flushCache(reindexCache, reorderCache);
@@ -2627,7 +2483,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, isP
 
 				// create child for the new descriptor
 				// console.log('oldAshElement.children === newAshElement.children?', oldAshElement.children === newAshElement.children);
-				var render = oldAshElement.instance.render();
+				var render = oldAshElement.instance.render(oldAshElement.instance.props, oldAshElement.instance.state);
 
 				// debugger;
 
@@ -2817,7 +2673,7 @@ function updateComponentAshElement(componentAshElement, stream) {
 	// console.log('updateComponentAshElement...', componentAshElement.Spec.name, 'isDirty?', componentAshElement.isDirty);
 
 	if (componentAshElement.isDirty) {
-		render = componentAshElement.instance.render();
+		render = componentAshElement.instance.render(componentAshElement.instance.props, componentAshElement.instance.state);
 		render.owner = componentAshElement;
 		render.parent = componentAshElement;
 		render.index = 0;

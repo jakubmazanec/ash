@@ -45,7 +45,7 @@ function walkCreateAshElementTree(ashElement, owner, index) {
 
 		// create child by rendering component
 		ashElement.instance.__lifecycle = LIFECYCLE_MOUNTING;
-		ashElement.children[0] = ashElement.instance.render();
+		ashElement.children[0] = ashElement.instance.render(ashElement.instance.props, ashElement.instance.state);
 		
 		if (ashElement.children[0]) {
 			// set up parent

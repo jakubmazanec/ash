@@ -14,6 +14,8 @@ function diffChildren(oldChildren, newChildren, oldAshNode, newAshNode, patches)
 	var key = 0;
 	var isChildDirty = false;
 
+	// console.log('diffChildren...');
+
 	// lets fill in keys, if needed; simple first-to-first correspondence
 	for (let i = 0, length = Math.max(oldChildren.length, newChildren.length); i < length; i++) {
 		if (newChildren[i] && newChildren[i].isDirty) {
@@ -51,6 +53,7 @@ function diffChildren(oldChildren, newChildren, oldAshNode, newAshNode, patches)
 
 	// no children are dirty
 	if (!isChildDirty && oldChildren.length === newChildren.length) {
+		// console.log('no children dirty!');
 		for (let i = 0; i < oldChildren.length; i++) {
 			// now walk inside those children...
 			walkDiffAshNodeTree(oldChildren[i], newChildren[i], patches);
@@ -58,6 +61,8 @@ function diffChildren(oldChildren, newChildren, oldAshNode, newAshNode, patches)
 
 		return patches;
 	}
+
+	// debugger;
 	
 	// keys are in; let's compare order of children
 	let foundIndex;
@@ -275,6 +280,8 @@ export default function diffAshNodeTree(oldAshNodeTree, newAshNodeTree) {
 	// console.log('diffAshNodeTree...');
 	// console.log('oldAshNodeTree', oldAshNodeTree);
 	// console.log('newAshNodeTree', newAshNodeTree);
+
+	// debugger;
 
 	patches.maxIndex = 1;
 

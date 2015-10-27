@@ -342,190 +342,78 @@ $('body').on('keydown', () => {
 
 
 
-
-
-
-// import App from './components/App';
-// import AppReact from './components/AppReact';
-
-
-class ReorderApp extends ash.Component {
-	state = {
-		reversed: false,
-		items: []
-	};
-
+class Header extends ash.Component {
 	render() {
-		var items = this.state.items.map((value, index) => <button key={'' + index} events={{click: this.hello.bind(null, index, value)}}>{'' + value + '. '}</button>);
+		return <header>Test component!</header>;
+	}
+}
 
-		if (this.state.reversed) {
-			items = items.reverse();
+class FooContent extends ash.Component {
+	render() {
+		return <section>
+			<div key="content">
+				<h1>Blog</h1>
+			</div>
+			<p>Spinner!</p>
+		</section>;
+	}
+}
+
+class BarContent extends ash.Component {
+	render() {
+		return <section>
+			<h1>About us</h1>
+			<h2>Eva</h2>
+		</section>;
+	}
+}
+
+class Content extends ash.Component {
+	render(props, state) {
+		let elements;
+
+		console.log('Content render...', props, state);
+
+		if (this.props.show === 'foo') {
+			elements = <FooContent />;
+		} else if (this.props.show === 'bar') {
+			elements = <BarContent />;
+		} else {
+			elements = '---';
 		}
 
-		return <div>
-			<button key="btn" style={{
-				outline: this.state.reversed ? '1px solid red' : '1px solid blue'
-			}} events={{
-					click: this.addItem
-				}}>{'' + this.state.reversed}</button>
-				{/*this.state.reversed ? <b>!</b> : null*/}
-				<div key="inr">
-					{this.state.reversed ? <b>!</b> : null}
-					<div key="itm">{items}</div>
-				</div>
-			<FooSubComponent />
-		</div>;
-	}
 
-	addItem() {
-		console.log('adding item...');
-
-		this.state.items.push('' + (Math.random() * 100 >> 0));
-		this.state.reversed = !this.state.reversed;
-
-		this.update();
-	}
-
-	hello(index, value) {
-		console.log('Hello, this is', value, 'at', index);
+		return <main>{elements}</main>;
 	}
 }
 
 
-var styles = {};
-
-class FooSubComponent extends ash.Component {
-	state = {
-		width: 1
-	};
-
-	render() {
-		/*return <button style={{
-				outline: this.state.width + 'px solid #f0c'
-			}} events={{
-				click: this.change
-			}}>Morw wdith!</button>;*/
-
-		return <section>
-			<b>Header</b>
-			<button style={{
-				outline: this.state.width + 'px solid #f0c'
-			}} events={{
-				click: this.change
-			}}>FOO!</button>
-		</section>;
-	}
-
-	change() {
-		this.state.width++;
-
-		this.update();
-	}
-}
-
-class BarSubComponent extends ash.Component {
-	render() {
-		/*return <button style={{
-				outline: (this.props ? this.props.width || 0 : 0) + 'px solid #f0c'
-			}}>Morw wdith!</button>;*/
-
-		return <section>
-			<button style={{
-				outline: (this.props ? this.props.width || 0 : 0) + 'px solid #f0c'
-			}}>BAR!</button>
-		</section>;
-	}
-}
-
-class Header extends ash.Component {
-	render() { // {/*<Menu isHorizontal={true} />*/}
-		return <header>
-			<Menu isMenuOpen={this.props ? this.props.isMenuOpen : false} />
-		</header>;
-	}
-}
-
-class Footer extends ash.Component {
-	state = {
-		width: 0
-	};
-
-	render() { // {/*<Menu isHorizontal={true} />*/}
-		/*return <footer>
-			{this.state.width % 2 === 0 ? <a href="#" events={{
-				click: this.change
-			}}>remove</a> : null}
-		</footer>;*/
-
-		return <footer>
-		</footer>;
-	}
-
-	change(event) {
-		console.log('Footer change...');
-		event.preventDefault();
-
-		this.state.width++;
-
-		this.update();
-	}
-}
-
-class Menu extends ash.Component {
-	render() {
-		console.log('Menu render...', this.props);
-		return <b>{this.props.isMenuOpen ? 'Close' : 'Open'}</b>;
-	}
-}
-
-class Main extends ash.Component {
-	render() {
-		/*return <main class="hide" events={{webkitAnimationEnd: this.onAnimationEnd}}>
-			<Menu isMenuOpen={this.props ? this.props.isMenuOpen : false} />
-			<Footer isMenuOpen={this.props ? this.props.isMenuOpen : false} />
-		</main>;*/
-
-		return <main>
-		</main>;
-	}
-
-	onMount() {
-		/*setInterval(() => {
-			this.update();
-		}, 1000);*/
-	}
-
-	/*onAnimationEnd() {
-		console.log('Main onAnimationEnd...');
-		this.update();
-	}*/
-}
 
 class App extends ash.Component {
 	state = {
-		isMenuOpen: false
+		show: 'bar'
 	};
 
 	render() {
 		return <div>
-			<Main isMenuOpen={this.state.isMenuOpen} />
-			<Footer />
+			<Content show={this.state.show} />
+			<a href="#" events={{click: this.showFoo}}>FooContent</a>
+			<a href="#" events={{click: this.showBar}}>BarContent</a>
 		</div>;
 	}
 
-	onMount() {
-		// appStateStream.subscribe(this.update);
-		setTimeout(() => {
-			console.log('App onMount setTimeout fn...');
-			this.update();
-		}, 2000);
-	}
-
-	change(event) {
-		console.log('App change...');
+	showFoo(event) {
 		event.preventDefault();
 
-		this.state.isMenuOpen = !this.state.isMenuOpen;
+		this.state.show = 'foo';
+
+		this.update();
+	}
+
+	showBar(event) {
+		event.preventDefault();
+		
+		this.state.show = 'bar';
 
 		this.update();
 	}

@@ -62,6 +62,6 @@ app.use((0, _koaStatic2.default)(_path2.default.join(__dirname, '../public')));
 // Compress
 app.use((0, _koaCompress2.default)());
 
-app.listen(8008);
+app.listen(8080);
 
-console.log('Listening on port 8008...');
+console.log('Listening on port 8080...');

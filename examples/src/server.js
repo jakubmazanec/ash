@@ -41,6 +41,6 @@ app.use(serve(path.join(__dirname, '../public')));
 // Compress
 app.use(compress());
 
-app.listen(8008);
+app.listen(8080);
 
-console.log('Listening on port 8008...');
+console.log('Listening on port 8080...');
