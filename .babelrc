@@ -15,15 +15,23 @@
 		"es6.properties.shorthand",
 		"es6.properties.computed",
 		"es6.destructuring",
-		"es6.parameters.default",
-		"es6.parameters.rest",
+		"es6.parameters",
 		"es6.spread",
 
 		"strict",
 
+		"optimisation.react.constantElements",
+
+		// "flow",
+
 		"react"
 	],
-	"optional": ["runtime"],
-	"jsxPragma": "ash.e"
-	// "plugins": ["closure-elimination"]
+	// "optional": [
+	// 	"runtime",
+
+		
+		
+	// ],
+	"jsxPragma": "ash.e",
+	"plugins": ["closure-elimination"]
 }

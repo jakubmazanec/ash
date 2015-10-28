@@ -27,11 +27,11 @@ var AshElement = (function () {
 		_classCallCheck(this, AshElement);
 
 		if (type !== COMPONENT_ASH_ELEMENT && type !== ASH_NODE_ASH_ELEMENT) {
-			throw new Error('' + type + ' "type" must be "' + COMPONENT_ASH_ELEMENT + '" or "' + ASH_NODE_ASH_ELEMENT + '".');
+			throw new Error(type + ' "type" must be "' + COMPONENT_ASH_ELEMENT + '" or "' + ASH_NODE_ASH_ELEMENT + '".');
 		}
 
 		if (!Spec) {
-			throw new Error('' + Spec + ' "Spec" must be specified.');
+			throw new Error(Spec + ' "Spec" must be specified.');
 		}
 
 		if (type === COMPONENT_ASH_ELEMENT) {
@@ -89,7 +89,7 @@ var AshElement = (function () {
 					this.instance = new this.Spec();
 				}
 			} else {
-				throw new Error('' + this + ' is not an AshElement object.');
+				throw new Error(this + ' is not an AshElement object.');
 			}
 
 			return this.instance;

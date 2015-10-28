@@ -41,9 +41,9 @@ var app = (0, _koa2.default)();
 app.use((0, _koaLogger2.default)());
 
 function* index(next) {
-  this.body = _fs2.default.readFileSync(_path2.default.join(__dirname, '../assets/index.html'), 'utf8') /*.replace('%CONTENT%', componentHtml)*/;
+  this.body = _fs2.default.readFileSync(_path2.default.join(__dirname, '../assets/index.html'), 'utf8');
 
-  yield next;
+  /*.replace('%CONTENT%', componentHtml)*/yield next;
 }
 
 app.use(_koaRoute2.default.get('/', index));

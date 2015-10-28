@@ -5,7 +5,7 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports.default = assign;
 
-function assign() {
+function assign() /*target, ...source*/{
 	var sources = [];
 	var target = arguments[0] || {};
 
@@ -31,4 +31,3 @@ function assign() {
 }
 
 module.exports = exports.default;
-/*target, ...source*/

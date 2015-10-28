@@ -40,9 +40,13 @@ var _methodsUpdateStreamsQueue2 = _interopRequireDefault(_methodsUpdateStreamsQu
 
 var streamsQueue = (0, _streamsQueue.getStreamsQueue)();
 
+function _ref() {
+	return true;
+}
+
 var Stream = (function () {
 	function Stream() {
-		var _ref2 = arguments[0] === undefined ? {} : arguments[0];
+		var _ref2 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
 		var _ref2$isEndStream = _ref2.isEndStream;
 		var isEndStream = _ref2$isEndStream === undefined ? false : _ref2$isEndStream;
@@ -51,7 +55,17 @@ var Stream = (function () {
 
 		_classCallCheck(this, Stream);
 
-		this.__initializeProperties();
+		this.value = undefined;
+		this.hasValue = false;
+		this.end = undefined;
+		this.fn = undefined;
+		this.transformFn = null;
+		this.isEndStream = false;
+		this.__queued = false;
+		this.__listeners = [];
+		this.__dependencies = [];
+		this.__updatedDependencies = [];
+		this.__dependenciesMet = false;
 
 		if (value !== undefined || typeof arguments[0] === 'object' && arguments[0].hasOwnProperty('value')) {
 			this.value = value;
@@ -67,9 +81,7 @@ var Stream = (function () {
 			this.end.__listeners.push(this);
 		} else {
 			this.isEndStream = true;
-			this.fn = function () {
-				return true;
-			};
+			this.fn = _ref;
 		}
 
 		if ((0, _internalsIsFunction2.default)(transformFn)) {
@@ -87,13 +99,9 @@ var Stream = (function () {
 		value: function push() {
 			var _this = this;
 
-			for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-				args[_key] = arguments[_key];
-			}
-
-			if (args[0] && args[0].then && (0, _internalsIsFunction2.default)(args[0].then)) {
+			if (arguments[0] && arguments[0].then && (0, _internalsIsFunction2.default)(arguments[0].then)) {
 				// handle a Promise...
-				args[0].then(function (result) {
+				arguments[0].then(function (result) {
 					_this.push(result);
 				}, function (error) {
 					_this.push(error);
@@ -102,7 +110,7 @@ var Stream = (function () {
 				return this;
 			}
 
-			this.value = this.transformFn ? this.transformFn.apply(this, args) : args[0];
+			this.value = this.transformFn ? this.transformFn.apply(this, arguments) : arguments[0];
 			this.hasValue = true;
 
 			var inStream = (0, _inStream.getInStream)();
@@ -133,8 +141,8 @@ var Stream = (function () {
 	}, {
 		key: 'from',
 		value: function from(arg) {
-			for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-				args[_key2 - 1] = arguments[_key2];
+			for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+				args[_key - 1] = arguments[_key];
 			}
 
 			if (args.length || (0, _internalsIsFunction2.default)(arg) || arg instanceof Stream) {
@@ -188,10 +196,6 @@ var Stream = (function () {
 	}, {
 		key: 'endsOn',
 		value: function endsOn() {
-			for (var _len3 = arguments.length, endStreams = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-				endStreams[_key3] = arguments[_key3];
-			}
-
 			if (this.isEndStream) {
 				return this;
 			}
@@ -199,6 +203,11 @@ var Stream = (function () {
 			var endStream = new Stream({ isEndStream: true });
 
 			(0, _methodsDetachStreamDependencies2.default)(this.end);
+
+			for (var _len2 = arguments.length, endStreams = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+				endStreams[_key2] = arguments[_key2];
+			}
+
 			endStream.from.apply(endStream, [null].concat(endStreams));
 			endStream.__listeners.push(this.end);
 			this.end.__dependencies.push(endStream);
@@ -262,21 +271,6 @@ var Stream = (function () {
 				return changed[0] ? changed[0].get() : _this5.hasValue ? _this5.get() : otherStream.get();
 			}, this, otherStream).immediate().endsOn(this.end, otherStream.end);
 		}
-	}, {
-		key: '__initializeProperties',
-		value: function __initializeProperties() {
-			this.value = undefined;
-			this.hasValue = false;
-			this.end = undefined;
-			this.fn = undefined;
-			this.transformFn = null;
-			this.isEndStream = false;
-			this.__queued = false;
-			this.__listeners = [];
-			this.__dependencies = [];
-			this.__updatedDependencies = [];
-			this.__dependenciesMet = false;
-		}
 	}], [{
 		key: 'isStream',
 		value: function isStream(stream) {
@@ -285,13 +279,13 @@ var Stream = (function () {
 	}, {
 		key: 'from',
 		value: function from(fn) {
-			var _ref;
+			var _ref3;
 
-			for (var _len4 = arguments.length, args = Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
-				args[_key4 - 1] = arguments[_key4];
+			for (var _len3 = arguments.length, args = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
+				args[_key3 - 1] = arguments[_key3];
 			}
 
-			return (_ref = new Stream()).from.apply(_ref, [fn].concat(args));
+			return (_ref3 = new Stream()).from.apply(_ref3, [fn].concat(args));
 		}
 	}, {
 		key: 'map',

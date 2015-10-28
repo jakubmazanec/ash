@@ -23,7 +23,8 @@ var TodoTextInput = ash.Component.create({
 			events: {
 				blur: this.save,
 				// change: this.onChange,
-				keydown: this.onKeyDown }
+				keydown: this.onKeyDown
+			}
 		});
 	},
 
@@ -43,7 +44,13 @@ var TodoTextInput = ash.Component.create({
 	/**
   * @param {object} event
   */
-	onChange: function ( /*object*/event) {},
+	onChange: function ( /*object*/event) {
+		/*console.log('text input onchange event');
+  this.setState(
+  {
+  	value: event.target.value
+  });*/
+	},
 
 	/**
   * @param  {object} event
@@ -57,9 +64,3 @@ var TodoTextInput = ash.Component.create({
 });
 
 module.exports = TodoTextInput;
-
-/*console.log('text input onchange event');
-this.setState(
-{
-	value: event.target.value
-});*/

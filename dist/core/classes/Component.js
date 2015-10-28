@@ -39,11 +39,15 @@ var LIFECYCLE_MOUNTING = _internalsConstants2.default.LIFECYCLE_MOUNTING;
 var LIFECYCLE_MOUNTED = _internalsConstants2.default.LIFECYCLE_MOUNTED;
 var LIFECYCLE_UNINITIALIZED = _internalsConstants2.default.LIFECYCLE_UNINITIALIZED;
 
+function _ref(value) {
+	return value !== 'caller' && value !== 'callee' && value !== 'arguments';
+}
+
 var Component = (function () {
 	function Component() {
 		var _this = this;
 
-		var props = arguments[0] === undefined ? null : arguments[0];
+		var props = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
 
 		_classCallCheck(this, Component);
 
@@ -65,9 +69,7 @@ var Component = (function () {
 		this.update = this.update.bind(this);
 
 		// references to the component streams
-		Object.getOwnPropertyNames(this.constructor).filter(function (value) {
-			return value !== 'caller' && value !== 'callee' && value !== 'arguments';
-		}).forEach(function (value) {
+		Object.getOwnPropertyNames(this.constructor).filter(_ref).forEach(function (value) {
 			if (_this.constructor[value] instanceof _streamsStream2.default && !_this[value]) {
 				_this[value] = _this.constructor[value];
 			}
@@ -87,43 +89,6 @@ var Component = (function () {
 			}
 
 			return this;
-		}
-	}, {
-		key: '__lifecycle',
-		get: function () {
-			return this.__currentLifecycle;
-		},
-		set: function (nextLifecycle) {
-			if (nextLifecycle !== LIFECYCLE_UNMOUNTED && nextLifecycle !== LIFECYCLE_MOUNTING && nextLifecycle !== LIFECYCLE_MOUNTED) {
-				throw new Error('' + nextLifecycle + ' must be "' + LIFECYCLE_UNMOUNTED + '", "' + LIFECYCLE_MOUNTING + '" or "' + LIFECYCLE_MOUNTED + '". Also, this property is for internal use only. Do not change it!');
-			}
-
-			this.__previousLifecycle = this.__currentLifecycle;
-			this.__currentLifecycle = nextLifecycle;
-
-			if (this.__previousLifecycle !== this.__currentLifecycle) {
-				if (this.__currentLifecycle === LIFECYCLE_MOUNTING) {
-					this.onBeforeMount();
-				} else if (this.__currentLifecycle === LIFECYCLE_MOUNTED) {
-					this.onMount();
-				} else if (this.__currentLifecycle === LIFECYCLE_UNMOUNTED) {
-					this.onUnmount();
-				}
-			}
-		}
-	}, {
-		key: 'isMounted',
-		get: function () {
-			return this.__currentLifecycle === LIFECYCLE_MOUNTED;
-		}
-	}, {
-		key: 'domNode',
-		get: function () {
-			if (this.isMounted && (0, _internalsIsAshNodeAshElement2.default)(this.__element.children[0])) {
-				return (0, _DOMFindNode2.default)(this.__element.stream.getRootNode(), this.__element.children[0].instance.id, this.__element.children[0].instance.indices);
-			}
-
-			return null;
 		}
 	}, {
 		key: 'shouldUpdate',
@@ -151,6 +116,43 @@ var Component = (function () {
 	}, {
 		key: 'render',
 		value: function render() {
+			return null;
+		}
+	}, {
+		key: '__lifecycle',
+		get: function () {
+			return this.__currentLifecycle;
+		},
+		set: function (nextLifecycle) {
+			if (nextLifecycle !== LIFECYCLE_UNMOUNTED && nextLifecycle !== LIFECYCLE_MOUNTING && nextLifecycle !== LIFECYCLE_MOUNTED) {
+				throw new Error(nextLifecycle + ' must be "' + LIFECYCLE_UNMOUNTED + '", "' + LIFECYCLE_MOUNTING + '" or "' + LIFECYCLE_MOUNTED + '". Also, this property is for internal use only. Do not change it!');
+			}
+
+			this.__previousLifecycle = this.__currentLifecycle;
+			this.__currentLifecycle = nextLifecycle;
+
+			if (this.__previousLifecycle !== this.__currentLifecycle) {
+				if (this.__currentLifecycle === LIFECYCLE_MOUNTING) {
+					this.onBeforeMount();
+				} else if (this.__currentLifecycle === LIFECYCLE_MOUNTED) {
+					this.onMount();
+				} else if (this.__currentLifecycle === LIFECYCLE_UNMOUNTED) {
+					this.onUnmount();
+				}
+			}
+		}
+	}, {
+		key: 'isMounted',
+		get: function () {
+			return this.__currentLifecycle === LIFECYCLE_MOUNTED;
+		}
+	}, {
+		key: 'domNode',
+		get: function () {
+			if (this.isMounted && (0, _internalsIsAshNodeAshElement2.default)(this.__element.children[0])) {
+				return (0, _DOMFindNode2.default)(this.__element.stream.getRootNode(), this.__element.children[0].instance.id, this.__element.children[0].instance.indices);
+			}
+
 			return null;
 		}
 	}], [{

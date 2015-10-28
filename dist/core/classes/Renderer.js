@@ -56,6 +56,8 @@ var renderer;
 
 var Renderer = (function () {
 	function Renderer() {
+		var _context;
+
 		_classCallCheck(this, Renderer);
 
 		this.streams = [];
@@ -65,7 +67,7 @@ var Renderer = (function () {
 		}
 
 		renderer = this;
-		renderer.render = renderer.render.bind(renderer);
+		renderer.render = (_context = renderer).render.bind(_context);
 
 		return renderer;
 	}
@@ -74,11 +76,11 @@ var Renderer = (function () {
 		key: 'addStream',
 		value: function addStream(ashNodeStream, node) {
 			if (!(ashNodeStream instanceof _streamsAshNodeStream2.default)) {
-				throw new Error('' + ashNodeStream + ' (ashNodeStream) must be an AshNodeStream instance.');
+				throw new Error(ashNodeStream + ' (ashNodeStream) must be an AshNodeStream instance.');
 			}
 
 			if (!(0, _internalsIsElement2.default)(node)) {
-				throw new Error('' + node + ' (node) must be a DOM Element.');
+				throw new Error(node + ' (node) must be a DOM Element.');
 			}
 
 			var renderStream = new _streamsStream2.default();
@@ -104,7 +106,7 @@ var Renderer = (function () {
 		key: 'streamToString',
 		value: function streamToString(ashNodeStream) {
 			if (!(ashNodeStream instanceof _streamsAshNodeStream2.default)) {
-				throw new Error('' + ashNodeStream + ' (ashNodeStream) must be an AshNodeStream instance.');
+				throw new Error(ashNodeStream + ' (ashNodeStream) must be an AshNodeStream instance.');
 			}
 
 			return (0, _DOMStringifyAshNodeTree2.default)(ashNodeStream.get());
@@ -113,6 +115,11 @@ var Renderer = (function () {
 		key: 'render',
 		value: function render(stream, changed, dependencies) {
 			var ashNodeStream = dependencies[0];
+
+			function _ref() {
+				stream.node.appendChild((0, _DOMCreateNodeTree2.default)(stream.ashNodeTree));
+				(0, _DOMMountComponents2.default)(ashNodeStream.ashElementTree);
+			}
 
 			if (!stream.ashNodeTree) {
 				var isNodeTreeValid = false;
@@ -146,10 +153,7 @@ var Renderer = (function () {
 						stream.node.removeChild(stream.node.firstChild);
 					}
 
-					global.requestAnimationFrame(function () {
-						stream.node.appendChild((0, _DOMCreateNodeTree2.default)(stream.ashNodeTree));
-						(0, _DOMMountComponents2.default)(ashNodeStream.ashElementTree);
-					});
+					global.requestAnimationFrame(_ref);
 				}
 
 				if (isNodeTreeValid && isNodeTreeValidated) {

@@ -118,7 +118,8 @@ function diffChildren(oldChildren, newChildren, oldAshNode, newAshNode, patches)
 				type: PATCH_REMOVE,
 				id: oldChildren[i].id,
 				indices: oldChildren[i].indices,
-				streamId: oldChildren[i].streamId });
+				streamId: oldChildren[i].streamId
+			});
 
 			for (var k = 0; k < patches[patches.length - 1].indices.length; k++) {
 				if (patches.maxIndex < patches[patches.length - 1].indices[k]) {
@@ -148,7 +149,8 @@ function diffChildren(oldChildren, newChildren, oldAshNode, newAshNode, patches)
 				id: newChildren[j].id,
 				indices: newChildren[j].indices,
 				parentId: oldAshNode.id,
-				parentIndices: oldAshNode.indices });
+				parentIndices: oldAshNode.indices
+			});
 
 			for (var k = 0; k < patches[patches.length - 1].indices.length; k++) {
 				if (patches.maxIndex < patches[patches.length - 1].indices[k]) {
@@ -274,8 +276,8 @@ function walkDiffAshNodeTree(oldAshNode, newAshNode, patches) {
 
 		oldAshNode.oldChildren = newAshNode.oldChildren = null; // we must delete old children, because in next diff they would be "old old children", and we dont want that
 	} else if (oldAshNode.children && oldAshNode.children.length || newAshNode.children && newAshNode.children.length) {
-		diffChildren(oldAshNode.children, newAshNode.children, oldAshNode, newAshNode, patches);
-	}
+			diffChildren(oldAshNode.children, newAshNode.children, oldAshNode, newAshNode, patches);
+		}
 
 	return patches;
 }

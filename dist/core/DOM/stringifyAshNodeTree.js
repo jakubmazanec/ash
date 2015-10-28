@@ -22,7 +22,8 @@ var INDEX_SEPARATOR = _internalsConstants2.default.INDEX_SEPARATOR;
 function escapeAttributeValue(s /*, preserveCR*/) {
 	var preserveCR = arguments[1] ? '&#13;' : '\n';
 
-	return ('' + s).replace(/&/g, '&amp;') /* This MUST be the 1st replacement. */
+	return ('' + s). /* Forces the conversion to string. */
+	replace(/&/g, '&amp;') /* This MUST be the 1st replacement. */
 	.replace(/'/g, '&apos;') /* The 4 other predefined entities, required. */
 	.replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 	/*
@@ -69,7 +70,9 @@ function walkStringifyAshNodeTree(ashNodeTree, index /*, parentId*/) {
 							if (ashNodeTree.properties.style.hasOwnProperty(key2)) {
 								if (typeof ashNodeTree.properties.style[key2] === 'string') {
 									openingTag += key2 + ':' + ashNodeTree.properties.style[key2] + ';';
-								} else {}
+								} else {
+									// TODO
+								}
 							}
 						}
 
@@ -112,6 +115,3 @@ function stringifyAshNodeTree(ashNodeTree) {
 }
 
 module.exports = exports.default;
-/* Forces the conversion to string. */
-
-// TODO

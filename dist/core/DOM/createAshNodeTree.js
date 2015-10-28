@@ -100,7 +100,7 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParen
 
 function createAshNodeTree(componentAshElement) {
 	if (!(0, _internalsIsComponentAshElement2.default)(componentAshElement)) {
-		throw new Error('' + componentAshElement + ' (componentAshElement) must be a Component Ash Element object instance.');
+		throw new Error(componentAshElement + ' (componentAshElement) must be a Component Ash Element object instance.');
 	}
 
 	// console.log('createAshNodeTree...', componentAshElement.Spec.name, componentAshElement);
@@ -132,15 +132,15 @@ function createAshNodeTree(componentAshElement) {
 
 		// console.log('instantiate!', ashElement.instance.index);
 	} else {
-		ashElement.instance.id = '0';
-		ashElement.instance.index = 0;
-		ashElement.instance.indices = [0];
-		ashElement.instance.streamId = ashElement.stream.id;
-		ashElement.instance.isDirty = false;
-		ashElement.instance.parent = null;
+			ashElement.instance.id = '0';
+			ashElement.instance.index = 0;
+			ashElement.instance.indices = [0];
+			ashElement.instance.streamId = ashElement.stream.id;
+			ashElement.instance.isDirty = false;
+			ashElement.instance.parent = null;
 
-		// console.log('just copy', ashElement.instance.index);
-	}
+			// console.log('just copy', ashElement.instance.index);
+		}
 
 	ashNodeTree = ashElement.instance;
 
