@@ -5,7 +5,9 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports.default = createNodeTree;
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { 'default': obj };
+}
 
 var _internalsIsAshTextNode = require('../internals/isAshTextNode');
 

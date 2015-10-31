@@ -4,11 +4,25 @@ Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = (function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+})();
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { 'default': obj };
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError('Cannot call a class as a function');
+	}
+}
 
 var _DOMCreateNodeTree = require('../DOM/createNodeTree');
 
@@ -116,11 +130,6 @@ var Renderer = (function () {
 		value: function render(stream, changed, dependencies) {
 			var ashNodeStream = dependencies[0];
 
-			function _ref() {
-				stream.node.appendChild((0, _DOMCreateNodeTree2.default)(stream.ashNodeTree));
-				(0, _DOMMountComponents2.default)(ashNodeStream.ashElementTree);
-			}
-
 			if (!stream.ashNodeTree) {
 				var isNodeTreeValid = false;
 				var isNodeTreeValidated = false;
@@ -153,7 +162,10 @@ var Renderer = (function () {
 						stream.node.removeChild(stream.node.firstChild);
 					}
 
-					global.requestAnimationFrame(_ref);
+					global.requestAnimationFrame(function () {
+						stream.node.appendChild((0, _DOMCreateNodeTree2.default)(stream.ashNodeTree));
+						(0, _DOMMountComponents2.default)(ashNodeStream.ashElementTree);
+					});
 				}
 
 				if (isNodeTreeValid && isNodeTreeValidated) {

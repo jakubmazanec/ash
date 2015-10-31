@@ -4,7 +4,9 @@ Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { 'default': obj };
+}
 
 var _coreSupport = require('./core/support');
 
@@ -21,6 +23,10 @@ var _coreClassesRenderer2 = _interopRequireDefault(_coreClassesRenderer);
 var _coreStreamsStream = require('./core/streams/Stream');
 
 var _coreStreamsStream2 = _interopRequireDefault(_coreStreamsStream);
+
+var _coreStreamsStream22 = require('./core/streams/Stream2');
+
+var _coreStreamsStream23 = _interopRequireDefault(_coreStreamsStream22);
 
 var _coreStreamsAshNodeStream = require('./core/streams/AshNodeStream');
 
@@ -51,10 +57,9 @@ var VERSION = '0.1.0';
 
 	Component: _coreClassesComponent2.default,
 	Renderer: _coreClassesRenderer2.default,
-	Stream: _coreStreamsStream2.default,
+	Stream: _coreStreamsStream23.default,
 	AshNodeStream: _coreStreamsAshNodeStream2.default,
 
-	e: _coreInternalsCreateElement2.default,
 	createElement: _coreInternalsCreateElement2.default,
 
 	isAncestor: _coreInternalsIsAncestor2.default

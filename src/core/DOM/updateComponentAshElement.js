@@ -9,14 +9,8 @@ const COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
 const ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
 
 function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, isParentComponentDirty) {
-	// console.log('>-- walkUpdateComponentAshElement...');
-	// console.log('oldAshElement', oldAshElement.Spec.name, oldAshElement.args[0], oldAshElement.args[1], 'isDirty?', oldAshElement.isDirty);
-	// console.log('newAshElement', newAshElement.Spec.name, newAshElement.args[0], newAshElement.args[1], 'isDirty?', newAshElement.isDirty);
-
 	if (newAshElement.type === COMPONENT_ASH_ELEMENT) {
-		// console.log('newAshElement.type === COMPONENT_ASH_ELEMENT');
 		if (oldAshElement === null) {
-			// console.log('oldAshElement === null');
 			// old is null, new is component
 
 			// newAshElement must be added as a child...
@@ -34,54 +28,22 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, isP
 				newAshElement.parent.children[0] = newAshElement;
 			}
 		} else if (oldAshElement.type === COMPONENT_ASH_ELEMENT && newAshElement.Spec === oldAshElement.Spec) {
-			// console.log('old is component, new is same component');
 			// old is component, new is same component
 
 			let shouldUpdate = oldAshElement.instance.shouldUpdate(newAshElement.args ? newAshElement.args[0] : null);
 
-			// debugger;
-
 			if (shouldUpdate || oldAshElement.isDirty) {
 				oldAshElement.isDirty = true;
-
-				// console.log('copying new props to oldAshElement...');
-
-
 				
 				// copy the new to the old...
 				oldAshElement.args = newAshElement.args;
+
 				oldAshElement.instance.onBeforeReceiveProps(newAshElement.args ? newAshElement.args[0] : null);
+				
 				oldAshElement.instance.props = newAshElement.args ? newAshElement.args[0] : null;
 
 				// create child for the new descriptor
-				// console.log('oldAshElement.children === newAshElement.children?', oldAshElement.children === newAshElement.children);
 				let render = oldAshElement.instance.render(oldAshElement.instance.props, oldAshElement.instance.state);
-
-				// debugger;
-
-				/*// adding children to the queue
-				if (render && oldAshElement.children[0]) {
-					render.owner = oldAshElement;
-					render.parent = oldAshElement;
-					render.index = 0;
-
-					walkUpdateComponentAshElement(oldAshElement.children[0], render, stream, true);
-				} else if (render && !oldAshElement.children[0]) {
-					render.owner = oldAshElement;
-					render.parent = oldAshElement;
-					render.index = 0;
-
-					walkUpdateComponentAshElement(null, render, stream, true);
-				}
-
-				// deleting old surplus children
-				if (!render && oldAshElement.children[0]) {
-					if (oldAshElement.children[0].type === COMPONENT_ASH_ELEMENT) {
-						oldAshElement.children[0].instance.__lifecycle = LIFECYCLE_UNMOUNTED;
-					}
-					
-					oldAshElement.children.pop();
-				}*/
 
 				// adding children to the queue
 				if (render) {
@@ -107,11 +69,9 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, isP
 			}
 
 		}	else if (oldAshElement.type === COMPONENT_ASH_ELEMENT) {
-			// console.log('oldAshElement.type === COMPONENT_ASH_ELEMENT');
 			// old is component, new is different component
 
 			if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
-				// console.log('oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT');
 				// now, the component descriptor's tree is not complete
 				newAshElement.owner = oldAshElement.owner;
 				newAshElement.parent = oldAshElement.parent;
@@ -133,7 +93,6 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, isP
 				oldAshElement.parent.children[0] = newAshElement;
 			}
 		} else {
-			// console.log('old is virtual node, new is component');
 			// old is virtual node, new is component
 
 			if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
@@ -244,9 +203,7 @@ function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, isP
 }
 
 export default function updateComponentAshElement(componentAshElement, stream) {
-	var render;
-
-	// console.log('updateComponentAshElement...', componentAshElement.Spec.name, 'isDirty?', componentAshElement.isDirty);
+	let render;
 
 	if (componentAshElement.isDirty) {
 		render = componentAshElement.instance.render(componentAshElement.instance.props, componentAshElement.instance.state);
@@ -257,16 +214,5 @@ export default function updateComponentAshElement(componentAshElement, stream) {
 		render = componentAshElement.children[0];
 	}
 
-	// render = componentAshElement.instance.render();
-	// render.owner = componentAshElement;
-	// render.parent = componentAshElement;
-	// render.index = 0;
-
-	// componentAshElement.isDirty = true;
-
-	// debugger;
-
 	walkUpdateComponentAshElement(componentAshElement.children[0], render, stream, componentAshElement.isDirty);
-
-	// console.log('--- end of updateComponentAshElement ---');
 }

@@ -4,9 +4,15 @@ Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { 'default': obj };
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError('Cannot call a class as a function');
+	}
+}
 
 var _internalsConstants = require('../internals/constants');
 
@@ -23,7 +29,7 @@ var AshNode = function AshNode(tagName, properties) {
 	this.indices = null;
 	this.parent = null;
 
-	if (typeof properties !== 'undefined') {
+	if (properties !== undefined) {
 		this.type = ASH_NODE;
 		this.tagName = tagName.toLowerCase();
 		this.properties = properties || {};

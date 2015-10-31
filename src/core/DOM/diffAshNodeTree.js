@@ -14,8 +14,6 @@ function diffChildren(oldChildren, newChildren, oldAshNode, newAshNode, patches)
 	var key = 0;
 	var isChildDirty = false;
 
-	// console.log('diffChildren...');
-
 	// lets fill in keys, if needed; simple first-to-first correspondence
 	for (let i = 0, length = Math.max(oldChildren.length, newChildren.length); i < length; i++) {
 		if (newChildren[i] && newChildren[i].isDirty) {
@@ -61,8 +59,6 @@ function diffChildren(oldChildren, newChildren, oldAshNode, newAshNode, patches)
 
 		return patches;
 	}
-
-	// debugger;
 	
 	// keys are in; let's compare order of children
 	let foundIndex;
@@ -157,10 +153,6 @@ function walkDiffAshNodeTree(oldAshNode, newAshNode, patches) {
 	var differentProperties = false;
 	var propertiesToChange = {};
 	var propertiesToRemove = [];
-
-	// console.log('walkDiffAshNodeTree...', oldAshNode.id, oldAshNode.tagName, newAshNode.id, newAshNode.tagName);
-	// console.log('oldChildren?', !!oldAshNode.oldChildren, oldAshNode.oldChildren ? oldAshNode.oldChildren.length : 'NA');
-
 
 	if (oldAshNode === newAshNode || !newAshNode.isDirty) {
 		if (oldAshNode.oldChildren && oldAshNode.oldChildren.length) {
@@ -274,14 +266,14 @@ function walkDiffAshNodeTree(oldAshNode, newAshNode, patches) {
 	return patches;
 }
 
+/**
+ * [diffAshNodeTree description]
+ * @param  {[type]} oldAshNodeTree [description]
+ * @param  {[type]} newAshNodeTree [description]
+ * @return {[type]}                [description]
+ */
 export default function diffAshNodeTree(oldAshNodeTree, newAshNodeTree) {
-	var patches = [];
-
-	// console.log('diffAshNodeTree...');
-	// console.log('oldAshNodeTree', oldAshNodeTree);
-	// console.log('newAshNodeTree', newAshNodeTree);
-
-	// debugger;
+	let patches = [];
 
 	patches.maxIndex = 1;
 

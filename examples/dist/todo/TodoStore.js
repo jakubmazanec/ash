@@ -10,55 +10,41 @@ var toggleCompleteAll = require('./actions/toggleCompleteAll');
 var undoComplete = require('./actions/undoComplete');
 var updateText = require('./actions/updateText');
 
-function _ref(payload) {
-	this.create(payload.text);
-}
-
-function _ref2(payload) {
-	if (this.areAllComplete()) {
-		this.updateAll({ complete: false });
-	} else {
-		this.updateAll({ complete: true });
-	}
-}
-
-function _ref3(payload) {
-	this.update(payload.id, { complete: false });
-}
-
-function _ref4(payload) {
-	this.update(payload.id, { complete: true });
-}
-
-function _ref5(payload) {
-	this.update(payload.id, { text: payload.text });
-}
-
-function _ref6(payload) {
-	this.destroy(payload.id);
-}
-
-function _ref7(payload) {
-	this.destroyCompleted();
-}
-
 var TodoStore = ash.Store.extend({
 	initialize: function () {
 		this.todos = {};
 
-		this.listenTo(createTodo, _ref);
+		this.listenTo(createTodo, function (payload) {
+			this.create(payload.text);
+		});
 
-		this.listenTo(toggleCompleteAll, _ref2);
+		this.listenTo(toggleCompleteAll, function (payload) {
+			if (this.areAllComplete()) {
+				this.updateAll({ complete: false });
+			} else {
+				this.updateAll({ complete: true });
+			}
+		});
 
-		this.listenTo(undoComplete, _ref3);
+		this.listenTo(undoComplete, function (payload) {
+			this.update(payload.id, { complete: false });
+		});
 
-		this.listenTo(completeTodo, _ref4);
+		this.listenTo(completeTodo, function (payload) {
+			this.update(payload.id, { complete: true });
+		});
 
-		this.listenTo(updateText, _ref5);
+		this.listenTo(updateText, function (payload) {
+			this.update(payload.id, { text: payload.text });
+		});
 
-		this.listenTo(destroyTodo, _ref6);
+		this.listenTo(destroyTodo, function (payload) {
+			this.destroy(payload.id);
+		});
 
-		this.listenTo(destroyCompleted, _ref7);
+		this.listenTo(destroyCompleted, function (payload) {
+			this.destroyCompleted();
+		});
 	},
 
 	create: function (text) {

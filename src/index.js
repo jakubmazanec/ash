@@ -3,6 +3,7 @@ import support from './core/support';
 import Component from './core/classes/Component';
 import Renderer from './core/classes/Renderer';
 import Stream from './core/streams/Stream';
+import Stream2 from './core/streams/Stream2';
 import AshNodeStream from './core/streams/AshNodeStream';
 
 import createElement from './core/internals/createElement';
@@ -25,10 +26,9 @@ assign(ash, {
 
 	Component,
 	Renderer,
-	Stream,
+	Stream: Stream2,
 	AshNodeStream,
 
-	e: createElement,
 	createElement,
 
 	isAncestor

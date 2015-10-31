@@ -1,4 +1,4 @@
-var streamsQueue = global.queue = [];
+var streamsQueue = [];
 
 streamsQueue.isUpdating = false;
 

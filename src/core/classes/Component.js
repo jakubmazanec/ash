@@ -6,15 +6,17 @@ import isAncestor from '../internals/isAncestor';
 import Stream from '../streams/Stream';
 
 
-
 const LIFECYCLE_UNMOUNTED = constants.LIFECYCLE_UNMOUNTED;
 const LIFECYCLE_MOUNTING = constants.LIFECYCLE_MOUNTING;
 const LIFECYCLE_MOUNTED = constants.LIFECYCLE_MOUNTED;
 const LIFECYCLE_UNINITIALIZED = constants.LIFECYCLE_UNINITIALIZED;
 
 export default class Component {
+	__element = null;
 	__previousLifecycle = LIFECYCLE_UNINITIALIZED;
 	__currentLifecycle = LIFECYCLE_UNMOUNTED;
+	props = null;
+	state = null;
 
 	constructor(props = null) {
 		// autobind methods
@@ -23,13 +25,13 @@ export default class Component {
 		Object.getOwnPropertyNames(prototype).forEach((value) => {
 			let descriptor = Object.getOwnPropertyDescriptor(prototype, value);
 
+			// typeof must be used to avoid executing getter and setters
 			if (!(descriptor && (typeof descriptor.get !== 'undefined' || typeof descriptor.set !== 'undefined')) && isFunction(this[value]) && value !== 'constructor') {
 				this[value] = ::this[value];
 			}
 		});
 
 		this.props = props;
-		this.update = ::this.update;
 
 		// references to the component streams
 		Object.getOwnPropertyNames(this.constructor).filter((value) => value !== 'caller' && value !== 'callee' && value !== 'arguments').forEach((value) => {
@@ -43,9 +45,8 @@ export default class Component {
 		return isAncestor(Component, value);
 	}
 
-	update() {
+	update = () => {
 		if (this.__element.stream) {
-			// console.log('Component update...', this.__element.Spec, this);
 			this.__element.stream.push(this);
 		}
 
@@ -92,9 +93,6 @@ export default class Component {
 	}
 
 	shouldUpdate(newProps) {
-		// console.log('Component shouldUpdate...', this.constructor);
-		// console.log(this.props, newProps, '===?', this.props === newProps);
-
 		return this.props !== newProps;
 	}
 

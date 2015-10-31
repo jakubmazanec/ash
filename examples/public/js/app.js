@@ -48,15 +48,47 @@
 
 	'use strict';
 
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () {
+		function defineProperties(target, props) {
+			for (var i = 0; i < props.length; i++) {
+				var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+			}
+		}return function (Constructor, protoProps, staticProps) {
+			if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+		};
+	})();
 
-	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+	var _get = function get(object, property, receiver) {
+		if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+			var parent = Object.getPrototypeOf(object);if (parent === null) {
+				return undefined;
+			} else {
+				return get(parent, property, receiver);
+			}
+		} else if ('value' in desc) {
+			return desc.value;
+		} else {
+			var getter = desc.get;if (getter === undefined) {
+				return undefined;
+			}return getter.call(receiver);
+		}
+	};
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	function _classCallCheck(instance, Constructor) {
+		if (!(instance instanceof Constructor)) {
+			throw new TypeError('Cannot call a class as a function');
+		}
+	}
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) {
+		if (typeof superClass !== 'function' && superClass !== null) {
+			throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
+		}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+	}
 
 	var _jquery = __webpack_require__(1);
 
@@ -70,7 +102,7 @@
 
 	var _ash2 = _interopRequireDefault(_ash);
 
-	var _immutable = __webpack_require__(144);
+	var _immutable = __webpack_require__(145);
 
 	var _immutable2 = _interopRequireDefault(_immutable);
 
@@ -80,12 +112,6 @@
 	global.Immutable = _immutable2.default;
 
 	var Renderer = global.Renderer = new _ash2.default.Renderer();
-
-	var _ref3 = _ash2.default.e(
-		'header',
-		null,
-		'Test component!'
-	);
 
 	var Header = (function (_ash$Component) {
 		_inherits(Header, _ash$Component);
@@ -99,31 +125,12 @@
 		_createClass(Header, [{
 			key: 'render',
 			value: function render() {
-				return _ref3;
+				return _ash2.default.createElement('header', null, 'Test component!');
 			}
 		}]);
 
 		return Header;
 	})(_ash2.default.Component);
-
-	var _ref4 = _ash2.default.e(
-		'section',
-		null,
-		_ash2.default.e(
-			'div',
-			{ key: 'content' },
-			_ash2.default.e(
-				'h1',
-				null,
-				'Blog'
-			)
-		),
-		_ash2.default.e(
-			'p',
-			null,
-			'Spinner!'
-		)
-	);
 
 	var FooContent = (function (_ash$Component2) {
 		_inherits(FooContent, _ash$Component2);
@@ -137,27 +144,12 @@
 		_createClass(FooContent, [{
 			key: 'render',
 			value: function render() {
-				return _ref4;
+				return _ash2.default.createElement('section', null, _ash2.default.createElement('div', { key: 'content' }, _ash2.default.createElement('h1', null, 'Blog')), _ash2.default.createElement('p', null, 'Spinner!'));
 			}
 		}]);
 
 		return FooContent;
 	})(_ash2.default.Component);
-
-	var _ref5 = _ash2.default.e(
-		'section',
-		null,
-		_ash2.default.e(
-			'h1',
-			null,
-			'About us'
-		),
-		_ash2.default.e(
-			'h2',
-			null,
-			'Eva'
-		)
-	);
 
 	var BarContent = (function (_ash$Component3) {
 		_inherits(BarContent, _ash$Component3);
@@ -171,16 +163,12 @@
 		_createClass(BarContent, [{
 			key: 'render',
 			value: function render() {
-				return _ref5;
+				return _ash2.default.createElement('section', null, _ash2.default.createElement('h1', null, 'About us'), _ash2.default.createElement('h2', null, 'Eva'));
 			}
 		}]);
 
 		return BarContent;
 	})(_ash2.default.Component);
-
-	var _ref6 = _ash2.default.e(FooContent, null);
-
-	var _ref7 = _ash2.default.e(BarContent, null);
 
 	var Content = (function (_ash$Component4) {
 		_inherits(Content, _ash$Component4);
@@ -194,23 +182,23 @@
 		_createClass(Content, [{
 			key: 'render',
 			value: function render(props, state) {
-				var elements = undefined;
+				var elements = [];
 
 				console.log('Content render...', props, state);
 
-				if (this.props.show === 'foo') {
-					elements = _ref6;
-				} else if (this.props.show === 'bar') {
-					elements = _ref7;
-				} else {
-					elements = '---';
+				/*if (this.props.show === 'foo') {
+	   	elements = <FooContent />;
+	   } else if (this.props.show === 'bar') {
+	   	elements = <BarContent />;
+	   } else {
+	   	elements = '---';
+	   }*/
+
+				for (var i = 0; i < 10; i++) {
+					elements.push(_ash2.default.createElement('i', null, this.props.show + ' ' + i));
 				}
 
-				return _ash2.default.e(
-					'main',
-					null,
-					elements
-				);
+				return _ash2.default.createElement('main', null, elements);
 			}
 		}]);
 
@@ -230,29 +218,10 @@
 			};
 		}
 
-		// var viewStream = ash.AshNodeStream.from(<ReorderApp />);
-
-		// import addToList1Action from './actions/addToList1Action';
-		// import addToList2Action from './actions/addToList2Action';
-
 		_createClass(App, [{
 			key: 'render',
 			value: function render() {
-				return _ash2.default.e(
-					'div',
-					null,
-					_ash2.default.e(Content, { show: this.state.show }),
-					_ash2.default.e(
-						'a',
-						{ href: '#', events: { click: this.showFoo } },
-						'FooContent'
-					),
-					_ash2.default.e(
-						'a',
-						{ href: '#', events: { click: this.showBar } },
-						'BarContent'
-					)
-				);
+				return _ash2.default.createElement('div', null, _ash2.default.createElement('a', { href: '#', events: { click: this.showFoo } }, 'FooContent'), _ash2.default.createElement('a', { href: '#', events: { click: this.showBar } }, 'BarContent'), _ash2.default.createElement(Content, { show: this.state.show }));
 			}
 		}, {
 			key: 'showFoo',
@@ -277,14 +246,21 @@
 		return App;
 	})(_ash2.default.Component);
 
-	var viewStream = _ash2.default.AshNodeStream.from(_ash2.default.e(App, null));
-
-	global.viewStream = viewStream;
-
-	// addToList1Action.from(App.list1);
-	// addToList2Action.from(App.list2);
+	var viewStream = _ash2.default.AshNodeStream.from(_ash2.default.createElement(App, null));
 
 	Renderer.addStream(viewStream, global.document.querySelector('.page'));
+
+	var s = new _ash2.default.Stream();
+	var result = new _ash2.default.Stream(function () {
+		console.log('oj!');
+		// assert.equal(s.get(), 12);
+		// done();
+	}, s);
+
+	// s.push(Promise.resolve(12));
+	s.push(12);
+
+	console.log(Promise.resolve(12).then);
 
 	// React.render(
 	// 	React.createElement(AppReact),
@@ -338,8 +314,8 @@
 		React.render(React.createElement(BenchmarkApp1React, {data: items}), global.document.querySelector('.pageReact'));
 	}, 4000);*/
 
-	var Utils = global.Utils = {
-		uuid: function () {
+	/*var Utils = global.Utils = {
+		uuid() {
 			var i;
 			var random;
 			var uuid = '';
@@ -355,11 +331,11 @@
 			return uuid;
 		},
 
-		pluralize: function (count, word) {
+		pluralize(count, word) {
 			return count === 1 ? word : word + 's';
 		},
 
-		store: function (namespace, data) {
+		store(namespace, data) {
 			if (data) {
 				return localStorage.setItem(namespace, JSON.stringify(data));
 			}
@@ -369,7 +345,7 @@
 			return store && JSON.parse(store) || [];
 		},
 
-		extend: function () {
+		extend() {
 			var newObj = {};
 
 			for (var i = 0; i < arguments.length; i++) {
@@ -385,464 +361,343 @@
 		}
 	};
 
-	var ALL_TODOS = 'all';
-	var ACTIVE_TODOS = 'active';
-	var COMPLETED_TODOS = 'completed';
+	const ALL_TODOS = 'all';
+	const ACTIVE_TODOS = 'active';
+	const COMPLETED_TODOS = 'completed';
 
-	var ENTER_KEY = 13;
-	var ESCAPE_KEY = 27;
+	const ENTER_KEY = 13;
+	const ESCAPE_KEY = 27;
 
-	var TodoItem = (function (_ash$Component6) {
-		_inherits(TodoItem, _ash$Component6);
 
-		function TodoItem() {
-			_classCallCheck(this, TodoItem);
-
-			_get(Object.getPrototypeOf(TodoItem.prototype), 'constructor', this).apply(this, arguments);
-
-			this.state = { editText: this.props.todo.title };
+	class TodoItem extends ash.Component {
+		setState(newState) {
+			this.state = _.extend(newState, this.state);
+			this.isDirty = true;
 		}
 
-		_createClass(TodoItem, [{
-			key: 'setState',
-			value: function setState(newState) {
-				this.state = _lodashFp2.default.extend(newState, this.state);
-				this.isDirty = true;
+		handleSubmit() {
+			var val = this.state.editText.trim();
+
+			if (val) {
+				this.props.onSave(val);
+				this.setState({editText: val});
+			} else {
+				this.props.onDestroy();
 			}
-		}, {
-			key: 'handleSubmit',
-			value: function handleSubmit() {
-				var val = this.state.editText.trim();
-
-				if (val) {
-					this.props.onSave(val);
-					this.setState({ editText: val });
-				} else {
-					this.props.onDestroy();
-				}
-				return false;
-			}
-		}, {
-			key: 'handleEdit',
-			value: function handleEdit() {
-				var _this = this;
-
-				// react optimizes renders by batching them. This means you can't call
-				// parent's `onEdit` (which in this case triggeres a re-render), and
-				// immediately manipulate the DOM as if the rendering's over. Put it as a
-				// callback. Refer to app.js' `edit` method
-				this.props.onEdit(function () {
-					var node = (0, _jquery2.default)(_this.domNode).find('.edit')[0];
-
-					node.focus();
-					node.setSelectionRange(node.value.length, node.value.length);
-				});
-
-				this.setState({ editText: this.props.todo.title });
-			}
-		}, {
-			key: 'handleKeyDown',
-			value: function handleKeyDown(event) {
-				if (event.keyCode === ESCAPE_KEY) {
-					this.setState({ editText: this.props.todo.title });
-					this.props.onCancel();
-				} else if (event.keyCode === ENTER_KEY) {
-					this.handleSubmit();
-				}
-			}
-		}, {
-			key: 'handleChange',
-			value: function handleChange(event) {
-				this.setState({ editText: event.target.value });
-			}
-		}, {
-			key: 'render',
-			value: function render() {
-				return _ash2.default.e(
-					'li',
-					{ className: (this.props.todo.completed ? 'completed' : '') + (this.props.editing ? ' editing' : '') },
-					_ash2.default.e(
-						'div',
-						{ className: 'view' },
-						_ash2.default.e('input', {
-							className: 'toggle',
-							type: 'checkbox',
-							checked: this.props.todo.completed ? 'checked' : null,
-							events: {
-								change: this.props.onToggle
-							}
-						}),
-						_ash2.default.e(
-							'label',
-							{ events: { click: this.handleEdit } },
-							this.props.todo.title
-						),
-						_ash2.default.e('button', { className: 'destroy', events: { click: this.props.onDestroy } })
-					),
-					_ash2.default.e('input', {
-						ref: 'editField',
-						className: 'edit',
-						value: this.state.editText,
-						events: {
-							blur: this.handleSubmit,
-							change: this.handleChange,
-							keydown: this.handleKeyDown
-						}
-					})
-				);
-			}
-		}]);
-
-		return TodoItem;
-	})(_ash2.default.Component);
-
-	var TodoFooter = (function (_ash$Component7) {
-		_inherits(TodoFooter, _ash$Component7);
-
-		function TodoFooter() {
-			_classCallCheck(this, TodoFooter);
-
-			_get(Object.getPrototypeOf(TodoFooter.prototype), 'constructor', this).apply(this, arguments);
+			return false;
 		}
 
-		_createClass(TodoFooter, [{
-			key: 'setState',
-			value: function setState(newState) {
-				this.state = _lodashFp2.default.extend(newState, this.state);
-				this.isDirty = true;
+		handleEdit() {
+			// react optimizes renders by batching them. This means you can't call
+			// parent's `onEdit` (which in this case triggeres a re-render), and
+			// immediately manipulate the DOM as if the rendering's over. Put it as a
+			// callback. Refer to app.js' `edit` method
+			this.props.onEdit(() => {
+				var node = $(this.domNode).find('.edit')[0];
+
+				node.focus();
+				node.setSelectionRange(node.value.length, node.value.length);
+			});
+
+			this.setState({editText: this.props.todo.title});
+		}
+
+		handleKeyDown(event) {
+			if (event.keyCode === ESCAPE_KEY) {
+				this.setState({editText: this.props.todo.title});
+				this.props.onCancel();
+			} else if (event.keyCode === ENTER_KEY) {
+				this.handleSubmit();
 			}
-		}, {
-			key: 'render',
-			value: function render() {
-				var activeTodoWord = Utils.pluralize(this.props.count, 'item');
-				var clearButton = null;
+		}
 
-				if (this.props.completedCount > 0) {
-					clearButton = _ash2.default.e(
-						'button',
-						{
-							id: 'clear-completed',
-							events: {
-								click: this.props.onClearCompleted
-							} },
-						'',
-						'Clear completed (',
-						this.props.completedCount,
-						')',
-						''
-					);
-				}
+		handleChange(event) {
+			this.setState({editText: event.target.value});
+		}
 
-				var show = {
-					ALL_TODOS: '',
-					ACTIVE_TODOS: '',
-					COMPLETED_TODOS: ''
-				};
+		state = {editText: this.props.todo.title};
 
-				show[this.props.nowShowing] = 'selected';
-
-				return _ash2.default.e(
-					'footer',
-					{ id: 'footer' },
-					_ash2.default.e(
-						'span',
-						{ id: 'todo-count' },
-						_ash2.default.e(
-							'strong',
-							null,
-							this.props.count
-						),
-						' ',
-						activeTodoWord,
-						' ',
-						'left',
-						''
-					),
-					_ash2.default.e(
-						'ul',
-						{ id: 'filters' },
-						_ash2.default.e(
-							'li',
-							null,
-							_ash2.default.e(
-								'a',
-								{ href: '#/', className: show[ALL_TODOS] },
-								'All'
-							)
-						),
-						' ',
-						_ash2.default.e(
-							'li',
-							null,
-							_ash2.default.e(
-								'a',
-								{ href: '#/active', className: show[ACTIVE_TODOS] },
-								'Active'
-							)
-						),
-						' ',
-						_ash2.default.e(
-							'li',
-							null,
-							_ash2.default.e(
-								'a',
-								{ href: '#/completed', className: show[COMPLETED_TODOS] },
-								'Completed'
-							)
-						)
-					),
-					clearButton
-				);
-			}
-		}]);
-
-		return TodoFooter;
-	})(_ash2.default.Component);
-
-	function _ref(todo) {
-		return !todo.completed;
+		render() {
+			return <li className={(this.props.todo.completed ? 'completed' : '') + (this.props.editing ? ' editing' : '')}>
+				<div className="view">
+					<input
+						className="toggle"
+						type="checkbox"
+						checked={this.props.todo.completed ? 'checked' : null}
+						events={{
+							change: this.props.onToggle
+						}}
+					/>
+					<label events={{click: this.handleEdit}}>
+						{this.props.todo.title}
+					</label>
+					<button className="destroy" events={{click: this.props.onDestroy}} />
+				</div>
+				<input
+					ref="editField"
+					className="edit"
+					value={this.state.editText}
+					events={{
+						blur: this.handleSubmit,
+						change: this.handleChange,
+						keydown: this.handleKeyDown
+					}}
+				/>
+			</li>;
+		}
 	}
 
-	function _ref2(accum, todo) {
-		return todo.completed ? accum : accum + 1;
-	}
 
-	var _ref8 = _ash2.default.e(
-		'h1',
-		null,
-		'todos'
-	);
+	class TodoFooter extends ash.Component {
+		setState(newState) {
+			this.state = _.extend(newState, this.state);
+			this.isDirty = true;
+		}
 
-	var TodoApp = (function (_ash$Component8) {
-		_inherits(TodoApp, _ash$Component8);
+		render() {
+			var activeTodoWord = Utils.pluralize(this.props.count, 'item');
+			var clearButton = null;
 
-		function TodoApp() {
-			_classCallCheck(this, TodoApp);
+			if (this.props.completedCount > 0) {
+				clearButton = <button
+					id="clear-completed"
+					events={{
+						click: this.props.onClearCompleted
+					}}>
+					{''}Clear completed ({this.props.completedCount}){''}
+				</button>;
+			}
 
-			_get(Object.getPrototypeOf(TodoApp.prototype), 'constructor', this).apply(this, arguments);
-
-			this.state = {
-				todos: Utils.store('react-todos'),
-				nowShowing: ALL_TODOS,
-				editing: null
+			let show = {
+				ALL_TODOS: '',
+				ACTIVE_TODOS: '',
+				COMPLETED_TODOS: ''
 			};
+
+			show[this.props.nowShowing] = 'selected';
+
+			return <footer id="footer">
+				<span id="todo-count">
+					<strong>{this.props.count}</strong>
+					{' '}{activeTodoWord}{' '}left{''}
+				</span>
+				<ul id="filters">
+					<li>
+						<a href="#/" className={show[ALL_TODOS]}>All</a>
+					</li>
+					{' '}
+					<li>
+						<a href="#/active" className={show[ACTIVE_TODOS]}>Active</a>
+					</li>
+					{' '}
+					<li>
+						<a href="#/completed" className={show[COMPLETED_TODOS]}>Completed</a>
+					</li>
+				</ul>
+				{clearButton}
+			</footer>;
+		}
+	}
+
+
+
+
+
+
+
+
+	class TodoApp extends ash.Component {
+		state = {
+			todos: Utils.store('react-todos'),
+			nowShowing: ALL_TODOS,
+			editing: null
+		};
+
+		setState(newState) {
+			this.state = _.extend(newState, this.state);
+			this.isDirty = true;
 		}
 
-		// Renderer.addStream(ash.AshNodeStream.from(<TodoApp />), global.document.querySelector('#todoapp'));
+		onMount() {
+			$(this.domNode).find('#new-todo')[0].focus();
+		}
 
-		/* function resolveIfReady() {
-	 	console.log('resolveIfReady...');
-	 		var newTodo = document.querySelector('#new-todo');
-	 
-	 		if (newTodo) {
-	 			for (var i = 0; i < 100; i++) {
-	 				var keydownEvent = document.createEvent('Event');
-	 
-	 				keydownEvent.initEvent('keydown', true, true);
-	 				keydownEvent.which = 13; // VK_ENTER
-	 				newTodo.value = 'Something to do ' + i;
-	 				newTodo.dispatchEvent(keydownEvent);
-	 			}
-	 		} else {
-	 			setTimeout(resolveIfReady, 50);
-	 		}
-	 }
-	 
-	 setTimeout(resolveIfReady, 1000);*/
-
-		_createClass(TodoApp, [{
-			key: 'setState',
-			value: function setState(newState) {
-				this.state = _lodashFp2.default.extend(newState, this.state);
-				this.isDirty = true;
-			}
-		}, {
-			key: 'onMount',
-			value: function onMount() {
-				/* var router = Router({
-	   	'/': this.setState.bind(this, {nowShowing: ALL_TODOS}),
-	   	'/active': this.setState.bind(this, {nowShowing: ACTIVE_TODOS}),
-	   	'/completed': this.setState.bind(this, {nowShowing: COMPLETED_TODOS})
-	   });
-	   router.init();*/
-				(0, _jquery2.default)(this.domNode).find('#new-todo')[0].focus();
-			}
-		}, {
-			key: 'handleNewTodoKeyDown',
-			value: function handleNewTodoKeyDown(event) {
-				if (event.which !== ENTER_KEY) {
-					return;
-				}
-
-				var val = (0, _jquery2.default)(this.domNode).find('#new-todo')[0].value.trim();
-				var newTodo;
-
-				if (val) {
-					newTodo = {
-						id: Utils.uuid(),
-						title: val,
-						completed: false
-					};
-
-					this.setState({ todos: this.state.todos.concat([newTodo]) });
-					(0, _jquery2.default)(this.domNode).find('#new-todo')[0].value = '';
-				}
-
+		handleNewTodoKeyDown(event) {
+			if (event.which !== ENTER_KEY) {
 				return;
 			}
-		}, {
-			key: 'toggleAll',
-			value: function toggleAll(event) {
-				var checked = event.target.checked;
 
-				// Note: it's usually better to use immutable data structures since they're easier to
-				// reason about and React works very well with them. That's why we use map() and filter()
-				// everywhere instead of mutating the array or items themselves.
-				var newTodos = this.state.todos.map(function (todo) {
-					return Utils.extend({}, todo, { completed: checked });
-				});
+			var val = $(this.domNode).find('#new-todo')[0].value.trim();
+			var newTodo;
 
-				this.setState({ todos: newTodos });
-			}
-		}, {
-			key: 'toggle',
-			value: function toggle(todoToToggle) {
-				var newTodos = this.state.todos.map(function (todo) {
-					return todo !== todoToToggle ? todo : Utils.extend({}, todo, { completed: !todo.completed });
-				});
+			if (val) {
+				newTodo = {
+					id: Utils.uuid(),
+					title: val,
+					completed: false
+				};
 
-				this.setState({ todos: newTodos });
-			}
-		}, {
-			key: 'destroy',
-			value: function destroy(todo) {
-				var newTodos = this.state.todos.filter(function (candidate) {
-					return candidate.id !== todo.id;
-				});
-
-				this.setState({ todos: newTodos });
-			}
-		}, {
-			key: 'edit',
-			value: function edit(todo, callback) {
-				// refer to todoItem.js `handleEdit` for the reasoning behind the
-				// callback
-				this.setState({ editing: todo.id }, function () {
-					callback();
-				});
-			}
-		}, {
-			key: 'save',
-			value: function save(todoToSave, text) {
-				var newTodos = this.state.todos.map(function (todo) {
-					return todo !== todoToSave ? todo : Utils.extend({}, todo, { title: text });
-				});
-
-				this.state = { todos: newTodos, editing: null };
-				this.isDirty = true;
-			}
-		}, {
-			key: 'cancel',
-			value: function cancel() {
-				this.setState({ editing: null });
-			}
-		}, {
-			key: 'clearCompleted',
-			value: function clearCompleted() {
-				var newTodos = this.state.todos.filter(_ref);
-
-				this.setState({ todos: newTodos });
+				this.setState({todos: this.state.todos.concat([newTodo])});
+				$(this.domNode).find('#new-todo')[0].value = '';
 			}
 
-			/* componentDidUpdate() {
-	  	Utils.store('react-todos', this.state.todos);
-	  }*/
+			return;
+		}
 
-		}, {
-			key: 'render',
-			value: function render() {
-				var _this2 = this;
+		toggleAll(event) {
+			var checked = event.target.checked;
 
-				var footer = null;
-				var main = null;
+			// Note: it's usually better to use immutable data structures since they're easier to
+			// reason about and React works very well with them. That's why we use map() and filter()
+			// everywhere instead of mutating the array or items themselves.
+			var newTodos = this.state.todos.map((todo) => {
+				return Utils.extend({}, todo, {completed: checked});
+			});
 
-				var shownTodos = this.state.todos.filter(function (todo) {
-					switch (_this2.state.nowShowing) {
-						case ACTIVE_TODOS:
-							return !todo.completed;
-						case COMPLETED_TODOS:
-							return todo.completed;
-						default:
-							return true;
-					}
-				});
+			this.setState({todos: newTodos});
+		}
 
-				var todoItems = shownTodos.map(function (todo) {
-					return _ash2.default.e(TodoItem, {
-						key: todo.id,
-						todo: todo,
-						onToggle: _this2.toggle.bind(_this2, todo),
-						onDestroy: _this2.destroy.bind(_this2, todo),
-						onEdit: _this2.edit.bind(_this2, todo),
-						editing: _this2.state.editing === todo.id,
-						onSave: _this2.save.bind(_this2, todo),
-						onCancel: _this2.cancel
-					});
-				});
+		toggle(todoToToggle) {
+			var newTodos = this.state.todos.map((todo) => {
+				return todo !== todoToToggle ? todo : Utils.extend({}, todo, {completed: !todo.completed});
+			});
 
-				var activeTodoCount = this.state.todos.reduce(_ref2, 0);
+			this.setState({todos: newTodos});
+		}
 
-				var completedCount = this.state.todos.length - activeTodoCount;
+		destroy(todo) {
+			var newTodos = this.state.todos.filter((candidate) => {
+				return candidate.id !== todo.id;
+			});
 
-				if (activeTodoCount || completedCount) {
-					footer = _ash2.default.e(TodoFooter, {
-						count: activeTodoCount,
-						completedCount: completedCount,
-						nowShowing: this.state.nowShowing,
-						onClearCompleted: this.clearCompleted
-					});
+			this.setState({todos: newTodos});
+		}
+
+		edit(todo, callback) {
+			// refer to todoItem.js `handleEdit` for the reasoning behind the
+			// callback
+			this.setState({editing: todo.id}, () => {
+				callback();
+			});
+		}
+
+		save(todoToSave, text) {
+			var newTodos = this.state.todos.map((todo) => {
+				return todo !== todoToSave ? todo : Utils.extend({}, todo, {title: text});
+			});
+
+			this.state = {todos: newTodos, editing: null};
+			this.isDirty = true;
+		}
+
+		cancel() {
+			this.setState({editing: null});
+		}
+
+		clearCompleted() {
+			var newTodos = this.state.todos.filter((todo) => {
+				return !todo.completed;
+			});
+
+			this.setState({todos: newTodos});
+		}
+
+
+		render() {
+			var footer = null;
+			var main = null;
+
+			var shownTodos = this.state.todos.filter((todo) => {
+				switch (this.state.nowShowing) {
+				case ACTIVE_TODOS:
+					return !todo.completed;
+				case COMPLETED_TODOS:
+					return todo.completed;
+				default:
+					return true;
 				}
+			});
 
-				if (this.state.todos.length) {
-					main = _ash2.default.e(
-						'section',
-						{ id: 'main' },
-						_ash2.default.e('input', {
-							id: 'toggle-all',
-							type: 'checkbox',
-							events: { change: this.toggleAll },
-							checked: activeTodoCount === 0
-						}),
-						_ash2.default.e(
-							'ul',
-							{ id: 'todo-list' },
-							todoItems
-						)
-					);
-				}
+			var todoItems = shownTodos.map((todo) => {
+				return <TodoItem
+					key={todo.id}
+					todo={todo}
+					onToggle={this.toggle.bind(this, todo)}
+					onDestroy={this.destroy.bind(this, todo)}
+					onEdit={this.edit.bind(this, todo)}
+					editing={this.state.editing === todo.id}
+					onSave={this.save.bind(this, todo)}
+					onCancel={this.cancel}
+				/>;
+			});
 
-				return _ash2.default.e(
-					'div',
-					null,
-					_ash2.default.e(
-						'header',
-						{ id: 'header' },
-						_ref8,
-						_ash2.default.e('input', {
-							ref: 'newField',
-							id: 'new-todo',
-							placeholder: 'What needs to be done?',
-							events: { keydown: this.handleNewTodoKeyDown }
-						})
-					),
-					main,
-					footer
-				);
+			var activeTodoCount = this.state.todos.reduce((accum, todo) => {
+				return todo.completed ? accum : accum + 1;
+			}, 0);
+
+			var completedCount = this.state.todos.length - activeTodoCount;
+
+			if (activeTodoCount || completedCount) {
+				footer =
+					<TodoFooter
+						count={activeTodoCount}
+						completedCount={completedCount}
+						nowShowing={this.state.nowShowing}
+						onClearCompleted={this.clearCompleted}
+					/>;
 			}
-		}]);
 
-		return TodoApp;
-	})(_ash2.default.Component);
+			if (this.state.todos.length) {
+				main = <section id="main">
+					<input
+						id="toggle-all"
+						type="checkbox"
+						events={{change: this.toggleAll}}
+						checked={activeTodoCount === 0}
+					/>
+					<ul id="todo-list">
+						{todoItems}
+					</ul>
+				</section>;
+			}
+
+			return <div>
+				<header id="header">
+					<h1>todos</h1>
+					<input
+						ref="newField"
+						id="new-todo"
+						placeholder="What needs to be done?"
+						events={{keydown: this.handleNewTodoKeyDown}}
+					/>
+				</header>
+				{main}
+				{footer}
+			</div>;
+		}
+	}*/
+
+	// Renderer.addStream(ash.AshNodeStream.from(<TodoApp />), global.document.querySelector('#todoapp'));
+
+	/* function resolveIfReady() {
+		console.log('resolveIfReady...');
+			var newTodo = document.querySelector('#new-todo');
+
+			if (newTodo) {
+				for (var i = 0; i < 100; i++) {
+					var keydownEvent = document.createEvent('Event');
+
+					keydownEvent.initEvent('keydown', true, true);
+					keydownEvent.which = 13; // VK_ENTER
+					newTodo.value = 'Something to do ' + i;
+					newTodo.dispatchEvent(keydownEvent);
+				}
+			} else {
+				setTimeout(resolveIfReady, 50);
+			}
+	}
+
+	setTimeout(resolveIfReady, 1000);*/
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
@@ -26314,7 +26169,9 @@
 	  value: true
 	});
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+	  return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _dist = __webpack_require__(100);
 
@@ -26333,7 +26190,9 @@
 		value: true
 	});
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _coreSupport = __webpack_require__(101);
 
@@ -26351,15 +26210,19 @@
 
 	var _coreStreamsStream2 = _interopRequireDefault(_coreStreamsStream);
 
+	var _coreStreamsStream22 = __webpack_require__(140);
+
+	var _coreStreamsStream23 = _interopRequireDefault(_coreStreamsStream22);
+
 	var _coreStreamsAshNodeStream = __webpack_require__(133);
 
 	var _coreStreamsAshNodeStream2 = _interopRequireDefault(_coreStreamsAshNodeStream);
 
-	var _coreInternalsCreateElement = __webpack_require__(140);
+	var _coreInternalsCreateElement = __webpack_require__(141);
 
 	var _coreInternalsCreateElement2 = _interopRequireDefault(_coreInternalsCreateElement);
 
-	var _coreInternalsAssign = __webpack_require__(143);
+	var _coreInternalsAssign = __webpack_require__(144);
 
 	var _coreInternalsAssign2 = _interopRequireDefault(_coreInternalsAssign);
 
@@ -26380,10 +26243,9 @@
 
 		Component: _coreClassesComponent2.default,
 		Renderer: _coreClassesRenderer2.default,
-		Stream: _coreStreamsStream2.default,
+		Stream: _coreStreamsStream23.default,
 		AshNodeStream: _coreStreamsAshNodeStream2.default,
 
-		e: _coreInternalsCreateElement2.default,
 		createElement: _coreInternalsCreateElement2.default,
 
 		isAncestor: _coreInternalsIsAncestor2.default
@@ -26406,47 +26268,47 @@
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
-		value: true
+	  value: true
 	});
 	var support = {};
 
 	(function () {
 
-		/**
-	  * Detect if modern javascript is supported.
-	  *
-	  * @memberOf ash.support
-	  * @type boolean
-	  */
-		support.modernJavascript = typeof Object.getOwnPropertyNames && typeof Object.getPrototypeOf === 'function' && typeof Object.defineProperties === 'function' && typeof Object.freeze === 'function' && typeof Object.freeze === 'function' && typeof Function.prototype.bind === 'function' && typeof Array.isArray === 'function' && { __proto__: [] } instanceof Array;
+	  /**
+	   * Detect if modern javascript is supported.
+	   *
+	   * @memberOf ash.support
+	   * @type boolean
+	   */
+	  support.modernJavascript = typeof Object.getOwnPropertyNames && typeof Object.getPrototypeOf === 'function' && typeof Object.defineProperties === 'function' && typeof Object.freeze === 'function' && typeof Object.freeze === 'function' && typeof Function.prototype.bind === 'function' && typeof Array.isArray === 'function' && { __proto__: [] } instanceof Array;
 
-		/**
-	  */
+	  /**
+	   */
 
-		support.browser = global.history && global.history.pushState && global.requestAnimationFrame && global.getComputedStyle;
+	  support.browser = global.history && global.history.pushState && global.requestAnimationFrame && global.getComputedStyle;
 
-		/**
-	  * Detect if the DOM is supported.
-	  *
-	  * @memberOf ash.support
-	  * @type boolean
-	  */
-		try {
-			support.dom = global.document.createDocumentFragment().nodeType === 11 && typeof global.addEventListener === 'function';
-		} catch (error) {
-			support.dom = false;
-		}
+	  /**
+	   * Detect if the DOM is supported.
+	   *
+	   * @memberOf ash.support
+	   * @type boolean
+	   */
+	  try {
+	    support.dom = global.document.createDocumentFragment().nodeType === 11 && typeof global.addEventListener === 'function';
+	  } catch (error) {
+	    support.dom = false;
+	  }
 	})(0, 0);
 
 	// add supported class to <html>
 	if (support.modernJavascript && support.browser && support.dom) {
-		global.document.documentElement.className = global.document.documentElement.className.replace(new RegExp('(^|\\b)' + 'no-js'.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
-		global.document.documentElement.className += ' js ash--supported';
-		global.document.documentElement.className = global.document.documentElement.className.trim();
+	  global.document.documentElement.className = global.document.documentElement.className.replace(new RegExp('(^|\\b)' + 'no-js'.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+	  global.document.documentElement.className += ' js ash--supported';
+	  global.document.documentElement.className = global.document.documentElement.className.trim();
 	}
 
 	if (!support.modernJavascript) {
-		throw new Error('Unsupported javascript engine.');
+	  throw new Error('Unsupported javascript engine.');
 	}
 
 	exports.default = support;
@@ -26498,20 +26360,32 @@
 	var LIFECYCLE_MOUNTED = _internalsConstants2.default.LIFECYCLE_MOUNTED;
 	var LIFECYCLE_UNINITIALIZED = _internalsConstants2.default.LIFECYCLE_UNINITIALIZED;
 
-	function _ref(value) {
-		return value !== 'caller' && value !== 'callee' && value !== 'arguments';
-	}
-
 	var Component = (function () {
 		function Component() {
-			var _this = this;
+			var _this = this,
+			    _arguments = arguments;
 
 			var props = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
 
 			_classCallCheck(this, Component);
 
+			this.__element = null;
 			this.__previousLifecycle = LIFECYCLE_UNINITIALIZED;
 			this.__currentLifecycle = LIFECYCLE_UNMOUNTED;
+			this.props = null;
+			this.state = null;
+
+			this.update = function () {
+				if (_this.__element.stream) {
+					_this.__element.stream.push(_this);
+				}
+
+				if (_arguments[0] instanceof _streamsStream2.default) {
+					return undefined;
+				}
+
+				return _this;
+			};
 
 			// autobind methods
 			var prototype = Object.getPrototypeOf(this);
@@ -26519,16 +26393,18 @@
 			Object.getOwnPropertyNames(prototype).forEach(function (value) {
 				var descriptor = Object.getOwnPropertyDescriptor(prototype, value);
 
+				// typeof must be used to avoid executing getter and setters
 				if (!(descriptor && (typeof descriptor.get !== 'undefined' || typeof descriptor.set !== 'undefined')) && (0, _internalsIsFunction2.default)(_this[value]) && value !== 'constructor') {
 					_this[value] = _this[value].bind(_this);
 				}
 			});
 
 			this.props = props;
-			this.update = this.update.bind(this);
 
 			// references to the component streams
-			Object.getOwnPropertyNames(this.constructor).filter(_ref).forEach(function (value) {
+			Object.getOwnPropertyNames(this.constructor).filter(function (value) {
+				return value !== 'caller' && value !== 'callee' && value !== 'arguments';
+			}).forEach(function (value) {
 				if (_this.constructor[value] instanceof _streamsStream2.default && !_this[value]) {
 					_this[value] = _this.constructor[value];
 				}
@@ -26536,25 +26412,8 @@
 		}
 
 		_createClass(Component, [{
-			key: 'update',
-			value: function update() {
-				if (this.__element.stream) {
-					// console.log('Component update...', this.__element.Spec, this);
-					this.__element.stream.push(this);
-				}
-
-				if (arguments[0] instanceof _streamsStream2.default) {
-					return undefined;
-				}
-
-				return this;
-			}
-		}, {
 			key: 'shouldUpdate',
 			value: function shouldUpdate(newProps) {
-				// console.log('Component shouldUpdate...', this.constructor);
-				// console.log(this.props, newProps, '===?', this.props === newProps);
-
 				return this.props !== newProps;
 			}
 		}, {
@@ -26638,7 +26497,9 @@
 	});
 	exports.default = isAshNodeAshElement;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _constants = __webpack_require__(104);
 
@@ -26706,7 +26567,9 @@
 	});
 	exports.default = findNode;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _internalsConstants = __webpack_require__(104);
 
@@ -26802,7 +26665,9 @@
 	});
 	exports.default = isAncestor;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _isFunction = __webpack_require__(106);
 
@@ -26866,11 +26731,25 @@
 		value: true
 	});
 
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () {
+		function defineProperties(target, props) {
+			for (var i = 0; i < props.length; i++) {
+				var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+			}
+		}return function (Constructor, protoProps, staticProps) {
+			if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+		};
+	})();
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	function _classCallCheck(instance, Constructor) {
+		if (!(instance instanceof Constructor)) {
+			throw new TypeError('Cannot call a class as a function');
+		}
+	}
 
 	var _StreamTransformer = __webpack_require__(109);
 
@@ -26902,18 +26781,14 @@
 
 	var streamsQueue = (0, _streamsQueue.getStreamsQueue)();
 
-	function _ref() {
-		return true;
-	}
-
 	var Stream = (function () {
 		function Stream() {
-			var _ref2 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+			var _ref = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-			var _ref2$isEndStream = _ref2.isEndStream;
-			var isEndStream = _ref2$isEndStream === undefined ? false : _ref2$isEndStream;
-			var value = _ref2.value;
-			var transformFn = _ref2.transformFn;
+			var _ref$isEndStream = _ref.isEndStream;
+			var isEndStream = _ref$isEndStream === undefined ? false : _ref$isEndStream;
+			var value = _ref.value;
+			var transformFn = _ref.transformFn;
 
 			_classCallCheck(this, Stream);
 
@@ -26943,7 +26818,9 @@
 				this.end.__listeners.push(this);
 			} else {
 				this.isEndStream = true;
-				this.fn = _ref;
+				this.fn = function () {
+					return true;
+				};
 			}
 
 			if ((0, _internalsIsFunction2.default)(transformFn)) {
@@ -27141,13 +27018,13 @@
 		}, {
 			key: 'from',
 			value: function from(fn) {
-				var _ref3;
+				var _ref2;
 
 				for (var _len3 = arguments.length, args = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
 					args[_key3 - 1] = arguments[_key3];
 				}
 
-				return (_ref3 = new Stream()).from.apply(_ref3, [fn].concat(args));
+				return (_ref2 = new Stream()).from.apply(_ref2, [fn].concat(args));
 			}
 		}, {
 			key: 'map',
@@ -27204,9 +27081,21 @@
 		value: true
 	});
 
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () {
+		function defineProperties(target, props) {
+			for (var i = 0; i < props.length; i++) {
+				var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+			}
+		}return function (Constructor, protoProps, staticProps) {
+			if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+		};
+	})();
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	function _classCallCheck(instance, Constructor) {
+		if (!(instance instanceof Constructor)) {
+			throw new TypeError('Cannot call a class as a function');
+		}
+	}
 
 	var StreamTransformer = (function () {
 		function StreamTransformer() {
@@ -27236,20 +27125,19 @@
 /* 110 */
 /***/ function(module, exports) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
 	exports.getStreamsQueue = getStreamsQueue;
-	var streamsQueue = global.queue = [];
+	var streamsQueue = [];
 
 	streamsQueue.isUpdating = false;
 
 	function getStreamsQueue() {
 		return streamsQueue;
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
 /* 111 */
@@ -27307,7 +27195,9 @@
 	});
 	exports.default = updateStream;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _internalsIsFunction = __webpack_require__(106);
 
@@ -27372,7 +27262,9 @@
 	});
 	exports.default = updateStreamDependencies;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _detachStreamDependencies = __webpack_require__(112);
 
@@ -27467,7 +27359,9 @@
 	});
 	exports.default = updateStreamsQueue;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _updateStreamDependencies = __webpack_require__(114);
 
@@ -27499,11 +27393,25 @@
 		value: true
 	});
 
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () {
+		function defineProperties(target, props) {
+			for (var i = 0; i < props.length; i++) {
+				var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+			}
+		}return function (Constructor, protoProps, staticProps) {
+			if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+		};
+	})();
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	function _classCallCheck(instance, Constructor) {
+		if (!(instance instanceof Constructor)) {
+			throw new TypeError('Cannot call a class as a function');
+		}
+	}
 
 	var _DOMCreateNodeTree = __webpack_require__(118);
 
@@ -27611,11 +27519,6 @@
 			value: function render(stream, changed, dependencies) {
 				var ashNodeStream = dependencies[0];
 
-				function _ref() {
-					stream.node.appendChild((0, _DOMCreateNodeTree2.default)(stream.ashNodeTree));
-					(0, _DOMMountComponents2.default)(ashNodeStream.ashElementTree);
-				}
-
 				if (!stream.ashNodeTree) {
 					var isNodeTreeValid = false;
 					var isNodeTreeValidated = false;
@@ -27648,7 +27551,10 @@
 							stream.node.removeChild(stream.node.firstChild);
 						}
 
-						global.requestAnimationFrame(_ref);
+						global.requestAnimationFrame(function () {
+							stream.node.appendChild((0, _DOMCreateNodeTree2.default)(stream.ashNodeTree));
+							(0, _DOMMountComponents2.default)(ashNodeStream.ashElementTree);
+						});
 					}
 
 					if (isNodeTreeValid && isNodeTreeValidated) {
@@ -27688,7 +27594,9 @@
 	});
 	exports.default = createNodeTree;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _internalsIsAshTextNode = __webpack_require__(119);
 
@@ -27760,7 +27668,9 @@
 	});
 	exports.default = isAshTextNode;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _constants = __webpack_require__(104);
 
@@ -27785,7 +27695,9 @@
 	});
 	exports.default = setNodeProperties;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _internalsIsObject = __webpack_require__(121);
 
@@ -27893,11 +27805,25 @@
 		value: true
 	});
 
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () {
+		function defineProperties(target, props) {
+			for (var i = 0; i < props.length; i++) {
+				var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+			}
+		}return function (Constructor, protoProps, staticProps) {
+			if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+		};
+	})();
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	function _classCallCheck(instance, Constructor) {
+		if (!(instance instanceof Constructor)) {
+			throw new TypeError('Cannot call a class as a function');
+		}
+	}
 
 	var _internalsConstants = __webpack_require__(104);
 
@@ -28201,7 +28127,9 @@
 	});
 	exports.default = diffAshNodeTree;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _internalsConstants = __webpack_require__(104);
 
@@ -28219,8 +28147,6 @@
 		var newChildIndex = 0;
 		var key = 0;
 		var isChildDirty = false;
-
-		// console.log('diffChildren...');
 
 		// lets fill in keys, if needed; simple first-to-first correspondence
 		for (var i = 0, _length = Math.max(oldChildren.length, newChildren.length); i < _length; i++) {
@@ -28267,8 +28193,6 @@
 
 			return patches;
 		}
-
-		// debugger;
 
 		// keys are in; let's compare order of children
 		var foundIndex = undefined;
@@ -28363,9 +28287,6 @@
 		var differentProperties = false;
 		var propertiesToChange = {};
 		var propertiesToRemove = [];
-
-		// console.log('walkDiffAshNodeTree...', oldAshNode.id, oldAshNode.tagName, newAshNode.id, newAshNode.tagName);
-		// console.log('oldChildren?', !!oldAshNode.oldChildren, oldAshNode.oldChildren ? oldAshNode.oldChildren.length : 'NA');
 
 		if (oldAshNode === newAshNode || !newAshNode.isDirty) {
 			if (oldAshNode.oldChildren && oldAshNode.oldChildren.length) {
@@ -28478,14 +28399,15 @@
 		return patches;
 	}
 
+	/**
+	 * [diffAshNodeTree description]
+	 * @param  {[type]} oldAshNodeTree [description]
+	 * @param  {[type]} newAshNodeTree [description]
+	 * @return {[type]}                [description]
+	 */
+
 	function diffAshNodeTree(oldAshNodeTree, newAshNodeTree) {
 		var patches = [];
-
-		// console.log('diffAshNodeTree...');
-		// console.log('oldAshNodeTree', oldAshNodeTree);
-		// console.log('newAshNodeTree', newAshNodeTree);
-
-		// debugger;
 
 		patches.maxIndex = 1;
 
@@ -28505,7 +28427,9 @@
 	});
 	exports.default = patchNodeTree;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _internalsConstants = __webpack_require__(104);
 
@@ -28566,17 +28490,14 @@
 	}
 
 	function walkReindexChildNodes(node, level, newIndex) {
-		var childIndices;
+		var childIndices = undefined;
 
 		for (var i = 0; i < node.childNodes.length; i++) {
 			if (node.childNodes[i].nodeType === 1) {
 				childIndices = (0, _parseAshNodeId2.default)(node.childNodes[i][ID_ATTRIBUTE_NAME]);
 				childIndices[level] = newIndex;
-
 				node.childNodes[i][ID_ATTRIBUTE_NAME] = childIndices.join(INDEX_SEPARATOR);
 				node.childNodes[i][INDEX_ATTRIBUTE_NAME] = childIndices[childIndices.length - 1];
-				//$(node.childNodes[i]).attr('nodeId', node.childNodes[i][ID_ATTRIBUTE_NAME]);
-				//$(node.childNodes[i]).attr('index', node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
 
 				if (node.childNodes[i].childNodes && node.childNodes[i].childNodes.length) {
 					walkReindexChildNodes(node.childNodes[i], level, newIndex);
@@ -28596,9 +28517,6 @@
 		while (reindexCache.length > 0) {
 			reindexCache[0].node[ID_ATTRIBUTE_NAME] = reindexCache[0].newId;
 			reindexCache[0].node[INDEX_ATTRIBUTE_NAME] = reindexCache[0].newIndex;
-
-			//$(reindexCache[0].node).attr('nodeId', reindexCache[0].node[ID_ATTRIBUTE_NAME]);
-			//$(reindexCache[0].node).attr('index', reindexCache[0].node[INDEX_ATTRIBUTE_NAME]);
 
 			reindexChildNodes(reindexCache[0].node, reindexCache[0].newIndex);
 
@@ -28624,7 +28542,6 @@
 				children[i] = reorderCache[0].childNodes[i];
 			}
 
-			// sort children
 			children.sort(compareNodes);
 
 			for (var i = 0; i < children.length; i++) {
@@ -28640,7 +28557,7 @@
 
 	function patchNodeTree(nodeTree /*, patches*/) {
 		var patches = arguments[1];
-		var node;
+		var node = undefined;
 		var reindexCache = [];
 		var reorderCache = [];
 
@@ -28656,6 +28573,14 @@
 		// if there is non zero max index, compute number of its digits
 		var maxDigits = patches.maxIndex > 0 ? Math.floor(Math.log(Math.abs(Math.floor(patches.maxIndex))) / Math.LN10) + 1 : 1;
 
+		var ZERO_PADDED_9 = zeroPadNumber(9, maxDigits);
+		var ZERO_PADDED_8 = zeroPadNumber(8, maxDigits);
+		var ZERO_PADDED_7 = zeroPadNumber(7, maxDigits);
+		var ZERO_PADDED_6 = zeroPadNumber(6, maxDigits);
+		var ZERO_PADDED_5 = zeroPadNumber(5, maxDigits);
+		var ZERO_PADDED_4 = zeroPadNumber(4, maxDigits);
+		var ZERO_PADDED_0 = zeroPadNumber(0, maxDigits);
+
 		// compute sort order
 		for (var i = 0; i < patches.length; i++) {
 			patches[i].sortOrder = '';
@@ -28667,19 +28592,19 @@
 
 			// then the patch type is important
 			if (patches[i].type === PATCH_ASH_NODE) {
-				patches[i].sortOrder += zeroPadNumber(9, maxDigits);
+				patches[i].sortOrder += ZERO_PADDED_9;
 			} else if (patches[i].type === PATCH_ASH_TEXT_NODE) {
-				patches[i].sortOrder += zeroPadNumber(8, maxDigits);
+				patches[i].sortOrder += ZERO_PADDED_8;
 			} else if (patches[i].type === PATCH_PROPERTIES) {
-				patches[i].sortOrder += zeroPadNumber(7, maxDigits);
+				patches[i].sortOrder += ZERO_PADDED_7;
 			} else if (patches[i].type === PATCH_REMOVE) {
-				patches[i].sortOrder += zeroPadNumber(6, maxDigits);
+				patches[i].sortOrder += ZERO_PADDED_6;
 			} else if (patches[i].type === PATCH_INSERT) {
-				patches[i].sortOrder += zeroPadNumber(5, maxDigits);
+				patches[i].sortOrder += ZERO_PADDED_5;
 			} else if (patches[i].type === PATCH_ORDER) {
-				patches[i].sortOrder += zeroPadNumber(4, maxDigits);
+				patches[i].sortOrder += ZERO_PADDED_4;
 			} else {
-				patches[i].sortOrder += zeroPadNumber(0, maxDigits);
+				patches[i].sortOrder += ZERO_PADDED_0;
 			}
 
 			// and now the last level
@@ -28691,8 +28616,6 @@
 
 		// sort patches by their order
 		patches.sort(comparePatches);
-
-		// console.log('patches', patches);
 
 		// now iterate over patches...
 		var lastLevel = patches[patches.length - 1].indices.length;
@@ -28711,7 +28634,7 @@
 				// remove old events
 				eventListener.removeEvents(patches[i].id, patches[i].streamId);
 
-				// replace node
+				// find node
 				node = (0, _findNode2.default)(nodeTree, patches[i].id, patches[i].indices);
 
 				if (!node) {
@@ -28792,12 +28715,9 @@
 
 				reorderCache.push(node.parentNode);
 			}
-
-			// debugger;
 		}
 
 		flushCache(reindexCache, reorderCache);
-
 		eventListener.markEvents(patches.streamId);
 
 		return true;
@@ -28816,7 +28736,9 @@
 	});
 	exports.default = removeNodeProperties;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _classesEventListener = __webpack_require__(122);
 
@@ -28870,7 +28792,9 @@
 	});
 	exports.default = isElement;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+	  return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _isObjectLike = __webpack_require__(129);
 
@@ -28934,7 +28858,9 @@
 	});
 	exports.default = stringifyAshNodeTree;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _internalsIsAshNode = __webpack_require__(131);
 
@@ -29056,7 +28982,9 @@
 	});
 	exports.default = isAshNode;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _constants = __webpack_require__(104);
 
@@ -29081,7 +29009,9 @@
 	});
 	exports.default = validateNodeTree;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _classesEventListener = __webpack_require__(122);
 
@@ -29157,15 +29087,47 @@
 		value: true
 	});
 
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () {
+		function defineProperties(target, props) {
+			for (var i = 0; i < props.length; i++) {
+				var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+			}
+		}return function (Constructor, protoProps, staticProps) {
+			if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+		};
+	})();
 
-	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+	var _get = function get(object, property, receiver) {
+		if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+			var parent = Object.getPrototypeOf(object);if (parent === null) {
+				return undefined;
+			} else {
+				return get(parent, property, receiver);
+			}
+		} else if ('value' in desc) {
+			return desc.value;
+		} else {
+			var getter = desc.get;if (getter === undefined) {
+				return undefined;
+			}return getter.call(receiver);
+		}
+	};
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	function _classCallCheck(instance, Constructor) {
+		if (!(instance instanceof Constructor)) {
+			throw new TypeError('Cannot call a class as a function');
+		}
+	}
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) {
+		if (typeof superClass !== 'function' && superClass !== null) {
+			throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
+		}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+	}
 
 	var _Stream2 = __webpack_require__(108);
 
@@ -29276,7 +29238,9 @@
 	});
 	exports.default = isComponentAshElement;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _constants = __webpack_require__(104);
 
@@ -29301,7 +29265,9 @@
 	});
 	exports.default = createAshNodeTree;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _internalsIsComponentAshElement = __webpack_require__(134);
 
@@ -29318,10 +29284,7 @@
 	var INDEX_SEPARATOR = _internalsConstants2.default.INDEX_SEPARATOR;
 
 	function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParentComponentDirty, parentIndices) {
-		// console.log('>-- walkCreateAshNodeTree...', ashElement, index, parentIndices, 'parentDirty?', isParentComponentDirty, 'on', ashNodeTree.id, ashNodeTree.tagName);
-		// debugger;
 		if ((0, _internalsIsAshNodeAshElement2.default)(ashElement)) {
-			// console.log('-', '<' + ashElement.args[0] + '>', ashElement.args[1]);
 			if (isParentComponentDirty) {
 
 				ashElement.instantiate();
@@ -29333,16 +29296,12 @@
 				ashElement.instance.isDirty = true;
 				ashElement.instance.parent = ashNodeTree;
 
-				// console.log('instantiate!', ashElement.instance.index, ashNodeTree.oldChildren ? ashNodeTree.oldChildren.length : '-');
-
 				ashNodeTree.children[ashElement.instance.index] = ashElement.instance;
 			} else {
-				// console.log('just copy', ashElement.instance.index);
 				ashElement.instance.isDirty = false;
 				ashElement.instance.parent = ashNodeTree;
 
 				if (ashNodeTree.oldChildren && ashElement.instance.index === 0) {
-					// console.log('index is 0, there are oldChildren, so set oldChildren to null', 'on', ashNodeTree.id, ashNodeTree.tagName);
 					ashNodeTree.oldChildren = null;
 				}
 
@@ -29352,7 +29311,6 @@
 			}
 
 			// walk the children
-			// console.log('walk node children...', ashElement.instance.index, 'children length', ashElement.children.length);
 			for (var i = 0; i < ashElement.children.length; i++) {
 				walkCreateAshNodeTree(ashNodeTree.children[ashElement.instance.index], ashElement.children[i], i, ashNodeTree.children[ashElement.instance.index].id, isParentComponentDirty, ashNodeTree.children[ashElement.instance.index].indices);
 			}
@@ -29360,23 +29318,15 @@
 
 			var isDirty = ashElement.isDirty;
 
-			// console.log('* Component', ashElement.Spec.name, 'element dirty?', isDirty, 'old children?', ashNodeTree.oldChildren ? ashNodeTree.oldChildren.length : '-');
-
 			if (index === 0 && !isParentComponentDirty) {
-				// console.log('index 0!');
 				if (isDirty) {
-					// console.log('and dirty, so creating oldChildren', 'on', ashNodeTree.id, ashNodeTree.tagName);
 					ashNodeTree.oldChildren = ashNodeTree.children;
 					ashNodeTree.children = [];
 				} else {
-					// console.log('not dirty, set oldChildren to null', 'on', ashNodeTree.id, ashNodeTree.tagName);
 					ashNodeTree.oldChildren = null;
 				}
 			} else if (!isParentComponentDirty) {
-				// console.log('index larger than zero!');
 				if (isDirty && !ashNodeTree.oldChildren) {
-					// console.log('and dirty with no old children -> creating oldChildren', 'on', ashNodeTree.id, ashNodeTree.tagName);
-					// debugger;
 					ashNodeTree.oldChildren = ashNodeTree.children;
 					ashNodeTree.children = [];
 
@@ -29389,7 +29339,6 @@
 
 			ashElement.isDirty = false;
 
-			// console.log('walk Component child...');
 			walkCreateAshNodeTree(ashNodeTree, ashElement.children[0], index, parentId, isDirty, parentIndices);
 		}
 	}
@@ -29398,10 +29347,6 @@
 		if (!(0, _internalsIsComponentAshElement2.default)(componentAshElement)) {
 			throw new Error(componentAshElement + ' (componentAshElement) must be a Component Ash Element object instance.');
 		}
-
-		// console.log('createAshNodeTree...', componentAshElement.Spec.name, componentAshElement);
-
-		// debugger;
 
 		var ashElement = componentAshElement;
 		var ashNodeTree = undefined;
@@ -29414,30 +29359,19 @@
 			ashElement = ashElement.children[0];
 		}
 
-		// console.log('>--', 'parentDirty?', isDirty);
-
 		if (isDirty) {
 			ashElement.instantiate();
 
-			ashElement.instance.id = '0';
-			ashElement.instance.index = 0;
-			ashElement.instance.indices = [0];
-			ashElement.instance.streamId = ashElement.stream.id;
 			ashElement.instance.isDirty = true;
-			ashElement.instance.parent = null;
-
-			// console.log('instantiate!', ashElement.instance.index);
 		} else {
-				ashElement.instance.id = '0';
-				ashElement.instance.index = 0;
-				ashElement.instance.indices = [0];
-				ashElement.instance.streamId = ashElement.stream.id;
-				ashElement.instance.isDirty = false;
-				ashElement.instance.parent = null;
+			ashElement.instance.isDirty = false;
+		}
 
-				// console.log('just copy', ashElement.instance.index);
-			}
-
+		ashElement.instance.id = '0';
+		ashElement.instance.index = 0;
+		ashElement.instance.indices = [0];
+		ashElement.instance.streamId = ashElement.stream.id;
+		ashElement.instance.parent = null;
 		ashNodeTree = ashElement.instance;
 
 		// walk the children
@@ -29461,7 +29395,9 @@
 	});
 	exports.default = createAshElementTree;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _internalsIsAshElement = __webpack_require__(137);
 
@@ -29548,7 +29484,6 @@
 		ashElementTree.isRoot = true;
 
 		if ((0, _internalsIsComponentAshElement2.default)(ashElementTree)) {
-			// instantiate descriptor
 			ashElementTree.instantiate();
 
 			// set up ordering properties
@@ -29566,7 +29501,6 @@
 			// walk the child
 			walkCreateAshElementTree(ashElementTree.children[0], ashElementTree, 0);
 		} else {
-			// instantiate descriptor
 			ashElementTree.instantiate();
 
 			// set up ordering properties
@@ -29581,7 +29515,7 @@
 			}
 		}
 
-		// return resulting descriptor tree
+		// return resulting ash element tree
 		return ashElementTree;
 	}
 
@@ -29598,7 +29532,9 @@
 	});
 	exports.default = isAshElement;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _constants = __webpack_require__(104);
 
@@ -29624,7 +29560,9 @@
 	});
 	exports.default = updateComponentAshElement;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _DOMCreateAshElementTree = __webpack_require__(136);
 
@@ -29639,14 +29577,8 @@
 	var ASH_NODE_ASH_ELEMENT = _internalsConstants2.default.ASH_NODE_ASH_ELEMENT;
 
 	function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, isParentComponentDirty) {
-		// console.log('>-- walkUpdateComponentAshElement...');
-		// console.log('oldAshElement', oldAshElement.Spec.name, oldAshElement.args[0], oldAshElement.args[1], 'isDirty?', oldAshElement.isDirty);
-		// console.log('newAshElement', newAshElement.Spec.name, newAshElement.args[0], newAshElement.args[1], 'isDirty?', newAshElement.isDirty);
-
 		if (newAshElement.type === COMPONENT_ASH_ELEMENT) {
-			// console.log('newAshElement.type === COMPONENT_ASH_ELEMENT');
 			if (oldAshElement === null) {
-				// console.log('oldAshElement === null');
 				// old is null, new is component
 
 				// newAshElement must be added as a child...
@@ -29664,49 +29596,22 @@
 					newAshElement.parent.children[0] = newAshElement;
 				}
 			} else if (oldAshElement.type === COMPONENT_ASH_ELEMENT && newAshElement.Spec === oldAshElement.Spec) {
-				// console.log('old is component, new is same component');
 				// old is component, new is same component
 
 				var shouldUpdate = oldAshElement.instance.shouldUpdate(newAshElement.args ? newAshElement.args[0] : null);
 
-				// debugger;
-
 				if (shouldUpdate || oldAshElement.isDirty) {
 					oldAshElement.isDirty = true;
 
-					// console.log('copying new props to oldAshElement...');
-
 					// copy the new to the old...
 					oldAshElement.args = newAshElement.args;
+
 					oldAshElement.instance.onBeforeReceiveProps(newAshElement.args ? newAshElement.args[0] : null);
+
 					oldAshElement.instance.props = newAshElement.args ? newAshElement.args[0] : null;
 
 					// create child for the new descriptor
-					// console.log('oldAshElement.children === newAshElement.children?', oldAshElement.children === newAshElement.children);
 					var render = oldAshElement.instance.render(oldAshElement.instance.props, oldAshElement.instance.state);
-
-					// debugger;
-
-					/*// adding children to the queue
-	    if (render && oldAshElement.children[0]) {
-	    	render.owner = oldAshElement;
-	    	render.parent = oldAshElement;
-	    	render.index = 0;
-	    			walkUpdateComponentAshElement(oldAshElement.children[0], render, stream, true);
-	    } else if (render && !oldAshElement.children[0]) {
-	    	render.owner = oldAshElement;
-	    	render.parent = oldAshElement;
-	    	render.index = 0;
-	    			walkUpdateComponentAshElement(null, render, stream, true);
-	    }
-	    		// deleting old surplus children
-	    if (!render && oldAshElement.children[0]) {
-	    	if (oldAshElement.children[0].type === COMPONENT_ASH_ELEMENT) {
-	    		oldAshElement.children[0].instance.__lifecycle = LIFECYCLE_UNMOUNTED;
-	    	}
-	    	
-	    	oldAshElement.children.pop();
-	    }*/
 
 					// adding children to the queue
 					if (render) {
@@ -29731,11 +29636,9 @@
 					walkUpdateComponentAshElement(oldAshElement.children[0], oldAshElement.children[0], stream, false);
 				}
 			} else if (oldAshElement.type === COMPONENT_ASH_ELEMENT) {
-				// console.log('oldAshElement.type === COMPONENT_ASH_ELEMENT');
 				// old is component, new is different component
 
 				if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
-					// console.log('oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT');
 					// now, the component descriptor's tree is not complete
 					newAshElement.owner = oldAshElement.owner;
 					newAshElement.parent = oldAshElement.parent;
@@ -29757,7 +29660,6 @@
 					oldAshElement.parent.children[0] = newAshElement;
 				}
 			} else {
-				// console.log('old is virtual node, new is component');
 				// old is virtual node, new is component
 
 				if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
@@ -29868,9 +29770,7 @@
 	}
 
 	function updateComponentAshElement(componentAshElement, stream) {
-		var render;
-
-		// console.log('updateComponentAshElement...', componentAshElement.Spec.name, 'isDirty?', componentAshElement.isDirty);
+		var render = undefined;
 
 		if (componentAshElement.isDirty) {
 			render = componentAshElement.instance.render(componentAshElement.instance.props, componentAshElement.instance.state);
@@ -29881,18 +29781,7 @@
 			render = componentAshElement.children[0];
 		}
 
-		// render = componentAshElement.instance.render();
-		// render.owner = componentAshElement;
-		// render.parent = componentAshElement;
-		// render.index = 0;
-
-		// componentAshElement.isDirty = true;
-
-		// debugger;
-
 		walkUpdateComponentAshElement(componentAshElement.children[0], render, stream, componentAshElement.isDirty);
-
-		// console.log('--- end of updateComponentAshElement ---');
 	}
 
 	module.exports = exports.default;
@@ -29908,7 +29797,9 @@
 	});
 	exports.default = mountComponents;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _internalsIsComponentAshElement = __webpack_require__(134);
 
@@ -29951,6 +29842,338 @@
 /* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+		value: true
+	});
+
+	var _createClass = (function () {
+		function defineProperties(target, props) {
+			for (var i = 0; i < props.length; i++) {
+				var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+			}
+		}return function (Constructor, protoProps, staticProps) {
+			if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+		};
+	})();
+
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
+
+	function _classCallCheck(instance, Constructor) {
+		if (!(instance instanceof Constructor)) {
+			throw new TypeError('Cannot call a class as a function');
+		}
+	}
+
+	var _internalsIsFunction = __webpack_require__(106);
+
+	var _internalsIsFunction2 = _interopRequireDefault(_internalsIsFunction);
+
+	var trueFn = function () {
+		return true;
+	};
+	var streamsToUpdate = [];
+	var inStream = undefined;
+	var flushing = false;
+	var order = [];
+	var nextOrderIndex = -1;
+
+	function findDependencies(stream) {
+		if (stream.__isQueued === false) {
+			stream.__isQueued = true;
+
+			for (var i = 0; i < stream.__listeners.length; ++i) {
+				findDependencies(stream.__listeners[i]);
+			}
+
+			order[++nextOrderIndex] = stream;
+		}
+	}
+
+	function detachDependencies(stream) {
+		for (var i = 0; i < stream.__dependecies.length; ++i) {
+			stream.__dependecies[i].__listeners[stream.__dependecies[i].__listeners.indexOf(stream)] = stream.__dependecies[i].__listeners[stream.__dependecies[i].__listeners.length - 1];
+			stream.__dependecies[i].__listeners.length--;
+		}
+
+		stream.__dependecies.length = 0;
+	}
+
+	function flushUpdate() {
+		// flush update
+		flushing = true;
+
+		while (streamsToUpdate.length) {
+			var stream = streamsToUpdate.shift();
+
+			if (stream.__values.length > 0) {
+				stream.value = stream.__values.shift();
+			}
+
+			updateDependencies(stream);
+		}
+
+		flushing = false;
+	}
+
+	function updateStream(stream) {
+		stream.__dependenciesMet = true;
+
+		for (var i = 0; i < stream.__dependecies.length; i++) {
+			if (!stream.__dependecies[i].hasValue) {
+				stream.__dependenciesMet = false;
+
+				break;
+			}
+		}
+
+		if (!stream.__dependenciesMet || stream.end && stream.end.value === true) {
+			return;
+		}
+
+		if (inStream) {
+			streamsToUpdate.push(stream);
+		} else {
+			inStream = stream;
+
+			var returnValue = stream.fn(stream, stream.__changedDependencies);
+
+			if (returnValue !== undefined) {
+				stream.push(returnValue);
+			}
+
+			inStream = undefined;
+
+			if (stream.__changedDependencies !== undefined) {
+				stream.__changedDependencies = [];
+			}
+
+			stream.__shouldUpdate = false;
+
+			if (flushing === false) {
+				flushUpdate();
+			}
+		}
+	}
+
+	function updateDependencies(stream) {
+		for (var i = 0; i < stream.__listeners.length; ++i) {
+			if (stream.__listeners[i].end === stream) {
+				if (stream.__listeners[i].__dependecies) {
+					detachDependencies(stream.__listeners[i]);
+				}
+
+				if (stream.__listeners[i].end) {
+					detachDependencies(stream.__listeners[i].end);
+				}
+			} else {
+				if (stream.__listeners[i].__changedDependencies !== undefined) {
+					stream.__listeners[i].__changedDependencies.push(stream);
+				}
+
+				stream.__listeners[i].__shouldUpdate = true;
+
+				findDependencies(stream.__listeners[i]);
+			}
+		}
+
+		for (; nextOrderIndex >= 0; --nextOrderIndex) {
+			if (order[nextOrderIndex].__shouldUpdate === true) {
+				updateStream(order[nextOrderIndex]);
+			}
+
+			order[nextOrderIndex].__isQueued = false;
+		}
+	}
+
+	var Stream = (function () {
+		function Stream(fn /*, ...dependecies*/) {
+			_classCallCheck(this, Stream);
+
+			this.hasValue = false;
+			this.value = undefined;
+			this.__values = [];
+			this.__listeners = [];
+			this.__isQueued = false;
+			this.end = null;
+			this.fn = null;
+			this.__dependecies = [];
+			this.__dependenciesMet = false;
+			this.__changedDependencies = [];
+			this.__shouldUpdate = false;
+			this.isEndStream = false;
+
+			this.update = this.push = this.push.bind(this);
+
+			if (fn === trueFn) {
+				this.fn = fn;
+				this.isEndStream = true;
+			} else {
+				this.end = new Stream(trueFn);
+				this.end.__listeners.push(this);
+
+				if (arguments.length >= 2) {
+					if (!(0, _internalsIsFunction2.default)(fn)) {
+						throw new Error(fn + ' (fn) must be a function!');
+					}
+
+					var dependencies = [];
+					var endStreams = [];
+
+					for (var i = 1; i < arguments.length; i++) {
+						if (arguments[i] instanceof Stream) {
+							dependencies.push(arguments[i]);
+
+							if (arguments[i].end) {
+								endStreams.push(arguments[i].end);
+							}
+						}
+					}
+
+					this.fn = fn;
+
+					// add listeners to stream
+					this.__dependecies = dependencies;
+
+					for (var i = 0; i < dependencies.length; ++i) {
+						dependencies[i].__listeners.push(this);
+					}
+
+					// add listeners to end stream
+					this.end.__dependecies = endStreams;
+
+					for (var i = 0; i < endStreams.length; ++i) {
+						endStreams[i].__listeners.push(this.end);
+					}
+
+					updateStream(this);
+				} else if (arguments.length === 1) {
+					this.push(fn);
+				}
+			}
+
+			return this;
+		}
+
+		_createClass(Stream, [{
+			key: 'get',
+			value: function get() {
+				return this.value;
+			}
+		}, {
+			key: 'push',
+			value: function push(value) {
+				if (value !== undefined && value !== null && (0, _internalsIsFunction2.default)(value.then)) {
+					value.then(this.push).catch(this.push);
+
+					return this;
+				}
+
+				this.value = value;
+				this.hasValue = true;
+
+				if (!inStream) {
+					flushing = true;
+
+					updateDependencies(this);
+
+					if (streamsToUpdate.length > 0) {
+						flushUpdate();
+					} else {
+						flushing = false;
+					}
+				} else if (inStream === this) {
+					// mark listeners
+					for (var i = 0; i < this.__listeners.length; ++i) {
+						if (this.__listeners[i].end !== this) {
+							if (this.__listeners[i].__changedDependencies !== undefined) {
+								this.__listeners[i].__changedDependencies.push(this);
+							}
+							this.__listeners[i].__shouldUpdate = true;
+						} else {
+							if (this.__listeners[i].__dependecies) {
+								detachDependencies(this.__listeners[i]);
+							}
+
+							if (this.__listeners[i].end) {
+								detachDependencies(this.__listeners[i].end);
+							}
+						}
+					}
+				} else {
+					this.__values.push(value);
+					streamsToUpdate.push(this);
+				}
+
+				return this;
+			}
+		}, {
+			key: 'endsOn',
+			value: function endsOn(endStream) {
+				detachDependencies(this.end);
+				endStream.__listeners.push(this.end);
+				this.end.__dependecies.push(endStream);
+
+				return this;
+			}
+		}, {
+			key: 'toString',
+			value: function toString() {
+				return 'stream(' + this.value + ')';
+			}
+		}, {
+			key: 'map',
+			value: function map(fn) {
+				return Stream.map(fn, this);
+			}
+		}, {
+			key: 'on',
+			value: function on(fn) {
+				return Stream.on(fn, this);
+			}
+		}, {
+			key: 'ap',
+			value: function ap(stream) {
+				var _this = this;
+
+				return new Stream(function () {
+					return _this.get()(stream.get());
+				}, this, stream);
+			}
+		}], [{
+			key: 'isStream',
+			value: function isStream(stream) {
+				return stream instanceof Stream;
+			}
+		}, {
+			key: 'map',
+			value: function map(fn, stream) {
+				return new Stream(function (self) {
+					self.push(fn(stream.value));
+				}, stream);
+			}
+		}, {
+			key: 'on',
+			value: function on(fn, stream) {
+				return new Stream(function () {
+					fn(stream.value);
+				}, stream);
+			}
+		}]);
+
+		return Stream;
+	})();
+
+	exports.default = Stream;
+	module.exports = exports.default;
+
+/***/ },
+/* 141 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
@@ -29958,13 +30181,15 @@
 	});
 	exports.default = createElement;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
-	var _classesAshNode = __webpack_require__(141);
+	var _classesAshNode = __webpack_require__(142);
 
 	var _classesAshNode2 = _interopRequireDefault(_classesAshNode);
 
-	var _classesAshElement = __webpack_require__(142);
+	var _classesAshElement = __webpack_require__(143);
 
 	var _classesAshElement2 = _interopRequireDefault(_classesAshElement);
 
@@ -30056,7 +30281,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 141 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30065,9 +30290,15 @@
 		value: true
 	});
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	function _classCallCheck(instance, Constructor) {
+		if (!(instance instanceof Constructor)) {
+			throw new TypeError('Cannot call a class as a function');
+		}
+	}
 
 	var _internalsConstants = __webpack_require__(104);
 
@@ -30084,7 +30315,7 @@
 		this.indices = null;
 		this.parent = null;
 
-		if (typeof properties !== 'undefined') {
+		if (properties !== undefined) {
 			this.type = ASH_NODE;
 			this.tagName = tagName.toLowerCase();
 			this.properties = properties || {};
@@ -30105,7 +30336,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 142 */
+/* 143 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30114,11 +30345,25 @@
 		value: true
 	});
 
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () {
+		function defineProperties(target, props) {
+			for (var i = 0; i < props.length; i++) {
+				var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+			}
+		}return function (Constructor, protoProps, staticProps) {
+			if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+		};
+	})();
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	function _classCallCheck(instance, Constructor) {
+		if (!(instance instanceof Constructor)) {
+			throw new TypeError('Cannot call a class as a function');
+		}
+	}
 
 	var _internalsConstants = __webpack_require__(104);
 
@@ -30213,7 +30458,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 143 */
+/* 144 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -30251,7 +30496,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 144 */
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**

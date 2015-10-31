@@ -73,7 +73,6 @@ export default function createAshElementTree(ashElement, stream/*, startingLevel
 	ashElementTree.isRoot = true;
 
 	if (isComponentAshElement(ashElementTree)) {
-		// instantiate descriptor
 		ashElementTree.instantiate();
 
 		// set up ordering properties
@@ -91,7 +90,6 @@ export default function createAshElementTree(ashElement, stream/*, startingLevel
 		// walk the child
 		walkCreateAshElementTree(ashElementTree.children[0], ashElementTree, 0);
 	} else {
-		// instantiate descriptor
 		ashElementTree.instantiate();
 
 		// set up ordering properties
@@ -106,6 +104,6 @@ export default function createAshElementTree(ashElement, stream/*, startingLevel
 		}
 	}
 
-	// return resulting descriptor tree
+	// return resulting ash element tree
 	return ashElementTree;
 }

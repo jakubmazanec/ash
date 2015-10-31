@@ -1,13 +1,14 @@
 import assert from 'assert';
 import ramda from 'ramda';
 import transducers from 'transducers.js';
-import ash from '../dist';
+import ash from '../src';
+import Promise from 'bluebird';
 
 
 
 describe('ash.Stream', () => {
 	it('can be set with initial value', () => {
-		var num = new ash.Stream({value: 12});
+		var num = new ash.Stream(12);
 
 		assert.equal(num.get(), 12);
 	});
@@ -31,8 +32,8 @@ describe('ash.Stream', () => {
 	});
 
 	it('updates dependencies', () => {
-		var x = ash.Stream.from(3);
-		var x2 = ash.Stream.from(() => {
+		var x = new ash.Stream(3);
+		var x2 = new ash.Stream(() => {
 			return x.get() * 2;
 		}, x);
 
@@ -40,25 +41,17 @@ describe('ash.Stream', () => {
 	});
 
 	it('can set result by returning value', () => {
-		var stream1 = new ash.Stream();
-		var stream2 = new ash.Stream();
-		var sumStream = new ash.Stream();
-
-		stream1.push(3);
-		stream2.push(4);
-		sumStream.from(() => stream1.get() + stream2.get(), stream1, stream2);
+		var stream1 = new ash.Stream(3);
+		var stream2 = new ash.Stream(4);
+		var sumStream = new ash.Stream(() => stream1.get() + stream2.get(), stream1, stream2);
 
 		assert.equal(sumStream.get(), stream1.get() + stream2.get());
 	});
 
 	it('is updated when dependencies change', () => {
-		var stream1 = new ash.Stream();
-		var stream2 = new ash.Stream();
-		var sumStream = new ash.Stream();
-
-		stream1.push(3);
-		stream2.push(4);
-		sumStream.from(() => stream1.get() + stream2.get(), stream1, stream2);
+		var stream1 = new ash.Stream(3);
+		var stream2 = new ash.Stream(4);
+		var sumStream = new ash.Stream(() => stream1.get() + stream2.get(), stream1, stream2);
 
 		assert.equal(sumStream.get(), stream1.get() + stream2.get()); // -> 7
 
@@ -72,18 +65,14 @@ describe('ash.Stream', () => {
 	});
 
 	it('can set result by calling callback', () => {
-		var stream1 = new ash.Stream();
-		var stream2 = new ash.Stream();
-		var sumStream = new ash.Stream();
-		var timesStream = new ash.Stream();
-		var times = 0;
-
-		stream1.push(3);
-		stream2.push(4);
-		sumStream.from((stream) => {
+		var stream1 = new ash.Stream(3);
+		var stream2 = new ash.Stream(4);
+		var sumStream = new ash.Stream((stream) => {
 			stream.push(stream1.get() + stream2.get());
 		}, stream1, stream2);
-		timesStream.from(() => {
+
+		var times = 0;
+		var timesStream = new ash.Stream(() => {
 			times++;
 		}, sumStream);
 
@@ -102,14 +91,13 @@ describe('ash.Stream', () => {
 	it('is not called until dependencies have value', () => {
 		var stream1 = new ash.Stream();
 		var stream2 = new ash.Stream();
-		var sumStream = new ash.Stream();
 		var called = 0;
-
-		sumStream.from(() => {
+		var sumStream = new ash.Stream(() => {
 			called++;
 
 			return stream1.get() + stream2.get();
 		}, stream1, stream2);
+
 
 		stream1.push(2);
 		stream1.push(1);
@@ -121,18 +109,11 @@ describe('ash.Stream', () => {
 	});
 	
 	it('streams can lead into other streams', () => {
-		var stream1 = new ash.Stream();
-		var stream2 = new ash.Stream();
-		var sumStream = new ash.Stream();
-		var doubleSumStream = new ash.Stream();
-		var sumPlusDoubleSumStream = new ash.Stream();
-
-		stream1.push(3);
-		stream2.push(4);
-
-		sumStream.from(() => stream1.get() + stream2.get(), stream1, stream2);
-		doubleSumStream.from(() => sumStream.get() * 2, sumStream);
-		sumPlusDoubleSumStream.from(() => doubleSumStream.get() + sumStream.get(), doubleSumStream, sumStream);
+		var stream1 = new ash.Stream(3);
+		var stream2 = new ash.Stream(4);
+		var sumStream = new ash.Stream(() => stream1.get() + stream2.get(), stream1, stream2);
+		var doubleSumStream = new ash.Stream(() => sumStream.get() * 2, sumStream);
+		var sumPlusDoubleSumStream = new ash.Stream(() => doubleSumStream.get() + sumStream.get(), doubleSumStream, sumStream);
 
 		stream1.push(12);
 
@@ -148,7 +129,7 @@ describe('ash.Stream', () => {
 		assert.equal(sumPlusDoubleSumStream.get(), (2 + 3) * 3);
 	});
 
-	it('stream dependencies can be changed', () => {
+	/*it('stream dependencies can be changed', () => {
 		var result = [];
 		var stream1 = new ash.Stream();
 		var stream2 = new ash.Stream();
@@ -173,9 +154,9 @@ describe('ash.Stream', () => {
 		stream2.push(22);
 
 		assert.deepEqual(result, [11, 21, 13]);
-	});
+	});*/
 
-	it('stream dependencies can be injected later', () => {
+	/*it('stream dependencies can be injected later', () => {
 		var stream2 = new ash.Stream();
 		var stream1 = ash.Stream.from((stream, changed) => changed[0].get() * 2);
 
@@ -184,25 +165,22 @@ describe('ash.Stream', () => {
 		stream2.push(1);
 
 		assert.equal(stream1.get(), 2);
-	});
+	});*/
 
 	it('can get its own value', () => {
-		var num = new ash.Stream({value: 0});
-		var sum = new ash.Stream();
+		var num = new ash.Stream(0);
+		var sum = new ash.Stream((stream) => (stream.get() || 0) + num.get(), num);
 
-		sum.from(() => (sum.get() || 0) + num.get(), num);
 		num.push(2).push(3).push(8).push(7);
 
 		assert.equal(sum.get(), 20);
 	});
 
 	it('is called with changed streams', () => {
-		var s1 = new ash.Stream({value: 0});
-		var s2 = new ash.Stream({value: 0});
-		var dependend = new ash.Stream();
+		var s1 = new ash.Stream(0);
+		var s2 = new ash.Stream(0);
 		var result = [];
-
-		dependend.from((d, changed) => {
+		var dependend = new ash.Stream((d, changed) => {
 			if (changed[0] === s1) {
 				result.push(1);
 			}
@@ -223,14 +201,11 @@ describe('ash.Stream', () => {
 	});
 	
 	it('handles dependencies when streams are triggered in streams', () => {
-		var x = new ash.Stream({value: 4});
-		var y = new ash.Stream({value: 3});
-		var z = new ash.Stream({value: 1});
-		var doubleX = new ash.Stream();
-		var setAndSum = new ash.Stream();
-
-		doubleX.from(() => x.get() * 2, x);
-		setAndSum.from(() => {
+		var x = new ash.Stream(4);
+		var y = new ash.Stream(3);
+		var z = new ash.Stream(1);
+		var doubleX = new ash.Stream(() => x.get() * 2, x);
+		var setAndSum = new ash.Stream(() => {
 			x.push(3);
 
 			return z.get() + y.get();
@@ -243,19 +218,16 @@ describe('ash.Stream', () => {
 
 	it('executes to the end before handlers are triggered', () => {
 		var order = [];
-		var x = new ash.Stream({value: 4});
-		var y = new ash.Stream({value: 3});
-		var doubleX = new ash.Stream();
-		var setAndY = new ash.Stream();
-
-		doubleX.from(function dx() {
+		var x = new ash.Stream(4);
+		var y = new ash.Stream(3);
+		var doubleX = new ash.Stream(() => {
 			if (x.get() === 3) {
 				order.push(2);
 			}
 
 			return x.get() * 2;
 		}, x);
-		setAndY.from(function sy() {
+		var setAndY = new ash.Stream(() => {
 			x.push(3);
 			order.push(1);
 
@@ -267,19 +239,16 @@ describe('ash.Stream', () => {
 	
 	it('with static deps executes to the end', () => {
 		var order = [];
-		var x = new ash.Stream({value: 4});
-		var y = new ash.Stream({value: 3});
-		var doubleX = new ash.Stream();
-		var setAndY = new ash.Stream();
-
-		doubleX.from(() => {
+		var x = new ash.Stream(4);
+		var y = new ash.Stream(3);
+		var doubleX = new ash.Stream(() => {
 			if (x.get() === 3) {
 				order.push(2);
 			}
 
 			return x.get() * 2;
 		}, x);
-		setAndY.from(() => {
+		var setAndY = new ash.Stream(() => {
 			x.push(3);
 			order.push(1);
 
@@ -292,7 +261,7 @@ describe('ash.Stream', () => {
 
 	it('let\'s explicit `undefined` flow down streams', () => {
 		var result = [];
-		var s1 = new ash.Stream({value: undefined});
+		var s1 = new ash.Stream(undefined);
 		var s2 = s1.map((value) => {
 			result.push(value);
 		});
@@ -310,7 +279,7 @@ describe('ash.Stream', () => {
 	
 	it('can typecheck', () => {
 		var s1 = new ash.Stream();
-		var s2 = new ash.Stream({value: null});
+		var s2 = new ash.Stream(null);
 		var s3 = new ash.Stream();
 		var f = () => {};
 
@@ -321,9 +290,9 @@ describe('ash.Stream', () => {
 	});
 	
 	it('has pretty string representation', () => {
-		var ns = new ash.Stream({value: 1});
-		var ss = new ash.Stream({value: 'hello'});
-		var os = new ash.Stream({value: {}});
+		var ns = new ash.Stream(1);
+		var ss = new ash.Stream('hello');
+		var os = new ash.Stream({});
 
 		assert.deepEqual('' + ns, 'stream(1)');
 		assert.deepEqual('' + ss, 'stream(hello)');
@@ -332,10 +301,8 @@ describe('ash.Stream', () => {
 
 	it('can filter values', () => {
 		var result = [];
-		var n = new ash.Stream({value: 0});
-		var lrg5 = new ash.Stream();
-
-		lrg5.from(() => {
+		var n = new ash.Stream(0);
+		var lrg5 = new ash.Stream(() => {
 			if (n.get() > 5) {
 				return n.get();
 			}
@@ -350,10 +317,10 @@ describe('ash.Stream', () => {
 		assert.deepEqual(result, [6, 8]);
 	});
 
-	describe('from static method', () => {
+	/*describe('from static method', () => {
 		it('handles an array', () => {
 			var result = [];
-			var stream = ash.Stream.from([1]);
+			var stream = new ash.Stream([1]);
 			
 			ash.Stream.from(() => {
 				result.push(stream.get());
@@ -363,10 +330,10 @@ describe('ash.Stream', () => {
 			assert.deepEqual(result, [1, 2, undefined, 'foo']);
 		});
 	});
-
+*/
 	describe('ending a stream', () => {
 		it('works for streams without dependencies', () => {
-			var s = new ash.Stream({value: 1});
+			var s = new ash.Stream(1);
 
 			s.end.push(true);
 
@@ -375,11 +342,9 @@ describe('ash.Stream', () => {
 		});
 
 		it('detaches it from dependencies', () => {
-			var x = new ash.Stream({value: 3});
-			var y = new ash.Stream({value: 2});
-			var sum = new ash.Stream();
-
-			sum.from(() => y.get() * x.get(), y, x);
+			var x = new ash.Stream(3);
+			var y = new ash.Stream(2);
+			var sum = new ash.Stream(() => y.get() * x.get(), y, x);
 
 			assert.equal(y.__listeners.length, 1);
 			assert.equal(x.__listeners.length, 1);
@@ -392,12 +357,9 @@ describe('ash.Stream', () => {
 		});
 
 		it('ends its dependents', () => {
-			var x = new ash.Stream({value: 3});
-			var y = new ash.Stream();
-			var z = new ash.Stream();
-
-			y.from(() => 2 * x.get(), x);
-			z.from(() => 2 * y.get(), y);
+			var x = new ash.Stream(3);
+			var y = new ash.Stream(() => 2 * x.get(), x);
+			var z = new ash.Stream(() => 2 * y.get(), y);
 
 			assert.equal(z.get(), x.get() * 2 * 2);
 
@@ -411,19 +373,16 @@ describe('ash.Stream', () => {
 		});
 
 		it('updates children if stream ends after recieving value', () => {
-			var x = new ash.Stream({value: 3});
-			var whenX2 = new ash.Stream();
-			var y = new ash.Stream();
-			var z = new ash.Stream();
-
-			whenX2.from(() => {
+			var x = new ash.Stream(3);
+			var whenX2 = new ash.Stream(() => {
 				if (x.get() === 0) {
 					return true;
 				}
 			}, x);
-			y.from(() => x.get(), x);
+			var y = new ash.Stream(() => x.get(), x);
+			var z = new ash.Stream(() => y.get(), y);
+
 			y.endsOn(whenX2);
-			z.from(() => y.get(), y);
 
 			assert.equal(y.get(), z.get());
 
@@ -444,11 +403,10 @@ describe('ash.Stream', () => {
 		});
 		
 		it('works if end stream has initial value', () => {
-			var killer = new ash.Stream({value: true});
-			var x = new ash.Stream({value: 1});
-			var y = new ash.Stream();
+			var killer = new ash.Stream(true);
+			var x = new ash.Stream(1);
+			var y = new ash.Stream(() => 2 * x.get(), x);
 
-			y.from(() => 2 * x.get(), x);
 			y.endsOn(killer);
 			x.push(2);
 
@@ -457,11 +415,10 @@ describe('ash.Stream', () => {
 		});
 
 		it('end stream does not have value even if base stream has initial value', () => {
-			var killer = new ash.Stream({value: true});
-			var x = new ash.Stream({value: 1});
-			var y = new ash.Stream();
+			var killer = new ash.Stream(true);
+			var x = new ash.Stream(1);
+			var y = new ash.Stream(() => 2 * x.get(), x);
 
-			y.from(() => 2 * x.get(), x);
 			y.endsOn(killer);
 
 			assert.equal(false, y.end.hasValue);
@@ -470,11 +427,10 @@ describe('ash.Stream', () => {
 		it('ends stream can be changed without affecting listeners', () => {
 			var killer1 = new ash.Stream();
 			var killer2 = new ash.Stream();
-			var ended = false;
-			var x = new ash.Stream({value: 1});
-			var y = new ash.Stream();
+			let ended = false;
+			var x = new ash.Stream(1);
+			var y = new ash.Stream(() => 2 * x.get(), x);
 
-			y.from(() => 2 * x.get(), x);
 			y.endsOn(killer1);
 			y.end.map(() => {
 				ended = true;
@@ -487,7 +443,7 @@ describe('ash.Stream', () => {
 
 		it('end stream can be set on top level stream', () => {
 			var killer = new ash.Stream();
-			var s = new ash.Stream({value: 1});
+			var s = new ash.Stream(1);
 
 			s.endsOn(killer);
 
@@ -502,28 +458,25 @@ describe('ash.Stream', () => {
 	describe('promise integration', () => {
 		it('pushes result of promise down the stream', (done) => {
 			var s = new ash.Stream();
-			var result = new ash.Stream();
-
-			result.from(() => {
+			var result = new ash.Stream(() => {
 				assert.equal(s.get(), 12);
 				done();
 			}, s);
 
 			s.push(Promise.resolve(12));
+
 		});
 
 		it('recursively unpacks promise', (done) => {
 			var s = new ash.Stream();
-			var result = new ash.Stream();
-
-			result.from(() => {
+			var result = new ash.Stream(() => {
 				assert.equal(s.get(), 12);
 				done();
 			}, s);
 
-			s.push(new Promise((resolve1/*, reject*/) => {
+			s.push(new Promise((resolve1) => {
 				setTimeout(() => {
-					resolve1(new Promise((resolve2/*, reject*/) => {
+					resolve1(new Promise((resolve2) => {
 						setTimeout(resolve2.bind(null, 12));
 					}));
 				}, 20);
@@ -533,7 +486,7 @@ describe('ash.Stream', () => {
 
 	describe('map', () => {
 		it('maps a function', () => {
-			var x = new ash.Stream({value: 3});
+			var x = new ash.Stream(3);
 			var doubleX = x.map((v) => 2 * v);
 
 			assert.equal(doubleX.get(), 6);
@@ -544,7 +497,7 @@ describe('ash.Stream', () => {
 		});
 
 		it('maps a function', () => {
-			var x = new ash.Stream({value: 3});
+			var x = new ash.Stream(3);
 			var doubleX = x.map((v) => 2 * v);
 
 			assert.equal(doubleX.get(), 6);
@@ -555,7 +508,7 @@ describe('ash.Stream', () => {
 		});
 
 		it('handles function returning undefined', () => {
-			var x = new ash.Stream({value: 1});
+			var x = new ash.Stream(1);
 			var maybeDoubleX = x.map((v) => v > 3 ? 2 * v : undefined);
 
 			assert.equal(undefined, maybeDoubleX.get());
@@ -576,7 +529,7 @@ describe('ash.Stream', () => {
 		});*/
 
 		it('returns equivalent stream when mapping identity', () => {
-			var x = new ash.Stream({value: 3});
+			var x = new ash.Stream(3);
 			var x2 = x.map((a) => a);
 
 			assert.equal(x2.get(), x.get());
@@ -589,7 +542,7 @@ describe('ash.Stream', () => {
 		it('is compositive', () => {
 			var f = (v) => v * 2;
 			var g = (v) => v + 4;
-			var x = new ash.Stream({value: 3});
+			var x = new ash.Stream(3);
 			var s1 = x.map(g).map(f);
 			var s2 = x.map((v) => f(g(v)));
 
@@ -600,7 +553,8 @@ describe('ash.Stream', () => {
 			assert.equal(s1.get(), s2.get());
 		});
 	});
-	describe('reduce', () => {
+	
+	/*describe('reduce', () => {
 		it('has initial acc as value when stream is undefined', () => {
 			var numbers = new ash.Stream();
 			var sum = numbers.reduce((s, n) => s + n, 0);
@@ -626,8 +580,9 @@ describe('ash.Stream', () => {
 			numbers(3)(2)(4)(10);
 			assert.equal(sum(), 19);
 		});*/
-	});
-	describe('merge', () => {
+	/*});*/
+	
+	/*describe('merge', () => {
 		it('can sum streams of integers', () => {
 			var result = [];
 			var s1 = new ash.Stream();
@@ -645,7 +600,7 @@ describe('ash.Stream', () => {
 			assert.deepEqual(result, [12, 2, 4, 44, 1, 12, 2]);
 		});
 
-		/*it('is curried', function() {
+		it('is curried', function() {
 			var result = [];
 			var s1 = stream();
 			var mergeWithS1 = flyd.merge(s1);
@@ -654,7 +609,7 @@ describe('ash.Stream', () => {
 			flyd.map(function(v) { result.push(v); }, s1and2);
 			s1(12)(2); s2(4)(44); s1(1); s2(12)(2);
 			assert.deepEqual(result, [12, 2, 4, 44, 1, 12, 2]);
-		});*/
+		});
 
 		it('ends only when both merged streams have ended', () => {
 			var result = [];
@@ -680,12 +635,12 @@ describe('ash.Stream', () => {
 
 			assert.deepEqual(result, [12, 2, 4, 44, 1, 12, 2]);
 		});
-	});
+	});*/
 
-	describe('ap', () => {
+	/*describe('ap', () => {
 		it('applies functions in stream', () => {
-			var a = new ash.Stream({value: (x) => 2 * x});
-			var v = new ash.Stream({value: 3});
+			var a = new ash.Stream((x) => 2 * x);
+			var v = new ash.Stream(3);
 			var s = a.ap(v);
 
 			assert.equal(s.get(), 6);
@@ -700,9 +655,9 @@ describe('ash.Stream', () => {
 		});
 		
 		it('is compositive', () => {
-			var a = new ash.Stream({value: (x) => x * 2});
-			var u = new ash.Stream({value: (x) => x + 5});
-			var v = new ash.Stream({value: 8});
+			var a = new ash.Stream((x) => x * 2);
+			var u = new ash.Stream((x) => x + 5);
+			var v = new ash.Stream(8);
 			var s1 = a.map((f) => (g) => (x) => f(g(x))).ap(u).ap(v);
 			var s2 = a.ap(u.ap(v));
 
@@ -728,9 +683,9 @@ describe('ash.Stream', () => {
 		it('supports neat ap pattern', () => {
 			var result = [];
 			var sumThree = ramda.curryN(3, (x, y, z) => x + y + z);
-			var s1 = new ash.Stream({value: 0});
-			var s2 = new ash.Stream({value: 0});
-			var s3 = new ash.Stream({value: 0});
+			var s1 = new ash.Stream(0);
+			var s2 = new ash.Stream(0);
+			var s3 = new ash.Stream(0);
 			var sum = s1.map(sumThree).ap(s2).ap(s3);
 			var s4 = sum.map((v) => {
 				result.push(v);
@@ -760,9 +715,9 @@ describe('ash.Stream', () => {
 
 			assert.deepEqual(result, [5, 6]);
 		});
-	});
+	});*/
 
-	describe('of', () => {
+	/*describe('of', () => {
 		/*it('returns a stream with the passed value', function() {
 			var s1 = stream(2);
 			var s2 = s1.of(3);
@@ -789,7 +744,7 @@ describe('ash.Stream', () => {
 			var u = stream()(function(x) { return 3*x; });
 			assert.equal(u.ap(a.of(y))(), a.of(function(f) { return f(y); }).ap(u)());
 		});*/
-		it('can create dependent stream inside stream', () => {
+		/*it('can create dependent stream inside stream', () => {
 			var one = new ash.Stream();
 
 			ash.Stream.from((self) => {
@@ -842,18 +797,18 @@ describe('ash.Stream', () => {
 			str(2);
 			str(3);
 			assert.deepEqual(result, [1, 2, 3]);*/
-		});
-	});
+		/*});
+	});*/
 
-	describe('transducer.js transducer support', () => {
+	/*describe('transducer.js transducer support', () => {
 		it('creates new stream with map applied', () => {
 			var result = [];
 			var s1 = new ash.Stream();
-			var tx = transducers.map(function (x) { return x * 3; });
+			var tx = transducers.map((x) => x * 3);
 			var s2 = ash.Stream.transduce(tx, s1);
 			var r = new ash.Stream();
 
-			r.from(function () { result.push(s2.get()); }, s2);
+			r.from(() => { result.push(s2.get()); }, s2);
 
 			s1.push(1).push(2).push(4).push(6);
 
@@ -864,13 +819,13 @@ describe('ash.Stream', () => {
 			var result = [];
 			var s1 = new ash.Stream();
 			var tx = transducers.compose(
-				transducers.map(function (x) { return x * 3; }),
-				transducers.filter(function (x) { return x % 2 === 0; })
+				transducers.map((x) => x * 3),
+				transducers.filter((x) => x % 2 === 0)
 			);
 			var s2 = ash.Stream.transduce(tx, s1);
 			var r = new ash.Stream();
 
-			r.from(function () { result.push(s2.get()); }, s2);
+			r.from(() => { result.push(s2.get()); }, s2);
 			s1.push(1).push(2).push(3).push(4);
 
 			assert.deepEqual(result, [6, 12]);
@@ -915,9 +870,9 @@ describe('ash.Stream', () => {
 
 			assert.deepEqual(result, [2, 4, 6]);
 		});
-	});
+	});*/
 
-	describe('Ramda transducer support', () => {
+	/*describe('Ramda transducer support', () => {
 		it('creates new stream with map applied', () => {
 			var result = [];
 			var s1 = new ash.Stream();
@@ -972,19 +927,15 @@ describe('ash.Stream', () => {
 
 			assert.deepEqual(result, [2, 4, 6, 8]);
 		});
-	});
+	});*/
 
 	describe('atomic updates', () => {
 		it('does atomic updates', () => {
 			var result = [];
-			var a = new ash.Stream({value: 1});
-			var b = new ash.Stream();
-			var c = new ash.Stream();
-			var d = new ash.Stream();
-
-			b.from(() => a.get() * 2, a);
-			c.from(() => a.get() + 4, a);
-			d.from(() => {
+			var a = new ash.Stream(1);
+			var b = new ash.Stream(() => a.get() * 2, a);
+			var c = new ash.Stream(() => a.get() + 4, a);
+			var d = new ash.Stream(() => {
 				result.push(b.get() + c.get());
 			}, b, c);
 
@@ -995,13 +946,10 @@ describe('ash.Stream', () => {
 
 		it('does not glitch', () => {
 			var result = [];
-			var s1 = new ash.Stream({value: 1});
+			var s1 = new ash.Stream(1);
 			var s1x2 = s1.map((n) => n * 2);
-			var s2 = new ash.Stream();
-			var s1x4 = new ash.Stream();
-
-			s2.from(() => s1.get() + s1x2.get(), s1, s1x2);
-			s1x4.from(() => s1.get() + s2.get(), s1, s2);
+			var s2 = new ash.Stream(() => s1.get() + s1x2.get(), s1, s1x2);
+			var s1x4 = new ash.Stream(() => s1.get() + s2.get(), s1, s2);
 
 			let res = s1x4.map((n) => {
 				result.push(n);
@@ -1015,20 +963,12 @@ describe('ash.Stream', () => {
 		it('handles complex dependency graph', () => {
 			var result = [];
 			var a = new ash.Stream();
-			var b = new ash.Stream();
-			var c = new ash.Stream();
-			var d = new ash.Stream();
-			var e = new ash.Stream();
+			var b = new ash.Stream(() => a.get() + 1, a);
+			var c = new ash.Stream(() => a.get() + 2, a);
+			var d = new ash.Stream(() => c.get() + 3, c);
+			var e = new ash.Stream(() => b.get() + d.get(), b, d);
 
-
-			b.from(function bs() { return a.get() + 1; }, a);
-			c.from(function cs() { return a.get() + 2; }, a);
-			d.from(function ds() { return c.get() + 3; }, c);
-			e.from(function res() {
-				return b.get() + d.get();
-			}, b, d);
-
-			e.map(function (v) { result.push(v); }, e);
+			e.map((v) => { result.push(v); }, e);
 			a.push(1).push(5).push(11);
 
 			assert.deepEqual(result, [8, 16, 28]);
@@ -1037,16 +977,12 @@ describe('ash.Stream', () => {
 		it('handles another complex dependency graph', () => {
 			var result = [];
 			var a = new ash.Stream();
-			var b = new ash.Stream();
-			var c = new ash.Stream();
-			var d = new ash.Stream();
-			var e = new ash.Stream();
+			var b = new ash.Stream(() => a.get() + 1, a);
+			var c = new ash.Stream(() => a.get() + 2, a);
+			var d = new ash.Stream(() => a.get() + 4, a);
+			var e = new ash.Stream(() => b.get() + c.get() + d.get(), b, c, d);
 
-			b.from(function () { return a.get() + 1; }, a);
-			c.from(function () { return a.get() + 2; }, a);
-			d.from(function () { return a.get() + 4; }, a);
-			e.from(function () { return b.get() + c.get() + d.get(); }, b, c, d);
-			e.map(function (v) { result.push(v); });
+			e.map((v) => { result.push(v); });
 
 			a.push(1).push(2).push(3);
 
@@ -1055,22 +991,15 @@ describe('ash.Stream', () => {
 
 		it('is called with all changed dependencies', () => {
 			var result = [];
-			var a = new ash.Stream({value: 0});
-			var b = new ash.Stream();
-			var c = new ash.Stream();
-			var d = new ash.Stream({value: 0});
-			var e = new ash.Stream();
-			var f = new ash.Stream();
-			var g = new ash.Stream();
-			var h = new ash.Stream();
-
-			b.from(function () { return a.get() + 1; }, a);
-			c.from(function () { return a.get() + 2; }, a);
-			e.from(function () { return d.get() + 4; }, d);
-			f.from(function () { return d.get() + 5; }, d);
-			g.from(function () { return d.get() + 6; }, d);
-			h.from(function (self, changed) {
-				var vals = changed.map(function (s) { return s.get(); });
+			var a = new ash.Stream(0);
+			var b = new ash.Stream(() => a.get() + 1, a);
+			var c = new ash.Stream(() => a.get() + 2, a);
+			var d = new ash.Stream(0);
+			var e = new ash.Stream(() => d.get() + 4, d);
+			var f = new ash.Stream(() => d.get() + 5, d);
+			var g = new ash.Stream(() => d.get() + 6, d);
+			var h = new ash.Stream((self, changed) => {
+				var vals = changed.map((s) => s.get());
 				
 				result.push(vals);
 				

@@ -11,7 +11,7 @@ class AshNode {
 		this.indices = null;
 		this.parent = null;
 
-		if (typeof properties !== 'undefined') {
+		if (properties !== undefined) {
 			this.type = ASH_NODE;
 			this.tagName = tagName.toLowerCase();
 			this.properties = properties || {};

@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 exports.getStreamsQueue = getStreamsQueue;
-var streamsQueue = global.queue = [];
+var streamsQueue = [];
 
 streamsQueue.isUpdating = false;
 

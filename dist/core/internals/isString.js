@@ -5,7 +5,9 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports.default = isString;
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { 'default': obj };
+}
 
 var _isObjectLike = require('./isObjectLike');
 

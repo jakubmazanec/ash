@@ -17,8 +17,6 @@ var Renderer = global.Renderer = new ash.Renderer();
 
 
 
-
-
 class Header extends ash.Component {
 	render() {
 		return <header>Test component!</header>;
@@ -47,16 +45,20 @@ class BarContent extends ash.Component {
 
 class Content extends ash.Component {
 	render(props, state) {
-		let elements;
+		let elements = [];
 
 		console.log('Content render...', props, state);
 
-		if (this.props.show === 'foo') {
+		/*if (this.props.show === 'foo') {
 			elements = <FooContent />;
 		} else if (this.props.show === 'bar') {
 			elements = <BarContent />;
 		} else {
 			elements = '---';
+		}*/
+
+		for (let i = 0; i < 10; i++) {
+			elements.push(<i>{this.props.show + ' ' + i}</i>);
 		}
 
 
@@ -73,9 +75,9 @@ class App extends ash.Component {
 
 	render() {
 		return <div>
-			<Content show={this.state.show} />
 			<a href="#" events={{click: this.showFoo}}>FooContent</a>
 			<a href="#" events={{click: this.showBar}}>BarContent</a>
+			<Content show={this.state.show} />
 		</div>;
 	}
 
@@ -102,24 +104,22 @@ class App extends ash.Component {
 
 
 
-// var viewStream = ash.AshNodeStream.from(<ReorderApp />);
-
-// import addToList1Action from './actions/addToList1Action';
-// import addToList2Action from './actions/addToList2Action';
-
-
 var viewStream = ash.AshNodeStream.from(<App />);
-
-global.viewStream = viewStream;
-
-// addToList1Action.from(App.list1);
-// addToList2Action.from(App.list2);
 
 Renderer.addStream(viewStream, global.document.querySelector('.page'));
 
 
+var s = new ash.Stream();
+			var result = new ash.Stream(() => {
+				console.log('oj!');
+				// assert.equal(s.get(), 12);
+				// done();
+			}, s);
 
+			// s.push(Promise.resolve(12));
+			s.push(12);
 
+			console.log(Promise.resolve(12).then);
 
 // React.render(
 // 	React.createElement(AppReact),
@@ -177,7 +177,7 @@ setTimeout(() => {
 
 
 
-var Utils = global.Utils = {
+/*var Utils = global.Utils = {
 	uuid() {
 		var i;
 		var random;
@@ -382,12 +382,6 @@ class TodoApp extends ash.Component {
 	}
 
 	onMount() {
-		/* var router = Router({
-			'/': this.setState.bind(this, {nowShowing: ALL_TODOS}),
-			'/active': this.setState.bind(this, {nowShowing: ACTIVE_TODOS}),
-			'/completed': this.setState.bind(this, {nowShowing: COMPLETED_TODOS})
-		});
-		router.init();*/
 		$(this.domNode).find('#new-todo')[0].focus();
 	}
 
@@ -471,9 +465,6 @@ class TodoApp extends ash.Component {
 		this.setState({todos: newTodos});
 	}
 
-	/* componentDidUpdate() {
-		Utils.store('react-todos', this.state.todos);
-	}*/
 
 	render() {
 		var footer = null;
@@ -547,7 +538,7 @@ class TodoApp extends ash.Component {
 			{footer}
 		</div>;
 	}
-}
+}*/
 
 // Renderer.addStream(ash.AshNodeStream.from(<TodoApp />), global.document.querySelector('#todoapp'));
 

@@ -5,7 +5,9 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports.default = patchNodeTree;
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { 'default': obj };
+}
 
 var _internalsConstants = require('../internals/constants');
 
@@ -66,17 +68,14 @@ function compareNodes(a, b) {
 }
 
 function walkReindexChildNodes(node, level, newIndex) {
-	var childIndices;
+	var childIndices = undefined;
 
 	for (var i = 0; i < node.childNodes.length; i++) {
 		if (node.childNodes[i].nodeType === 1) {
 			childIndices = (0, _parseAshNodeId2.default)(node.childNodes[i][ID_ATTRIBUTE_NAME]);
 			childIndices[level] = newIndex;
-
 			node.childNodes[i][ID_ATTRIBUTE_NAME] = childIndices.join(INDEX_SEPARATOR);
 			node.childNodes[i][INDEX_ATTRIBUTE_NAME] = childIndices[childIndices.length - 1];
-			//$(node.childNodes[i]).attr('nodeId', node.childNodes[i][ID_ATTRIBUTE_NAME]);
-			//$(node.childNodes[i]).attr('index', node.childNodes[i][INDEX_ATTRIBUTE_NAME]);
 
 			if (node.childNodes[i].childNodes && node.childNodes[i].childNodes.length) {
 				walkReindexChildNodes(node.childNodes[i], level, newIndex);
@@ -96,9 +95,6 @@ function flushCache(reindexCache, reorderCache) {
 	while (reindexCache.length > 0) {
 		reindexCache[0].node[ID_ATTRIBUTE_NAME] = reindexCache[0].newId;
 		reindexCache[0].node[INDEX_ATTRIBUTE_NAME] = reindexCache[0].newIndex;
-
-		//$(reindexCache[0].node).attr('nodeId', reindexCache[0].node[ID_ATTRIBUTE_NAME]);
-		//$(reindexCache[0].node).attr('index', reindexCache[0].node[INDEX_ATTRIBUTE_NAME]);
 
 		reindexChildNodes(reindexCache[0].node, reindexCache[0].newIndex);
 
@@ -124,7 +120,6 @@ function flushCache(reindexCache, reorderCache) {
 			children[i] = reorderCache[0].childNodes[i];
 		}
 
-		// sort children
 		children.sort(compareNodes);
 
 		for (var i = 0; i < children.length; i++) {
@@ -140,7 +135,7 @@ function flushCache(reindexCache, reorderCache) {
 
 function patchNodeTree(nodeTree /*, patches*/) {
 	var patches = arguments[1];
-	var node;
+	var node = undefined;
 	var reindexCache = [];
 	var reorderCache = [];
 
@@ -156,6 +151,14 @@ function patchNodeTree(nodeTree /*, patches*/) {
 	// if there is non zero max index, compute number of its digits
 	var maxDigits = patches.maxIndex > 0 ? Math.floor(Math.log(Math.abs(Math.floor(patches.maxIndex))) / Math.LN10) + 1 : 1;
 
+	var ZERO_PADDED_9 = zeroPadNumber(9, maxDigits);
+	var ZERO_PADDED_8 = zeroPadNumber(8, maxDigits);
+	var ZERO_PADDED_7 = zeroPadNumber(7, maxDigits);
+	var ZERO_PADDED_6 = zeroPadNumber(6, maxDigits);
+	var ZERO_PADDED_5 = zeroPadNumber(5, maxDigits);
+	var ZERO_PADDED_4 = zeroPadNumber(4, maxDigits);
+	var ZERO_PADDED_0 = zeroPadNumber(0, maxDigits);
+
 	// compute sort order
 	for (var i = 0; i < patches.length; i++) {
 		patches[i].sortOrder = '';
@@ -167,19 +170,19 @@ function patchNodeTree(nodeTree /*, patches*/) {
 
 		// then the patch type is important
 		if (patches[i].type === PATCH_ASH_NODE) {
-			patches[i].sortOrder += zeroPadNumber(9, maxDigits);
+			patches[i].sortOrder += ZERO_PADDED_9;
 		} else if (patches[i].type === PATCH_ASH_TEXT_NODE) {
-			patches[i].sortOrder += zeroPadNumber(8, maxDigits);
+			patches[i].sortOrder += ZERO_PADDED_8;
 		} else if (patches[i].type === PATCH_PROPERTIES) {
-			patches[i].sortOrder += zeroPadNumber(7, maxDigits);
+			patches[i].sortOrder += ZERO_PADDED_7;
 		} else if (patches[i].type === PATCH_REMOVE) {
-			patches[i].sortOrder += zeroPadNumber(6, maxDigits);
+			patches[i].sortOrder += ZERO_PADDED_6;
 		} else if (patches[i].type === PATCH_INSERT) {
-			patches[i].sortOrder += zeroPadNumber(5, maxDigits);
+			patches[i].sortOrder += ZERO_PADDED_5;
 		} else if (patches[i].type === PATCH_ORDER) {
-			patches[i].sortOrder += zeroPadNumber(4, maxDigits);
+			patches[i].sortOrder += ZERO_PADDED_4;
 		} else {
-			patches[i].sortOrder += zeroPadNumber(0, maxDigits);
+			patches[i].sortOrder += ZERO_PADDED_0;
 		}
 
 		// and now the last level
@@ -191,8 +194,6 @@ function patchNodeTree(nodeTree /*, patches*/) {
 
 	// sort patches by their order
 	patches.sort(comparePatches);
-
-	// console.log('patches', patches);
 
 	// now iterate over patches...
 	var lastLevel = patches[patches.length - 1].indices.length;
@@ -211,7 +212,7 @@ function patchNodeTree(nodeTree /*, patches*/) {
 			// remove old events
 			eventListener.removeEvents(patches[i].id, patches[i].streamId);
 
-			// replace node
+			// find node
 			node = (0, _findNode2.default)(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
@@ -292,12 +293,9 @@ function patchNodeTree(nodeTree /*, patches*/) {
 
 			reorderCache.push(node.parentNode);
 		}
-
-		// debugger;
 	}
 
 	flushCache(reindexCache, reorderCache);
-
 	eventListener.markEvents(patches.streamId);
 
 	return true;

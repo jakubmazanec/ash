@@ -4,11 +4,25 @@ Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = (function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+})();
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { 'default': obj };
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError('Cannot call a class as a function');
+	}
+}
 
 var _StreamTransformer = require('./StreamTransformer');
 
@@ -40,18 +54,14 @@ var _methodsUpdateStreamsQueue2 = _interopRequireDefault(_methodsUpdateStreamsQu
 
 var streamsQueue = (0, _streamsQueue.getStreamsQueue)();
 
-function _ref() {
-	return true;
-}
-
 var Stream = (function () {
 	function Stream() {
-		var _ref2 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+		var _ref = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-		var _ref2$isEndStream = _ref2.isEndStream;
-		var isEndStream = _ref2$isEndStream === undefined ? false : _ref2$isEndStream;
-		var value = _ref2.value;
-		var transformFn = _ref2.transformFn;
+		var _ref$isEndStream = _ref.isEndStream;
+		var isEndStream = _ref$isEndStream === undefined ? false : _ref$isEndStream;
+		var value = _ref.value;
+		var transformFn = _ref.transformFn;
 
 		_classCallCheck(this, Stream);
 
@@ -81,7 +91,9 @@ var Stream = (function () {
 			this.end.__listeners.push(this);
 		} else {
 			this.isEndStream = true;
-			this.fn = _ref;
+			this.fn = function () {
+				return true;
+			};
 		}
 
 		if ((0, _internalsIsFunction2.default)(transformFn)) {
@@ -279,13 +291,13 @@ var Stream = (function () {
 	}, {
 		key: 'from',
 		value: function from(fn) {
-			var _ref3;
+			var _ref2;
 
 			for (var _len3 = arguments.length, args = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
 				args[_key3 - 1] = arguments[_key3];
 			}
 
-			return (_ref3 = new Stream()).from.apply(_ref3, [fn].concat(args));
+			return (_ref2 = new Stream()).from.apply(_ref2, [fn].concat(args));
 		}
 	}, {
 		key: 'map',

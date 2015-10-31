@@ -5,7 +5,9 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports.default = createAshElementTree;
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { 'default': obj };
+}
 
 var _internalsIsAshElement = require('../internals/isAshElement');
 
@@ -92,7 +94,6 @@ function createAshElementTree(ashElement, stream /*, startingLevel*/) {
 	ashElementTree.isRoot = true;
 
 	if ((0, _internalsIsComponentAshElement2.default)(ashElementTree)) {
-		// instantiate descriptor
 		ashElementTree.instantiate();
 
 		// set up ordering properties
@@ -110,7 +111,6 @@ function createAshElementTree(ashElement, stream /*, startingLevel*/) {
 		// walk the child
 		walkCreateAshElementTree(ashElementTree.children[0], ashElementTree, 0);
 	} else {
-		// instantiate descriptor
 		ashElementTree.instantiate();
 
 		// set up ordering properties
@@ -125,7 +125,7 @@ function createAshElementTree(ashElement, stream /*, startingLevel*/) {
 		}
 	}
 
-	// return resulting descriptor tree
+	// return resulting ash element tree
 	return ashElementTree;
 }
 

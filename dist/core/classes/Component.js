@@ -39,20 +39,32 @@ var LIFECYCLE_MOUNTING = _internalsConstants2.default.LIFECYCLE_MOUNTING;
 var LIFECYCLE_MOUNTED = _internalsConstants2.default.LIFECYCLE_MOUNTED;
 var LIFECYCLE_UNINITIALIZED = _internalsConstants2.default.LIFECYCLE_UNINITIALIZED;
 
-function _ref(value) {
-	return value !== 'caller' && value !== 'callee' && value !== 'arguments';
-}
-
 var Component = (function () {
 	function Component() {
-		var _this = this;
+		var _this = this,
+		    _arguments = arguments;
 
 		var props = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
 
 		_classCallCheck(this, Component);
 
+		this.__element = null;
 		this.__previousLifecycle = LIFECYCLE_UNINITIALIZED;
 		this.__currentLifecycle = LIFECYCLE_UNMOUNTED;
+		this.props = null;
+		this.state = null;
+
+		this.update = function () {
+			if (_this.__element.stream) {
+				_this.__element.stream.push(_this);
+			}
+
+			if (_arguments[0] instanceof _streamsStream2.default) {
+				return undefined;
+			}
+
+			return _this;
+		};
 
 		// autobind methods
 		var prototype = Object.getPrototypeOf(this);
@@ -60,16 +72,18 @@ var Component = (function () {
 		Object.getOwnPropertyNames(prototype).forEach(function (value) {
 			var descriptor = Object.getOwnPropertyDescriptor(prototype, value);
 
+			// typeof must be used to avoid executing getter and setters
 			if (!(descriptor && (typeof descriptor.get !== 'undefined' || typeof descriptor.set !== 'undefined')) && (0, _internalsIsFunction2.default)(_this[value]) && value !== 'constructor') {
 				_this[value] = _this[value].bind(_this);
 			}
 		});
 
 		this.props = props;
-		this.update = this.update.bind(this);
 
 		// references to the component streams
-		Object.getOwnPropertyNames(this.constructor).filter(_ref).forEach(function (value) {
+		Object.getOwnPropertyNames(this.constructor).filter(function (value) {
+			return value !== 'caller' && value !== 'callee' && value !== 'arguments';
+		}).forEach(function (value) {
 			if (_this.constructor[value] instanceof _streamsStream2.default && !_this[value]) {
 				_this[value] = _this.constructor[value];
 			}
@@ -77,25 +91,8 @@ var Component = (function () {
 	}
 
 	_createClass(Component, [{
-		key: 'update',
-		value: function update() {
-			if (this.__element.stream) {
-				// console.log('Component update...', this.__element.Spec, this);
-				this.__element.stream.push(this);
-			}
-
-			if (arguments[0] instanceof _streamsStream2.default) {
-				return undefined;
-			}
-
-			return this;
-		}
-	}, {
 		key: 'shouldUpdate',
 		value: function shouldUpdate(newProps) {
-			// console.log('Component shouldUpdate...', this.constructor);
-			// console.log(this.props, newProps, '===?', this.props === newProps);
-
 			return this.props !== newProps;
 		}
 	}, {
