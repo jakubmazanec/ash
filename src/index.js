@@ -1,16 +1,11 @@
 import support from './core/support';
-
 import Component from './core/classes/Component';
-import Renderer from './core/classes/Renderer';
-import Stream from './core/streams/Stream';
-import Stream2 from './core/streams/Stream2';
-import AshNodeStream from './core/streams/AshNodeStream';
-
+import Stream from './core/classes/Stream';
+import ViewStream from './core/classes/ViewStream';
+import RenderStream from './core/classes/RenderStream';
 import createElement from './core/internals/createElement';
-
 import assign from './core/internals/assign';
 import isAncestor from './core/internals/isAncestor';
-
 
 
 /**
@@ -25,9 +20,9 @@ assign(ash, {
 	support,
 
 	Component,
-	Renderer,
-	Stream: Stream2,
-	AshNodeStream,
+	Stream,
+	ViewStream,
+	RenderStream,
 
 	createElement,
 

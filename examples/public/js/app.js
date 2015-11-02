@@ -102,7 +102,7 @@
 
 	var _ash2 = _interopRequireDefault(_ash);
 
-	var _immutable = __webpack_require__(145);
+	var _immutable = __webpack_require__(136);
 
 	var _immutable2 = _interopRequireDefault(_immutable);
 
@@ -110,8 +110,6 @@
 	global._ = _lodashFp2.default;
 	global.ash = _ash2.default;
 	global.Immutable = _immutable2.default;
-
-	var Renderer = global.Renderer = new _ash2.default.Renderer();
 
 	var Header = (function (_ash$Component) {
 		_inherits(Header, _ash$Component);
@@ -184,7 +182,7 @@
 			value: function render(props, state) {
 				var elements = [];
 
-				console.log('Content render...', props, state);
+				// console.log('Content render...', props, state);
 
 				/*if (this.props.show === 'foo') {
 	   	elements = <FooContent />;
@@ -205,6 +203,19 @@
 		return Content;
 	})(_ash2.default.Component);
 
+	var storeStream = new _ash2.default.Stream(function (self, changed) {
+		console.log('storeStream fn...', changed.length);
+		if (changed.length) {
+			var data = self.get();
+
+			data.amount += changed[0].get();
+
+			return data;
+		}
+	});
+
+	storeStream.push({ amount: 0 });
+
 	var App = (function (_ash$Component5) {
 		_inherits(App, _ash$Component5);
 
@@ -221,7 +232,23 @@
 		_createClass(App, [{
 			key: 'render',
 			value: function render() {
-				return _ash2.default.createElement('div', null, _ash2.default.createElement('a', { href: '#', events: { click: this.showFoo } }, 'FooContent'), _ash2.default.createElement('a', { href: '#', events: { click: this.showBar } }, 'BarContent'), _ash2.default.createElement(Content, { show: this.state.show }));
+				return _ash2.default.createElement('div', null, _ash2.default.createElement('p', null, storeStream.get().amount), _ash2.default.createElement('a', { href: '#', events: { click: this.add } }, '+1'), _ash2.default.createElement('a', { href: '#', events: { click: this.showFoo } }, 'FooContent'), _ash2.default.createElement('a', { href: '#', events: { click: this.showBar } }, 'BarContent'), _ash2.default.createElement(Content, { show: this.state.show }));
+			}
+		}, {
+			key: 'onMount',
+			value: function onMount() {
+				storeStream.on(this.update);
+			}
+		}, {
+			key: 'add',
+			value: function add(event) {
+				event.preventDefault();
+
+				console.log(this.domNode);
+
+				console.log('add...', this);
+
+				this.increaseStream.push(1);
 			}
 		}, {
 			key: 'showFoo',
@@ -241,26 +268,29 @@
 
 				this.update();
 			}
+		}], [{
+			key: 'increaseStream',
+			value: new _ash2.default.Stream(),
+			enumerable: true
 		}]);
 
 		return App;
 	})(_ash2.default.Component);
 
-	var viewStream = _ash2.default.AshNodeStream.from(_ash2.default.createElement(App, null));
+	storeStream.from(App.increaseStream);
 
-	Renderer.addStream(viewStream, global.document.querySelector('.page'));
+	global.storeStream = storeStream;
 
-	var s = new _ash2.default.Stream();
-	var result = new _ash2.default.Stream(function () {
-		console.log('oj!');
-		// assert.equal(s.get(), 12);
-		// done();
-	}, s);
+	new _ash2.default.ViewStream(_ash2.default.createElement(App, null));
 
-	// s.push(Promise.resolve(12));
-	s.push(12);
+	// var viewStream = ash.AshNodeStream.from(<App />);
 
-	console.log(Promise.resolve(12).then);
+	// Renderer.addStream(viewStream, global.document.querySelector('.page'));
+
+	var viewStream = new _ash2.default.ViewStream(_ash2.default.createElement(App, null));
+	var renderStream = new _ash2.default.RenderStream(viewStream, global.document.querySelector('.page'));
+
+	// console.log(renderStream.stringify());
 
 	// React.render(
 	// 	React.createElement(AppReact),
@@ -26202,27 +26232,23 @@
 
 	var _coreClassesComponent2 = _interopRequireDefault(_coreClassesComponent);
 
-	var _coreClassesRenderer = __webpack_require__(117);
+	var _coreClassesStream = __webpack_require__(108);
 
-	var _coreClassesRenderer2 = _interopRequireDefault(_coreClassesRenderer);
+	var _coreClassesStream2 = _interopRequireDefault(_coreClassesStream);
 
-	var _coreStreamsStream = __webpack_require__(108);
+	var _coreClassesViewStream = __webpack_require__(109);
 
-	var _coreStreamsStream2 = _interopRequireDefault(_coreStreamsStream);
+	var _coreClassesViewStream2 = _interopRequireDefault(_coreClassesViewStream);
 
-	var _coreStreamsStream22 = __webpack_require__(140);
+	var _coreClassesRenderStream = __webpack_require__(115);
 
-	var _coreStreamsStream23 = _interopRequireDefault(_coreStreamsStream22);
+	var _coreClassesRenderStream2 = _interopRequireDefault(_coreClassesRenderStream);
 
-	var _coreStreamsAshNodeStream = __webpack_require__(133);
-
-	var _coreStreamsAshNodeStream2 = _interopRequireDefault(_coreStreamsAshNodeStream);
-
-	var _coreInternalsCreateElement = __webpack_require__(141);
+	var _coreInternalsCreateElement = __webpack_require__(132);
 
 	var _coreInternalsCreateElement2 = _interopRequireDefault(_coreInternalsCreateElement);
 
-	var _coreInternalsAssign = __webpack_require__(144);
+	var _coreInternalsAssign = __webpack_require__(135);
 
 	var _coreInternalsAssign2 = _interopRequireDefault(_coreInternalsAssign);
 
@@ -26242,9 +26268,9 @@
 		support: _coreSupport2.default,
 
 		Component: _coreClassesComponent2.default,
-		Renderer: _coreClassesRenderer2.default,
-		Stream: _coreStreamsStream23.default,
-		AshNodeStream: _coreStreamsAshNodeStream2.default,
+		Stream: _coreClassesStream2.default,
+		ViewStream: _coreClassesViewStream2.default,
+		RenderStream: _coreClassesRenderStream2.default,
 
 		createElement: _coreInternalsCreateElement2.default,
 
@@ -26351,9 +26377,9 @@
 
 	var _internalsIsAncestor2 = _interopRequireDefault(_internalsIsAncestor);
 
-	var _streamsStream = __webpack_require__(108);
+	var _Stream = __webpack_require__(108);
 
-	var _streamsStream2 = _interopRequireDefault(_streamsStream);
+	var _Stream2 = _interopRequireDefault(_Stream);
 
 	var LIFECYCLE_UNMOUNTED = _internalsConstants2.default.LIFECYCLE_UNMOUNTED;
 	var LIFECYCLE_MOUNTING = _internalsConstants2.default.LIFECYCLE_MOUNTING;
@@ -26377,10 +26403,13 @@
 
 			this.update = function () {
 				if (_this.__element.stream) {
-					_this.__element.stream.push(_this);
+					_this.__element.isDirty = true;
+					_this.__element.stream.push(true);
+
+					// this.__element.stream.push(this);
 				}
 
-				if (_arguments[0] instanceof _streamsStream2.default) {
+				if (_arguments[0] instanceof _Stream2.default) {
 					return undefined;
 				}
 
@@ -26405,7 +26434,7 @@
 			Object.getOwnPropertyNames(this.constructor).filter(function (value) {
 				return value !== 'caller' && value !== 'callee' && value !== 'arguments';
 			}).forEach(function (value) {
-				if (_this.constructor[value] instanceof _streamsStream2.default && !_this[value]) {
+				if (_this.constructor[value] instanceof _Stream2.default && !_this[value]) {
 					_this[value] = _this.constructor[value];
 				}
 			});
@@ -26467,8 +26496,12 @@
 		}, {
 			key: 'domNode',
 			get: function () {
-				if (this.isMounted && (0, _internalsIsAshNodeAshElement2.default)(this.__element.children[0])) {
-					return (0, _DOMFindNode2.default)(this.__element.stream.getRootNode(), this.__element.children[0].instance.id, this.__element.children[0].instance.indices);
+				if (this.isMounted && (0, _internalsIsAshNodeAshElement2.default)(this.__element.children[0]) && this.__element.stream.__listeners[0]) {
+					var rootNode = this.__element.stream.__listeners[0].rootNode;
+
+					if (rootNode) {
+						return (0, _DOMFindNode2.default)(rootNode, this.__element.children[0].instance.id, this.__element.children[0].instance.indices);
+					}
 				}
 
 				return null;
@@ -26751,124 +26784,271 @@
 		}
 	}
 
-	var _StreamTransformer = __webpack_require__(109);
-
-	var _StreamTransformer2 = _interopRequireDefault(_StreamTransformer);
-
-	var _streamsQueue = __webpack_require__(110);
-
 	var _internalsIsFunction = __webpack_require__(106);
 
 	var _internalsIsFunction2 = _interopRequireDefault(_internalsIsFunction);
 
-	var _inStream = __webpack_require__(111);
+	var trueFn = function () {
+		return true;
+	};
+	var streamsToUpdate = [];
+	var inStream = undefined;
+	var flushing = false;
+	var order = [];
+	var nextOrderIndex = -1;
 
-	var _methodsDetachStreamDependencies = __webpack_require__(112);
+	function findDependencies(stream) {
+		if (stream.__isQueued === false) {
+			stream.__isQueued = true;
 
-	var _methodsDetachStreamDependencies2 = _interopRequireDefault(_methodsDetachStreamDependencies);
-
-	var _methodsUpdateStream = __webpack_require__(113);
-
-	var _methodsUpdateStream2 = _interopRequireDefault(_methodsUpdateStream);
-
-	var _methodsUpdateStreamDependencies = __webpack_require__(114);
-
-	var _methodsUpdateStreamDependencies2 = _interopRequireDefault(_methodsUpdateStreamDependencies);
-
-	var _methodsUpdateStreamsQueue = __webpack_require__(116);
-
-	var _methodsUpdateStreamsQueue2 = _interopRequireDefault(_methodsUpdateStreamsQueue);
-
-	var streamsQueue = (0, _streamsQueue.getStreamsQueue)();
-
-	var Stream = (function () {
-		function Stream() {
-			var _ref = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-			var _ref$isEndStream = _ref.isEndStream;
-			var isEndStream = _ref$isEndStream === undefined ? false : _ref$isEndStream;
-			var value = _ref.value;
-			var transformFn = _ref.transformFn;
-
-			_classCallCheck(this, Stream);
-
-			this.value = undefined;
-			this.hasValue = false;
-			this.end = undefined;
-			this.fn = undefined;
-			this.transformFn = null;
-			this.isEndStream = false;
-			this.__queued = false;
-			this.__listeners = [];
-			this.__dependencies = [];
-			this.__updatedDependencies = [];
-			this.__dependenciesMet = false;
-
-			if (value !== undefined || typeof arguments[0] === 'object' && arguments[0].hasOwnProperty('value')) {
-				this.value = value;
-				this.hasValue = true;
+			for (var i = 0; i < stream.__listeners.length; ++i) {
+				findDependencies(stream.__listeners[i]);
 			}
 
-			// autobind push method as update method
-			this.update = this.push.bind(this);
+			order[++nextOrderIndex] = stream;
+		}
+	}
 
-			if (!isEndStream) {
-				this.end = new Stream({ isEndStream: true });
+	function detachDependencies(stream) {
+		for (var i = 0; i < stream.__dependencies.length; ++i) {
+			stream.__dependencies[i].__listeners[stream.__dependencies[i].__listeners.indexOf(stream)] = stream.__dependencies[i].__listeners[stream.__dependencies[i].__listeners.length - 1];
+			stream.__dependencies[i].__listeners.length--;
+		}
 
-				this.end.__listeners.push(this);
-			} else {
-				this.isEndStream = true;
-				this.fn = function () {
-					return true;
-				};
+		stream.__dependencies.length = 0;
+	}
+
+	function flushUpdate() {
+		// flush update
+		flushing = true;
+
+		while (streamsToUpdate.length) {
+			var stream = streamsToUpdate.shift();
+
+			if (stream.__values.length > 0) {
+				stream.value = stream.__values.shift();
 			}
 
-			if ((0, _internalsIsFunction2.default)(transformFn)) {
-				this.transformFn = transformFn;
+			updateDependencies(stream);
+		}
+
+		flushing = false;
+	}
+
+	function updateStream(stream) {
+		stream.__dependenciesMet = true;
+
+		for (var i = 0; i < stream.__dependencies.length; i++) {
+			if (!stream.__dependencies[i].hasValue) {
+				stream.__dependenciesMet = false;
+
+				break;
 			}
 		}
 
+		if (!stream.__dependenciesMet || stream.end && stream.end.value === true) {
+			return;
+		}
+
+		if (inStream) {
+			streamsToUpdate.push(stream);
+		} else {
+			inStream = stream;
+
+			var returnValue = stream.fn(stream, stream.__changedDependencies, stream.__dependencies);
+
+			if (returnValue !== undefined) {
+				stream.push(returnValue);
+			}
+
+			inStream = undefined;
+
+			if (stream.__changedDependencies !== undefined) {
+				stream.__changedDependencies = [];
+			}
+
+			stream.__shouldUpdate = false;
+
+			if (flushing === false) {
+				flushUpdate();
+			}
+		}
+	}
+
+	function updateDependencies(stream) {
+		for (var i = 0; i < stream.__listeners.length; ++i) {
+			if (stream.__listeners[i].end === stream) {
+				if (stream.__listeners[i].__dependencies) {
+					detachDependencies(stream.__listeners[i]);
+				}
+
+				if (stream.__listeners[i].end) {
+					detachDependencies(stream.__listeners[i].end);
+				}
+			} else {
+				if (stream.__listeners[i].__changedDependencies !== undefined) {
+					stream.__listeners[i].__changedDependencies.push(stream);
+				}
+
+				stream.__listeners[i].__shouldUpdate = true;
+
+				findDependencies(stream.__listeners[i]);
+			}
+		}
+
+		for (; nextOrderIndex >= 0; --nextOrderIndex) {
+			if (order[nextOrderIndex].__shouldUpdate === true) {
+				updateStream(order[nextOrderIndex]);
+			}
+
+			order[nextOrderIndex].__isQueued = false;
+		}
+	}
+
+	var Stream = (function () {
+		function Stream(fn) {
+			for (var _len = arguments.length, dependencies = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+				dependencies[_key - 1] = arguments[_key];
+			}
+
+			_classCallCheck(this, Stream);
+
+			this.hasValue = false;
+			this.value = undefined;
+			this.__values = [];
+			this.__listeners = [];
+			this.__isQueued = false;
+			this.end = null;
+			this.fn = null;
+			this.__dependencies = [];
+			this.__dependenciesMet = false;
+			this.__changedDependencies = [];
+			this.__shouldUpdate = false;
+			this.isEndStream = false;
+
+			this.update = this.push = this.push.bind(this);
+
+			if (fn === trueFn) {
+				this.fn = fn;
+				this.isEndStream = true;
+			} else {
+				this.end = new Stream(trueFn);
+				this.end.__listeners.push(this);
+
+				if (arguments.length >= 2 || (0, _internalsIsFunction2.default)(fn)) {
+					if (!(0, _internalsIsFunction2.default)(fn)) {
+						throw new Error(fn + ' (fn) must be a function!');
+					}
+
+					this.fn = fn;
+
+					this.from.apply(this, dependencies);
+				} else if (arguments.length === 1) {
+					this.push(fn);
+				}
+			}
+
+			return this;
+		}
+
 		_createClass(Stream, [{
+			key: 'from',
+			value: function from() /*...dependencies*/{
+				detachDependencies(this);
+				detachDependencies(this.end);
+
+				var dependencies = [];
+				var endStreams = [];
+
+				for (var i = 0; i < arguments.length; i++) {
+					if (arguments[i] instanceof Stream) {
+						dependencies.push(arguments[i]);
+
+						if (arguments[i].end) {
+							endStreams.push(arguments[i].end);
+						}
+					}
+				}
+
+				if (dependencies.length) {
+					// add listeners to stream
+					this.__dependencies = dependencies;
+
+					for (var i = 0; i < dependencies.length; ++i) {
+						dependencies[i].__listeners.push(this);
+					}
+
+					// add listeners to end stream
+					this.end.__dependencies = endStreams;
+
+					for (var i = 0; i < endStreams.length; ++i) {
+						endStreams[i].__listeners.push(this.end);
+					}
+
+					// update stream
+					updateStream(this);
+				}
+
+				return this;
+			}
+		}, {
 			key: 'get',
 			value: function get() {
 				return this.value;
 			}
 		}, {
 			key: 'push',
-			value: function push() {
-				var _this = this;
-
-				if (arguments[0] && arguments[0].then && (0, _internalsIsFunction2.default)(arguments[0].then)) {
-					// handle a Promise...
-					arguments[0].then(function (result) {
-						_this.push(result);
-					}, function (error) {
-						_this.push(error);
-					});
+			value: function push(value) {
+				if (value !== undefined && value !== null && (0, _internalsIsFunction2.default)(value.then)) {
+					value.then(this.push).catch(this.push);
 
 					return this;
 				}
 
-				this.value = this.transformFn ? this.transformFn.apply(this, arguments) : arguments[0];
+				this.value = value;
 				this.hasValue = true;
 
-				var inStream = (0, _inStream.getInStream)();
-
 				if (!inStream) {
-					(0, _methodsUpdateStreamDependencies2.default)(this);
-					(0, _methodsUpdateStreamsQueue2.default)(streamsQueue);
+					flushing = true;
+
+					updateDependencies(this);
+
+					if (streamsToUpdate.length > 0) {
+						flushUpdate();
+					} else {
+						flushing = false;
+					}
 				} else if (inStream === this) {
-					for (var i = 0; i < this.__listeners.length; i++) {
+					// mark listeners
+					for (var i = 0; i < this.__listeners.length; ++i) {
 						if (this.__listeners[i].end !== this) {
-							this.__listeners[i].__updatedDependencies.push(this);
+							if (this.__listeners[i].__changedDependencies !== undefined) {
+								this.__listeners[i].__changedDependencies.push(this);
+							}
+							this.__listeners[i].__shouldUpdate = true;
 						} else {
-							(0, _methodsDetachStreamDependencies2.default)(this.__listeners[i]);
-							(0, _methodsDetachStreamDependencies2.default)(this.__listeners[i].end);
+							if (this.__listeners[i].__dependencies) {
+								detachDependencies(this.__listeners[i]);
+							}
+
+							if (this.__listeners[i].end) {
+								detachDependencies(this.__listeners[i].end);
+							}
 						}
 					}
 				} else {
-					streamsQueue.push(this);
+					this.__values.push(value);
+					streamsToUpdate.push(this);
 				}
+
+				return this;
+			}
+		}, {
+			key: 'endsOn',
+			value: function endsOn(endStream) {
+				detachDependencies(this.end);
+				endStream.__listeners.push(this.end);
+				this.end.__dependencies.push(endStream);
 
 				return this;
 			}
@@ -26878,137 +27058,23 @@
 				return 'stream(' + this.value + ')';
 			}
 		}, {
-			key: 'from',
-			value: function from(arg) {
-				for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-					args[_key - 1] = arguments[_key];
-				}
-
-				if (args.length || (0, _internalsIsFunction2.default)(arg) || arg instanceof Stream) {
-					(0, _methodsDetachStreamDependencies2.default)(this);
-
-					if ((0, _internalsIsFunction2.default)(arg)) {
-						this.fn = arg;
-					} else if (arg instanceof Stream) {
-						arg.__listeners.push(this);
-						this.__dependencies.push(arg);
-					}
-
-					for (var i = 0; i < args.length; i++) {
-						if (args[i] instanceof Stream) {
-							args[i].__listeners.push(this);
-							this.__dependencies.push(args[i]);
-						}
-					}
-
-					if (!this.isEndStream && this.__dependencies.length) {
-						var endStreams = [];
-
-						for (var i = 0; i < this.__dependencies.length; i++) {
-							endStreams.push(this.__dependencies[i].end);
-						}
-
-						this.endsOn.apply(this, endStreams);
-					}
-
-					if (this.__dependencies.length) {
-						(0, _methodsUpdateStream2.default)(this);
-						(0, _methodsUpdateStreamsQueue2.default)(streamsQueue);
-					}
-				} else if (Array.isArray(arg)) {
-					for (var i = 0; i < arg.length; i++) {
-						this.push(arg[i]);
-					}
-				} else if (arg && arg.then && (0, _internalsIsFunction2.default)(arg.then)) {
-					this.push(arg);
-				} else {
-					this.push(arg);
-				}
-
-				return this;
-			}
-		}, {
-			key: 'subscribe',
-			value: function subscribe(fn) {
-				return Stream.from(fn, this);
-			}
-		}, {
-			key: 'endsOn',
-			value: function endsOn() {
-				if (this.isEndStream) {
-					return this;
-				}
-
-				var endStream = new Stream({ isEndStream: true });
-
-				(0, _methodsDetachStreamDependencies2.default)(this.end);
-
-				for (var _len2 = arguments.length, endStreams = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-					endStreams[_key2] = arguments[_key2];
-				}
-
-				endStream.from.apply(endStream, [null].concat(endStreams));
-				endStream.__listeners.push(this.end);
-				this.end.__dependencies.push(endStream);
-
-				return this;
-			}
-		}, {
-			key: 'immediate',
-			value: function immediate() {
-				if (this.__dependenciesMet === false) {
-					this.__dependenciesMet = true;
-
-					(0, _methodsUpdateStream2.default)(this);
-					(0, _methodsUpdateStreamsQueue2.default)(streamsQueue);
-				}
-
-				return this;
-			}
-		}, {
 			key: 'map',
 			value: function map(fn) {
-				var _this2 = this;
-
-				return Stream.from(function (stream) {
-					stream.push(fn(_this2.get()));
-				}, this);
+				return Stream.map(fn, this);
+			}
+		}, {
+			key: 'on',
+			value: function on(fn) {
+				return Stream.on(fn, this);
 			}
 		}, {
 			key: 'ap',
 			value: function ap(stream) {
-				var _this3 = this;
+				var _this = this;
 
-				return Stream.from(function (self) {
-					self.push(_this3.get()(stream.get()));
+				return new Stream(function () {
+					return _this.get()(stream.get());
 				}, this, stream);
-			}
-		}, {
-			key: 'reduce',
-			value: function reduce(fn, acc) {
-				var _this4 = this;
-
-				var result = acc;
-				var newStream = Stream.from(function () {
-					result = fn(result, _this4.get());
-
-					return result;
-				}, this);
-
-				if (!newStream.hasValue) {
-					newStream.push(acc);
-				}
-
-				return newStream;
-			}
-		}, {
-			key: 'merge',
-			value: function merge(otherStream) {
-				var _this5 = this;
-
-				return Stream.from(function (self, changed) {
-					return changed[0] ? changed[0].get() : _this5.hasValue ? _this5.get() : otherStream.get();
-				}, this, otherStream).immediate().endsOn(this.end, otherStream.end);
 			}
 		}], [{
 			key: 'isStream',
@@ -27016,52 +27082,18 @@
 				return stream instanceof Stream;
 			}
 		}, {
-			key: 'from',
-			value: function from(fn) {
-				var _ref2;
-
-				for (var _len3 = arguments.length, args = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
-					args[_key3 - 1] = arguments[_key3];
-				}
-
-				return (_ref2 = new Stream()).from.apply(_ref2, [fn].concat(args));
-			}
-		}, {
 			key: 'map',
 			value: function map(fn, stream) {
-				return stream.map(fn);
+				return new Stream(function (self) {
+					self.push(fn(stream.value));
+				}, stream);
 			}
 		}, {
-			key: 'ap',
-			value: function ap(stream1, stream2) {
-				return stream1.ap(stream2);
-			}
-		}, {
-			key: 'reduce',
-			value: function reduce(fn, acc, stream) {
-				return stream.reduce(fn, acc);
-			}
-		}, {
-			key: 'merge',
-			value: function merge(stream1, stream2) {
-				return stream1.merge(stream2);
-			}
-		}, {
-			key: 'transduce',
-			value: function transduce(xform, sourceStream) {
-				var xformResult = xform(new _StreamTransformer2.default());
-
-				return Stream.from(function (stream) {
-					var result = xformResult['@@transducer/step'](undefined, sourceStream.get());
-
-					if (result && result['@@transducer/reduced'] === true) {
-						stream.end.push(true);
-
-						return result['@@transducer/value'];
-					}
-
-					return result;
-				}, sourceStream);
+			key: 'on',
+			value: function on(fn, stream) {
+				return new Stream(function () {
+					fn(stream.value);
+				}, stream);
 			}
 		}]);
 
@@ -27073,9 +27105,9 @@
 
 /***/ },
 /* 109 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
 		value: true
@@ -27091,95 +27123,416 @@
 		};
 	})();
 
+	var _get = function get(object, property, receiver) {
+		if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+			var parent = Object.getPrototypeOf(object);if (parent === null) {
+				return undefined;
+			} else {
+				return get(parent, property, receiver);
+			}
+		} else if ('value' in desc) {
+			return desc.value;
+		} else {
+			var getter = desc.get;if (getter === undefined) {
+				return undefined;
+			}return getter.call(receiver);
+		}
+	};
+
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
+
 	function _classCallCheck(instance, Constructor) {
 		if (!(instance instanceof Constructor)) {
 			throw new TypeError('Cannot call a class as a function');
 		}
 	}
 
-	var StreamTransformer = (function () {
-		function StreamTransformer() {
-			_classCallCheck(this, StreamTransformer);
+	function _inherits(subClass, superClass) {
+		if (typeof superClass !== 'function' && superClass !== null) {
+			throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
+		}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+	}
+
+	var _Stream2 = __webpack_require__(108);
+
+	var _Stream3 = _interopRequireDefault(_Stream2);
+
+	var _internalsIsComponentAshElement = __webpack_require__(110);
+
+	var _internalsIsComponentAshElement2 = _interopRequireDefault(_internalsIsComponentAshElement);
+
+	var _DOMCreateAshNodeTree = __webpack_require__(111);
+
+	var _DOMCreateAshNodeTree2 = _interopRequireDefault(_DOMCreateAshNodeTree);
+
+	var _DOMCreateAshElementTree = __webpack_require__(112);
+
+	var _DOMCreateAshElementTree2 = _interopRequireDefault(_DOMCreateAshElementTree);
+
+	var _DOMUpdateComponentAshElement = __webpack_require__(114);
+
+	var _DOMUpdateComponentAshElement2 = _interopRequireDefault(_DOMUpdateComponentAshElement);
+
+	var streamId = 0;
+
+	var ViewStream = (function (_Stream) {
+		_inherits(ViewStream, _Stream);
+
+		function ViewStream(componentAshElement) {
+			_classCallCheck(this, ViewStream);
+
+			if (!(0, _internalsIsComponentAshElement2.default)(componentAshElement)) {
+				throw new Error(componentAshElement + ' (componentAshElement) must be an Component AshElement object instance.');
+			}
+
+			if (componentAshElement.stream instanceof ViewStream) {
+				throw new Error(componentAshElement + ' (componentAshElement) was already passed to a view stream.');
+			}
+
+			_get(Object.getPrototypeOf(ViewStream.prototype), 'constructor', this).call(this);
+
+			this.id = streamId++;
+			this.isUpdating = false;
+			this.isUpdating = true;
+
+			var ashElementTree = (0, _DOMCreateAshElementTree2.default)(componentAshElement, this);
+
+			this.push({
+				ashElementTree: ashElementTree,
+				ashNodeTree: (0, _DOMCreateAshNodeTree2.default)(ashElementTree)
+			});
+
+			this.isUpdating = false;
+
+			return this;
 		}
 
-		_createClass(StreamTransformer, [{
-			key: '@@transducer/init',
-			value: function transducerInit() {}
-		}, {
-			key: '@@transducer/result',
-			value: function transducerResult() {}
-		}, {
-			key: '@@transducer/step',
-			value: function transducerStep(s, v) {
-				return v;
+		_createClass(ViewStream, [{
+			key: 'push',
+			value: function push(value) {
+				var _this = this;
+
+				if (this.hasValue) {
+					if (this.isUpdating) {
+						throw new Error('You cannot update components during previous update!');
+					}
+
+					this.isUpdating = true;
+
+					global.requestAnimationFrame(function () {
+						_get(Object.getPrototypeOf(ViewStream.prototype), 'push', _this).call(_this, {
+							ashElementTree: (0, _DOMUpdateComponentAshElement2.default)(_this.value.ashElementTree, _this),
+							ashNodeTree: (0, _DOMCreateAshNodeTree2.default)(_this.value.ashElementTree)
+						});
+
+						_this.isUpdating = false;
+					});
+				} else {
+					_get(Object.getPrototypeOf(ViewStream.prototype), 'push', this).call(this, value);
+				}
+
+				return this;
 			}
 		}]);
 
-		return StreamTransformer;
-	})();
+		return ViewStream;
+	})(_Stream3.default);
 
-	exports.default = StreamTransformer;
+	exports.default = ViewStream;
 	module.exports = exports.default;
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
 /* 110 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
+	Object.defineProperty(exports, '__esModule', {
 		value: true
 	});
-	exports.getStreamsQueue = getStreamsQueue;
-	var streamsQueue = [];
+	exports.default = isComponentAshElement;
 
-	streamsQueue.isUpdating = false;
-
-	function getStreamsQueue() {
-		return streamsQueue;
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
 	}
+
+	var _constants = __webpack_require__(104);
+
+	var _constants2 = _interopRequireDefault(_constants);
+
+	var COMPONENT_ASH_ELEMENT = _constants2.default.COMPONENT_ASH_ELEMENT;
+
+	function isComponentAshElement(value) {
+		return value && value.type === COMPONENT_ASH_ELEMENT;
+	}
+
+	module.exports = exports.default;
 
 /***/ },
 /* 111 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
+	Object.defineProperty(exports, '__esModule', {
 		value: true
 	});
-	exports.getInStream = getInStream;
-	exports.setInStream = setInStream;
-	var inStream;
+	exports.default = createAshNodeTree;
 
-	function getInStream() {
-		return inStream;
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	function setInStream(stream) {
-		inStream = stream;
+	var _internalsIsComponentAshElement = __webpack_require__(110);
 
-		return inStream;
+	var _internalsIsComponentAshElement2 = _interopRequireDefault(_internalsIsComponentAshElement);
+
+	var _internalsIsAshNodeAshElement = __webpack_require__(103);
+
+	var _internalsIsAshNodeAshElement2 = _interopRequireDefault(_internalsIsAshNodeAshElement);
+
+	var _internalsConstants = __webpack_require__(104);
+
+	var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
+
+	var INDEX_SEPARATOR = _internalsConstants2.default.INDEX_SEPARATOR;
+
+	function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParentComponentDirty, parentIndices) {
+		if ((0, _internalsIsAshNodeAshElement2.default)(ashElement)) {
+			if (isParentComponentDirty) {
+
+				ashElement.instantiate();
+
+				ashElement.instance.id = parentId + INDEX_SEPARATOR + index;
+				ashElement.instance.index = index;
+				ashElement.instance.indices = parentIndices.concat(index);
+				ashElement.instance.streamId = ashElement.stream.id;
+				ashElement.instance.isDirty = true;
+				ashElement.instance.parent = ashNodeTree;
+
+				ashNodeTree.children[ashElement.instance.index] = ashElement.instance;
+			} else {
+				ashElement.instance.isDirty = false;
+				ashElement.instance.parent = ashNodeTree;
+
+				if (ashNodeTree.oldChildren && ashElement.instance.index === 0) {
+					ashNodeTree.oldChildren = null;
+				}
+
+				if (ashNodeTree.children[ashElement.instance.index] !== ashElement.instance) {
+					ashNodeTree.children[ashElement.instance.index] = ashElement.instance;
+				}
+			}
+
+			// walk the children
+			for (var i = 0; i < ashElement.children.length; i++) {
+				walkCreateAshNodeTree(ashNodeTree.children[ashElement.instance.index], ashElement.children[i], i, ashNodeTree.children[ashElement.instance.index].id, isParentComponentDirty, ashNodeTree.children[ashElement.instance.index].indices);
+			}
+		} else if (ashElement && ashElement.children[0]) {
+			var isDirty = ashElement.isDirty;
+
+			if (index === 0 && !isParentComponentDirty) {
+				if (isDirty) {
+					ashNodeTree.oldChildren = ashNodeTree.children;
+					ashNodeTree.children = [];
+				} else {
+					ashNodeTree.oldChildren = null;
+				}
+			} else if (!isParentComponentDirty) {
+				if (isDirty && !ashNodeTree.oldChildren) {
+					ashNodeTree.oldChildren = ashNodeTree.children;
+					ashNodeTree.children = [];
+
+					// copy not dirty already walked children
+					for (var i = 0; i < index; i++) {
+						ashNodeTree.children[i] = ashNodeTree.oldChildren[i];
+					}
+				}
+			}
+
+			ashElement.isDirty = false;
+
+			walkCreateAshNodeTree(ashNodeTree, ashElement.children[0], index, parentId, isDirty, parentIndices);
+		}
 	}
+
+	function createAshNodeTree(componentAshElement) {
+		if (!(0, _internalsIsComponentAshElement2.default)(componentAshElement)) {
+			throw new Error(componentAshElement + ' (componentAshElement) must be a Component Ash Element object instance.');
+		}
+
+		var ashElement = componentAshElement;
+		var ashNodeTree = undefined;
+		var isDirty = ashElement.isDirty;
+
+		ashElement.isDirty = false;
+
+		// find first children which is ash node ash element
+		while (!(0, _internalsIsAshNodeAshElement2.default)(ashElement)) {
+			ashElement = ashElement.children[0];
+		}
+
+		if (isDirty) {
+			ashElement.instantiate();
+
+			ashElement.instance.isDirty = true;
+		} else {
+			ashElement.instance.isDirty = false;
+		}
+
+		ashElement.instance.id = '0';
+		ashElement.instance.index = 0;
+		ashElement.instance.indices = [0];
+		ashElement.instance.streamId = ashElement.stream.id;
+		ashElement.instance.parent = null;
+		ashNodeTree = ashElement.instance;
+
+		// walk the children
+		for (var i = 0; i < ashElement.children.length; i++) {
+			walkCreateAshNodeTree(ashNodeTree, ashElement.children[i], i, ashNodeTree.id, isDirty, ashNodeTree.indices);
+		}
+
+		return ashNodeTree;
+	}
+
+	module.exports = exports.default;
 
 /***/ },
 /* 112 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
+	Object.defineProperty(exports, '__esModule', {
 		value: true
 	});
-	exports.default = detachStreamDependencies;
+	exports.default = createAshElementTree;
 
-	function detachStreamDependencies(stream) {
-		for (var i = 0; i < stream.__dependencies.length; i++) {
-			stream.__dependencies[i].__listeners[stream.__dependencies[i].__listeners.indexOf(stream)] = stream.__dependencies[i].__listeners[stream.__dependencies[i].__listeners.length - 1];
-			stream.__dependencies[i].__listeners.pop();
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
+
+	var _internalsIsAshElement = __webpack_require__(113);
+
+	var _internalsIsAshElement2 = _interopRequireDefault(_internalsIsAshElement);
+
+	var _internalsIsComponentAshElement = __webpack_require__(110);
+
+	var _internalsIsComponentAshElement2 = _interopRequireDefault(_internalsIsComponentAshElement);
+
+	var _internalsIsAshNodeAshElement = __webpack_require__(103);
+
+	var _internalsIsAshNodeAshElement2 = _interopRequireDefault(_internalsIsAshNodeAshElement);
+
+	var _internalsConstants = __webpack_require__(104);
+
+	var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
+
+	var LIFECYCLE_MOUNTING = _internalsConstants2.default.LIFECYCLE_MOUNTING;
+
+	function walkCreateAshElementTree(ashElement, owner, index) {
+		// type check
+		if (!(0, _internalsIsComponentAshElement2.default)(owner)) {
+			throw new Error(owner + ' must be a Component type AshElement Object');
 		}
 
-		stream.__dependencies = [];
+		if ((0, _internalsIsAshNodeAshElement2.default)(ashElement)) {
+			// instantiate ashElement
+			ashElement.instantiate();
+
+			// set up ordering properties
+			ashElement.index = index;
+
+			// set up owner & stream
+			ashElement.owner = owner;
+			ashElement.stream = owner.stream;
+
+			for (var i = 0; i < ashElement.children.length; i++) {
+				if (ashElement.children[i]) {
+					// set up parent
+					ashElement.children[i].parent = ashElement;
+
+					// walk the child
+					walkCreateAshElementTree(ashElement.children[i], owner, i);
+				}
+			}
+		} else if ((0, _internalsIsComponentAshElement2.default)(ashElement)) {
+			// instantiate ashElement
+			ashElement.instantiate();
+
+			// set up ordering properties
+			ashElement.index = index;
+
+			// set up owner
+			ashElement.owner = owner;
+			ashElement.stream = owner.stream;
+
+			// create child by rendering component
+			ashElement.instance.__lifecycle = LIFECYCLE_MOUNTING;
+			ashElement.children[0] = ashElement.instance.render(ashElement.instance.props, ashElement.instance.state);
+
+			if (ashElement.children[0]) {
+				// set up parent
+				ashElement.children[0].parent = ashElement;
+
+				// walk the child
+				walkCreateAshElementTree(ashElement.children[0], ashElement, 0);
+			}
+		}
+	}
+
+	function createAshElementTree(ashElement, stream) {
+		// type check
+		if (!(0, _internalsIsAshElement2.default)(ashElement)) {
+			throw new Error(ashElement + ' (ashElement) must be an AshElement object instance.');
+		}
+
+		if (!stream) {
+			throw new Error(stream + ' (stream) must be a Stream object instance.');
+		}
+
+		var ashElementTree = ashElement;
+
+		ashElementTree.stream = stream;
+		ashElementTree.isRoot = true;
+
+		if ((0, _internalsIsComponentAshElement2.default)(ashElementTree)) {
+			ashElementTree.instantiate();
+
+			// set up ordering properties
+			ashElementTree.index = typeof ashElementTree.index === 'undefined' ? 0 : ashElementTree.index;
+
+			// create child by rendering component
+			ashElementTree.instance.__lifecycle = LIFECYCLE_MOUNTING;
+			ashElementTree.children[0] = ashElementTree.instance.render();
+
+			// set up a parent
+			if (ashElementTree.children[0]) {
+				ashElementTree.children[0].parent = ashElementTree;
+			}
+
+			// walk the child
+			walkCreateAshElementTree(ashElementTree.children[0], ashElementTree, 0);
+		} else {
+			ashElementTree.instantiate();
+
+			// set up ordering properties
+			ashElementTree.index = typeof ashElementTree.index === 'undefined' ? 0 : ashElementTree.index;
+
+			for (var i = 0; i < ashElementTree.children.length; i++) {
+				// set up a parent
+				ashElementTree.children[i].parent = ashElementTree;
+
+				// walk the child
+				walkCreateAshElementTree(ashElementTree.children[i], ashElementTree.owner, i);
+			}
+		}
+
+		// return resulting ash element tree
+		return ashElementTree;
 	}
 
 	module.exports = exports.default;
@@ -27193,60 +27546,21 @@
 	Object.defineProperty(exports, '__esModule', {
 		value: true
 	});
-	exports.default = updateStream;
+	exports.default = isAshElement;
 
 	function _interopRequireDefault(obj) {
 		return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _internalsIsFunction = __webpack_require__(106);
+	var _constants = __webpack_require__(104);
 
-	var _internalsIsFunction2 = _interopRequireDefault(_internalsIsFunction);
+	var _constants2 = _interopRequireDefault(_constants);
 
-	var _inStream = __webpack_require__(111);
+	var COMPONENT_ASH_ELEMENT = _constants2.default.COMPONENT_ASH_ELEMENT;
+	var ASH_NODE_ASH_ELEMENT = _constants2.default.ASH_NODE_ASH_ELEMENT;
 
-	var _streamsQueue = __webpack_require__(110);
-
-	var streamsQueue = (0, _streamsQueue.getStreamsQueue)();
-
-	function updateStream(stream) {
-		if (stream.end && stream.end.value) {
-			return;
-		}
-
-		if (!stream.__dependenciesMet) {
-			stream.__dependenciesMet = true;
-
-			for (var i = 0; i < stream.__dependencies.length; i++) {
-				if (!stream.__dependencies[i].hasValue) {
-					stream.__dependenciesMet = false;
-
-					return;
-				}
-			}
-		}
-
-		var inStream = (0, _inStream.getInStream)();
-
-		if (inStream) {
-			streamsQueue.push(stream);
-
-			return;
-		}
-
-		inStream = (0, _inStream.setInStream)(stream);
-
-		var newValue = (0, _internalsIsFunction2.default)(stream.fn) ? stream.fn(stream, stream.__updatedDependencies, stream.__dependencies) : undefined;
-
-		if (newValue !== undefined) {
-			stream.push(newValue);
-		}
-
-		inStream = (0, _inStream.setInStream)(null);
-
-		while (stream.__updatedDependencies.length) {
-			stream.__updatedDependencies.shift();
-		}
+	function isAshElement(value) {
+		return value && (value.type === COMPONENT_ASH_ELEMENT || value.type === ASH_NODE_ASH_ELEMENT);
 	}
 
 	module.exports = exports.default;
@@ -27260,131 +27574,238 @@
 	Object.defineProperty(exports, '__esModule', {
 		value: true
 	});
-	exports.default = updateStreamDependencies;
+	exports.default = updateComponentAshElement;
 
 	function _interopRequireDefault(obj) {
 		return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _detachStreamDependencies = __webpack_require__(112);
+	var _DOMCreateAshElementTree = __webpack_require__(112);
 
-	var _detachStreamDependencies2 = _interopRequireDefault(_detachStreamDependencies);
+	var _DOMCreateAshElementTree2 = _interopRequireDefault(_DOMCreateAshElementTree);
 
-	var _updateStream = __webpack_require__(113);
+	var _internalsConstants = __webpack_require__(104);
 
-	var _updateStream2 = _interopRequireDefault(_updateStream);
+	var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 
-	var _findStreamDependencies = __webpack_require__(115);
+	var LIFECYCLE_UNMOUNTED = _internalsConstants2.default.LIFECYCLE_UNMOUNTED;
+	var COMPONENT_ASH_ELEMENT = _internalsConstants2.default.COMPONENT_ASH_ELEMENT;
+	var ASH_NODE_ASH_ELEMENT = _internalsConstants2.default.ASH_NODE_ASH_ELEMENT;
 
-	var _findStreamDependencies2 = _interopRequireDefault(_findStreamDependencies);
+	function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, isParentComponentDirty) {
+		if (newAshElement.type === COMPONENT_ASH_ELEMENT) {
+			if (oldAshElement === null) {
+				// old is null, new is component
 
-	var _streamsQueue = __webpack_require__(110);
+				// newAshElement must be added as a child...
+				if (newAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
+					// now, the component descriptor's tree is not complete
+					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
 
-	var streamsQueue = (0, _streamsQueue.getStreamsQueue)();
+					// replace the old
+					newAshElement.parent.children[newAshElement.index] = newAshElement;
+				} else if (newAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
+					// now, the component descriptor's tree is not complete
+					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
 
-	function updateStreamDependencies(stream) {
-		var dependenciesCache = [];
-		var isStreamsQueueUpdating = streamsQueue.isUpdating;
+					// replace the old
+					newAshElement.parent.children[0] = newAshElement;
+				}
+			} else if (oldAshElement.type === COMPONENT_ASH_ELEMENT && newAshElement.Spec === oldAshElement.Spec) {
+				// old is component, new is same component
 
-		streamsQueue.isUpdating = true;
+				var shouldUpdate = oldAshElement.instance.shouldUpdate(newAshElement.args ? newAshElement.args[0] : null);
 
-		for (var i = 0; i < stream.__listeners.length; i++) {
-			if (stream.__listeners[i].end === stream) {
-				(0, _detachStreamDependencies2.default)(stream.__listeners[i]);
-				(0, _detachStreamDependencies2.default)(stream.__listeners[i].end);
+				if (shouldUpdate || oldAshElement.isDirty) {
+					oldAshElement.isDirty = true;
+
+					// copy the new to the old...
+					oldAshElement.args = newAshElement.args;
+
+					oldAshElement.instance.onBeforeReceiveProps(newAshElement.args ? newAshElement.args[0] : null);
+
+					oldAshElement.instance.props = newAshElement.args ? newAshElement.args[0] : null;
+
+					// create child for the new descriptor
+					var render = oldAshElement.instance.render(oldAshElement.instance.props, oldAshElement.instance.state);
+
+					// adding children to the queue
+					if (render) {
+						render.owner = oldAshElement;
+						render.parent = oldAshElement;
+						render.index = 0;
+
+						if (oldAshElement.children[0]) {
+							walkUpdateComponentAshElement(oldAshElement.children[0], render, stream, true);
+						} else {
+							walkUpdateComponentAshElement(null, render, stream, true);
+						}
+					} else if (oldAshElement.children[0]) {
+						// deleting old surplus children
+						if (oldAshElement.children[0].type === COMPONENT_ASH_ELEMENT) {
+							oldAshElement.children[0].instance.__lifecycle = LIFECYCLE_UNMOUNTED;
+						}
+
+						oldAshElement.children.pop();
+					}
+				} else {
+					walkUpdateComponentAshElement(oldAshElement.children[0], oldAshElement.children[0], stream, false);
+				}
+			} else if (oldAshElement.type === COMPONENT_ASH_ELEMENT) {
+				// old is component, new is different component
+
+				if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
+					// now, the component descriptor's tree is not complete
+					newAshElement.owner = oldAshElement.owner;
+					newAshElement.parent = oldAshElement.parent;
+					newAshElement.index = oldAshElement.index;
+					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
+
+					// replace the old
+					oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
+					oldAshElement.parent.children[oldAshElement.index] = newAshElement;
+				} else if (oldAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
+					// now, the component descriptor's tree is not complete
+					newAshElement.owner = oldAshElement.owner;
+					newAshElement.parent = oldAshElement.parent;
+					newAshElement.index = oldAshElement.index;
+					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
+
+					// replace the old
+					oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
+					oldAshElement.parent.children[0] = newAshElement;
+				}
 			} else {
-				stream.__listeners[i].__updatedDependencies.push(stream);
+				// old is virtual node, new is component
 
-				(0, _findStreamDependencies2.default)(stream.__listeners[i], dependenciesCache);
+				if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
+					// now, the component descriptor's tree is not complete
+					newAshElement.owner = oldAshElement.owner;
+					newAshElement.parent = oldAshElement.parent;
+					newAshElement.index = oldAshElement.index;
+					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
+
+					// replace the old
+					oldAshElement.parent.children[oldAshElement.index] = newAshElement;
+				} else if (oldAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
+					// now, the component descriptor's tree is not complete
+					newAshElement.owner = oldAshElement.owner;
+					newAshElement.parent = oldAshElement.parent;
+					newAshElement.index = oldAshElement.index;
+					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
+
+					// replace the old
+					oldAshElement.parent.children[0] = newAshElement;
+				}
+			}
+		} else {
+			if (oldAshElement === null) {
+				// console.log('old is null, new is virtual node');
+				// old is null, new is virtual node
+
+				// newAshElement must be added as a child...
+				if (newAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
+					// now, the component descriptor's tree is not complete
+					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
+
+					// replace the old
+					newAshElement.parent.children[0] = newAshElement;
+				} else if (newAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
+					// now, the component descriptor's tree is not complete
+					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
+
+					// replace the old
+					newAshElement.parent.children[newAshElement.index] = newAshElement;
+				}
+			} else if (newAshElement.type === oldAshElement.type) {
+				// console.log('old is virtual node, new is virtual node');
+				// old is virtual node, new is virtual node
+
+				if (isParentComponentDirty) {
+					oldAshElement.args = newAshElement.args;
+
+					oldAshElement.instantiate();
+
+					oldAshElement.stream = stream;
+				}
+
+				// adding children to the queue
+				for (var i = 0; i < newAshElement.children.length; i++) {
+					if (newAshElement.children[i] && oldAshElement.children[i]) {
+						newAshElement.children[i].owner = oldAshElement.owner;
+						newAshElement.children[i].parent = oldAshElement;
+						newAshElement.children[i].index = i;
+
+						walkUpdateComponentAshElement(oldAshElement.children[i], newAshElement.children[i], stream, isParentComponentDirty);
+					} else if (newAshElement.children[i] && !oldAshElement.children[i]) {
+						newAshElement.children[i].owner = oldAshElement.owner;
+						newAshElement.children[i].parent = oldAshElement;
+						newAshElement.children[i].index = i;
+
+						walkUpdateComponentAshElement(null, newAshElement.children[i], stream, isParentComponentDirty);
+					}
+				}
+
+				// deleting old surplus children
+				while (oldAshElement.children.length > newAshElement.children.length) {
+					if (oldAshElement.children[oldAshElement.children.length - 1].type === COMPONENT_ASH_ELEMENT) {
+						oldAshElement.children[oldAshElement.children.length - 1].instance.__lifecycle = LIFECYCLE_UNMOUNTED;
+					}
+
+					oldAshElement.children.pop();
+				}
+			} else {
+				// console.log('old is component, new is virtual node');
+				// old is component, new is virtual node
+
+				if (oldAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
+					// now, the component descriptor's tree is not complete
+					newAshElement.owner = oldAshElement.owner;
+					newAshElement.parent = oldAshElement.parent;
+					newAshElement.index = oldAshElement.index;
+
+					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
+
+					// replace the old
+					oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
+					oldAshElement.parent.children[0] = newAshElement;
+				} else if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
+					// now, the component descriptor's tree is not complete
+					newAshElement.owner = oldAshElement.owner;
+					newAshElement.parent = oldAshElement.parent;
+					newAshElement.index = oldAshElement.index;
+
+					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
+
+					// replace the old
+					oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
+					oldAshElement.parent.children[oldAshElement.index] = newAshElement;
+				}
 			}
 		}
+	}
 
-		for (var i = dependenciesCache.length - 1; i >= 0; i--) {
-			if (dependenciesCache[i].__updatedDependencies !== undefined && dependenciesCache[i].__updatedDependencies.length) {
-				(0, _updateStream2.default)(dependenciesCache[i]);
-			}
+	function updateComponentAshElement(componentAshElement, stream) {
+		var render = undefined;
 
-			dependenciesCache[i].__queued = false;
+		if (componentAshElement.isDirty) {
+			render = componentAshElement.instance.render(componentAshElement.instance.props, componentAshElement.instance.state);
+			render.owner = componentAshElement;
+			render.parent = componentAshElement;
+			render.index = 0;
+		} else {
+			render = componentAshElement.children[0];
 		}
 
-		streamsQueue.isUpdating = isStreamsQueueUpdating;
+		walkUpdateComponentAshElement(componentAshElement.children[0], render, stream, componentAshElement.isDirty);
 
-		if (!isStreamsQueueUpdating) {
-			// TODO: should really be: updateStreamsQueue(streamsQueue), but circular dependencies (updateStreamDependencies)...
-			streamsQueue.isUpdating = true;
-
-			while (streamsQueue.length > 0) {
-				updateStreamDependencies(streamsQueue.shift());
-			}
-
-			streamsQueue.isUpdating = false;
-		}
+		return componentAshElement;
 	}
 
 	module.exports = exports.default;
 
 /***/ },
 /* 115 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	exports.default = findStreamDependencies;
-
-	function findStreamDependencies(stream, dependenciesCache) {
-		if (!stream.__queued) {
-			stream.__queued = true;
-
-			for (var i = 0; i < stream.__listeners.length; i++) {
-				findStreamDependencies(stream.__listeners[i], dependenciesCache);
-			}
-
-			dependenciesCache.push(stream);
-		}
-	}
-
-	module.exports = exports.default;
-
-/***/ },
-/* 116 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-		value: true
-	});
-	exports.default = updateStreamsQueue;
-
-	function _interopRequireDefault(obj) {
-		return obj && obj.__esModule ? obj : { 'default': obj };
-	}
-
-	var _updateStreamDependencies = __webpack_require__(114);
-
-	var _updateStreamDependencies2 = _interopRequireDefault(_updateStreamDependencies);
-
-	function updateStreamsQueue(streamsQueue) {
-		if (streamsQueue.isUpdating) {
-			return;
-		}
-
-		streamsQueue.isUpdating = true;
-
-		while (streamsQueue.length > 0) {
-			(0, _updateStreamDependencies2.default)(streamsQueue.shift());
-		}
-
-		streamsQueue.isUpdating = false;
-	}
-
-	module.exports = exports.default;
-
-/***/ },
-/* 117 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
@@ -27403,6 +27824,22 @@
 		};
 	})();
 
+	var _get = function get(object, property, receiver) {
+		if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+			var parent = Object.getPrototypeOf(object);if (parent === null) {
+				return undefined;
+			} else {
+				return get(parent, property, receiver);
+			}
+		} else if ('value' in desc) {
+			return desc.value;
+		} else {
+			var getter = desc.get;if (getter === undefined) {
+				return undefined;
+			}return getter.call(receiver);
+		}
+	};
+
 	function _interopRequireDefault(obj) {
 		return obj && obj.__esModule ? obj : { 'default': obj };
 	}
@@ -27413,23 +27850,29 @@
 		}
 	}
 
-	var _DOMCreateNodeTree = __webpack_require__(118);
+	function _inherits(subClass, superClass) {
+		if (typeof superClass !== 'function' && superClass !== null) {
+			throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
+		}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+	}
+
+	var _DOMCreateNodeTree = __webpack_require__(116);
 
 	var _DOMCreateNodeTree2 = _interopRequireDefault(_DOMCreateNodeTree);
 
-	var _DOMDiffAshNodeTree = __webpack_require__(125);
+	var _DOMDiffAshNodeTree = __webpack_require__(123);
 
 	var _DOMDiffAshNodeTree2 = _interopRequireDefault(_DOMDiffAshNodeTree);
 
-	var _DOMPatchNodeTree = __webpack_require__(126);
+	var _DOMPatchNodeTree = __webpack_require__(124);
 
 	var _DOMPatchNodeTree2 = _interopRequireDefault(_DOMPatchNodeTree);
 
-	var _DOMStringifyAshNodeTree = __webpack_require__(130);
+	var _DOMStringifyAshNodeTree = __webpack_require__(128);
 
 	var _DOMStringifyAshNodeTree2 = _interopRequireDefault(_DOMStringifyAshNodeTree);
 
-	var _DOMValidateNodeTree = __webpack_require__(132);
+	var _DOMValidateNodeTree = __webpack_require__(130);
 
 	var _DOMValidateNodeTree2 = _interopRequireDefault(_DOMValidateNodeTree);
 
@@ -27437,154 +27880,140 @@
 
 	var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 
-	var _internalsIsElement = __webpack_require__(128);
+	var _internalsIsElement = __webpack_require__(126);
 
 	var _internalsIsElement2 = _interopRequireDefault(_internalsIsElement);
 
-	var _streamsStream = __webpack_require__(108);
+	var _Stream2 = __webpack_require__(108);
 
-	var _streamsStream2 = _interopRequireDefault(_streamsStream);
+	var _Stream3 = _interopRequireDefault(_Stream2);
 
-	var _streamsAshNodeStream = __webpack_require__(133);
+	var _ViewStream = __webpack_require__(109);
 
-	var _streamsAshNodeStream2 = _interopRequireDefault(_streamsAshNodeStream);
+	var _ViewStream2 = _interopRequireDefault(_ViewStream);
 
-	var _DOMMountComponents = __webpack_require__(139);
+	var _DOMMountComponents = __webpack_require__(131);
 
 	var _DOMMountComponents2 = _interopRequireDefault(_DOMMountComponents);
 
 	var ID_ATTRIBUTE_NAME = _internalsConstants2.default.ID_ATTRIBUTE_NAME;
 
-	var renderer;
+	function render(stream, changed, dependencies) {
+		var viewStream = dependencies[0];
 
-	var Renderer = (function () {
-		function Renderer() {
-			var _context;
+		var _viewStream$get = viewStream.get();
 
-			_classCallCheck(this, Renderer);
+		var ashElementTree = _viewStream$get.ashElementTree;
+		var ashNodeTree = _viewStream$get.ashNodeTree;
 
-			this.streams = [];
+		if (!stream.previousAshNodeTree) {
+			var isNodeTreeValid = false;
+			var isNodeTreeValidated = false;
 
-			if (renderer) {
-				return renderer;
+			stream.previousAshNodeTree = ashNodeTree;
+
+			// there are some element nodes?
+			if (stream.containerNode.childNodes.length) {
+				isNodeTreeValidated = true;
+				isNodeTreeValid = (0, _DOMValidateNodeTree2.default)(stream.containerNode.childNodes[0], ashNodeTree, viewStream.id);
 			}
 
-			renderer = this;
-			renderer.render = (_context = renderer).render.bind(_context);
+			// render to the Real DOM, if needed
+			if (!isNodeTreeValid || !isNodeTreeValidated) {
+				if (isNodeTreeValidated) {
+					throw new Error('Existing html is invalid!');
+				}
 
-			return renderer;
+				// remove existing nodes
+				while (stream.containerNode.firstChild) {
+					stream.containerNode.removeChild(stream.containerNode.firstChild);
+				}
+
+				global.requestAnimationFrame(function () {
+					stream.containerNode.appendChild((0, _DOMCreateNodeTree2.default)(ashNodeTree));
+					(0, _DOMMountComponents2.default)(ashElementTree);
+				});
+			}
+
+			if (isNodeTreeValid && isNodeTreeValidated) {
+				(0, _DOMMountComponents2.default)(ashElementTree);
+			}
+		} else {
+			var patches = (0, _DOMDiffAshNodeTree2.default)(stream.previousAshNodeTree, ashNodeTree);
+			var isSuccessful = (0, _DOMPatchNodeTree2.default)(stream.rootNode, patches);
+
+			if (!isSuccessful) {
+				throw new Error('Patching the DOM was unsuccesful!');
+			}
+
+			stream.previousAshNodeTree = ashNodeTree;
+
+			(0, _DOMMountComponents2.default)(ashElementTree);
+		}
+	}
+
+	var RenderStream = (function (_Stream) {
+		_inherits(RenderStream, _Stream);
+
+		function RenderStream(viewStream, node) {
+			_classCallCheck(this, RenderStream);
+
+			if (!(viewStream instanceof _ViewStream2.default)) {
+				throw new Error(viewStream + ' (viewStream) must be an ViewStream instance.');
+			}
+
+			if (!(0, _internalsIsElement2.default)(node)) {
+				throw new Error(node + ' (node) must be a DOM Element.');
+			}
+
+			_get(Object.getPrototypeOf(RenderStream.prototype), 'constructor', this).call(this);
+
+			this.containerNode = null;
+			this.previousAshNodeTree = null;
+			this.fn = render;
+			this.containerNode = node;
+
+			// remove child nodes which are not element nodes
+			for (var j = 0; j < this.containerNode.childNodes.length; j++) {
+				if (this.containerNode.childNodes[j].nodeType !== 1) {
+					this.containerNode.removeChild(this.containerNode.childNodes[j]);
+
+					j--;
+				}
+			}
+
+			this.from(viewStream);
+
+			return this;
 		}
 
-		_createClass(Renderer, [{
-			key: 'addStream',
-			value: function addStream(ashNodeStream, node) {
-				if (!(ashNodeStream instanceof _streamsAshNodeStream2.default)) {
-					throw new Error(ashNodeStream + ' (ashNodeStream) must be an AshNodeStream instance.');
-				}
-
-				if (!(0, _internalsIsElement2.default)(node)) {
-					throw new Error(node + ' (node) must be a DOM Element.');
-				}
-
-				var renderStream = new _streamsStream2.default();
-
-				renderStream.id = ashNodeStream.id;
-				renderStream.node = node;
-				renderStream.getRootNode = ashNodeStream.getRootNode = function () {
-					for (var i = 0; i < node.childNodes.length; i++) {
-						if (typeof node.childNodes[i][ID_ATTRIBUTE_NAME] !== 'undefined') {
-							return node.childNodes[i];
-						}
-					}
-
-					return null;
-				};
-
-				renderStream.from(this.render, ashNodeStream);
-				this.streams.push(renderStream);
-
-				return this;
+		_createClass(RenderStream, [{
+			key: 'stringify',
+			value: function stringify() {
+				return (0, _DOMStringifyAshNodeTree2.default)(this.__dependencies[0].get().ashNodeTree);
 			}
 		}, {
-			key: 'streamToString',
-			value: function streamToString(ashNodeStream) {
-				if (!(ashNodeStream instanceof _streamsAshNodeStream2.default)) {
-					throw new Error(ashNodeStream + ' (ashNodeStream) must be an AshNodeStream instance.');
+			key: 'rootNode',
+			get: function () {
+				for (var i = 0; i < this.containerNode.childNodes.length; i++) {
+					if (typeof this.containerNode.childNodes[i][ID_ATTRIBUTE_NAME] !== 'undefined') {
+						return this.containerNode.childNodes[i];
+					}
 				}
 
-				return (0, _DOMStringifyAshNodeTree2.default)(ashNodeStream.get());
-			}
-		}, {
-			key: 'render',
-			value: function render(stream, changed, dependencies) {
-				var ashNodeStream = dependencies[0];
-
-				if (!stream.ashNodeTree) {
-					var isNodeTreeValid = false;
-					var isNodeTreeValidated = false;
-
-					// remove child nodes which are not element nodes
-					for (var j = 0; j < stream.node.childNodes.length; j++) {
-						if (stream.node.childNodes[j].nodeType !== 1) {
-							stream.node.removeChild(stream.node.childNodes[j]);
-
-							j--;
-						}
-					}
-
-					// create ash node tree
-					stream.ashNodeTree = ashNodeStream.get();
-
-					// there are some element nodes?
-					if (stream.node.childNodes.length) {
-						isNodeTreeValidated = true;
-						isNodeTreeValid = (0, _DOMValidateNodeTree2.default)(stream.node.childNodes[0], stream.ashNodeTree, stream.id);
-					}
-
-					// render to the Real DOM, if needed
-					if (!isNodeTreeValid || !isNodeTreeValidated) {
-						if (isNodeTreeValidated) {
-							throw new Error('Existing html is invalid!');
-						}
-
-						while (stream.node.firstChild) {
-							stream.node.removeChild(stream.node.firstChild);
-						}
-
-						global.requestAnimationFrame(function () {
-							stream.node.appendChild((0, _DOMCreateNodeTree2.default)(stream.ashNodeTree));
-							(0, _DOMMountComponents2.default)(ashNodeStream.ashElementTree);
-						});
-					}
-
-					if (isNodeTreeValid && isNodeTreeValidated) {
-						(0, _DOMMountComponents2.default)(ashNodeStream.ashElementTree);
-					}
-				} else {
-					var newAshNodeTree = ashNodeStream.get();
-					var patches = (0, _DOMDiffAshNodeTree2.default)(stream.ashNodeTree, newAshNodeTree);
-					var isSuccessful = (0, _DOMPatchNodeTree2.default)(stream.getRootNode(), patches);
-
-					if (!isSuccessful) {
-						throw new Error('Patching the DOM was unsuccesful!');
-					}
-
-					stream.ashNodeTree = newAshNodeTree;
-
-					(0, _DOMMountComponents2.default)(ashNodeStream.ashElementTree);
-				}
+				return null;
 			}
 		}]);
 
-		return Renderer;
-	})();
+		return RenderStream;
+	})(_Stream3.default);
 
-	exports.default = Renderer;
+	exports.default = RenderStream;
 	module.exports = exports.default;
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 118 */
+/* 116 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
@@ -27598,11 +28027,11 @@
 		return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _internalsIsAshTextNode = __webpack_require__(119);
+	var _internalsIsAshTextNode = __webpack_require__(117);
 
 	var _internalsIsAshTextNode2 = _interopRequireDefault(_internalsIsAshTextNode);
 
-	var _setNodeProperties = __webpack_require__(120);
+	var _setNodeProperties = __webpack_require__(118);
 
 	var _setNodeProperties2 = _interopRequireDefault(_setNodeProperties);
 
@@ -27658,7 +28087,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 119 */
+/* 117 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27685,7 +28114,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 120 */
+/* 118 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27699,11 +28128,11 @@
 		return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _internalsIsObject = __webpack_require__(121);
+	var _internalsIsObject = __webpack_require__(119);
 
 	var _internalsIsObject2 = _interopRequireDefault(_internalsIsObject);
 
-	var _classesEventListener = __webpack_require__(122);
+	var _classesEventListener = __webpack_require__(120);
 
 	var _classesEventListener2 = _interopRequireDefault(_classesEventListener);
 
@@ -27755,7 +28184,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 121 */
+/* 119 */
 /***/ function(module, exports) {
 
 	/**
@@ -27796,7 +28225,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 122 */
+/* 120 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
@@ -27829,7 +28258,7 @@
 
 	var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 
-	var _DOMParseAshNodeId = __webpack_require__(123);
+	var _DOMParseAshNodeId = __webpack_require__(121);
 
 	var _DOMParseAshNodeId2 = _interopRequireDefault(_DOMParseAshNodeId);
 
@@ -27837,7 +28266,7 @@
 
 	var _internalsIsFunction2 = _interopRequireDefault(_internalsIsFunction);
 
-	var _internalsIsMatching = __webpack_require__(124);
+	var _internalsIsMatching = __webpack_require__(122);
 
 	var _internalsIsMatching2 = _interopRequireDefault(_internalsIsMatching);
 
@@ -28021,7 +28450,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 123 */
+/* 121 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -28044,7 +28473,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 124 */
+/* 122 */
 /***/ function(module, exports) {
 
 	/**
@@ -28117,7 +28546,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 125 */
+/* 123 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28417,7 +28846,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 126 */
+/* 124 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28435,19 +28864,19 @@
 
 	var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 
-	var _parseAshNodeId = __webpack_require__(123);
+	var _parseAshNodeId = __webpack_require__(121);
 
 	var _parseAshNodeId2 = _interopRequireDefault(_parseAshNodeId);
 
-	var _createNodeTree = __webpack_require__(118);
+	var _createNodeTree = __webpack_require__(116);
 
 	var _createNodeTree2 = _interopRequireDefault(_createNodeTree);
 
-	var _setNodeProperties = __webpack_require__(120);
+	var _setNodeProperties = __webpack_require__(118);
 
 	var _setNodeProperties2 = _interopRequireDefault(_setNodeProperties);
 
-	var _removeNodeProperties = __webpack_require__(127);
+	var _removeNodeProperties = __webpack_require__(125);
 
 	var _removeNodeProperties2 = _interopRequireDefault(_removeNodeProperties);
 
@@ -28455,11 +28884,11 @@
 
 	var _findNode2 = _interopRequireDefault(_findNode);
 
-	var _classesEventListener = __webpack_require__(122);
+	var _classesEventListener = __webpack_require__(120);
 
 	var _classesEventListener2 = _interopRequireDefault(_classesEventListener);
 
-	var _internalsIsElement = __webpack_require__(128);
+	var _internalsIsElement = __webpack_require__(126);
 
 	var _internalsIsElement2 = _interopRequireDefault(_internalsIsElement);
 
@@ -28726,7 +29155,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 127 */
+/* 125 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28740,7 +29169,7 @@
 		return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _classesEventListener = __webpack_require__(122);
+	var _classesEventListener = __webpack_require__(120);
 
 	var _classesEventListener2 = _interopRequireDefault(_classesEventListener);
 
@@ -28782,7 +29211,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 128 */
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28796,7 +29225,7 @@
 	  return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _isObjectLike = __webpack_require__(129);
+	var _isObjectLike = __webpack_require__(127);
 
 	var _isObjectLike2 = _interopRequireDefault(_isObjectLike);
 
@@ -28824,7 +29253,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 129 */
+/* 127 */
 /***/ function(module, exports) {
 
 	/**
@@ -28848,7 +29277,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 130 */
+/* 128 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28862,7 +29291,7 @@
 		return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _internalsIsAshNode = __webpack_require__(131);
+	var _internalsIsAshNode = __webpack_require__(129);
 
 	var _internalsIsAshNode2 = _interopRequireDefault(_internalsIsAshNode);
 
@@ -28972,7 +29401,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 131 */
+/* 129 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28999,7 +29428,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 132 */
+/* 130 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29013,7 +29442,7 @@
 		return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _classesEventListener = __webpack_require__(122);
+	var _classesEventListener = __webpack_require__(120);
 
 	var _classesEventListener2 = _interopRequireDefault(_classesEventListener);
 
@@ -29078,716 +29507,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 133 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-		value: true
-	});
-
-	var _createClass = (function () {
-		function defineProperties(target, props) {
-			for (var i = 0; i < props.length; i++) {
-				var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-			}
-		}return function (Constructor, protoProps, staticProps) {
-			if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-		};
-	})();
-
-	var _get = function get(object, property, receiver) {
-		if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-			var parent = Object.getPrototypeOf(object);if (parent === null) {
-				return undefined;
-			} else {
-				return get(parent, property, receiver);
-			}
-		} else if ('value' in desc) {
-			return desc.value;
-		} else {
-			var getter = desc.get;if (getter === undefined) {
-				return undefined;
-			}return getter.call(receiver);
-		}
-	};
-
-	function _interopRequireDefault(obj) {
-		return obj && obj.__esModule ? obj : { 'default': obj };
-	}
-
-	function _classCallCheck(instance, Constructor) {
-		if (!(instance instanceof Constructor)) {
-			throw new TypeError('Cannot call a class as a function');
-		}
-	}
-
-	function _inherits(subClass, superClass) {
-		if (typeof superClass !== 'function' && superClass !== null) {
-			throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-		}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-	}
-
-	var _Stream2 = __webpack_require__(108);
-
-	var _Stream3 = _interopRequireDefault(_Stream2);
-
-	var _classesComponent = __webpack_require__(102);
-
-	var _classesComponent2 = _interopRequireDefault(_classesComponent);
-
-	var _internalsIsComponentAshElement = __webpack_require__(134);
-
-	var _internalsIsComponentAshElement2 = _interopRequireDefault(_internalsIsComponentAshElement);
-
-	var _DOMCreateAshNodeTree = __webpack_require__(135);
-
-	var _DOMCreateAshNodeTree2 = _interopRequireDefault(_DOMCreateAshNodeTree);
-
-	var _DOMCreateAshElementTree = __webpack_require__(136);
-
-	var _DOMCreateAshElementTree2 = _interopRequireDefault(_DOMCreateAshElementTree);
-
-	var _DOMUpdateComponentAshElement = __webpack_require__(138);
-
-	var _DOMUpdateComponentAshElement2 = _interopRequireDefault(_DOMUpdateComponentAshElement);
-
-	var streamId = 0;
-
-	var AshNodeStream = (function (_Stream) {
-		_inherits(AshNodeStream, _Stream);
-
-		function AshNodeStream() {
-			_classCallCheck(this, AshNodeStream);
-
-			_get(Object.getPrototypeOf(AshNodeStream.prototype), 'constructor', this).apply(this, arguments);
-
-			this.id = streamId++;
-			this.ashElementTree = null;
-			this.isUpdating = false;
-			this.isRendering = false;
-		}
-
-		_createClass(AshNodeStream, [{
-			key: 'from',
-			value: function from(componentAshElement) {
-				if (!(0, _internalsIsComponentAshElement2.default)(componentAshElement)) {
-					throw new Error(componentAshElement + ' (componentAshElement) must be an Component AshElement object instance.');
-				}
-
-				this.ashElementTree = (0, _DOMCreateAshElementTree2.default)(componentAshElement, this);
-
-				return _get(Object.getPrototypeOf(AshNodeStream.prototype), 'from', this).call(this, (0, _DOMCreateAshNodeTree2.default)(this.ashElementTree));
-			}
-		}, {
-			key: 'push',
-			value: function push(arg) {
-				var _this = this;
-
-				if (arg instanceof _classesComponent2.default && !this.isUpdating) {
-					this.isUpdating = true;
-					arg.__element.isDirty = true;
-
-					// console.log('push...', arg.__element.Spec.name, arg.__element.isDirty);
-
-					if (!this.isRendering) {
-						this.isRendering = true;
-
-						global.requestAnimationFrame(function () {
-							// updateComponentAshElement(arg.__element, this);
-							(0, _DOMUpdateComponentAshElement2.default)(_this.ashElementTree, _this);
-							_get(Object.getPrototypeOf(AshNodeStream.prototype), 'push', _this).call(_this, (0, _DOMCreateAshNodeTree2.default)(_this.ashElementTree));
-
-							_this.isRendering = false;
-						});
-					}
-
-					this.isUpdating = false;
-				} else if (arg instanceof _classesComponent2.default && this.isUpdating) {
-					throw new Error('You cannot update components during previous update!');
-				} else {
-					// console.log('push...', arg);
-					_get(Object.getPrototypeOf(AshNodeStream.prototype), 'push', this).call(this, arg);
-				}
-
-				return this;
-			}
-		}], [{
-			key: 'from',
-			value: function from(componentAshElement) {
-				return new AshNodeStream().from(componentAshElement);
-			}
-		}]);
-
-		return AshNodeStream;
-	})(_Stream3.default);
-
-	exports.default = AshNodeStream;
-	module.exports = exports.default;
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 134 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-		value: true
-	});
-	exports.default = isComponentAshElement;
-
-	function _interopRequireDefault(obj) {
-		return obj && obj.__esModule ? obj : { 'default': obj };
-	}
-
-	var _constants = __webpack_require__(104);
-
-	var _constants2 = _interopRequireDefault(_constants);
-
-	var COMPONENT_ASH_ELEMENT = _constants2.default.COMPONENT_ASH_ELEMENT;
-
-	function isComponentAshElement(value) {
-		return value && value.type === COMPONENT_ASH_ELEMENT;
-	}
-
-	module.exports = exports.default;
-
-/***/ },
-/* 135 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-		value: true
-	});
-	exports.default = createAshNodeTree;
-
-	function _interopRequireDefault(obj) {
-		return obj && obj.__esModule ? obj : { 'default': obj };
-	}
-
-	var _internalsIsComponentAshElement = __webpack_require__(134);
-
-	var _internalsIsComponentAshElement2 = _interopRequireDefault(_internalsIsComponentAshElement);
-
-	var _internalsIsAshNodeAshElement = __webpack_require__(103);
-
-	var _internalsIsAshNodeAshElement2 = _interopRequireDefault(_internalsIsAshNodeAshElement);
-
-	var _internalsConstants = __webpack_require__(104);
-
-	var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
-
-	var INDEX_SEPARATOR = _internalsConstants2.default.INDEX_SEPARATOR;
-
-	function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParentComponentDirty, parentIndices) {
-		if ((0, _internalsIsAshNodeAshElement2.default)(ashElement)) {
-			if (isParentComponentDirty) {
-
-				ashElement.instantiate();
-
-				ashElement.instance.id = parentId + INDEX_SEPARATOR + index;
-				ashElement.instance.index = index;
-				ashElement.instance.indices = parentIndices.concat(index);
-				ashElement.instance.streamId = ashElement.stream.id;
-				ashElement.instance.isDirty = true;
-				ashElement.instance.parent = ashNodeTree;
-
-				ashNodeTree.children[ashElement.instance.index] = ashElement.instance;
-			} else {
-				ashElement.instance.isDirty = false;
-				ashElement.instance.parent = ashNodeTree;
-
-				if (ashNodeTree.oldChildren && ashElement.instance.index === 0) {
-					ashNodeTree.oldChildren = null;
-				}
-
-				if (ashNodeTree.children[ashElement.instance.index] !== ashElement.instance) {
-					ashNodeTree.children[ashElement.instance.index] = ashElement.instance;
-				}
-			}
-
-			// walk the children
-			for (var i = 0; i < ashElement.children.length; i++) {
-				walkCreateAshNodeTree(ashNodeTree.children[ashElement.instance.index], ashElement.children[i], i, ashNodeTree.children[ashElement.instance.index].id, isParentComponentDirty, ashNodeTree.children[ashElement.instance.index].indices);
-			}
-		} else if (ashElement && ashElement.children[0]) {
-
-			var isDirty = ashElement.isDirty;
-
-			if (index === 0 && !isParentComponentDirty) {
-				if (isDirty) {
-					ashNodeTree.oldChildren = ashNodeTree.children;
-					ashNodeTree.children = [];
-				} else {
-					ashNodeTree.oldChildren = null;
-				}
-			} else if (!isParentComponentDirty) {
-				if (isDirty && !ashNodeTree.oldChildren) {
-					ashNodeTree.oldChildren = ashNodeTree.children;
-					ashNodeTree.children = [];
-
-					// copy not dirty already walked children
-					for (var i = 0; i < index; i++) {
-						ashNodeTree.children[i] = ashNodeTree.oldChildren[i];
-					}
-				}
-			}
-
-			ashElement.isDirty = false;
-
-			walkCreateAshNodeTree(ashNodeTree, ashElement.children[0], index, parentId, isDirty, parentIndices);
-		}
-	}
-
-	function createAshNodeTree(componentAshElement) {
-		if (!(0, _internalsIsComponentAshElement2.default)(componentAshElement)) {
-			throw new Error(componentAshElement + ' (componentAshElement) must be a Component Ash Element object instance.');
-		}
-
-		var ashElement = componentAshElement;
-		var ashNodeTree = undefined;
-		var isDirty = ashElement.isDirty;
-
-		ashElement.isDirty = false;
-
-		// find first children which is ash node ash element
-		while (!(0, _internalsIsAshNodeAshElement2.default)(ashElement)) {
-			ashElement = ashElement.children[0];
-		}
-
-		if (isDirty) {
-			ashElement.instantiate();
-
-			ashElement.instance.isDirty = true;
-		} else {
-			ashElement.instance.isDirty = false;
-		}
-
-		ashElement.instance.id = '0';
-		ashElement.instance.index = 0;
-		ashElement.instance.indices = [0];
-		ashElement.instance.streamId = ashElement.stream.id;
-		ashElement.instance.parent = null;
-		ashNodeTree = ashElement.instance;
-
-		// walk the children
-		for (var i = 0; i < ashElement.children.length; i++) {
-			walkCreateAshNodeTree(ashNodeTree, ashElement.children[i], i, ashNodeTree.id, isDirty, ashNodeTree.indices);
-		}
-
-		return ashNodeTree;
-	}
-
-	module.exports = exports.default;
-
-/***/ },
-/* 136 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-		value: true
-	});
-	exports.default = createAshElementTree;
-
-	function _interopRequireDefault(obj) {
-		return obj && obj.__esModule ? obj : { 'default': obj };
-	}
-
-	var _internalsIsAshElement = __webpack_require__(137);
-
-	var _internalsIsAshElement2 = _interopRequireDefault(_internalsIsAshElement);
-
-	var _internalsIsComponentAshElement = __webpack_require__(134);
-
-	var _internalsIsComponentAshElement2 = _interopRequireDefault(_internalsIsComponentAshElement);
-
-	var _internalsIsAshNodeAshElement = __webpack_require__(103);
-
-	var _internalsIsAshNodeAshElement2 = _interopRequireDefault(_internalsIsAshNodeAshElement);
-
-	var _internalsConstants = __webpack_require__(104);
-
-	var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
-
-	var LIFECYCLE_MOUNTING = _internalsConstants2.default.LIFECYCLE_MOUNTING;
-
-	function walkCreateAshElementTree(ashElement, owner, index) {
-		// type check
-		if (!(0, _internalsIsComponentAshElement2.default)(owner)) {
-			throw new Error(owner + ' must be a Component type AshElement Object');
-		}
-
-		if ((0, _internalsIsAshNodeAshElement2.default)(ashElement)) {
-			// instantiate ashElement
-			ashElement.instantiate();
-
-			// set up ordering properties
-			ashElement.index = index;
-
-			// set up owner & stream
-			ashElement.owner = owner;
-			ashElement.stream = owner.stream;
-
-			for (var i = 0; i < ashElement.children.length; i++) {
-				if (ashElement.children[i]) {
-					// set up parent
-					ashElement.children[i].parent = ashElement;
-
-					// walk the child
-					walkCreateAshElementTree(ashElement.children[i], owner, i);
-				}
-			}
-		} else if ((0, _internalsIsComponentAshElement2.default)(ashElement)) {
-			// instantiate ashElement
-			ashElement.instantiate();
-
-			// set up ordering properties
-			ashElement.index = index;
-
-			// set up owner
-			ashElement.owner = owner;
-			ashElement.stream = owner.stream;
-
-			// create child by rendering component
-			ashElement.instance.__lifecycle = LIFECYCLE_MOUNTING;
-			ashElement.children[0] = ashElement.instance.render(ashElement.instance.props, ashElement.instance.state);
-
-			if (ashElement.children[0]) {
-				// set up parent
-				ashElement.children[0].parent = ashElement;
-
-				// walk the child
-				walkCreateAshElementTree(ashElement.children[0], ashElement, 0);
-			}
-		}
-	}
-
-	function createAshElementTree(ashElement, stream /*, startingLevel*/) {
-		// type check
-		if (!(0, _internalsIsAshElement2.default)(ashElement)) {
-			throw new Error(ashElement + ' (ashElement) must be an AshElement object instance.');
-		}
-
-		if (!stream) {
-			throw new Error(stream + ' (stream) must be a Stream object instance.');
-		}
-
-		var ashElementTree = ashElement;
-
-		ashElementTree.stream = stream;
-		ashElementTree.isRoot = true;
-
-		if ((0, _internalsIsComponentAshElement2.default)(ashElementTree)) {
-			ashElementTree.instantiate();
-
-			// set up ordering properties
-			ashElementTree.index = typeof ashElementTree.index === 'undefined' ? 0 : ashElementTree.index;
-
-			// create child by rendering component
-			ashElementTree.instance.__lifecycle = LIFECYCLE_MOUNTING;
-			ashElementTree.children[0] = ashElementTree.instance.render();
-
-			// set up a parent
-			if (ashElementTree.children[0]) {
-				ashElementTree.children[0].parent = ashElementTree;
-			}
-
-			// walk the child
-			walkCreateAshElementTree(ashElementTree.children[0], ashElementTree, 0);
-		} else {
-			ashElementTree.instantiate();
-
-			// set up ordering properties
-			ashElementTree.index = typeof ashElementTree.index === 'undefined' ? 0 : ashElementTree.index;
-
-			for (var i = 0; i < ashElementTree.children.length; i++) {
-				// set up a parent
-				ashElementTree.children[i].parent = ashElementTree;
-
-				// walk the child
-				walkCreateAshElementTree(ashElementTree.children[i], ashElementTree.owner, i);
-			}
-		}
-
-		// return resulting ash element tree
-		return ashElementTree;
-	}
-
-	module.exports = exports.default;
-
-/***/ },
-/* 137 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-		value: true
-	});
-	exports.default = isAshElement;
-
-	function _interopRequireDefault(obj) {
-		return obj && obj.__esModule ? obj : { 'default': obj };
-	}
-
-	var _constants = __webpack_require__(104);
-
-	var _constants2 = _interopRequireDefault(_constants);
-
-	var COMPONENT_ASH_ELEMENT = _constants2.default.COMPONENT_ASH_ELEMENT;
-	var ASH_NODE_ASH_ELEMENT = _constants2.default.ASH_NODE_ASH_ELEMENT;
-
-	function isAshElement(value) {
-		return value && (value.type === COMPONENT_ASH_ELEMENT || value.type === ASH_NODE_ASH_ELEMENT);
-	}
-
-	module.exports = exports.default;
-
-/***/ },
-/* 138 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-		value: true
-	});
-	exports.default = updateComponentAshElement;
-
-	function _interopRequireDefault(obj) {
-		return obj && obj.__esModule ? obj : { 'default': obj };
-	}
-
-	var _DOMCreateAshElementTree = __webpack_require__(136);
-
-	var _DOMCreateAshElementTree2 = _interopRequireDefault(_DOMCreateAshElementTree);
-
-	var _internalsConstants = __webpack_require__(104);
-
-	var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
-
-	var LIFECYCLE_UNMOUNTED = _internalsConstants2.default.LIFECYCLE_UNMOUNTED;
-	var COMPONENT_ASH_ELEMENT = _internalsConstants2.default.COMPONENT_ASH_ELEMENT;
-	var ASH_NODE_ASH_ELEMENT = _internalsConstants2.default.ASH_NODE_ASH_ELEMENT;
-
-	function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, isParentComponentDirty) {
-		if (newAshElement.type === COMPONENT_ASH_ELEMENT) {
-			if (oldAshElement === null) {
-				// old is null, new is component
-
-				// newAshElement must be added as a child...
-				if (newAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
-					// now, the component descriptor's tree is not complete
-					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
-
-					// replace the old
-					newAshElement.parent.children[newAshElement.index] = newAshElement;
-				} else if (newAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
-					// now, the component descriptor's tree is not complete
-					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
-
-					// replace the old
-					newAshElement.parent.children[0] = newAshElement;
-				}
-			} else if (oldAshElement.type === COMPONENT_ASH_ELEMENT && newAshElement.Spec === oldAshElement.Spec) {
-				// old is component, new is same component
-
-				var shouldUpdate = oldAshElement.instance.shouldUpdate(newAshElement.args ? newAshElement.args[0] : null);
-
-				if (shouldUpdate || oldAshElement.isDirty) {
-					oldAshElement.isDirty = true;
-
-					// copy the new to the old...
-					oldAshElement.args = newAshElement.args;
-
-					oldAshElement.instance.onBeforeReceiveProps(newAshElement.args ? newAshElement.args[0] : null);
-
-					oldAshElement.instance.props = newAshElement.args ? newAshElement.args[0] : null;
-
-					// create child for the new descriptor
-					var render = oldAshElement.instance.render(oldAshElement.instance.props, oldAshElement.instance.state);
-
-					// adding children to the queue
-					if (render) {
-						render.owner = oldAshElement;
-						render.parent = oldAshElement;
-						render.index = 0;
-
-						if (oldAshElement.children[0]) {
-							walkUpdateComponentAshElement(oldAshElement.children[0], render, stream, true);
-						} else {
-							walkUpdateComponentAshElement(null, render, stream, true);
-						}
-					} else if (oldAshElement.children[0]) {
-						// deleting old surplus children
-						if (oldAshElement.children[0].type === COMPONENT_ASH_ELEMENT) {
-							oldAshElement.children[0].instance.__lifecycle = LIFECYCLE_UNMOUNTED;
-						}
-
-						oldAshElement.children.pop();
-					}
-				} else {
-					walkUpdateComponentAshElement(oldAshElement.children[0], oldAshElement.children[0], stream, false);
-				}
-			} else if (oldAshElement.type === COMPONENT_ASH_ELEMENT) {
-				// old is component, new is different component
-
-				if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
-					// now, the component descriptor's tree is not complete
-					newAshElement.owner = oldAshElement.owner;
-					newAshElement.parent = oldAshElement.parent;
-					newAshElement.index = oldAshElement.index;
-					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
-
-					// replace the old
-					oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
-					oldAshElement.parent.children[oldAshElement.index] = newAshElement;
-				} else if (oldAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
-					// now, the component descriptor's tree is not complete
-					newAshElement.owner = oldAshElement.owner;
-					newAshElement.parent = oldAshElement.parent;
-					newAshElement.index = oldAshElement.index;
-					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
-
-					// replace the old
-					oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
-					oldAshElement.parent.children[0] = newAshElement;
-				}
-			} else {
-				// old is virtual node, new is component
-
-				if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
-					// now, the component descriptor's tree is not complete
-					newAshElement.owner = oldAshElement.owner;
-					newAshElement.parent = oldAshElement.parent;
-					newAshElement.index = oldAshElement.index;
-					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
-
-					// replace the old
-					oldAshElement.parent.children[oldAshElement.index] = newAshElement;
-				} else if (oldAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
-					// now, the component descriptor's tree is not complete
-					newAshElement.owner = oldAshElement.owner;
-					newAshElement.parent = oldAshElement.parent;
-					newAshElement.index = oldAshElement.index;
-					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
-
-					// replace the old
-					oldAshElement.parent.children[0] = newAshElement;
-				}
-			}
-		} else {
-			if (oldAshElement === null) {
-				// console.log('old is null, new is virtual node');
-				// old is null, new is virtual node
-
-				// newAshElement must be added as a child...
-				if (newAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
-					// now, the component descriptor's tree is not complete
-					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
-
-					// replace the old
-					newAshElement.parent.children[0] = newAshElement;
-				} else if (newAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
-					// now, the component descriptor's tree is not complete
-					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
-
-					// replace the old
-					newAshElement.parent.children[newAshElement.index] = newAshElement;
-				}
-			} else if (newAshElement.type === oldAshElement.type) {
-				// console.log('old is virtual node, new is virtual node');
-				// old is virtual node, new is virtual node
-
-				if (isParentComponentDirty) {
-					oldAshElement.args = newAshElement.args;
-
-					oldAshElement.instantiate();
-
-					oldAshElement.stream = stream;
-				}
-
-				// adding children to the queue
-				for (var i = 0; i < newAshElement.children.length; i++) {
-					if (newAshElement.children[i] && oldAshElement.children[i]) {
-						newAshElement.children[i].owner = oldAshElement.owner;
-						newAshElement.children[i].parent = oldAshElement;
-						newAshElement.children[i].index = i;
-
-						walkUpdateComponentAshElement(oldAshElement.children[i], newAshElement.children[i], stream, isParentComponentDirty);
-					} else if (newAshElement.children[i] && !oldAshElement.children[i]) {
-						newAshElement.children[i].owner = oldAshElement.owner;
-						newAshElement.children[i].parent = oldAshElement;
-						newAshElement.children[i].index = i;
-
-						walkUpdateComponentAshElement(null, newAshElement.children[i], stream, isParentComponentDirty);
-					}
-				}
-
-				// deleting old surplus children
-				while (oldAshElement.children.length > newAshElement.children.length) {
-					if (oldAshElement.children[oldAshElement.children.length - 1].type === COMPONENT_ASH_ELEMENT) {
-						oldAshElement.children[oldAshElement.children.length - 1].instance.__lifecycle = LIFECYCLE_UNMOUNTED;
-					}
-
-					oldAshElement.children.pop();
-				}
-			} else {
-				// console.log('old is component, new is virtual node');
-				// old is component, new is virtual node
-
-				if (oldAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
-					// now, the component descriptor's tree is not complete
-					newAshElement.owner = oldAshElement.owner;
-					newAshElement.parent = oldAshElement.parent;
-					newAshElement.index = oldAshElement.index;
-
-					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
-
-					// replace the old
-					oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
-					oldAshElement.parent.children[0] = newAshElement;
-				} else if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
-					// now, the component descriptor's tree is not complete
-					newAshElement.owner = oldAshElement.owner;
-					newAshElement.parent = oldAshElement.parent;
-					newAshElement.index = oldAshElement.index;
-
-					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
-
-					// replace the old
-					oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
-					oldAshElement.parent.children[oldAshElement.index] = newAshElement;
-				}
-			}
-		}
-	}
-
-	function updateComponentAshElement(componentAshElement, stream) {
-		var render = undefined;
-
-		if (componentAshElement.isDirty) {
-			render = componentAshElement.instance.render(componentAshElement.instance.props, componentAshElement.instance.state);
-			render.owner = componentAshElement;
-			render.parent = componentAshElement;
-			render.index = 0;
-		} else {
-			render = componentAshElement.children[0];
-		}
-
-		walkUpdateComponentAshElement(componentAshElement.children[0], render, stream, componentAshElement.isDirty);
-	}
-
-	module.exports = exports.default;
-
-/***/ },
-/* 139 */
+/* 131 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29801,7 +29521,7 @@
 		return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _internalsIsComponentAshElement = __webpack_require__(134);
+	var _internalsIsComponentAshElement = __webpack_require__(110);
 
 	var _internalsIsComponentAshElement2 = _interopRequireDefault(_internalsIsComponentAshElement);
 
@@ -29839,339 +29559,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 140 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-		value: true
-	});
-
-	var _createClass = (function () {
-		function defineProperties(target, props) {
-			for (var i = 0; i < props.length; i++) {
-				var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-			}
-		}return function (Constructor, protoProps, staticProps) {
-			if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-		};
-	})();
-
-	function _interopRequireDefault(obj) {
-		return obj && obj.__esModule ? obj : { 'default': obj };
-	}
-
-	function _classCallCheck(instance, Constructor) {
-		if (!(instance instanceof Constructor)) {
-			throw new TypeError('Cannot call a class as a function');
-		}
-	}
-
-	var _internalsIsFunction = __webpack_require__(106);
-
-	var _internalsIsFunction2 = _interopRequireDefault(_internalsIsFunction);
-
-	var trueFn = function () {
-		return true;
-	};
-	var streamsToUpdate = [];
-	var inStream = undefined;
-	var flushing = false;
-	var order = [];
-	var nextOrderIndex = -1;
-
-	function findDependencies(stream) {
-		if (stream.__isQueued === false) {
-			stream.__isQueued = true;
-
-			for (var i = 0; i < stream.__listeners.length; ++i) {
-				findDependencies(stream.__listeners[i]);
-			}
-
-			order[++nextOrderIndex] = stream;
-		}
-	}
-
-	function detachDependencies(stream) {
-		for (var i = 0; i < stream.__dependecies.length; ++i) {
-			stream.__dependecies[i].__listeners[stream.__dependecies[i].__listeners.indexOf(stream)] = stream.__dependecies[i].__listeners[stream.__dependecies[i].__listeners.length - 1];
-			stream.__dependecies[i].__listeners.length--;
-		}
-
-		stream.__dependecies.length = 0;
-	}
-
-	function flushUpdate() {
-		// flush update
-		flushing = true;
-
-		while (streamsToUpdate.length) {
-			var stream = streamsToUpdate.shift();
-
-			if (stream.__values.length > 0) {
-				stream.value = stream.__values.shift();
-			}
-
-			updateDependencies(stream);
-		}
-
-		flushing = false;
-	}
-
-	function updateStream(stream) {
-		stream.__dependenciesMet = true;
-
-		for (var i = 0; i < stream.__dependecies.length; i++) {
-			if (!stream.__dependecies[i].hasValue) {
-				stream.__dependenciesMet = false;
-
-				break;
-			}
-		}
-
-		if (!stream.__dependenciesMet || stream.end && stream.end.value === true) {
-			return;
-		}
-
-		if (inStream) {
-			streamsToUpdate.push(stream);
-		} else {
-			inStream = stream;
-
-			var returnValue = stream.fn(stream, stream.__changedDependencies);
-
-			if (returnValue !== undefined) {
-				stream.push(returnValue);
-			}
-
-			inStream = undefined;
-
-			if (stream.__changedDependencies !== undefined) {
-				stream.__changedDependencies = [];
-			}
-
-			stream.__shouldUpdate = false;
-
-			if (flushing === false) {
-				flushUpdate();
-			}
-		}
-	}
-
-	function updateDependencies(stream) {
-		for (var i = 0; i < stream.__listeners.length; ++i) {
-			if (stream.__listeners[i].end === stream) {
-				if (stream.__listeners[i].__dependecies) {
-					detachDependencies(stream.__listeners[i]);
-				}
-
-				if (stream.__listeners[i].end) {
-					detachDependencies(stream.__listeners[i].end);
-				}
-			} else {
-				if (stream.__listeners[i].__changedDependencies !== undefined) {
-					stream.__listeners[i].__changedDependencies.push(stream);
-				}
-
-				stream.__listeners[i].__shouldUpdate = true;
-
-				findDependencies(stream.__listeners[i]);
-			}
-		}
-
-		for (; nextOrderIndex >= 0; --nextOrderIndex) {
-			if (order[nextOrderIndex].__shouldUpdate === true) {
-				updateStream(order[nextOrderIndex]);
-			}
-
-			order[nextOrderIndex].__isQueued = false;
-		}
-	}
-
-	var Stream = (function () {
-		function Stream(fn /*, ...dependecies*/) {
-			_classCallCheck(this, Stream);
-
-			this.hasValue = false;
-			this.value = undefined;
-			this.__values = [];
-			this.__listeners = [];
-			this.__isQueued = false;
-			this.end = null;
-			this.fn = null;
-			this.__dependecies = [];
-			this.__dependenciesMet = false;
-			this.__changedDependencies = [];
-			this.__shouldUpdate = false;
-			this.isEndStream = false;
-
-			this.update = this.push = this.push.bind(this);
-
-			if (fn === trueFn) {
-				this.fn = fn;
-				this.isEndStream = true;
-			} else {
-				this.end = new Stream(trueFn);
-				this.end.__listeners.push(this);
-
-				if (arguments.length >= 2) {
-					if (!(0, _internalsIsFunction2.default)(fn)) {
-						throw new Error(fn + ' (fn) must be a function!');
-					}
-
-					var dependencies = [];
-					var endStreams = [];
-
-					for (var i = 1; i < arguments.length; i++) {
-						if (arguments[i] instanceof Stream) {
-							dependencies.push(arguments[i]);
-
-							if (arguments[i].end) {
-								endStreams.push(arguments[i].end);
-							}
-						}
-					}
-
-					this.fn = fn;
-
-					// add listeners to stream
-					this.__dependecies = dependencies;
-
-					for (var i = 0; i < dependencies.length; ++i) {
-						dependencies[i].__listeners.push(this);
-					}
-
-					// add listeners to end stream
-					this.end.__dependecies = endStreams;
-
-					for (var i = 0; i < endStreams.length; ++i) {
-						endStreams[i].__listeners.push(this.end);
-					}
-
-					updateStream(this);
-				} else if (arguments.length === 1) {
-					this.push(fn);
-				}
-			}
-
-			return this;
-		}
-
-		_createClass(Stream, [{
-			key: 'get',
-			value: function get() {
-				return this.value;
-			}
-		}, {
-			key: 'push',
-			value: function push(value) {
-				if (value !== undefined && value !== null && (0, _internalsIsFunction2.default)(value.then)) {
-					value.then(this.push).catch(this.push);
-
-					return this;
-				}
-
-				this.value = value;
-				this.hasValue = true;
-
-				if (!inStream) {
-					flushing = true;
-
-					updateDependencies(this);
-
-					if (streamsToUpdate.length > 0) {
-						flushUpdate();
-					} else {
-						flushing = false;
-					}
-				} else if (inStream === this) {
-					// mark listeners
-					for (var i = 0; i < this.__listeners.length; ++i) {
-						if (this.__listeners[i].end !== this) {
-							if (this.__listeners[i].__changedDependencies !== undefined) {
-								this.__listeners[i].__changedDependencies.push(this);
-							}
-							this.__listeners[i].__shouldUpdate = true;
-						} else {
-							if (this.__listeners[i].__dependecies) {
-								detachDependencies(this.__listeners[i]);
-							}
-
-							if (this.__listeners[i].end) {
-								detachDependencies(this.__listeners[i].end);
-							}
-						}
-					}
-				} else {
-					this.__values.push(value);
-					streamsToUpdate.push(this);
-				}
-
-				return this;
-			}
-		}, {
-			key: 'endsOn',
-			value: function endsOn(endStream) {
-				detachDependencies(this.end);
-				endStream.__listeners.push(this.end);
-				this.end.__dependecies.push(endStream);
-
-				return this;
-			}
-		}, {
-			key: 'toString',
-			value: function toString() {
-				return 'stream(' + this.value + ')';
-			}
-		}, {
-			key: 'map',
-			value: function map(fn) {
-				return Stream.map(fn, this);
-			}
-		}, {
-			key: 'on',
-			value: function on(fn) {
-				return Stream.on(fn, this);
-			}
-		}, {
-			key: 'ap',
-			value: function ap(stream) {
-				var _this = this;
-
-				return new Stream(function () {
-					return _this.get()(stream.get());
-				}, this, stream);
-			}
-		}], [{
-			key: 'isStream',
-			value: function isStream(stream) {
-				return stream instanceof Stream;
-			}
-		}, {
-			key: 'map',
-			value: function map(fn, stream) {
-				return new Stream(function (self) {
-					self.push(fn(stream.value));
-				}, stream);
-			}
-		}, {
-			key: 'on',
-			value: function on(fn, stream) {
-				return new Stream(function () {
-					fn(stream.value);
-				}, stream);
-			}
-		}]);
-
-		return Stream;
-	})();
-
-	exports.default = Stream;
-	module.exports = exports.default;
-
-/***/ },
-/* 141 */
+/* 132 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
@@ -30185,15 +29573,15 @@
 		return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _classesAshNode = __webpack_require__(142);
+	var _classesAshNode = __webpack_require__(133);
 
 	var _classesAshNode2 = _interopRequireDefault(_classesAshNode);
 
-	var _classesAshElement = __webpack_require__(143);
+	var _classesAshElement = __webpack_require__(134);
 
 	var _classesAshElement2 = _interopRequireDefault(_classesAshElement);
 
-	var _isAshElement = __webpack_require__(137);
+	var _isAshElement = __webpack_require__(113);
 
 	var _isAshElement2 = _interopRequireDefault(_isAshElement);
 
@@ -30281,7 +29669,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 142 */
+/* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30336,7 +29724,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 143 */
+/* 134 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30458,7 +29846,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 144 */
+/* 135 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -30496,7 +29884,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 145 */
+/* 136 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**

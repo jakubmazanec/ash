@@ -50,10 +50,6 @@ var _Stream2 = require('./Stream');
 
 var _Stream3 = _interopRequireDefault(_Stream2);
 
-var _classesComponent = require('../classes/Component');
-
-var _classesComponent2 = _interopRequireDefault(_classesComponent);
-
 var _internalsIsComponentAshElement = require('../internals/isComponentAshElement');
 
 var _internalsIsComponentAshElement2 = _interopRequireDefault(_internalsIsComponentAshElement);
@@ -72,73 +68,68 @@ var _DOMUpdateComponentAshElement2 = _interopRequireDefault(_DOMUpdateComponentA
 
 var streamId = 0;
 
-var AshNodeStream = (function (_Stream) {
-	_inherits(AshNodeStream, _Stream);
+var ViewStream = (function (_Stream) {
+	_inherits(ViewStream, _Stream);
 
-	function AshNodeStream() {
-		_classCallCheck(this, AshNodeStream);
+	function ViewStream(componentAshElement) {
+		_classCallCheck(this, ViewStream);
 
-		_get(Object.getPrototypeOf(AshNodeStream.prototype), 'constructor', this).apply(this, arguments);
+		if (!(0, _internalsIsComponentAshElement2.default)(componentAshElement)) {
+			throw new Error(componentAshElement + ' (componentAshElement) must be an Component AshElement object instance.');
+		}
+
+		if (componentAshElement.stream instanceof ViewStream) {
+			throw new Error(componentAshElement + ' (componentAshElement) was already passed to a view stream.');
+		}
+
+		_get(Object.getPrototypeOf(ViewStream.prototype), 'constructor', this).call(this);
 
 		this.id = streamId++;
-		this.ashElementTree = null;
 		this.isUpdating = false;
-		this.isRendering = false;
+		this.isUpdating = true;
+
+		var ashElementTree = (0, _DOMCreateAshElementTree2.default)(componentAshElement, this);
+
+		this.push({
+			ashElementTree: ashElementTree,
+			ashNodeTree: (0, _DOMCreateAshNodeTree2.default)(ashElementTree)
+		});
+
+		this.isUpdating = false;
+
+		return this;
 	}
 
-	_createClass(AshNodeStream, [{
-		key: 'from',
-		value: function from(componentAshElement) {
-			if (!(0, _internalsIsComponentAshElement2.default)(componentAshElement)) {
-				throw new Error(componentAshElement + ' (componentAshElement) must be an Component AshElement object instance.');
-			}
-
-			this.ashElementTree = (0, _DOMCreateAshElementTree2.default)(componentAshElement, this);
-
-			return _get(Object.getPrototypeOf(AshNodeStream.prototype), 'from', this).call(this, (0, _DOMCreateAshNodeTree2.default)(this.ashElementTree));
-		}
-	}, {
+	_createClass(ViewStream, [{
 		key: 'push',
-		value: function push(arg) {
+		value: function push(value) {
 			var _this = this;
 
-			if (arg instanceof _classesComponent2.default && !this.isUpdating) {
-				this.isUpdating = true;
-				arg.__element.isDirty = true;
-
-				// console.log('push...', arg.__element.Spec.name, arg.__element.isDirty);
-
-				if (!this.isRendering) {
-					this.isRendering = true;
-
-					global.requestAnimationFrame(function () {
-						// updateComponentAshElement(arg.__element, this);
-						(0, _DOMUpdateComponentAshElement2.default)(_this.ashElementTree, _this);
-						_get(Object.getPrototypeOf(AshNodeStream.prototype), 'push', _this).call(_this, (0, _DOMCreateAshNodeTree2.default)(_this.ashElementTree));
-
-						_this.isRendering = false;
-					});
+			if (this.hasValue) {
+				if (this.isUpdating) {
+					throw new Error('You cannot update components during previous update!');
 				}
 
-				this.isUpdating = false;
-			} else if (arg instanceof _classesComponent2.default && this.isUpdating) {
-				throw new Error('You cannot update components during previous update!');
+				this.isUpdating = true;
+
+				global.requestAnimationFrame(function () {
+					_get(Object.getPrototypeOf(ViewStream.prototype), 'push', _this).call(_this, {
+						ashElementTree: (0, _DOMUpdateComponentAshElement2.default)(_this.value.ashElementTree, _this),
+						ashNodeTree: (0, _DOMCreateAshNodeTree2.default)(_this.value.ashElementTree)
+					});
+
+					_this.isUpdating = false;
+				});
 			} else {
-				// console.log('push...', arg);
-				_get(Object.getPrototypeOf(AshNodeStream.prototype), 'push', this).call(this, arg);
+				_get(Object.getPrototypeOf(ViewStream.prototype), 'push', this).call(this, value);
 			}
 
 			return this;
 		}
-	}], [{
-		key: 'from',
-		value: function from(componentAshElement) {
-			return new AshNodeStream().from(componentAshElement);
-		}
 	}]);
 
-	return AshNodeStream;
+	return ViewStream;
 })(_Stream3.default);
 
-exports.default = AshNodeStream;
+exports.default = ViewStream;
 module.exports = exports.default;

@@ -3,7 +3,7 @@ import constants from '../internals/constants';
 import findNode from '../DOM/findNode';
 import isFunction from '../internals/isFunction';
 import isAncestor from '../internals/isAncestor';
-import Stream from '../streams/Stream';
+import Stream from './Stream';
 
 
 const LIFECYCLE_UNMOUNTED = constants.LIFECYCLE_UNMOUNTED;
@@ -47,7 +47,10 @@ export default class Component {
 
 	update = () => {
 		if (this.__element.stream) {
-			this.__element.stream.push(this);
+			this.__element.isDirty = true;
+			this.__element.stream.push(true);
+
+			// this.__element.stream.push(this);
 		}
 
 		if (arguments[0] instanceof Stream) {
@@ -85,8 +88,12 @@ export default class Component {
 	}
 
 	get domNode() {
-		if (this.isMounted && isAshNodeAshElement(this.__element.children[0])) {
-			return findNode(this.__element.stream.getRootNode(), this.__element.children[0].instance.id, this.__element.children[0].instance.indices);
+		if (this.isMounted && isAshNodeAshElement(this.__element.children[0]) && this.__element.stream.__listeners[0]) {
+			let rootNode = this.__element.stream.__listeners[0].rootNode;
+
+			if (rootNode) {
+				return findNode(rootNode, this.__element.children[0].instance.id, this.__element.children[0].instance.indices);
+			}
 		}
 
 		return null;

@@ -16,21 +16,17 @@ var _coreClassesComponent = require('./core/classes/Component');
 
 var _coreClassesComponent2 = _interopRequireDefault(_coreClassesComponent);
 
-var _coreClassesRenderer = require('./core/classes/Renderer');
+var _coreClassesStream = require('./core/classes/Stream');
 
-var _coreClassesRenderer2 = _interopRequireDefault(_coreClassesRenderer);
+var _coreClassesStream2 = _interopRequireDefault(_coreClassesStream);
 
-var _coreStreamsStream = require('./core/streams/Stream');
+var _coreClassesViewStream = require('./core/classes/ViewStream');
 
-var _coreStreamsStream2 = _interopRequireDefault(_coreStreamsStream);
+var _coreClassesViewStream2 = _interopRequireDefault(_coreClassesViewStream);
 
-var _coreStreamsStream22 = require('./core/streams/Stream2');
+var _coreClassesRenderStream = require('./core/classes/RenderStream');
 
-var _coreStreamsStream23 = _interopRequireDefault(_coreStreamsStream22);
-
-var _coreStreamsAshNodeStream = require('./core/streams/AshNodeStream');
-
-var _coreStreamsAshNodeStream2 = _interopRequireDefault(_coreStreamsAshNodeStream);
+var _coreClassesRenderStream2 = _interopRequireDefault(_coreClassesRenderStream);
 
 var _coreInternalsCreateElement = require('./core/internals/createElement');
 
@@ -56,9 +52,9 @@ var VERSION = '0.1.0';
 	support: _coreSupport2.default,
 
 	Component: _coreClassesComponent2.default,
-	Renderer: _coreClassesRenderer2.default,
-	Stream: _coreStreamsStream23.default,
-	AshNodeStream: _coreStreamsAshNodeStream2.default,
+	Stream: _coreClassesStream2.default,
+	ViewStream: _coreClassesViewStream2.default,
+	RenderStream: _coreClassesRenderStream2.default,
 
 	createElement: _coreInternalsCreateElement2.default,
 

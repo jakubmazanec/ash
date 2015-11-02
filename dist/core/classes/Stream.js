@@ -50,12 +50,12 @@ function findDependencies(stream) {
 }
 
 function detachDependencies(stream) {
-	for (var i = 0; i < stream.__dependecies.length; ++i) {
-		stream.__dependecies[i].__listeners[stream.__dependecies[i].__listeners.indexOf(stream)] = stream.__dependecies[i].__listeners[stream.__dependecies[i].__listeners.length - 1];
-		stream.__dependecies[i].__listeners.length--;
+	for (var i = 0; i < stream.__dependencies.length; ++i) {
+		stream.__dependencies[i].__listeners[stream.__dependencies[i].__listeners.indexOf(stream)] = stream.__dependencies[i].__listeners[stream.__dependencies[i].__listeners.length - 1];
+		stream.__dependencies[i].__listeners.length--;
 	}
 
-	stream.__dependecies.length = 0;
+	stream.__dependencies.length = 0;
 }
 
 function flushUpdate() {
@@ -78,8 +78,8 @@ function flushUpdate() {
 function updateStream(stream) {
 	stream.__dependenciesMet = true;
 
-	for (var i = 0; i < stream.__dependecies.length; i++) {
-		if (!stream.__dependecies[i].hasValue) {
+	for (var i = 0; i < stream.__dependencies.length; i++) {
+		if (!stream.__dependencies[i].hasValue) {
 			stream.__dependenciesMet = false;
 
 			break;
@@ -95,7 +95,7 @@ function updateStream(stream) {
 	} else {
 		inStream = stream;
 
-		var returnValue = stream.fn(stream, stream.__changedDependencies);
+		var returnValue = stream.fn(stream, stream.__changedDependencies, stream.__dependencies);
 
 		if (returnValue !== undefined) {
 			stream.push(returnValue);
@@ -118,7 +118,7 @@ function updateStream(stream) {
 function updateDependencies(stream) {
 	for (var i = 0; i < stream.__listeners.length; ++i) {
 		if (stream.__listeners[i].end === stream) {
-			if (stream.__listeners[i].__dependecies) {
+			if (stream.__listeners[i].__dependencies) {
 				detachDependencies(stream.__listeners[i]);
 			}
 
@@ -146,7 +146,11 @@ function updateDependencies(stream) {
 }
 
 var Stream = (function () {
-	function Stream(fn /*, ...dependecies*/) {
+	function Stream(fn) {
+		for (var _len = arguments.length, dependencies = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+			dependencies[_key - 1] = arguments[_key];
+		}
+
 		_classCallCheck(this, Stream);
 
 		this.hasValue = false;
@@ -156,7 +160,7 @@ var Stream = (function () {
 		this.__isQueued = false;
 		this.end = null;
 		this.fn = null;
-		this.__dependecies = [];
+		this.__dependencies = [];
 		this.__dependenciesMet = false;
 		this.__changedDependencies = [];
 		this.__shouldUpdate = false;
@@ -171,41 +175,14 @@ var Stream = (function () {
 			this.end = new Stream(trueFn);
 			this.end.__listeners.push(this);
 
-			if (arguments.length >= 2) {
+			if (arguments.length >= 2 || (0, _internalsIsFunction2.default)(fn)) {
 				if (!(0, _internalsIsFunction2.default)(fn)) {
 					throw new Error(fn + ' (fn) must be a function!');
 				}
 
-				var dependencies = [];
-				var endStreams = [];
-
-				for (var i = 1; i < arguments.length; i++) {
-					if (arguments[i] instanceof Stream) {
-						dependencies.push(arguments[i]);
-
-						if (arguments[i].end) {
-							endStreams.push(arguments[i].end);
-						}
-					}
-				}
-
 				this.fn = fn;
 
-				// add listeners to stream
-				this.__dependecies = dependencies;
-
-				for (var i = 0; i < dependencies.length; ++i) {
-					dependencies[i].__listeners.push(this);
-				}
-
-				// add listeners to end stream
-				this.end.__dependecies = endStreams;
-
-				for (var i = 0; i < endStreams.length; ++i) {
-					endStreams[i].__listeners.push(this.end);
-				}
-
-				updateStream(this);
+				this.from.apply(this, dependencies);
 			} else if (arguments.length === 1) {
 				this.push(fn);
 			}
@@ -215,6 +192,46 @@ var Stream = (function () {
 	}
 
 	_createClass(Stream, [{
+		key: 'from',
+		value: function from() /*...dependencies*/{
+			detachDependencies(this);
+			detachDependencies(this.end);
+
+			var dependencies = [];
+			var endStreams = [];
+
+			for (var i = 0; i < arguments.length; i++) {
+				if (arguments[i] instanceof Stream) {
+					dependencies.push(arguments[i]);
+
+					if (arguments[i].end) {
+						endStreams.push(arguments[i].end);
+					}
+				}
+			}
+
+			if (dependencies.length) {
+				// add listeners to stream
+				this.__dependencies = dependencies;
+
+				for (var i = 0; i < dependencies.length; ++i) {
+					dependencies[i].__listeners.push(this);
+				}
+
+				// add listeners to end stream
+				this.end.__dependencies = endStreams;
+
+				for (var i = 0; i < endStreams.length; ++i) {
+					endStreams[i].__listeners.push(this.end);
+				}
+
+				// update stream
+				updateStream(this);
+			}
+
+			return this;
+		}
+	}, {
 		key: 'get',
 		value: function get() {
 			return this.value;
@@ -250,7 +267,7 @@ var Stream = (function () {
 						}
 						this.__listeners[i].__shouldUpdate = true;
 					} else {
-						if (this.__listeners[i].__dependecies) {
+						if (this.__listeners[i].__dependencies) {
 							detachDependencies(this.__listeners[i]);
 						}
 
@@ -271,7 +288,7 @@ var Stream = (function () {
 		value: function endsOn(endStream) {
 			detachDependencies(this.end);
 			endStream.__listeners.push(this.end);
-			this.end.__dependecies.push(endStream);
+			this.end.__dependencies.push(endStream);
 
 			return this;
 		}

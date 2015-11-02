@@ -3,7 +3,6 @@ import createAshElementTree from '../DOM/createAshElementTree';
 import constants from '../internals/constants';
 
 
-
 const LIFECYCLE_UNMOUNTED = constants.LIFECYCLE_UNMOUNTED;
 const COMPONENT_ASH_ELEMENT = constants.COMPONENT_ASH_ELEMENT;
 const ASH_NODE_ASH_ELEMENT = constants.ASH_NODE_ASH_ELEMENT;
@@ -215,4 +214,6 @@ export default function updateComponentAshElement(componentAshElement, stream) {
 	}
 
 	walkUpdateComponentAshElement(componentAshElement.children[0], render, stream, componentAshElement.isDirty);
+
+	return componentAshElement;
 }

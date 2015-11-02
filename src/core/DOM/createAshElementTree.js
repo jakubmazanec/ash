@@ -57,7 +57,7 @@ function walkCreateAshElementTree(ashElement, owner, index) {
 	}
 }
 
-export default function createAshElementTree(ashElement, stream/*, startingLevel*/) {
+export default function createAshElementTree(ashElement, stream) {
 	// type check
 	if (!isAshElement(ashElement)) {
 		throw new Error(`${ashElement} (ashElement) must be an AshElement object instance.`);

@@ -30,9 +30,9 @@ var _internalsIsAncestor = require('../internals/isAncestor');
 
 var _internalsIsAncestor2 = _interopRequireDefault(_internalsIsAncestor);
 
-var _streamsStream = require('../streams/Stream');
+var _Stream = require('./Stream');
 
-var _streamsStream2 = _interopRequireDefault(_streamsStream);
+var _Stream2 = _interopRequireDefault(_Stream);
 
 var LIFECYCLE_UNMOUNTED = _internalsConstants2.default.LIFECYCLE_UNMOUNTED;
 var LIFECYCLE_MOUNTING = _internalsConstants2.default.LIFECYCLE_MOUNTING;
@@ -56,10 +56,13 @@ var Component = (function () {
 
 		this.update = function () {
 			if (_this.__element.stream) {
-				_this.__element.stream.push(_this);
+				_this.__element.isDirty = true;
+				_this.__element.stream.push(true);
+
+				// this.__element.stream.push(this);
 			}
 
-			if (_arguments[0] instanceof _streamsStream2.default) {
+			if (_arguments[0] instanceof _Stream2.default) {
 				return undefined;
 			}
 
@@ -84,7 +87,7 @@ var Component = (function () {
 		Object.getOwnPropertyNames(this.constructor).filter(function (value) {
 			return value !== 'caller' && value !== 'callee' && value !== 'arguments';
 		}).forEach(function (value) {
-			if (_this.constructor[value] instanceof _streamsStream2.default && !_this[value]) {
+			if (_this.constructor[value] instanceof _Stream2.default && !_this[value]) {
 				_this[value] = _this.constructor[value];
 			}
 		});
@@ -146,8 +149,12 @@ var Component = (function () {
 	}, {
 		key: 'domNode',
 		get: function () {
-			if (this.isMounted && (0, _internalsIsAshNodeAshElement2.default)(this.__element.children[0])) {
-				return (0, _DOMFindNode2.default)(this.__element.stream.getRootNode(), this.__element.children[0].instance.id, this.__element.children[0].instance.indices);
+			if (this.isMounted && (0, _internalsIsAshNodeAshElement2.default)(this.__element.children[0]) && this.__element.stream.__listeners[0]) {
+				var rootNode = this.__element.stream.__listeners[0].rootNode;
+
+				if (rootNode) {
+					return (0, _DOMFindNode2.default)(rootNode, this.__element.children[0].instance.id, this.__element.children[0].instance.indices);
+				}
 			}
 
 			return null;

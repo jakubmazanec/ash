@@ -12,10 +12,6 @@ global._ = _;
 global.ash = ash;
 global.Immutable = Immutable;
 
-var Renderer = global.Renderer = new ash.Renderer();
-
-
-
 
 class Header extends ash.Component {
 	render() {
@@ -47,7 +43,7 @@ class Content extends ash.Component {
 	render(props, state) {
 		let elements = [];
 
-		console.log('Content render...', props, state);
+		// console.log('Content render...', props, state);
 
 		/*if (this.props.show === 'foo') {
 			elements = <FooContent />;
@@ -67,18 +63,49 @@ class Content extends ash.Component {
 }
 
 
+let storeStream = new ash.Stream((self, changed) => {
+	console.log('storeStream fn...', changed.length);
+	if (changed.length) {
+		let data = self.get();
+
+		data.amount += changed[0].get();
+
+		return data;
+	}
+});
+
+storeStream.push({amount: 0});
+
 
 class App extends ash.Component {
 	state = {
 		show: 'bar'
 	};
 
+	static increaseStream = new ash.Stream();
+
 	render() {
 		return <div>
+			<p>{storeStream.get().amount}</p>
+			<a href="#" events={{click: this.add}}>+1</a>
 			<a href="#" events={{click: this.showFoo}}>FooContent</a>
 			<a href="#" events={{click: this.showBar}}>BarContent</a>
 			<Content show={this.state.show} />
 		</div>;
+	}
+
+	onMount() {
+		storeStream.on(this.update);
+	}
+
+	add(event) {
+		event.preventDefault();
+
+		console.log(this.domNode);
+
+		console.log('add...', this);
+
+		this.increaseStream.push(1);
 	}
 
 	showFoo(event) {
@@ -99,27 +126,33 @@ class App extends ash.Component {
 }
 
 
+storeStream.from(App.increaseStream);
+
+global.storeStream = storeStream;
 
 
 
 
 
-var viewStream = ash.AshNodeStream.from(<App />);
-
-Renderer.addStream(viewStream, global.document.querySelector('.page'));
 
 
-var s = new ash.Stream();
-			var result = new ash.Stream(() => {
-				console.log('oj!');
-				// assert.equal(s.get(), 12);
-				// done();
-			}, s);
 
-			// s.push(Promise.resolve(12));
-			s.push(12);
+new ash.ViewStream(<App />);
 
-			console.log(Promise.resolve(12).then);
+
+// var viewStream = ash.AshNodeStream.from(<App />);
+
+// Renderer.addStream(viewStream, global.document.querySelector('.page'));
+
+let viewStream = new ash.ViewStream(<App />);
+let renderStream = new ash.RenderStream(viewStream, global.document.querySelector('.page'));
+
+// console.log(renderStream.stringify());
+
+
+
+
+
 
 // React.render(
 // 	React.createElement(AppReact),

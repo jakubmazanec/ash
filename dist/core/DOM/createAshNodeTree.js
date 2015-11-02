@@ -55,7 +55,6 @@ function walkCreateAshNodeTree(ashNodeTree, ashElement, index, parentId, isParen
 			walkCreateAshNodeTree(ashNodeTree.children[ashElement.instance.index], ashElement.children[i], i, ashNodeTree.children[ashElement.instance.index].id, isParentComponentDirty, ashNodeTree.children[ashElement.instance.index].indices);
 		}
 	} else if (ashElement && ashElement.children[0]) {
-
 		var isDirty = ashElement.isDirty;
 
 		if (index === 0 && !isParentComponentDirty) {

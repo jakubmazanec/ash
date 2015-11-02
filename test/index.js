@@ -156,16 +156,16 @@ describe('ash.Stream', () => {
 		assert.deepEqual(result, [11, 21, 13]);
 	});*/
 
-	/*it('stream dependencies can be injected later', () => {
+	it('stream dependencies can be injected later', () => {
 		var stream2 = new ash.Stream();
-		var stream1 = ash.Stream.from((stream, changed) => changed[0].get() * 2);
+		var stream1 = new ash.Stream(() => stream2.get() * 2);
 
 		stream1.from(stream2);
 
 		stream2.push(1);
 
 		assert.equal(stream1.get(), 2);
-	});*/
+	});
 
 	it('can get its own value', () => {
 		var num = new ash.Stream(0);
