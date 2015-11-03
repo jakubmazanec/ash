@@ -10,6 +10,10 @@ export default function createNodeTree(ashNodeTree) {
 	var nodeTree;
 	var child;
 
+	if (!ashNodeTree) {
+		return null;
+	}
+
 	if (isAshTextNode(ashNodeTree)) {
 		nodeTree = global.document.createTextNode(ashNodeTree.text);
 		nodeTree[ID_ATTRIBUTE_NAME] = ashNodeTree.id;

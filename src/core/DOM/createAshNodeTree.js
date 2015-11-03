@@ -76,8 +76,12 @@ export default function createAshNodeTree(componentAshElement) {
 	ashElement.isDirty = false;
 
 	// find first children which is ash node ash element
-	while (!isAshNodeAshElement(ashElement)) {
+	while (!isAshNodeAshElement(ashElement) && ashElement && ashElement.children && ashElement.children.length) {
 		ashElement = ashElement.children[0];
+	}
+
+	if (!ashElement || (isComponentAshElement(ashElement) && !ashElement.children.length)) {
+		return null;
 	}
 
 	if (isDirty) {

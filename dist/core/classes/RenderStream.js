@@ -120,7 +120,12 @@ function render(stream, changed, dependencies) {
 			}
 
 			global.requestAnimationFrame(function () {
-				stream.containerNode.appendChild((0, _DOMCreateNodeTree2.default)(ashNodeTree));
+				var nodeTree = (0, _DOMCreateNodeTree2.default)(ashNodeTree);
+
+				if (nodeTree) {
+					stream.containerNode.appendChild(nodeTree);
+				}
+
 				(0, _DOMMountComponents2.default)(ashElementTree);
 			});
 		}

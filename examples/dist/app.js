@@ -1,14 +1,48 @@
-/*eslint-disable no-unused-vars, vars-on-top, no-console, no-multiple-empty-lines */
+/* eslint-disable no-unused-vars, vars-on-top, no-console, no-multiple-empty-lines, lines-around-comment */
 
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = (function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+})();
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+var _get = function get(object, property, receiver) {
+	if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+		var parent = Object.getPrototypeOf(object);if (parent === null) {
+			return undefined;
+		} else {
+			return get(parent, property, receiver);
+		}
+	} else if ('value' in desc) {
+		return desc.value;
+	} else {
+		var getter = desc.get;if (getter === undefined) {
+			return undefined;
+		}return getter.call(receiver);
+	}
+};
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { 'default': obj };
+}
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError('Cannot call a class as a function');
+	}
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== 'function' && superClass !== null) {
+		throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var _jquery = require('jquery');
 
@@ -26,345 +60,24 @@ var _immutable = require('immutable');
 
 var _immutable2 = _interopRequireDefault(_immutable);
 
-// import React from 'react';
-// import m from 'mithril';
-// import flyd from 'flyd';
-// import rx from 'rx';
-
 global.$ = _jquery2.default;
 global._ = _lodashFp2.default;
 global.ash = _ash2.default;
-// global.React = React;
-// global.flyd = flyd;
-// global.rx = rx;
 global.Immutable = _immutable2.default;
 
-var Renderer = global.Renderer = new _ash2.default.Renderer();
-
-/*var s1 = global.s1 = new ash.Stream();
-var s2 = global.s2 = new ash.Stream();
-var s3 = global.s3 = new ash.Stream();
-
-s1.name = 's1';
-s2.name = 's2';
-s3.name = 's3';
-
-// s1.push(3);
-// s2.push(4);
-s3.from(() => {
-	console.log('s3 fn...');
-	return s1.get() + s2.get();
-}, s1, s2);*/
-
-// console.log('ash.js start...');
-
-// var promise1 = new Promise((resolve) => {
-// 	setTimeout(() => {
-// 		resolve('promise 1 resolved!');
-// 	}, 2000);
-// });
-
-// var promise2 = new Promise((resolve) => {
-// 	setTimeout(() => {
-// 		resolve('promise 2 resolved!');
-// 	}, 4000);
-// });
-
-// var promise1 = 'no promise 1';
-// var promise2 = 'no promise 2';
-
-// var foo$ = flyd.stream();
-
-// console.log(foo$);
-
-// foo$(promise1);
-// foo$(promise2);
-
-// flyd.stream([foo$], function() {
-// 	console.log('Recieved response!', arguments);
-// 	console.log(foo$());
-// });
-
-// var foo$ = new ash.Stream();
-
-// console.log(foo$);
-
-// foo$.push(promise1);
-
-// foo$.push(promise2);
-
-// benchmark
-// const MAX = 100000;
-
-// var foo$ = new ash.Stream();
-
-// $('body').on('click', () => {
-// 	for (let i = 0; i < MAX + 1; i++) {
-// 		foo$.push(i);
-// 	}
-// });
-
-// setTimeout(() => {
-// 	for (let i = 0; i < MAX + 1; i++) {
-// 		foo$.push(i);
-// 	}
-// }, 1000);
-
-// var bar$ = ash.Stream.from(() => {
-// 	if (foo$.get() >= MAX) {
-// 		console.log('ash Done!', MAX, foo$.get());
-// 	}
-// }, foo$);
-
-// var testStream = new rx.ReplaySubject();
-
-// setTimeout(() => {
-// 	for (let i = 0; i < MAX + 1; i++) {
-// 		testStream.onNext(i);
-// 	}
-// }, 1500);
-
-// var resultStream = testStream.subscribe((value) => {
-// 	if (value >= MAX) {
-// 		console.log('rx Done!', MAX, value);
-// 	}
-// });
-
-// merge test
-/*var btn1Clicks = new ash.Stream();
-var btn2Clicks = new ash.Stream();
-
-btn1Clicks.name = 'btn1Clicks';
-btn2Clicks.name = 'btn2Clicks';
-
-// console.log(btn1Clicks);
-
-$('body').on('click', btn1Clicks.push);
-$('body').on('keydown', btn2Clicks.push);
-
-var allClicks = ash.Stream.merge(btn1Clicks, btn2Clicks);
-
-allClicks.name = 'allClicks';
-
-allClicks.subscribe(() => {
-	console.log('allClicks subscription!');
-})
-
-
-var resultStream = new ash.Stream();
-
-resultStream.name = 'resultStream';
-
-
-resultStream.from(() => {
-	// console.log(btn1Clicks.end.get(), btn2Clicks.end.get(), allClicks.end.get());
- //  console.log(allClicks.get());
-}, allClicks);
-
-setTimeout(() => {
-	console.log('btn1Clicks end!');
-	btn1Clicks.end.push(true);
-}, 2000);
-
-setTimeout(() => {
-	console.log('btn2Clicks end!');
-	// btn2Clicks.end.push(true);
-}, 4000);
-
-setInterval(() => {
-	// console.log(btn1Clicks.end.get(), btn2Clicks.end.get(), allClicks.end.get());
-}, 250);*/
-
-/*var btn1Clicks = flyd.stream();
-var btn2Clicks = flyd.stream();
-
-$('body').on('click', btn1Clicks);
-$('body').on('keydown', btn2Clicks);
-
-var allClicks = flyd.merge(btn1Clicks, btn2Clicks);
-var resultStream = flyd.stream([allClicks], () => {
-	console.log(btn1Clicks.end(), btn2Clicks.end(), allClicks.end());
-	console.log(allClicks());
-});
-
-setTimeout(() => {
-	console.log('btn1Clicks end!');
-	btn1Clicks.end(true);
-}, 2000);
-
-setTimeout(() => {
-	console.log('btn2Clicks end!');
-	btn2Clicks.end(true);
-}, 4000);
-
-setInterval(() => {
-	console.log(btn1Clicks.end(), btn2Clicks.end(), allClicks.end());
-}, 250);*/
-
-/*var foo$ = flyd.stream([], () => 'oi!');
-
-flyd.stream([foo$], function() {
-	console.log('Recieved response!');
-	console.log(foo$());
-});*/
-
-// var foo$ = new ash.Stream(() => 'oi!');
-
-// console.log(foo$);
-
-// var bar$ = new ash.Stream([foo$], function() {
-// 	console.log('Recieved response!', arguments);
-// 	console.log(foo$.get());
-// });
-
-// console.log(bar$);
-
-// mappign test
-/*var numbers = new ash.Stream();
-var squaredNumbers = numbers.map((n) => Math.round(n));
-
-setInterval(() => {
-	numbers.push(Math.random());
-}, 1000);
-
-new ash.Stream([squaredNumbers], () => {
-	console.log(squaredNumbers.get());
-});*/
-
-/*var numbers = flyd.stream(0);
-var squaredNumbers = flyd.map(function(n) { return n * n; }, numbers);
-
-
-flyd.stream([squaredNumbers], () => {
-	console.log(squaredNumbers());
-});*/
-
-// atomic updates test
-/*var a = new ash.Stream();
-var b = new ash.Stream();
-
-a.push(1);
-b.push(2);
-
-var b = new ash.Stream();
-
-b.from(() => {
-	return a.get() * 2;
-}, a);
-
-var c = new ash.Stream();
-
-c.from(() => {
-	return a.get() + 4;
-}, a);
-
-var d = new ash.Stream();
-
-d.from(function(self, ch) {
-	console.log(b.get(), c.get(), b.get() + c.get());
-	// a.end.push(true);
-}, b, c);
-
-console.log(d);*/
-
-// var a = flyd.stream(1);
-
-// setTimeout(() => a(2), 500);
-
-// var b = flyd.stream([a], function() { console.log(arguments); return a() * 2; });
-// var c = flyd.stream([a], function() { console.log(arguments); return a() + 4; });
-// var d = flyd.stream([b, c], function(self, ch) {
-// 	console.log(arguments);
-//   console.log(b() + c());
-// });
-
-// end stream test
-/*var n1 = new ash.Stream();
-var n2 = new ash.Stream();
-var sum = new ash.Stream();
-
-setInterval(() => {
-	n1.push(1);
-}, 500);
-
-setInterval(() => {
-	n2.push(2);
-}, 600);
-
-sum.from(() => {
-	console.log(n1.get(), n2.get());
-}, n1, n2);
-
-$('body').on('click', (event) => {
-	event.preventDefault();
-
-	console.log('ending n1!');
-
-	n1.end.push(true);
-});
-
-$('body').on('keydown', () => {
-	console.log('ending n2!');
-
-	n2.end.push(true);
-});*/
-
-/*var n1 = flyd.stream();
-var n2 = flyd.stream();
-var sum = flyd.stream([n1, n2], function() {
-	console.log(n1(), n2());
-
-	return n1() + n2();
-});
-
-n1.foo = 'n1';
-n2.foo = 'n2';
-sum.foo = 'sum';
-
-console.log(n1, n2, sum);
-
-setInterval(() => {
-	n1(1);
-}, 500);
-
-setInterval(() => {
-	n2(2);
-}, 600);
-
-
-$('body').on('click', (event) => {
-	event.preventDefault();
-
-	console.log('ending n1!');
-
-	n1.end(true);
-});
-
-$('body').on('keydown', () => {
-	console.log('ending n2!');
-
-	n2.end(true);
-});*/
-
 var Header = (function (_ash$Component) {
+	_inherits(Header, _ash$Component);
+
 	function Header() {
 		_classCallCheck(this, Header);
 
-		if (_ash$Component != null) {
-			_ash$Component.apply(this, arguments);
-		}
+		_get(Object.getPrototypeOf(Header.prototype), 'constructor', this).apply(this, arguments);
 	}
-
-	_inherits(Header, _ash$Component);
 
 	_createClass(Header, [{
 		key: 'render',
 		value: function render() {
-			return _ash2.default.e(
-				'header',
-				null,
-				'Test component!'
-			);
+			return _ash2.default.createElement('header', null, 'Test component!');
 		}
 	}]);
 
@@ -372,37 +85,28 @@ var Header = (function (_ash$Component) {
 })(_ash2.default.Component);
 
 var FooContent = (function (_ash$Component2) {
+	_inherits(FooContent, _ash$Component2);
+
 	function FooContent() {
 		_classCallCheck(this, FooContent);
 
-		if (_ash$Component2 != null) {
-			_ash$Component2.apply(this, arguments);
-		}
+		_get(Object.getPrototypeOf(FooContent.prototype), 'constructor', this).apply(this, arguments);
 	}
-
-	_inherits(FooContent, _ash$Component2);
 
 	_createClass(FooContent, [{
 		key: 'render',
 		value: function render() {
-			return _ash2.default.e(
-				'section',
-				null,
-				_ash2.default.e(
-					'div',
-					{ key: 'content' },
-					_ash2.default.e(
-						'h1',
-						null,
-						'Blog'
-					)
-				),
-				_ash2.default.e(
-					'p',
-					null,
-					'Spinner!'
-				)
-			);
+			return _ash2.default.createElement('section', null, _ash2.default.createElement('div', { key: 'content' }, _ash2.default.createElement('h1', null, 'FooContent')), _ash2.default.createElement('p', null, 'Spinner!'));
+		}
+	}, {
+		key: 'onMount',
+		value: function onMount() {
+			console.log('FooContent onMount...');
+		}
+	}, {
+		key: 'onUnmount',
+		value: function onUnmount() {
+			console.log('FooContent onUnmount...');
 		}
 	}]);
 
@@ -410,33 +114,18 @@ var FooContent = (function (_ash$Component2) {
 })(_ash2.default.Component);
 
 var BarContent = (function (_ash$Component3) {
+	_inherits(BarContent, _ash$Component3);
+
 	function BarContent() {
 		_classCallCheck(this, BarContent);
 
-		if (_ash$Component3 != null) {
-			_ash$Component3.apply(this, arguments);
-		}
+		_get(Object.getPrototypeOf(BarContent.prototype), 'constructor', this).apply(this, arguments);
 	}
-
-	_inherits(BarContent, _ash$Component3);
 
 	_createClass(BarContent, [{
 		key: 'render',
 		value: function render() {
-			return _ash2.default.e(
-				'section',
-				null,
-				_ash2.default.e(
-					'h1',
-					null,
-					'About us'
-				),
-				_ash2.default.e(
-					'h2',
-					null,
-					'Eva'
-				)
-			);
+			return _ash2.default.createElement('section', null, _ash2.default.createElement('h1', null, 'About us'), _ash2.default.createElement('h2', null, 'Eva'));
 		}
 	}]);
 
@@ -444,75 +133,115 @@ var BarContent = (function (_ash$Component3) {
 })(_ash2.default.Component);
 
 var Content = (function (_ash$Component4) {
+	_inherits(Content, _ash$Component4);
+
 	function Content() {
 		_classCallCheck(this, Content);
 
-		if (_ash$Component4 != null) {
-			_ash$Component4.apply(this, arguments);
-		}
+		_get(Object.getPrototypeOf(Content.prototype), 'constructor', this).apply(this, arguments);
 	}
-
-	_inherits(Content, _ash$Component4);
 
 	_createClass(Content, [{
 		key: 'render',
 		value: function render(props, state) {
-			var elements = undefined;
+			var elements = [];
 
-			console.log('Content render...', props, state);
+			// console.log('Content render...', props, state);
 
-			if (this.props.show === 'foo') {
-				elements = _ash2.default.e(FooContent, null);
-			} else if (this.props.show === 'bar') {
-				elements = _ash2.default.e(BarContent, null);
-			} else {
-				elements = '---';
+			/*if (this.props.show === 'foo') {
+   	elements = <FooContent />;
+   } else if (this.props.show === 'bar') {
+   	elements = <BarContent />;
+   } else {
+   	elements = '---';
+   }*/
+
+			for (var i = 0; i < 10; i++) {
+				elements.push(_ash2.default.createElement('i', null, this.props.show + ' ' + i));
 			}
 
-			return _ash2.default.e(
-				'main',
-				null,
-				elements
-			);
+			return _ash2.default.createElement(FooContent, null);
+
+			return _ash2.default.createElement('main', null, elements);
+		}
+	}, {
+		key: 'onMount',
+		value: function onMount() {
+			console.log('Content onMount...');
+		}
+	}, {
+		key: 'onUnmount',
+		value: function onUnmount() {
+			console.log('Content onUnmount...');
 		}
 	}]);
 
 	return Content;
 })(_ash2.default.Component);
 
+var storeStream = new _ash2.default.Stream(function (self, changed) {
+	console.log('storeStream fn...', changed.length);
+	if (changed.length) {
+		var data = self.get();
+
+		data.amount += changed[0].get();
+
+		return data;
+	}
+});
+
+storeStream.push({ amount: 0 });
+
 var App = (function (_ash$Component5) {
+	_inherits(App, _ash$Component5);
+
 	function App() {
 		_classCallCheck(this, App);
 
-		if (_ash$Component5 != null) {
-			_ash$Component5.apply(this, arguments);
-		}
+		_get(Object.getPrototypeOf(App.prototype), 'constructor', this).apply(this, arguments);
 
 		this.state = {
-			show: 'bar'
+			show: 'bar',
+			foo: false
 		};
 	}
-
-	_inherits(App, _ash$Component5);
 
 	_createClass(App, [{
 		key: 'render',
 		value: function render() {
-			return _ash2.default.e(
-				'div',
-				null,
-				_ash2.default.e(Content, { show: this.state.show }),
-				_ash2.default.e(
-					'a',
-					{ href: '#', events: { click: this.showFoo } },
-					'FooContent'
-				),
-				_ash2.default.e(
-					'a',
-					{ href: '#', events: { click: this.showBar } },
-					'BarContent'
-				)
-			);
+			var amount = storeStream.get().amount;
+
+			return this.state.foo ? _ash2.default.createElement('b', null, 'Oj!') : _ash2.default.createElement(Content, { show: this.state.show });
+
+			return _ash2.default.createElement('div', null, _ash2.default.createElement('p', null, amount), _ash2.default.createElement('a', { href: '#', events: { click: this.add } }, '+1'), _ash2.default.createElement('a', { href: '#', events: { click: this.showFoo } }, 'FooContent'), _ash2.default.createElement('a', { href: '#', events: { click: this.showBar } }, 'BarContent'), _ash2.default.createElement('div', null, amount ? _ash2.default.createElement(Content, { show: this.state.show }) : null));
+		}
+	}, {
+		key: 'onMount',
+		value: function onMount() {
+			var _this = this;
+
+			storeStream.on(this.update);
+
+			setTimeout(function () {
+				console.log('updating!');
+				_this.state.foo = true;
+
+				_this.update();
+			}, 2000);
+
+			setTimeout(function () {
+				console.log('updating 2!');
+				_this.state.foo = false;
+
+				_this.update();
+			}, 4000);
+		}
+	}, {
+		key: 'add',
+		value: function add(event) {
+			event.preventDefault();
+
+			this.increaseStream.push(1);
 		}
 	}, {
 		key: 'showFoo',
@@ -532,79 +261,30 @@ var App = (function (_ash$Component5) {
 
 			this.update();
 		}
+	}], [{
+		key: 'increaseStream',
+		value: new _ash2.default.Stream(),
+		enumerable: true
 	}]);
 
 	return App;
 })(_ash2.default.Component);
 
-// var viewStream = ash.AshNodeStream.from(<ReorderApp />);
+storeStream.from(App.increaseStream);
 
-// import addToList1Action from './actions/addToList1Action';
-// import addToList2Action from './actions/addToList2Action';
+global.storeStream = storeStream;
 
-var viewStream = _ash2.default.AshNodeStream.from(_ash2.default.e(App, null));
+// var viewStream = ash.AshNodeStream.from(<App />);
 
-global.viewStream = viewStream;
+// Renderer.addStream(viewStream, global.document.querySelector('.page'));
 
-// addToList1Action.from(App.list1);
-// addToList2Action.from(App.list2);
+var viewStream = new _ash2.default.ViewStream(_ash2.default.createElement(App, null));
+var renderStream = new _ash2.default.RenderStream(viewStream, global.document.querySelector('.page'));
 
-Renderer.addStream(viewStream, global.document.querySelector('.page'));
+// console.log(renderStream.stringify());
 
-// React.render(
-// 	React.createElement(AppReact),
-// 	global.document.querySelector('.pageReact')
-// );
-
-/*var items = [];
-
-for (let i = 0; i < 5000; i++) {
-	items.push({name: '' + Math.random() * 10 >> 0});
-}
-
-var BenchmarkApp1Mithril = {};
-
-BenchmarkApp1Mithril.controller = function () {
-	this.items = items;
-};
-
-BenchmarkApp1Mithril.view = function (ctrl) {
-	return ctrl.items
-	.map(function (item) {
-		return m('input', {value: item.name});
-	});
-};
-
-class BenchmarkApp1Ash extends ash.Component {
-	render() {
-		return <div>
-			{this.props.data.map((item) => <input value={item.name}/>)}
-		</div>;
-	}
-}
-
-class BenchmarkApp1React extends React.Component {
-	render() {
-		return React.DOM.div({}, this.props.data.map(function (item) {
-			return React.DOM.input({value: item.name});
-		}));
-	}
-}
-
-setTimeout(() => {
-	m.mount(global.document.querySelector('.pageMithril'), BenchmarkApp1Mithril);
-}, 2000);
-
-setTimeout(() => {
-	Renderer.addStream(ash.AshNodeStream.from(<BenchmarkApp1Ash data={items}/>), global.document.querySelector('.page'));
-}, 3000);
-
-setTimeout(() => {
-	React.render(React.createElement(BenchmarkApp1React, {data: items}), global.document.querySelector('.pageReact'));
-}, 4000);*/
-
-var Utils = global.Utils = {
-	uuid: function () {
+/*var Utils = global.Utils = {
+	uuid() {
 		var i;
 		var random;
 		var uuid = '';
@@ -620,11 +300,11 @@ var Utils = global.Utils = {
 		return uuid;
 	},
 
-	pluralize: function (count, word) {
+	pluralize(count, word) {
 		return count === 1 ? word : word + 's';
 	},
 
-	store: function (namespace, data) {
+	store(namespace, data) {
 		if (data) {
 			return localStorage.setItem(namespace, JSON.stringify(data));
 		}
@@ -634,7 +314,7 @@ var Utils = global.Utils = {
 		return store && JSON.parse(store) || [];
 	},
 
-	extend: function () {
+	extend() {
 		var newObj = {};
 
 		for (var i = 0; i < arguments.length; i++) {
@@ -650,444 +330,325 @@ var Utils = global.Utils = {
 	}
 };
 
-var ALL_TODOS = 'all';
-var ACTIVE_TODOS = 'active';
-var COMPLETED_TODOS = 'completed';
+const ALL_TODOS = 'all';
+const ACTIVE_TODOS = 'active';
+const COMPLETED_TODOS = 'completed';
 
-var ENTER_KEY = 13;
-var ESCAPE_KEY = 27;
+const ENTER_KEY = 13;
+const ESCAPE_KEY = 27;
 
-var TodoItem = (function (_ash$Component6) {
-	function TodoItem() {
-		_classCallCheck(this, TodoItem);
 
-		if (_ash$Component6 != null) {
-			_ash$Component6.apply(this, arguments);
-		}
-
-		this.state = { editText: this.props.todo.title };
+class TodoItem extends ash.Component {
+	setState(newState) {
+		this.state = _.extend(newState, this.state);
+		this.isDirty = true;
 	}
 
-	_inherits(TodoItem, _ash$Component6);
+	handleSubmit() {
+		var val = this.state.editText.trim();
 
-	_createClass(TodoItem, [{
-		key: 'setState',
-		value: function setState(newState) {
-			this.state = _lodashFp2.default.extend(newState, this.state);
-			this.isDirty = true;
+		if (val) {
+			this.props.onSave(val);
+			this.setState({editText: val});
+		} else {
+			this.props.onDestroy();
 		}
-	}, {
-		key: 'handleSubmit',
-		value: function handleSubmit() {
-			var val = this.state.editText.trim();
+		return false;
+	}
 
-			if (val) {
-				this.props.onSave(val);
-				this.setState({ editText: val });
-			} else {
-				this.props.onDestroy();
-			}
-			return false;
-		}
-	}, {
-		key: 'handleEdit',
-		value: function handleEdit() {
-			// react optimizes renders by batching them. This means you can't call
-			// parent's `onEdit` (which in this case triggeres a re-render), and
-			// immediately manipulate the DOM as if the rendering's over. Put it as a
-			// callback. Refer to app.js' `edit` method
-			this.props.onEdit((function () {
-				var node = (0, _jquery2.default)(this.domNode).find('.edit')[0];
+	handleEdit() {
+		// react optimizes renders by batching them. This means you can't call
+		// parent's `onEdit` (which in this case triggeres a re-render), and
+		// immediately manipulate the DOM as if the rendering's over. Put it as a
+		// callback. Refer to app.js' `edit` method
+		this.props.onEdit(() => {
+			var node = $(this.domNode).find('.edit')[0];
 
-				node.focus();
-				node.setSelectionRange(node.value.length, node.value.length);
-			}).bind(this));
+			node.focus();
+			node.setSelectionRange(node.value.length, node.value.length);
+		});
 
-			this.setState({ editText: this.props.todo.title });
-		}
-	}, {
-		key: 'handleKeyDown',
-		value: function handleKeyDown(event) {
-			if (event.keyCode === ESCAPE_KEY) {
-				this.setState({ editText: this.props.todo.title });
-				this.props.onCancel();
-			} else if (event.keyCode === ENTER_KEY) {
-				this.handleSubmit();
-			}
-		}
-	}, {
-		key: 'handleChange',
-		value: function handleChange(event) {
-			this.setState({ editText: event.target.value });
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			return _ash2.default.e(
-				'li',
-				{ className: (this.props.todo.completed ? 'completed' : '') + (this.props.editing ? ' editing' : '') },
-				_ash2.default.e(
-					'div',
-					{ className: 'view' },
-					_ash2.default.e('input', {
-						className: 'toggle',
-						type: 'checkbox',
-						checked: this.props.todo.completed ? 'checked' : null,
-						events: {
-							change: this.props.onToggle
-						}
-					}),
-					_ash2.default.e(
-						'label',
-						{ events: { click: this.handleEdit } },
-						this.props.todo.title
-					),
-					_ash2.default.e('button', { className: 'destroy', events: { click: this.props.onDestroy } })
-				),
-				_ash2.default.e('input', {
-					ref: 'editField',
-					className: 'edit',
-					value: this.state.editText,
-					events: {
-						blur: this.handleSubmit,
-						change: this.handleChange,
-						keydown: this.handleKeyDown
-					}
-				})
-			);
-		}
-	}]);
+		this.setState({editText: this.props.todo.title});
+	}
 
-	return TodoItem;
-})(_ash2.default.Component);
-
-var TodoFooter = (function (_ash$Component7) {
-	function TodoFooter() {
-		_classCallCheck(this, TodoFooter);
-
-		if (_ash$Component7 != null) {
-			_ash$Component7.apply(this, arguments);
+	handleKeyDown(event) {
+		if (event.keyCode === ESCAPE_KEY) {
+			this.setState({editText: this.props.todo.title});
+			this.props.onCancel();
+		} else if (event.keyCode === ENTER_KEY) {
+			this.handleSubmit();
 		}
 	}
 
-	_inherits(TodoFooter, _ash$Component7);
+	handleChange(event) {
+		this.setState({editText: event.target.value});
+	}
 
-	_createClass(TodoFooter, [{
-		key: 'setState',
-		value: function setState(newState) {
-			this.state = _lodashFp2.default.extend(newState, this.state);
-			this.isDirty = true;
+	state = {editText: this.props.todo.title};
+
+	render() {
+		return <li className={(this.props.todo.completed ? 'completed' : '') + (this.props.editing ? ' editing' : '')}>
+			<div className="view">
+				<input
+					className="toggle"
+					type="checkbox"
+					checked={this.props.todo.completed ? 'checked' : null}
+					events={{
+						change: this.props.onToggle
+					}}
+				/>
+				<label events={{click: this.handleEdit}}>
+					{this.props.todo.title}
+				</label>
+				<button className="destroy" events={{click: this.props.onDestroy}} />
+			</div>
+			<input
+				ref="editField"
+				className="edit"
+				value={this.state.editText}
+				events={{
+					blur: this.handleSubmit,
+					change: this.handleChange,
+					keydown: this.handleKeyDown
+				}}
+			/>
+		</li>;
+	}
+}
+
+
+class TodoFooter extends ash.Component {
+	setState(newState) {
+		this.state = _.extend(newState, this.state);
+		this.isDirty = true;
+	}
+
+	render() {
+		var activeTodoWord = Utils.pluralize(this.props.count, 'item');
+		var clearButton = null;
+
+		if (this.props.completedCount > 0) {
+			clearButton = <button
+				id="clear-completed"
+				events={{
+					click: this.props.onClearCompleted
+				}}>
+				{''}Clear completed ({this.props.completedCount}){''}
+			</button>;
 		}
-	}, {
-		key: 'render',
-		value: function render() {
-			var activeTodoWord = Utils.pluralize(this.props.count, 'item');
-			var clearButton = null;
 
-			if (this.props.completedCount > 0) {
-				clearButton = _ash2.default.e(
-					'button',
-					{
-						id: 'clear-completed',
-						events: {
-							click: this.props.onClearCompleted
-						} },
-					'',
-					'Clear completed (',
-					this.props.completedCount,
-					')',
-					''
-				);
-			}
+		let show = {
+			ALL_TODOS: '',
+			ACTIVE_TODOS: '',
+			COMPLETED_TODOS: ''
+		};
 
-			var show = {
-				ALL_TODOS: '',
-				ACTIVE_TODOS: '',
-				COMPLETED_TODOS: ''
+		show[this.props.nowShowing] = 'selected';
+
+		return <footer id="footer">
+			<span id="todo-count">
+				<strong>{this.props.count}</strong>
+				{' '}{activeTodoWord}{' '}left{''}
+			</span>
+			<ul id="filters">
+				<li>
+					<a href="#/" className={show[ALL_TODOS]}>All</a>
+				</li>
+				{' '}
+				<li>
+					<a href="#/active" className={show[ACTIVE_TODOS]}>Active</a>
+				</li>
+				{' '}
+				<li>
+					<a href="#/completed" className={show[COMPLETED_TODOS]}>Completed</a>
+				</li>
+			</ul>
+			{clearButton}
+		</footer>;
+	}
+}
+
+
+
+
+
+
+
+
+class TodoApp extends ash.Component {
+	state = {
+		todos: Utils.store('react-todos'),
+		nowShowing: ALL_TODOS,
+		editing: null
+	};
+
+	setState(newState) {
+		this.state = _.extend(newState, this.state);
+		this.isDirty = true;
+	}
+
+	onMount() {
+		$(this.domNode).find('#new-todo')[0].focus();
+	}
+
+	handleNewTodoKeyDown(event) {
+		if (event.which !== ENTER_KEY) {
+			return;
+		}
+
+		var val = $(this.domNode).find('#new-todo')[0].value.trim();
+		var newTodo;
+
+		if (val) {
+			newTodo = {
+				id: Utils.uuid(),
+				title: val,
+				completed: false
 			};
 
-			show[this.props.nowShowing] = 'selected';
-
-			return _ash2.default.e(
-				'footer',
-				{ id: 'footer' },
-				_ash2.default.e(
-					'span',
-					{ id: 'todo-count' },
-					_ash2.default.e(
-						'strong',
-						null,
-						this.props.count
-					),
-					' ',
-					activeTodoWord,
-					' ',
-					'left',
-					''
-				),
-				_ash2.default.e(
-					'ul',
-					{ id: 'filters' },
-					_ash2.default.e(
-						'li',
-						null,
-						_ash2.default.e(
-							'a',
-							{ href: '#/', className: show[ALL_TODOS] },
-							'All'
-						)
-					),
-					' ',
-					_ash2.default.e(
-						'li',
-						null,
-						_ash2.default.e(
-							'a',
-							{ href: '#/active', className: show[ACTIVE_TODOS] },
-							'Active'
-						)
-					),
-					' ',
-					_ash2.default.e(
-						'li',
-						null,
-						_ash2.default.e(
-							'a',
-							{ href: '#/completed', className: show[COMPLETED_TODOS] },
-							'Completed'
-						)
-					)
-				),
-				clearButton
-			);
-		}
-	}]);
-
-	return TodoFooter;
-})(_ash2.default.Component);
-
-var TodoApp = (function (_ash$Component8) {
-	function TodoApp() {
-		_classCallCheck(this, TodoApp);
-
-		if (_ash$Component8 != null) {
-			_ash$Component8.apply(this, arguments);
+			this.setState({todos: this.state.todos.concat([newTodo])});
+			$(this.domNode).find('#new-todo')[0].value = '';
 		}
 
-		this.state = {
-			todos: Utils.store('react-todos'),
-			nowShowing: ALL_TODOS,
-			editing: null
-		};
+		return;
 	}
 
-	_inherits(TodoApp, _ash$Component8);
+	toggleAll(event) {
+		var checked = event.target.checked;
 
-	_createClass(TodoApp, [{
-		key: 'setState',
-		value: function setState(newState) {
-			this.state = _lodashFp2.default.extend(newState, this.state);
-			this.isDirty = true;
-		}
-	}, {
-		key: 'onMount',
-		value: function onMount() {
-			/*var router = Router({
-   	'/': this.setState.bind(this, {nowShowing: ALL_TODOS}),
-   	'/active': this.setState.bind(this, {nowShowing: ACTIVE_TODOS}),
-   	'/completed': this.setState.bind(this, {nowShowing: COMPLETED_TODOS})
-   });
-   router.init();*/
-			(0, _jquery2.default)(this.domNode).find('#new-todo')[0].focus();
-		}
-	}, {
-		key: 'handleNewTodoKeyDown',
-		value: function handleNewTodoKeyDown(event) {
-			if (event.which !== ENTER_KEY) {
-				return;
-			}
+		// Note: it's usually better to use immutable data structures since they're easier to
+		// reason about and React works very well with them. That's why we use map() and filter()
+		// everywhere instead of mutating the array or items themselves.
+		var newTodos = this.state.todos.map((todo) => {
+			return Utils.extend({}, todo, {completed: checked});
+		});
 
-			var val = (0, _jquery2.default)(this.domNode).find('#new-todo')[0].value.trim();
-			var newTodo;
+		this.setState({todos: newTodos});
+	}
 
-			if (val) {
-				newTodo = {
-					id: Utils.uuid(),
-					title: val,
-					completed: false
-				};
+	toggle(todoToToggle) {
+		var newTodos = this.state.todos.map((todo) => {
+			return todo !== todoToToggle ? todo : Utils.extend({}, todo, {completed: !todo.completed});
+		});
 
-				this.setState({ todos: this.state.todos.concat([newTodo]) });
-				(0, _jquery2.default)(this.domNode).find('#new-todo')[0].value = '';
-			}
+		this.setState({todos: newTodos});
+	}
 
-			return false;
-		}
-	}, {
-		key: 'toggleAll',
-		value: function toggleAll(event) {
-			var checked = event.target.checked;
+	destroy(todo) {
+		var newTodos = this.state.todos.filter((candidate) => {
+			return candidate.id !== todo.id;
+		});
 
-			// Note: it's usually better to use immutable data structures since they're easier to
-			// reason about and React works very well with them. That's why we use map() and filter()
-			// everywhere instead of mutating the array or todo items themselves.
-			var newTodos = this.state.todos.map(function (todo) {
-				return Utils.extend({}, todo, { completed: checked });
-			});
+		this.setState({todos: newTodos});
+	}
 
-			this.setState({ todos: newTodos });
-		}
-	}, {
-		key: 'toggle',
-		value: function toggle(todoToToggle) {
-			var newTodos = this.state.todos.map(function (todo) {
-				return todo !== todoToToggle ? todo : Utils.extend({}, todo, { completed: !todo.completed });
-			});
+	edit(todo, callback) {
+		// refer to todoItem.js `handleEdit` for the reasoning behind the
+		// callback
+		this.setState({editing: todo.id}, () => {
+			callback();
+		});
+	}
 
-			this.setState({ todos: newTodos });
-		}
-	}, {
-		key: 'destroy',
-		value: function destroy(todo) {
-			var newTodos = this.state.todos.filter(function (candidate) {
-				return candidate.id !== todo.id;
-			});
+	save(todoToSave, text) {
+		var newTodos = this.state.todos.map((todo) => {
+			return todo !== todoToSave ? todo : Utils.extend({}, todo, {title: text});
+		});
 
-			this.setState({ todos: newTodos });
-		}
-	}, {
-		key: 'edit',
-		value: function edit(todo, callback) {
-			// refer to todoItem.js `handleEdit` for the reasoning behind the
-			// callback
-			this.setState({ editing: todo.id }, function () {
-				callback();
-			});
-		}
-	}, {
-		key: 'save',
-		value: function save(todoToSave, text) {
-			var newTodos = this.state.todos.map(function (todo) {
-				return todo !== todoToSave ? todo : Utils.extend({}, todo, { title: text });
-			});
+		this.state = {todos: newTodos, editing: null};
+		this.isDirty = true;
+	}
 
-			this.state = { todos: newTodos, editing: null };
-			this.isDirty = true;
-		}
-	}, {
-		key: 'cancel',
-		value: function cancel() {
-			this.setState({ editing: null });
-		}
-	}, {
-		key: 'clearCompleted',
-		value: function clearCompleted() {
-			var newTodos = this.state.todos.filter(function (todo) {
+	cancel() {
+		this.setState({editing: null});
+	}
+
+	clearCompleted() {
+		var newTodos = this.state.todos.filter((todo) => {
+			return !todo.completed;
+		});
+
+		this.setState({todos: newTodos});
+	}
+
+
+	render() {
+		var footer = null;
+		var main = null;
+
+		var shownTodos = this.state.todos.filter((todo) => {
+			switch (this.state.nowShowing) {
+			case ACTIVE_TODOS:
 				return !todo.completed;
-			});
-
-			this.setState({ todos: newTodos });
-		}
-	}, {
-		key: 'render',
-
-		/*componentDidUpdate() {
-  	Utils.store('react-todos', this.state.todos);
-  }*/
-
-		value: function render() {
-			var _this = this;
-
-			var footer = null;
-			var main = null;
-
-			var shownTodos = this.state.todos.filter(function (todo) {
-				switch (_this.state.nowShowing) {
-					case ACTIVE_TODOS:
-						return !todo.completed;
-					case COMPLETED_TODOS:
-						return todo.completed;
-					default:
-						return true;
-				}
-			});
-
-			var todoItems = shownTodos.map(function (todo) {
-				return _ash2.default.e(TodoItem, {
-					key: todo.id,
-					todo: todo,
-					onToggle: _this.toggle.bind(_this, todo),
-					onDestroy: _this.destroy.bind(_this, todo),
-					onEdit: _this.edit.bind(_this, todo),
-					editing: _this.state.editing === todo.id,
-					onSave: _this.save.bind(_this, todo),
-					onCancel: _this.cancel
-				});
-			});
-
-			var activeTodoCount = this.state.todos.reduce(function (accum, todo) {
-				return todo.completed ? accum : accum + 1;
-			}, 0);
-
-			var completedCount = this.state.todos.length - activeTodoCount;
-
-			if (activeTodoCount || completedCount) {
-				footer = _ash2.default.e(TodoFooter, {
-					count: activeTodoCount,
-					completedCount: completedCount,
-					nowShowing: this.state.nowShowing,
-					onClearCompleted: this.clearCompleted
-				});
+			case COMPLETED_TODOS:
+				return todo.completed;
+			default:
+				return true;
 			}
+		});
 
-			if (this.state.todos.length) {
-				main = _ash2.default.e(
-					'section',
-					{ id: 'main' },
-					_ash2.default.e('input', {
-						id: 'toggle-all',
-						type: 'checkbox',
-						events: { change: this.toggleAll },
-						checked: activeTodoCount === 0
-					}),
-					_ash2.default.e(
-						'ul',
-						{ id: 'todo-list' },
-						todoItems
-					)
-				);
-			}
+		var todoItems = shownTodos.map((todo) => {
+			return <TodoItem
+				key={todo.id}
+				todo={todo}
+				onToggle={this.toggle.bind(this, todo)}
+				onDestroy={this.destroy.bind(this, todo)}
+				onEdit={this.edit.bind(this, todo)}
+				editing={this.state.editing === todo.id}
+				onSave={this.save.bind(this, todo)}
+				onCancel={this.cancel}
+			/>;
+		});
 
-			return _ash2.default.e(
-				'div',
-				null,
-				_ash2.default.e(
-					'header',
-					{ id: 'header' },
-					_ash2.default.e(
-						'h1',
-						null,
-						'todos'
-					),
-					_ash2.default.e('input', {
-						ref: 'newField',
-						id: 'new-todo',
-						placeholder: 'What needs to be done?',
-						events: { keydown: this.handleNewTodoKeyDown }
-					})
-				),
-				main,
-				footer
-			);
+		var activeTodoCount = this.state.todos.reduce((accum, todo) => {
+			return todo.completed ? accum : accum + 1;
+		}, 0);
+
+		var completedCount = this.state.todos.length - activeTodoCount;
+
+		if (activeTodoCount || completedCount) {
+			footer =
+				<TodoFooter
+					count={activeTodoCount}
+					completedCount={completedCount}
+					nowShowing={this.state.nowShowing}
+					onClearCompleted={this.clearCompleted}
+				/>;
 		}
-	}]);
 
-	return TodoApp;
-})(_ash2.default.Component);
+		if (this.state.todos.length) {
+			main = <section id="main">
+				<input
+					id="toggle-all"
+					type="checkbox"
+					events={{change: this.toggleAll}}
+					checked={activeTodoCount === 0}
+				/>
+				<ul id="todo-list">
+					{todoItems}
+				</ul>
+			</section>;
+		}
+
+		return <div>
+			<header id="header">
+				<h1>todos</h1>
+				<input
+					ref="newField"
+					id="new-todo"
+					placeholder="What needs to be done?"
+					events={{keydown: this.handleNewTodoKeyDown}}
+				/>
+			</header>
+			{main}
+			{footer}
+		</div>;
+	}
+}*/
 
 // Renderer.addStream(ash.AshNodeStream.from(<TodoApp />), global.document.querySelector('#todoapp'));
 
-/*function resolveIfReady() {
+/* function resolveIfReady() {
 	console.log('resolveIfReady...');
 		var newTodo = document.querySelector('#new-todo');
 

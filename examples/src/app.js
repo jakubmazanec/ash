@@ -23,10 +23,18 @@ class FooContent extends ash.Component {
 	render() {
 		return <section>
 			<div key="content">
-				<h1>Blog</h1>
+				<h1>FooContent</h1>
 			</div>
 			<p>Spinner!</p>
 		</section>;
+	}
+
+	onMount() {
+		console.log('FooContent onMount...');
+	}
+
+	onUnmount() {
+		console.log('FooContent onUnmount...');
 	}
 }
 
@@ -57,8 +65,18 @@ class Content extends ash.Component {
 			elements.push(<i>{this.props.show + ' ' + i}</i>);
 		}
 
+		return <FooContent />;
+
 
 		return <main>{elements}</main>;
+	}
+
+	onMount() {
+		console.log('Content onMount...');
+	}
+
+	onUnmount() {
+		console.log('Content onUnmount...');
 	}
 }
 
@@ -79,31 +97,46 @@ storeStream.push({amount: 0});
 
 class App extends ash.Component {
 	state = {
-		show: 'bar'
+		show: 'bar',
+		foo: false
 	};
 
 	static increaseStream = new ash.Stream();
 
 	render() {
+		let amount = storeStream.get().amount;
+
+		return this.state.foo ? <b>Oj!</b> : <Content show={this.state.show} />;
+
 		return <div>
-			<p>{storeStream.get().amount}</p>
+			<p>{amount}</p>
 			<a href="#" events={{click: this.add}}>+1</a>
 			<a href="#" events={{click: this.showFoo}}>FooContent</a>
 			<a href="#" events={{click: this.showBar}}>BarContent</a>
-			<Content show={this.state.show} />
+			<div>{amount ? <Content show={this.state.show} /> : null }</div>
 		</div>;
 	}
 
 	onMount() {
 		storeStream.on(this.update);
+
+		setTimeout(() => {
+			console.log('updating!');
+			this.state.foo = true;
+
+			this.update();
+		}, 2000);
+
+		setTimeout(() => {
+			console.log('updating 2!');
+			this.state.foo = false;
+
+			this.update();
+		}, 4000);
 	}
 
 	add(event) {
 		event.preventDefault();
-
-		console.log(this.domNode);
-
-		console.log('add...', this);
 
 		this.increaseStream.push(1);
 	}
@@ -135,11 +168,6 @@ global.storeStream = storeStream;
 
 
 
-
-
-new ash.ViewStream(<App />);
-
-
 // var viewStream = ash.AshNodeStream.from(<App />);
 
 // Renderer.addStream(viewStream, global.document.querySelector('.page'));
@@ -152,61 +180,6 @@ let renderStream = new ash.RenderStream(viewStream, global.document.querySelecto
 
 
 
-
-
-// React.render(
-// 	React.createElement(AppReact),
-// 	global.document.querySelector('.pageReact')
-// );
-
-
-
-/* var items = [];
-
-for (let i = 0; i < 5000; i++) {
-	items.push({name: '' + Math.random() * 10 >> 0});
-}
-
-var BenchmarkApp1Mithril = {};
-
-BenchmarkApp1Mithril.controller = function () {
-	this.items = items;
-};
-
-BenchmarkApp1Mithril.view = function (ctrl) {
-	return ctrl.items
-	.map(function (item) {
-		return m('input', {value: item.name});
-	});
-};
-
-class BenchmarkApp1Ash extends ash.Component {
-	render() {
-		return <div>
-			{this.props.data.map((item) => <input value={item.name}/>)}
-		</div>;
-	}
-}
-
-class BenchmarkApp1React extends React.Component {
-	render() {
-		return React.DOM.div({}, this.props.data.map(function (item) {
-			return React.DOM.input({value: item.name});
-		}));
-	}
-}
-
-setTimeout(() => {
-	m.mount(global.document.querySelector('.pageMithril'), BenchmarkApp1Mithril);
-}, 2000);
-
-setTimeout(() => {
-	Renderer.addStream(ash.AshNodeStream.from(<BenchmarkApp1Ash data={items}/>), global.document.querySelector('.page'));
-}, 3000);
-
-setTimeout(() => {
-	React.render(React.createElement(BenchmarkApp1React, {data: items}), global.document.querySelector('.pageReact'));
-}, 4000);*/
 
 
 

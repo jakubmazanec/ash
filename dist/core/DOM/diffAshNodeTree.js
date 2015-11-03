@@ -166,6 +166,18 @@ function walkDiffAshNodeTree(oldAshNode, newAshNode, patches) {
 	var propertiesToChange = {};
 	var propertiesToRemove = [];
 
+	if (newAshNode === null) {
+		// node is to be removed...
+		patches.push({
+			type: PATCH_REMOVE,
+			id: oldAshNode.id,
+			indices: oldAshNode.indices,
+			streamId: oldAshNode.streamId
+		});
+
+		return patches;
+	}
+
 	if (oldAshNode === newAshNode || !newAshNode.isDirty) {
 		if (oldAshNode.oldChildren && oldAshNode.oldChildren.length) {
 			diffChildren(oldAshNode.oldChildren, newAshNode.children, oldAshNode, newAshNode, patches);

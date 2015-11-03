@@ -38,9 +38,14 @@ function render(stream, changed, dependencies) {
 			while (stream.containerNode.firstChild) {
 				stream.containerNode.removeChild(stream.containerNode.firstChild);
 			}
-
+			
 			global.requestAnimationFrame(() => {
-				stream.containerNode.appendChild(createNodeTree(ashNodeTree));
+				let nodeTree = createNodeTree(ashNodeTree);
+
+				if (nodeTree) {
+					stream.containerNode.appendChild(nodeTree);
+				}
+				
 				mountComponents(ashElementTree);
 			});
 		}

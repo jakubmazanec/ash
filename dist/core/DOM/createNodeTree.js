@@ -29,6 +29,10 @@ function createNodeTree(ashNodeTree) {
 	var nodeTree;
 	var child;
 
+	if (!ashNodeTree) {
+		return null;
+	}
+
 	if ((0, _internalsIsAshTextNode2.default)(ashNodeTree)) {
 		nodeTree = global.document.createTextNode(ashNodeTree.text);
 		nodeTree[ID_ATTRIBUTE_NAME] = ashNodeTree.id;

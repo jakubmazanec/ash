@@ -94,8 +94,12 @@ function createAshNodeTree(componentAshElement) {
 	ashElement.isDirty = false;
 
 	// find first children which is ash node ash element
-	while (!(0, _internalsIsAshNodeAshElement2.default)(ashElement)) {
+	while (!(0, _internalsIsAshNodeAshElement2.default)(ashElement) && ashElement && ashElement.children && ashElement.children.length) {
 		ashElement = ashElement.children[0];
+	}
+
+	if (!ashElement || (0, _internalsIsComponentAshElement2.default)(ashElement) && !ashElement.children.length) {
+		return null;
 	}
 
 	if (isDirty) {

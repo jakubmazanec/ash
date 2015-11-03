@@ -142,7 +142,17 @@
 		_createClass(FooContent, [{
 			key: 'render',
 			value: function render() {
-				return _ash2.default.createElement('section', null, _ash2.default.createElement('div', { key: 'content' }, _ash2.default.createElement('h1', null, 'Blog')), _ash2.default.createElement('p', null, 'Spinner!'));
+				return _ash2.default.createElement('section', null, _ash2.default.createElement('div', { key: 'content' }, _ash2.default.createElement('h1', null, 'FooContent')), _ash2.default.createElement('p', null, 'Spinner!'));
+			}
+		}, {
+			key: 'onMount',
+			value: function onMount() {
+				console.log('FooContent onMount...');
+			}
+		}, {
+			key: 'onUnmount',
+			value: function onUnmount() {
+				console.log('FooContent onUnmount...');
 			}
 		}]);
 
@@ -196,7 +206,19 @@
 					elements.push(_ash2.default.createElement('i', null, this.props.show + ' ' + i));
 				}
 
+				return _ash2.default.createElement(FooContent, null);
+
 				return _ash2.default.createElement('main', null, elements);
+			}
+		}, {
+			key: 'onMount',
+			value: function onMount() {
+				console.log('Content onMount...');
+			}
+		}, {
+			key: 'onUnmount',
+			value: function onUnmount() {
+				console.log('Content onUnmount...');
 			}
 		}]);
 
@@ -225,28 +247,45 @@
 			_get(Object.getPrototypeOf(App.prototype), 'constructor', this).apply(this, arguments);
 
 			this.state = {
-				show: 'bar'
+				show: 'bar',
+				foo: false
 			};
 		}
 
 		_createClass(App, [{
 			key: 'render',
 			value: function render() {
-				return _ash2.default.createElement('div', null, _ash2.default.createElement('p', null, storeStream.get().amount), _ash2.default.createElement('a', { href: '#', events: { click: this.add } }, '+1'), _ash2.default.createElement('a', { href: '#', events: { click: this.showFoo } }, 'FooContent'), _ash2.default.createElement('a', { href: '#', events: { click: this.showBar } }, 'BarContent'), _ash2.default.createElement(Content, { show: this.state.show }));
+				var amount = storeStream.get().amount;
+
+				return this.state.foo ? _ash2.default.createElement('b', null, 'Oj!') : _ash2.default.createElement(Content, { show: this.state.show });
+
+				return _ash2.default.createElement('div', null, _ash2.default.createElement('p', null, amount), _ash2.default.createElement('a', { href: '#', events: { click: this.add } }, '+1'), _ash2.default.createElement('a', { href: '#', events: { click: this.showFoo } }, 'FooContent'), _ash2.default.createElement('a', { href: '#', events: { click: this.showBar } }, 'BarContent'), _ash2.default.createElement('div', null, amount ? _ash2.default.createElement(Content, { show: this.state.show }) : null));
 			}
 		}, {
 			key: 'onMount',
 			value: function onMount() {
+				var _this = this;
+
 				storeStream.on(this.update);
+
+				setTimeout(function () {
+					console.log('updating!');
+					_this.state.foo = true;
+
+					_this.update();
+				}, 2000);
+
+				setTimeout(function () {
+					console.log('updating 2!');
+					_this.state.foo = false;
+
+					_this.update();
+				}, 4000);
 			}
 		}, {
 			key: 'add',
 			value: function add(event) {
 				event.preventDefault();
-
-				console.log(this.domNode);
-
-				console.log('add...', this);
 
 				this.increaseStream.push(1);
 			}
@@ -281,8 +320,6 @@
 
 	global.storeStream = storeStream;
 
-	new _ash2.default.ViewStream(_ash2.default.createElement(App, null));
-
 	// var viewStream = ash.AshNodeStream.from(<App />);
 
 	// Renderer.addStream(viewStream, global.document.querySelector('.page'));
@@ -291,58 +328,6 @@
 	var renderStream = new _ash2.default.RenderStream(viewStream, global.document.querySelector('.page'));
 
 	// console.log(renderStream.stringify());
-
-	// React.render(
-	// 	React.createElement(AppReact),
-	// 	global.document.querySelector('.pageReact')
-	// );
-
-	/* var items = [];
-
-	for (let i = 0; i < 5000; i++) {
-		items.push({name: '' + Math.random() * 10 >> 0});
-	}
-
-	var BenchmarkApp1Mithril = {};
-
-	BenchmarkApp1Mithril.controller = function () {
-		this.items = items;
-	};
-
-	BenchmarkApp1Mithril.view = function (ctrl) {
-		return ctrl.items
-		.map(function (item) {
-			return m('input', {value: item.name});
-		});
-	};
-
-	class BenchmarkApp1Ash extends ash.Component {
-		render() {
-			return <div>
-				{this.props.data.map((item) => <input value={item.name}/>)}
-			</div>;
-		}
-	}
-
-	class BenchmarkApp1React extends React.Component {
-		render() {
-			return React.DOM.div({}, this.props.data.map(function (item) {
-				return React.DOM.input({value: item.name});
-			}));
-		}
-	}
-
-	setTimeout(() => {
-		m.mount(global.document.querySelector('.pageMithril'), BenchmarkApp1Mithril);
-	}, 2000);
-
-	setTimeout(() => {
-		Renderer.addStream(ash.AshNodeStream.from(<BenchmarkApp1Ash data={items}/>), global.document.querySelector('.page'));
-	}, 3000);
-
-	setTimeout(() => {
-		React.render(React.createElement(BenchmarkApp1React, {data: items}), global.document.querySelector('.pageReact'));
-	}, 4000);*/
 
 	/*var Utils = global.Utils = {
 		uuid() {
@@ -26351,11 +26336,25 @@
 		value: true
 	});
 
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () {
+		function defineProperties(target, props) {
+			for (var i = 0; i < props.length; i++) {
+				var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+			}
+		}return function (Constructor, protoProps, staticProps) {
+			if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+		};
+	})();
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	function _classCallCheck(instance, Constructor) {
+		if (!(instance instanceof Constructor)) {
+			throw new TypeError('Cannot call a class as a function');
+		}
+	}
 
 	var _internalsIsAshNodeAshElement = __webpack_require__(103);
 
@@ -27371,8 +27370,12 @@
 		ashElement.isDirty = false;
 
 		// find first children which is ash node ash element
-		while (!(0, _internalsIsAshNodeAshElement2.default)(ashElement)) {
+		while (!(0, _internalsIsAshNodeAshElement2.default)(ashElement) && ashElement && ashElement.children && ashElement.children.length) {
 			ashElement = ashElement.children[0];
+		}
+
+		if (!ashElement || (0, _internalsIsComponentAshElement2.default)(ashElement) && !ashElement.children.length) {
+			return null;
 		}
 
 		if (isDirty) {
@@ -27576,9 +27579,7 @@
 	});
 	exports.default = updateComponentAshElement;
 
-	function _interopRequireDefault(obj) {
-		return obj && obj.__esModule ? obj : { 'default': obj };
-	}
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 	var _DOMCreateAshElementTree = __webpack_require__(112);
 
@@ -27592,212 +27593,211 @@
 	var COMPONENT_ASH_ELEMENT = _internalsConstants2.default.COMPONENT_ASH_ELEMENT;
 	var ASH_NODE_ASH_ELEMENT = _internalsConstants2.default.ASH_NODE_ASH_ELEMENT;
 
+	function unmountComponents(ashElement) {
+		if (ashElement.type === COMPONENT_ASH_ELEMENT) {
+			ashElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
+		}
+
+		for (var i = 0; i < ashElement.children.length; i++) {
+			unmountComponents(ashElement.children[i]);
+		}
+	}
+
 	function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, isParentComponentDirty) {
-		if (newAshElement.type === COMPONENT_ASH_ELEMENT) {
-			if (oldAshElement === null) {
-				// old is null, new is component
-
-				// newAshElement must be added as a child...
-				if (newAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
-					// now, the component descriptor's tree is not complete
-					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
-
-					// replace the old
-					newAshElement.parent.children[newAshElement.index] = newAshElement;
-				} else if (newAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
-					// now, the component descriptor's tree is not complete
-					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
-
-					// replace the old
-					newAshElement.parent.children[0] = newAshElement;
-				}
-			} else if (oldAshElement.type === COMPONENT_ASH_ELEMENT && newAshElement.Spec === oldAshElement.Spec) {
-				// old is component, new is same component
-
-				var shouldUpdate = oldAshElement.instance.shouldUpdate(newAshElement.args ? newAshElement.args[0] : null);
-
-				if (shouldUpdate || oldAshElement.isDirty) {
-					oldAshElement.isDirty = true;
-
-					// copy the new to the old...
-					oldAshElement.args = newAshElement.args;
-
-					oldAshElement.instance.onBeforeReceiveProps(newAshElement.args ? newAshElement.args[0] : null);
-
-					oldAshElement.instance.props = newAshElement.args ? newAshElement.args[0] : null;
-
-					// create child for the new descriptor
-					var render = oldAshElement.instance.render(oldAshElement.instance.props, oldAshElement.instance.state);
-
-					// adding children to the queue
-					if (render) {
-						render.owner = oldAshElement;
-						render.parent = oldAshElement;
-						render.index = 0;
-
-						if (oldAshElement.children[0]) {
-							walkUpdateComponentAshElement(oldAshElement.children[0], render, stream, true);
-						} else {
-							walkUpdateComponentAshElement(null, render, stream, true);
-						}
-					} else if (oldAshElement.children[0]) {
-						// deleting old surplus children
-						if (oldAshElement.children[0].type === COMPONENT_ASH_ELEMENT) {
-							oldAshElement.children[0].instance.__lifecycle = LIFECYCLE_UNMOUNTED;
-						}
-
-						oldAshElement.children.pop();
+		if (newAshElement === null) {
+			if (oldAshElement) {
+				// deleting old surplus children
+				while (oldAshElement.parent.children.length) {
+					if (oldAshElement.parent.children[oldAshElement.parent.children.length - 1].type === COMPONENT_ASH_ELEMENT) {
+						unmountComponents(oldAshElement.parent.children[oldAshElement.parent.children.length - 1]);
 					}
-				} else {
-					walkUpdateComponentAshElement(oldAshElement.children[0], oldAshElement.children[0], stream, false);
-				}
-			} else if (oldAshElement.type === COMPONENT_ASH_ELEMENT) {
-				// old is component, new is different component
 
-				if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
-					// now, the component descriptor's tree is not complete
-					newAshElement.owner = oldAshElement.owner;
-					newAshElement.parent = oldAshElement.parent;
-					newAshElement.index = oldAshElement.index;
-					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
-
-					// replace the old
-					oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
-					oldAshElement.parent.children[oldAshElement.index] = newAshElement;
-				} else if (oldAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
-					// now, the component descriptor's tree is not complete
-					newAshElement.owner = oldAshElement.owner;
-					newAshElement.parent = oldAshElement.parent;
-					newAshElement.index = oldAshElement.index;
-					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
-
-					// replace the old
-					oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
-					oldAshElement.parent.children[0] = newAshElement;
-				}
-			} else {
-				// old is virtual node, new is component
-
-				if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
-					// now, the component descriptor's tree is not complete
-					newAshElement.owner = oldAshElement.owner;
-					newAshElement.parent = oldAshElement.parent;
-					newAshElement.index = oldAshElement.index;
-					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
-
-					// replace the old
-					oldAshElement.parent.children[oldAshElement.index] = newAshElement;
-				} else if (oldAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
-					// now, the component descriptor's tree is not complete
-					newAshElement.owner = oldAshElement.owner;
-					newAshElement.parent = oldAshElement.parent;
-					newAshElement.index = oldAshElement.index;
-					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
-
-					// replace the old
-					oldAshElement.parent.children[0] = newAshElement;
+					oldAshElement.parent.children.pop();
 				}
 			}
-		} else {
-			if (oldAshElement === null) {
-				// console.log('old is null, new is virtual node');
-				// old is null, new is virtual node
+		} else if (newAshElement.type === COMPONENT_ASH_ELEMENT && oldAshElement === null) {
+			// the element tree is not complete
+			(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
 
-				// newAshElement must be added as a child...
-				if (newAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
-					// now, the component descriptor's tree is not complete
-					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
+			// new element must be added as a child
+			newAshElement.parent.children[newAshElement.index] = newAshElement;
+		} else if (newAshElement.type === COMPONENT_ASH_ELEMENT && oldAshElement.type === COMPONENT_ASH_ELEMENT && newAshElement.Spec === oldAshElement.Spec) {
+			var newAshElementArgs = newAshElement.args != null ? newAshElement.args[0] : null;
 
-					// replace the old
-					newAshElement.parent.children[0] = newAshElement;
-				} else if (newAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
-					// now, the component descriptor's tree is not complete
-					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
+			if (oldAshElement.isDirty || oldAshElement.instance.shouldUpdate(newAshElementArgs)) {
+				oldAshElement.isDirty = true;
 
-					// replace the old
-					newAshElement.parent.children[newAshElement.index] = newAshElement;
-				}
-			} else if (newAshElement.type === oldAshElement.type) {
-				// console.log('old is virtual node, new is virtual node');
-				// old is virtual node, new is virtual node
+				// copy the new args to the old element
+				oldAshElement.args = newAshElement.args;
 
-				if (isParentComponentDirty) {
-					oldAshElement.args = newAshElement.args;
+				oldAshElement.instance.onBeforeReceiveProps(newAshElementArgs);
 
-					oldAshElement.instantiate();
+				oldAshElement.instance.props = newAshElementArgs;
 
-					oldAshElement.stream = stream;
-				}
+				// create child for the new descriptor
+				var render = oldAshElement.instance.render(oldAshElement.instance.props, oldAshElement.instance.state);
 
 				// adding children to the queue
-				for (var i = 0; i < newAshElement.children.length; i++) {
-					if (newAshElement.children[i] && oldAshElement.children[i]) {
-						newAshElement.children[i].owner = oldAshElement.owner;
-						newAshElement.children[i].parent = oldAshElement;
-						newAshElement.children[i].index = i;
+				if (render) {
+					render.owner = oldAshElement;
+					render.parent = oldAshElement;
+					render.index = 0;
 
-						walkUpdateComponentAshElement(oldAshElement.children[i], newAshElement.children[i], stream, isParentComponentDirty);
-					} else if (newAshElement.children[i] && !oldAshElement.children[i]) {
-						newAshElement.children[i].owner = oldAshElement.owner;
-						newAshElement.children[i].parent = oldAshElement;
-						newAshElement.children[i].index = i;
-
-						walkUpdateComponentAshElement(null, newAshElement.children[i], stream, isParentComponentDirty);
+					if (oldAshElement.children[0]) {
+						walkUpdateComponentAshElement(oldAshElement.children[0], render, stream, true);
+					} else {
+						walkUpdateComponentAshElement(null, render, stream, true);
 					}
-				}
-
-				// deleting old surplus children
-				while (oldAshElement.children.length > newAshElement.children.length) {
-					if (oldAshElement.children[oldAshElement.children.length - 1].type === COMPONENT_ASH_ELEMENT) {
-						oldAshElement.children[oldAshElement.children.length - 1].instance.__lifecycle = LIFECYCLE_UNMOUNTED;
+				} else if (oldAshElement.children[0]) {
+					// deleting old surplus children
+					if (oldAshElement.children[0].type === COMPONENT_ASH_ELEMENT) {
+						unmountComponents(oldAshElement.children[0]);
 					}
 
 					oldAshElement.children.pop();
 				}
 			} else {
-				// console.log('old is component, new is virtual node');
-				// old is component, new is virtual node
+				walkUpdateComponentAshElement(oldAshElement.children[0], oldAshElement.children[0], stream, false);
+			}
+		} else if (newAshElement.type === COMPONENT_ASH_ELEMENT && oldAshElement.type === COMPONENT_ASH_ELEMENT) {
+			if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
+				// now, the component descriptor's tree is not complete
+				newAshElement.owner = oldAshElement.owner;
+				newAshElement.parent = oldAshElement.parent;
+				newAshElement.index = oldAshElement.index;
+				(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
 
-				if (oldAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
-					// now, the component descriptor's tree is not complete
-					newAshElement.owner = oldAshElement.owner;
-					newAshElement.parent = oldAshElement.parent;
-					newAshElement.index = oldAshElement.index;
+				// replace the old
+				unmountComponents(oldAshElement);
 
-					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
+				oldAshElement.parent.children[oldAshElement.index] = newAshElement;
+			} else if (oldAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
+				// now, the component descriptor's tree is not complete
+				newAshElement.owner = oldAshElement.owner;
+				newAshElement.parent = oldAshElement.parent;
+				newAshElement.index = oldAshElement.index;
+				(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
 
-					// replace the old
-					oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
-					oldAshElement.parent.children[0] = newAshElement;
-				} else if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
-					// now, the component descriptor's tree is not complete
-					newAshElement.owner = oldAshElement.owner;
-					newAshElement.parent = oldAshElement.parent;
-					newAshElement.index = oldAshElement.index;
+				// replace the old
+				unmountComponents(oldAshElement);
 
-					(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
+				oldAshElement.parent.children[0] = newAshElement;
+			}
+		} else if (newAshElement.type === COMPONENT_ASH_ELEMENT && oldAshElement.type === ASH_NODE_ASH_ELEMENT) {
+			if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
+				// now, the component descriptor's tree is not complete
+				newAshElement.owner = oldAshElement.owner;
+				newAshElement.parent = oldAshElement.parent;
+				newAshElement.index = oldAshElement.index;
+				(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
 
-					// replace the old
-					oldAshElement.instance.__lifecycle = LIFECYCLE_UNMOUNTED;
-					oldAshElement.parent.children[oldAshElement.index] = newAshElement;
+				// replace the old
+				oldAshElement.parent.children[oldAshElement.index] = newAshElement;
+			} else if (oldAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
+				// now, the component descriptor's tree is not complete
+				newAshElement.owner = oldAshElement.owner;
+				newAshElement.parent = oldAshElement.parent;
+				newAshElement.index = oldAshElement.index;
+				(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
+
+				// replace the old
+				oldAshElement.parent.children[0] = newAshElement;
+			}
+		} else if (newAshElement.type === ASH_NODE_ASH_ELEMENT && oldAshElement === null) {
+			// newAshElement must be added as a child...
+			if (newAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
+				// now, the component descriptor's tree is not complete
+				(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
+
+				// replace the old
+				newAshElement.parent.children[0] = newAshElement;
+			} else if (newAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
+				// now, the component descriptor's tree is not complete
+				(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
+
+				// replace the old
+				newAshElement.parent.children[newAshElement.index] = newAshElement;
+			}
+		} else if (newAshElement.type === ASH_NODE_ASH_ELEMENT && oldAshElement.type === COMPONENT_ASH_ELEMENT) {
+			if (oldAshElement.parent.type === COMPONENT_ASH_ELEMENT) {
+				// now, the component descriptor's tree is not complete
+				newAshElement.owner = oldAshElement.owner;
+				newAshElement.parent = oldAshElement.parent;
+				newAshElement.index = oldAshElement.index;
+
+				(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
+
+				// replace the old
+				unmountComponents(oldAshElement);
+
+				oldAshElement.parent.children[0] = newAshElement;
+			} else if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
+				// now, the component descriptor's tree is not complete
+				newAshElement.owner = oldAshElement.owner;
+				newAshElement.parent = oldAshElement.parent;
+				newAshElement.index = oldAshElement.index;
+
+				(0, _DOMCreateAshElementTree2.default)(newAshElement, stream);
+
+				// replace the old
+				unmountComponents(oldAshElement);
+
+				oldAshElement.parent.children[oldAshElement.index] = newAshElement;
+			}
+		} else if (newAshElement.type === ASH_NODE_ASH_ELEMENT && oldAshElement.type === ASH_NODE_ASH_ELEMENT) {
+			if (isParentComponentDirty) {
+				oldAshElement.args = newAshElement.args;
+
+				oldAshElement.instantiate();
+
+				oldAshElement.stream = stream;
+			}
+
+			// adding children to the queue
+			for (var i = 0; i < newAshElement.children.length; i++) {
+				if (newAshElement.children[i] && oldAshElement.children[i]) {
+					newAshElement.children[i].owner = oldAshElement.owner;
+					newAshElement.children[i].parent = oldAshElement;
+					newAshElement.children[i].index = i;
+
+					walkUpdateComponentAshElement(oldAshElement.children[i], newAshElement.children[i], stream, isParentComponentDirty);
+				} else if (newAshElement.children[i] && !oldAshElement.children[i]) {
+					newAshElement.children[i].owner = oldAshElement.owner;
+					newAshElement.children[i].parent = oldAshElement;
+					newAshElement.children[i].index = i;
+
+					walkUpdateComponentAshElement(null, newAshElement.children[i], stream, isParentComponentDirty);
 				}
+			}
+
+			// deleting old surplus children
+			while (oldAshElement.children.length > newAshElement.children.length) {
+				if (oldAshElement.children[oldAshElement.children.length - 1].type === COMPONENT_ASH_ELEMENT) {
+					oldAshElement.children[oldAshElement.children.length - 1].instance.__lifecycle = LIFECYCLE_UNMOUNTED;
+				}
+
+				oldAshElement.children.pop();
 			}
 		}
 	}
 
 	function updateComponentAshElement(componentAshElement, stream) {
-		var render = undefined;
+		var newAshElement = undefined;
+		var oldAshElement = componentAshElement.children[0] || null;
 
 		if (componentAshElement.isDirty) {
-			render = componentAshElement.instance.render(componentAshElement.instance.props, componentAshElement.instance.state);
-			render.owner = componentAshElement;
-			render.parent = componentAshElement;
-			render.index = 0;
+			newAshElement = componentAshElement.instance.render(componentAshElement.instance.props, componentAshElement.instance.state);
+
+			if (newAshElement) {
+				newAshElement.owner = componentAshElement;
+				newAshElement.parent = componentAshElement;
+				newAshElement.index = 0;
+			}
 		} else {
-			render = componentAshElement.children[0];
+			newAshElement = componentAshElement.children[0] || null;
 		}
 
-		walkUpdateComponentAshElement(componentAshElement.children[0], render, stream, componentAshElement.isDirty);
+		walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, componentAshElement.isDirty);
 
 		return componentAshElement;
 	}
@@ -27930,7 +27930,12 @@
 				}
 
 				global.requestAnimationFrame(function () {
-					stream.containerNode.appendChild((0, _DOMCreateNodeTree2.default)(ashNodeTree));
+					var nodeTree = (0, _DOMCreateNodeTree2.default)(ashNodeTree);
+
+					if (nodeTree) {
+						stream.containerNode.appendChild(nodeTree);
+					}
+
 					(0, _DOMMountComponents2.default)(ashElementTree);
 				});
 			}
@@ -28046,6 +28051,10 @@
 	function createNodeTree(ashNodeTree) {
 		var nodeTree;
 		var child;
+
+		if (!ashNodeTree) {
+			return null;
+		}
 
 		if ((0, _internalsIsAshTextNode2.default)(ashNodeTree)) {
 			nodeTree = global.document.createTextNode(ashNodeTree.text);
@@ -28716,6 +28725,18 @@
 		var differentProperties = false;
 		var propertiesToChange = {};
 		var propertiesToRemove = [];
+
+		if (newAshNode === null) {
+			// node is to be removed...
+			patches.push({
+				type: PATCH_REMOVE,
+				id: oldAshNode.id,
+				indices: oldAshNode.indices,
+				streamId: oldAshNode.streamId
+			});
+
+			return patches;
+		}
 
 		if (oldAshNode === newAshNode || !newAshNode.isDirty) {
 			if (oldAshNode.oldChildren && oldAshNode.oldChildren.length) {
