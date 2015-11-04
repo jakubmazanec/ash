@@ -24,6 +24,7 @@ var ASH_TEXT_NODE = _internalsConstants2.default.ASH_TEXT_NODE;
 var AshNode = function AshNode(tagName, properties) {
 	_classCallCheck(this, AshNode);
 
+	this.type = null;
 	this.id = null;
 	this.index = null;
 	this.indices = null;
@@ -44,6 +45,8 @@ var AshNode = function AshNode(tagName, properties) {
 		this.type = ASH_TEXT_NODE;
 		this.text = tagName;
 	}
+
+	return this;
 };
 
 exports.default = AshNode;

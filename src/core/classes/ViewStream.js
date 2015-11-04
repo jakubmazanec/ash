@@ -2,7 +2,8 @@ import Stream from './Stream';
 import isComponentAshElement from '../internals/isComponentAshElement';
 import createAshNodeTree from '../DOM/createAshNodeTree';
 import createAshElementTree from '../DOM/createAshElementTree';
-import updateComponentAshElement from '../DOM/updateComponentAshElement';
+import updateAshElementTree from '../DOM/updateAshElementTree';
+import setAnimationTimeout from '../internals/setAnimationTimeout';
 
 
 let streamId = 0;
@@ -44,9 +45,9 @@ export default class ViewStream extends Stream {
 
 			this.isUpdating = true;
 
-			global.requestAnimationFrame(() => {
+			setAnimationTimeout(() => {
 				super.push({
-					ashElementTree: updateComponentAshElement(this.value.ashElementTree, this),
+					ashElementTree: updateAshElementTree(this.value.ashElementTree, this),
 					ashNodeTree: createAshNodeTree(this.value.ashElementTree)
 				});
 

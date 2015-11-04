@@ -62,9 +62,13 @@ var _DOMCreateAshElementTree = require('../DOM/createAshElementTree');
 
 var _DOMCreateAshElementTree2 = _interopRequireDefault(_DOMCreateAshElementTree);
 
-var _DOMUpdateComponentAshElement = require('../DOM/updateComponentAshElement');
+var _DOMUpdateAshElementTree = require('../DOM/updateAshElementTree');
 
-var _DOMUpdateComponentAshElement2 = _interopRequireDefault(_DOMUpdateComponentAshElement);
+var _DOMUpdateAshElementTree2 = _interopRequireDefault(_DOMUpdateAshElementTree);
+
+var _internalsSetAnimationTimeout = require('../internals/setAnimationTimeout');
+
+var _internalsSetAnimationTimeout2 = _interopRequireDefault(_internalsSetAnimationTimeout);
 
 var streamId = 0;
 
@@ -112,9 +116,9 @@ var ViewStream = (function (_Stream) {
 
 				this.isUpdating = true;
 
-				global.requestAnimationFrame(function () {
+				(0, _internalsSetAnimationTimeout2.default)(function () {
 					_get(Object.getPrototypeOf(ViewStream.prototype), 'push', _this).call(_this, {
-						ashElementTree: (0, _DOMUpdateComponentAshElement2.default)(_this.value.ashElementTree, _this),
+						ashElementTree: (0, _DOMUpdateAshElementTree2.default)(_this.value.ashElementTree, _this),
 						ashNodeTree: (0, _DOMCreateAshNodeTree2.default)(_this.value.ashElementTree)
 					});
 

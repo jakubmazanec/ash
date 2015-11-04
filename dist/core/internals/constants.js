@@ -33,6 +33,8 @@ exports.default = {
 	INDEX_ATTRIBUTE_NAME: '__ash:index__',
 	STREAM_ID_ATTRIBUTE_NAME: '__ash:stream__',
 
-	IMMUTABLE_TAG: '__ash:immutable__'
+	// render stram targets
+	RENDER_STREAM_DOM_TARGET: 'DOM Target',
+	RENDER_STREAM_STRING_TARGET: 'String Target'
 };
 module.exports = exports.default;

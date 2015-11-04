@@ -60,6 +60,13 @@ var _immutable = require('immutable');
 
 var _immutable2 = _interopRequireDefault(_immutable);
 
+var _componentsTestApp1 = require('./components/TestApp1');
+
+var _componentsTestApp12 = _interopRequireDefault(_componentsTestApp1);
+
+// let viewStream = new ash.ViewStream(<App />);
+// let renderStream = new ash.RenderStream(viewStream, global.document.querySelector('.page'));
+
 global.$ = _jquery2.default;
 global._ = _lodashFp2.default;
 global.ash = _ash2.default;
@@ -274,14 +281,49 @@ storeStream.from(App.increaseStream);
 
 global.storeStream = storeStream;
 
-// var viewStream = ash.AshNodeStream.from(<App />);
+function assertAshNodeTree(expected, actual) {
+	for (var nodeProperty in actual) {
+		if (actual.hasOwnProperty(nodeProperty)) {
+			if (nodeProperty === 'properties') {
+				for (var propertiesProperty in actual[nodeProperty]) {
+					if (actual[nodeProperty][propertiesProperty].hasOwnProperty(propertiesProperty)) {
+						if (expected[nodeProperty][propertiesProperty] !== actual[nodeProperty][propertiesProperty]) {
+							throw new Error('Expected and actual property mismatch: ' + actual[nodeProperty][propertiesProperty] + ' should be ' + expected[nodeProperty][propertiesProperty]);
+						}
+					}
+				}
+			} else if (nodeProperty !== 'children' && expected[nodeProperty] !== actual[nodeProperty]) {
+				throw new Error('Expected and actual property mismatch: ' + actual[nodeProperty] + ' should be ' + expected[nodeProperty]);
+			}
+		}
+	}
 
-// Renderer.addStream(viewStream, global.document.querySelector('.page'));
+	if (actual.children && actual.children.length) {
+		for (var i = 0; i < actual.children.length; i++) {
 
-var viewStream = new _ash2.default.ViewStream(_ash2.default.createElement(App, null));
+			if (!(expected.children && expected.children[i])) {
+				throw new Error('Expected ash node tree doesn\'t have expected child!');
+			}
+
+			assertAshNodeTree(expected.children[i], actual.children[i]);
+		}
+	}
+}
+
+var updateStream = new _ash2.default.Stream();
+var viewStream = new _ash2.default.ViewStream(_ash2.default.createElement(_componentsTestApp12.default, { updateStream: updateStream }));
 var renderStream = new _ash2.default.RenderStream(viewStream, global.document.querySelector('.page'));
 
-// console.log(renderStream.stringify());
+var doneCount = 0;
+
+_componentsTestApp12.default.doneStream.on(function (count) {
+	doneCount++;
+
+	console.log('doneStream on...', count, _componentsTestApp12.default.doneStream);
+	var ashNodeTree = viewStream.get().ashNodeTree;
+});
+
+updateStream.push(true);
 
 /*var Utils = global.Utils = {
 	uuid() {

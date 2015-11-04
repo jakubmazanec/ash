@@ -86,9 +86,17 @@ var _DOMMountComponents = require('../DOM/mountComponents');
 
 var _DOMMountComponents2 = _interopRequireDefault(_DOMMountComponents);
 
+var _internalsSetAnimationTimeout = require('../internals/setAnimationTimeout');
+
+var _internalsSetAnimationTimeout2 = _interopRequireDefault(_internalsSetAnimationTimeout);
+
 var ID_ATTRIBUTE_NAME = _internalsConstants2.default.ID_ATTRIBUTE_NAME;
+var RENDER_STREAM_DOM_TARGET = _internalsConstants2.default.RENDER_STREAM_DOM_TARGET;
+var RENDER_STREAM_STRING_TARGET = _internalsConstants2.default.RENDER_STREAM_STRING_TARGET;
 
 function render(stream, changed, dependencies) {
+	var _this = this;
+
 	var viewStream = dependencies[0];
 
 	var _viewStream$get = viewStream.get();
@@ -103,7 +111,7 @@ function render(stream, changed, dependencies) {
 		stream.previousAshNodeTree = ashNodeTree;
 
 		// there are some element nodes?
-		if (stream.containerNode.childNodes.length) {
+		if (this.target === RENDER_STREAM_DOM_TARGET && stream.containerNode.childNodes.length) {
 			isNodeTreeValidated = true;
 			isNodeTreeValid = (0, _DOMValidateNodeTree2.default)(stream.containerNode.childNodes[0], ashNodeTree, viewStream.id);
 		}
@@ -115,15 +123,19 @@ function render(stream, changed, dependencies) {
 			}
 
 			// remove existing nodes
-			while (stream.containerNode.firstChild) {
-				stream.containerNode.removeChild(stream.containerNode.firstChild);
+			if (this.target === RENDER_STREAM_DOM_TARGET) {
+				while (stream.containerNode.firstChild) {
+					stream.containerNode.removeChild(stream.containerNode.firstChild);
+				}
 			}
 
-			global.requestAnimationFrame(function () {
-				var nodeTree = (0, _DOMCreateNodeTree2.default)(ashNodeTree);
+			(0, _internalsSetAnimationTimeout2.default)(function () {
+				if (_this.target === RENDER_STREAM_DOM_TARGET) {
+					var nodeTree = (0, _DOMCreateNodeTree2.default)(ashNodeTree);
 
-				if (nodeTree) {
-					stream.containerNode.appendChild(nodeTree);
+					if (nodeTree) {
+						stream.containerNode.appendChild(nodeTree);
+					}
 				}
 
 				(0, _DOMMountComponents2.default)(ashElementTree);
@@ -135,10 +147,13 @@ function render(stream, changed, dependencies) {
 		}
 	} else {
 		var patches = (0, _DOMDiffAshNodeTree2.default)(stream.previousAshNodeTree, ashNodeTree);
-		var isSuccessful = (0, _DOMPatchNodeTree2.default)(stream.rootNode, patches);
 
-		if (!isSuccessful) {
-			throw new Error('Patching the DOM was unsuccesful!');
+		if (this.target === RENDER_STREAM_DOM_TARGET) {
+			var isSuccessful = (0, _DOMPatchNodeTree2.default)(stream.rootNode, patches);
+
+			if (!isSuccessful) {
+				throw new Error('Patching the DOM was unsuccesful!');
+			}
 		}
 
 		stream.previousAshNodeTree = ashNodeTree;
@@ -153,27 +168,31 @@ var RenderStream = (function (_Stream) {
 	function RenderStream(viewStream, node) {
 		_classCallCheck(this, RenderStream);
 
+		_get(Object.getPrototypeOf(RenderStream.prototype), 'constructor', this).call(this);
+
+		this.containerNode = null;
+		this.previousAshNodeTree = null;
+		this.target = RENDER_STREAM_DOM_TARGET;
 		if (!(viewStream instanceof _ViewStream2.default)) {
 			throw new Error(viewStream + ' (viewStream) must be an ViewStream instance.');
 		}
 
 		if (!(0, _internalsIsElement2.default)(node)) {
-			throw new Error(node + ' (node) must be a DOM Element.');
+			this.target = RENDER_STREAM_STRING_TARGET;
 		}
 
-		_get(Object.getPrototypeOf(RenderStream.prototype), 'constructor', this).call(this);
-
-		this.containerNode = null;
-		this.previousAshNodeTree = null;
 		this.fn = render;
-		this.containerNode = node;
 
-		// remove child nodes which are not element nodes
-		for (var j = 0; j < this.containerNode.childNodes.length; j++) {
-			if (this.containerNode.childNodes[j].nodeType !== 1) {
-				this.containerNode.removeChild(this.containerNode.childNodes[j]);
+		if (this.target === RENDER_STREAM_DOM_TARGET) {
+			this.containerNode = node;
 
-				j--;
+			// remove child nodes which are not element nodes
+			for (var j = 0; j < this.containerNode.childNodes.length; j++) {
+				if (this.containerNode.childNodes[j].nodeType !== 1) {
+					this.containerNode.removeChild(this.containerNode.childNodes[j]);
+
+					j--;
+				}
 			}
 		}
 
@@ -190,9 +209,11 @@ var RenderStream = (function (_Stream) {
 	}, {
 		key: 'rootNode',
 		get: function () {
-			for (var i = 0; i < this.containerNode.childNodes.length; i++) {
-				if (typeof this.containerNode.childNodes[i][ID_ATTRIBUTE_NAME] !== 'undefined') {
-					return this.containerNode.childNodes[i];
+			if (this.target === RENDER_STREAM_DOM_TARGET) {
+				for (var i = 0; i < this.containerNode.childNodes.length; i++) {
+					if (typeof this.containerNode.childNodes[i][ID_ATTRIBUTE_NAME] !== 'undefined') {
+						return this.containerNode.childNodes[i];
+					}
 				}
 			}
 

@@ -4,13 +4,14 @@ import constants from '../internals/constants';
 const ASH_NODE = constants.ASH_NODE;
 const ASH_TEXT_NODE = constants.ASH_TEXT_NODE;
 
-class AshNode {
-	constructor(tagName, properties) {
-		this.id = null;
-		this.index = null;
-		this.indices = null;
-		this.parent = null;
+export default class AshNode {
+	type = null;
+	id = null;
+	index = null;
+	indices = null;
+	parent = null;
 
+	constructor(tagName, properties) {
 		if (properties !== undefined) {
 			this.type = ASH_NODE;
 			this.tagName = tagName.toLowerCase();
@@ -26,7 +27,7 @@ class AshNode {
 			this.type = ASH_TEXT_NODE;
 			this.text = tagName;
 		}
+
+		return this;
 	}
 }
-
-export default AshNode;

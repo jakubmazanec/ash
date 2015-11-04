@@ -102,9 +102,16 @@
 
 	var _ash2 = _interopRequireDefault(_ash);
 
-	var _immutable = __webpack_require__(136);
+	var _immutable = __webpack_require__(137);
 
 	var _immutable2 = _interopRequireDefault(_immutable);
+
+	var _componentsTestApp1 = __webpack_require__(138);
+
+	var _componentsTestApp12 = _interopRequireDefault(_componentsTestApp1);
+
+	// let viewStream = new ash.ViewStream(<App />);
+	// let renderStream = new ash.RenderStream(viewStream, global.document.querySelector('.page'));
 
 	global.$ = _jquery2.default;
 	global._ = _lodashFp2.default;
@@ -320,14 +327,49 @@
 
 	global.storeStream = storeStream;
 
-	// var viewStream = ash.AshNodeStream.from(<App />);
+	function assertAshNodeTree(expected, actual) {
+		for (var nodeProperty in actual) {
+			if (actual.hasOwnProperty(nodeProperty)) {
+				if (nodeProperty === 'properties') {
+					for (var propertiesProperty in actual[nodeProperty]) {
+						if (actual[nodeProperty][propertiesProperty].hasOwnProperty(propertiesProperty)) {
+							if (expected[nodeProperty][propertiesProperty] !== actual[nodeProperty][propertiesProperty]) {
+								throw new Error('Expected and actual property mismatch: ' + actual[nodeProperty][propertiesProperty] + ' should be ' + expected[nodeProperty][propertiesProperty]);
+							}
+						}
+					}
+				} else if (nodeProperty !== 'children' && expected[nodeProperty] !== actual[nodeProperty]) {
+					throw new Error('Expected and actual property mismatch: ' + actual[nodeProperty] + ' should be ' + expected[nodeProperty]);
+				}
+			}
+		}
 
-	// Renderer.addStream(viewStream, global.document.querySelector('.page'));
+		if (actual.children && actual.children.length) {
+			for (var i = 0; i < actual.children.length; i++) {
 
-	var viewStream = new _ash2.default.ViewStream(_ash2.default.createElement(App, null));
+				if (!(expected.children && expected.children[i])) {
+					throw new Error('Expected ash node tree doesn\'t have expected child!');
+				}
+
+				assertAshNodeTree(expected.children[i], actual.children[i]);
+			}
+		}
+	}
+
+	var updateStream = new _ash2.default.Stream();
+	var viewStream = new _ash2.default.ViewStream(_ash2.default.createElement(_componentsTestApp12.default, { updateStream: updateStream }));
 	var renderStream = new _ash2.default.RenderStream(viewStream, global.document.querySelector('.page'));
 
-	// console.log(renderStream.stringify());
+	var doneCount = 0;
+
+	_componentsTestApp12.default.doneStream.on(function (count) {
+		doneCount++;
+
+		console.log('doneStream on...', count, _componentsTestApp12.default.doneStream);
+		var ashNodeTree = viewStream.get().ashNodeTree;
+	});
+
+	updateStream.push(true);
 
 	/*var Utils = global.Utils = {
 		uuid() {
@@ -26225,15 +26267,15 @@
 
 	var _coreClassesViewStream2 = _interopRequireDefault(_coreClassesViewStream);
 
-	var _coreClassesRenderStream = __webpack_require__(115);
+	var _coreClassesRenderStream = __webpack_require__(116);
 
 	var _coreClassesRenderStream2 = _interopRequireDefault(_coreClassesRenderStream);
 
-	var _coreInternalsCreateElement = __webpack_require__(132);
+	var _coreInternalsCreateElement = __webpack_require__(133);
 
 	var _coreInternalsCreateElement2 = _interopRequireDefault(_coreInternalsCreateElement);
 
-	var _coreInternalsAssign = __webpack_require__(135);
+	var _coreInternalsAssign = __webpack_require__(136);
 
 	var _coreInternalsAssign2 = _interopRequireDefault(_coreInternalsAssign);
 
@@ -26584,7 +26626,9 @@
 		INDEX_ATTRIBUTE_NAME: '__ash:index__',
 		STREAM_ID_ATTRIBUTE_NAME: '__ash:stream__',
 
-		IMMUTABLE_TAG: '__ash:immutable__'
+		// render stram targets
+		RENDER_STREAM_DOM_TARGET: 'DOM Target',
+		RENDER_STREAM_STRING_TARGET: 'String Target'
 	};
 	module.exports = exports.default;
 
@@ -27106,7 +27150,7 @@
 /* 109 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
+	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
 		value: true
@@ -27170,9 +27214,13 @@
 
 	var _DOMCreateAshElementTree2 = _interopRequireDefault(_DOMCreateAshElementTree);
 
-	var _DOMUpdateComponentAshElement = __webpack_require__(114);
+	var _DOMUpdateAshElementTree = __webpack_require__(114);
 
-	var _DOMUpdateComponentAshElement2 = _interopRequireDefault(_DOMUpdateComponentAshElement);
+	var _DOMUpdateAshElementTree2 = _interopRequireDefault(_DOMUpdateAshElementTree);
+
+	var _internalsSetAnimationTimeout = __webpack_require__(115);
+
+	var _internalsSetAnimationTimeout2 = _interopRequireDefault(_internalsSetAnimationTimeout);
 
 	var streamId = 0;
 
@@ -27220,9 +27268,9 @@
 
 					this.isUpdating = true;
 
-					global.requestAnimationFrame(function () {
+					(0, _internalsSetAnimationTimeout2.default)(function () {
 						_get(Object.getPrototypeOf(ViewStream.prototype), 'push', _this).call(_this, {
-							ashElementTree: (0, _DOMUpdateComponentAshElement2.default)(_this.value.ashElementTree, _this),
+							ashElementTree: (0, _DOMUpdateAshElementTree2.default)(_this.value.ashElementTree, _this),
 							ashNodeTree: (0, _DOMCreateAshNodeTree2.default)(_this.value.ashElementTree)
 						});
 
@@ -27241,7 +27289,6 @@
 
 	exports.default = ViewStream;
 	module.exports = exports.default;
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
 /* 110 */
@@ -27577,9 +27624,11 @@
 	Object.defineProperty(exports, '__esModule', {
 		value: true
 	});
-	exports.default = updateComponentAshElement;
+	exports.default = updateAshElementTree;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
 	var _DOMCreateAshElementTree = __webpack_require__(112);
 
@@ -27603,7 +27652,7 @@
 		}
 	}
 
-	function walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, isParentComponentDirty) {
+	function walkUpdateAshElementTree(oldAshElement, newAshElement, stream, isParentComponentDirty) {
 		if (newAshElement === null) {
 			if (oldAshElement) {
 				// deleting old surplus children
@@ -27644,9 +27693,9 @@
 					render.index = 0;
 
 					if (oldAshElement.children[0]) {
-						walkUpdateComponentAshElement(oldAshElement.children[0], render, stream, true);
+						walkUpdateAshElementTree(oldAshElement.children[0], render, stream, true);
 					} else {
-						walkUpdateComponentAshElement(null, render, stream, true);
+						walkUpdateAshElementTree(null, render, stream, true);
 					}
 				} else if (oldAshElement.children[0]) {
 					// deleting old surplus children
@@ -27657,7 +27706,7 @@
 					oldAshElement.children.pop();
 				}
 			} else {
-				walkUpdateComponentAshElement(oldAshElement.children[0], oldAshElement.children[0], stream, false);
+				walkUpdateAshElementTree(oldAshElement.children[0], oldAshElement.children[0], stream, false);
 			}
 		} else if (newAshElement.type === COMPONENT_ASH_ELEMENT && oldAshElement.type === COMPONENT_ASH_ELEMENT) {
 			if (oldAshElement.parent.type === ASH_NODE_ASH_ELEMENT) {
@@ -27760,13 +27809,13 @@
 					newAshElement.children[i].parent = oldAshElement;
 					newAshElement.children[i].index = i;
 
-					walkUpdateComponentAshElement(oldAshElement.children[i], newAshElement.children[i], stream, isParentComponentDirty);
+					walkUpdateAshElementTree(oldAshElement.children[i], newAshElement.children[i], stream, isParentComponentDirty);
 				} else if (newAshElement.children[i] && !oldAshElement.children[i]) {
 					newAshElement.children[i].owner = oldAshElement.owner;
 					newAshElement.children[i].parent = oldAshElement;
 					newAshElement.children[i].index = i;
 
-					walkUpdateComponentAshElement(null, newAshElement.children[i], stream, isParentComponentDirty);
+					walkUpdateAshElementTree(null, newAshElement.children[i], stream, isParentComponentDirty);
 				}
 			}
 
@@ -27781,7 +27830,7 @@
 		}
 	}
 
-	function updateComponentAshElement(componentAshElement, stream) {
+	function updateAshElementTree(componentAshElement, stream) {
 		var newAshElement = undefined;
 		var oldAshElement = componentAshElement.children[0] || null;
 
@@ -27797,7 +27846,7 @@
 			newAshElement = componentAshElement.children[0] || null;
 		}
 
-		walkUpdateComponentAshElement(oldAshElement, newAshElement, stream, componentAshElement.isDirty);
+		walkUpdateAshElementTree(oldAshElement, newAshElement, stream, componentAshElement.isDirty);
 
 		return componentAshElement;
 	}
@@ -27806,9 +27855,34 @@
 
 /***/ },
 /* 115 */
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	var setAnimationTimeout = undefined;
+
+	if (global.requestAnimationFrame) {
+		setAnimationTimeout = global.requestAnimationFrame;
+	} else if (global.setImmediate) {
+		setAnimationTimeout = global.setImmediate;
+	} else {
+		setAnimationTimeout = function (callback) {
+			global.setTimeout(callback, 0);
+		};
+	}
+
+	exports.default = setAnimationTimeout;
+	module.exports = exports.default;
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 116 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
+	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
 		value: true
@@ -27856,23 +27930,23 @@
 		}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 	}
 
-	var _DOMCreateNodeTree = __webpack_require__(116);
+	var _DOMCreateNodeTree = __webpack_require__(117);
 
 	var _DOMCreateNodeTree2 = _interopRequireDefault(_DOMCreateNodeTree);
 
-	var _DOMDiffAshNodeTree = __webpack_require__(123);
+	var _DOMDiffAshNodeTree = __webpack_require__(124);
 
 	var _DOMDiffAshNodeTree2 = _interopRequireDefault(_DOMDiffAshNodeTree);
 
-	var _DOMPatchNodeTree = __webpack_require__(124);
+	var _DOMPatchNodeTree = __webpack_require__(125);
 
 	var _DOMPatchNodeTree2 = _interopRequireDefault(_DOMPatchNodeTree);
 
-	var _DOMStringifyAshNodeTree = __webpack_require__(128);
+	var _DOMStringifyAshNodeTree = __webpack_require__(129);
 
 	var _DOMStringifyAshNodeTree2 = _interopRequireDefault(_DOMStringifyAshNodeTree);
 
-	var _DOMValidateNodeTree = __webpack_require__(130);
+	var _DOMValidateNodeTree = __webpack_require__(131);
 
 	var _DOMValidateNodeTree2 = _interopRequireDefault(_DOMValidateNodeTree);
 
@@ -27880,7 +27954,7 @@
 
 	var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 
-	var _internalsIsElement = __webpack_require__(126);
+	var _internalsIsElement = __webpack_require__(127);
 
 	var _internalsIsElement2 = _interopRequireDefault(_internalsIsElement);
 
@@ -27892,13 +27966,21 @@
 
 	var _ViewStream2 = _interopRequireDefault(_ViewStream);
 
-	var _DOMMountComponents = __webpack_require__(131);
+	var _DOMMountComponents = __webpack_require__(132);
 
 	var _DOMMountComponents2 = _interopRequireDefault(_DOMMountComponents);
 
+	var _internalsSetAnimationTimeout = __webpack_require__(115);
+
+	var _internalsSetAnimationTimeout2 = _interopRequireDefault(_internalsSetAnimationTimeout);
+
 	var ID_ATTRIBUTE_NAME = _internalsConstants2.default.ID_ATTRIBUTE_NAME;
+	var RENDER_STREAM_DOM_TARGET = _internalsConstants2.default.RENDER_STREAM_DOM_TARGET;
+	var RENDER_STREAM_STRING_TARGET = _internalsConstants2.default.RENDER_STREAM_STRING_TARGET;
 
 	function render(stream, changed, dependencies) {
+		var _this = this;
+
 		var viewStream = dependencies[0];
 
 		var _viewStream$get = viewStream.get();
@@ -27913,7 +27995,7 @@
 			stream.previousAshNodeTree = ashNodeTree;
 
 			// there are some element nodes?
-			if (stream.containerNode.childNodes.length) {
+			if (this.target === RENDER_STREAM_DOM_TARGET && stream.containerNode.childNodes.length) {
 				isNodeTreeValidated = true;
 				isNodeTreeValid = (0, _DOMValidateNodeTree2.default)(stream.containerNode.childNodes[0], ashNodeTree, viewStream.id);
 			}
@@ -27925,15 +28007,19 @@
 				}
 
 				// remove existing nodes
-				while (stream.containerNode.firstChild) {
-					stream.containerNode.removeChild(stream.containerNode.firstChild);
+				if (this.target === RENDER_STREAM_DOM_TARGET) {
+					while (stream.containerNode.firstChild) {
+						stream.containerNode.removeChild(stream.containerNode.firstChild);
+					}
 				}
 
-				global.requestAnimationFrame(function () {
-					var nodeTree = (0, _DOMCreateNodeTree2.default)(ashNodeTree);
+				(0, _internalsSetAnimationTimeout2.default)(function () {
+					if (_this.target === RENDER_STREAM_DOM_TARGET) {
+						var nodeTree = (0, _DOMCreateNodeTree2.default)(ashNodeTree);
 
-					if (nodeTree) {
-						stream.containerNode.appendChild(nodeTree);
+						if (nodeTree) {
+							stream.containerNode.appendChild(nodeTree);
+						}
 					}
 
 					(0, _DOMMountComponents2.default)(ashElementTree);
@@ -27945,10 +28031,13 @@
 			}
 		} else {
 			var patches = (0, _DOMDiffAshNodeTree2.default)(stream.previousAshNodeTree, ashNodeTree);
-			var isSuccessful = (0, _DOMPatchNodeTree2.default)(stream.rootNode, patches);
 
-			if (!isSuccessful) {
-				throw new Error('Patching the DOM was unsuccesful!');
+			if (this.target === RENDER_STREAM_DOM_TARGET) {
+				var isSuccessful = (0, _DOMPatchNodeTree2.default)(stream.rootNode, patches);
+
+				if (!isSuccessful) {
+					throw new Error('Patching the DOM was unsuccesful!');
+				}
 			}
 
 			stream.previousAshNodeTree = ashNodeTree;
@@ -27963,27 +28052,31 @@
 		function RenderStream(viewStream, node) {
 			_classCallCheck(this, RenderStream);
 
+			_get(Object.getPrototypeOf(RenderStream.prototype), 'constructor', this).call(this);
+
+			this.containerNode = null;
+			this.previousAshNodeTree = null;
+			this.target = RENDER_STREAM_DOM_TARGET;
 			if (!(viewStream instanceof _ViewStream2.default)) {
 				throw new Error(viewStream + ' (viewStream) must be an ViewStream instance.');
 			}
 
 			if (!(0, _internalsIsElement2.default)(node)) {
-				throw new Error(node + ' (node) must be a DOM Element.');
+				this.target = RENDER_STREAM_STRING_TARGET;
 			}
 
-			_get(Object.getPrototypeOf(RenderStream.prototype), 'constructor', this).call(this);
-
-			this.containerNode = null;
-			this.previousAshNodeTree = null;
 			this.fn = render;
-			this.containerNode = node;
 
-			// remove child nodes which are not element nodes
-			for (var j = 0; j < this.containerNode.childNodes.length; j++) {
-				if (this.containerNode.childNodes[j].nodeType !== 1) {
-					this.containerNode.removeChild(this.containerNode.childNodes[j]);
+			if (this.target === RENDER_STREAM_DOM_TARGET) {
+				this.containerNode = node;
 
-					j--;
+				// remove child nodes which are not element nodes
+				for (var j = 0; j < this.containerNode.childNodes.length; j++) {
+					if (this.containerNode.childNodes[j].nodeType !== 1) {
+						this.containerNode.removeChild(this.containerNode.childNodes[j]);
+
+						j--;
+					}
 				}
 			}
 
@@ -28000,9 +28093,11 @@
 		}, {
 			key: 'rootNode',
 			get: function () {
-				for (var i = 0; i < this.containerNode.childNodes.length; i++) {
-					if (typeof this.containerNode.childNodes[i][ID_ATTRIBUTE_NAME] !== 'undefined') {
-						return this.containerNode.childNodes[i];
+				if (this.target === RENDER_STREAM_DOM_TARGET) {
+					for (var i = 0; i < this.containerNode.childNodes.length; i++) {
+						if (typeof this.containerNode.childNodes[i][ID_ATTRIBUTE_NAME] !== 'undefined') {
+							return this.containerNode.childNodes[i];
+						}
 					}
 				}
 
@@ -28015,10 +28110,9 @@
 
 	exports.default = RenderStream;
 	module.exports = exports.default;
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 116 */
+/* 117 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
@@ -28032,11 +28126,11 @@
 		return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _internalsIsAshTextNode = __webpack_require__(117);
+	var _internalsIsAshTextNode = __webpack_require__(118);
 
 	var _internalsIsAshTextNode2 = _interopRequireDefault(_internalsIsAshTextNode);
 
-	var _setNodeProperties = __webpack_require__(118);
+	var _setNodeProperties = __webpack_require__(119);
 
 	var _setNodeProperties2 = _interopRequireDefault(_setNodeProperties);
 
@@ -28096,7 +28190,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 117 */
+/* 118 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28123,7 +28217,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 118 */
+/* 119 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28137,11 +28231,11 @@
 		return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _internalsIsObject = __webpack_require__(119);
+	var _internalsIsObject = __webpack_require__(120);
 
 	var _internalsIsObject2 = _interopRequireDefault(_internalsIsObject);
 
-	var _classesEventListener = __webpack_require__(120);
+	var _classesEventListener = __webpack_require__(121);
 
 	var _classesEventListener2 = _interopRequireDefault(_classesEventListener);
 
@@ -28193,7 +28287,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 119 */
+/* 120 */
 /***/ function(module, exports) {
 
 	/**
@@ -28234,7 +28328,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 120 */
+/* 121 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
@@ -28267,7 +28361,7 @@
 
 	var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 
-	var _DOMParseAshNodeId = __webpack_require__(121);
+	var _DOMParseAshNodeId = __webpack_require__(122);
 
 	var _DOMParseAshNodeId2 = _interopRequireDefault(_DOMParseAshNodeId);
 
@@ -28275,7 +28369,7 @@
 
 	var _internalsIsFunction2 = _interopRequireDefault(_internalsIsFunction);
 
-	var _internalsIsMatching = __webpack_require__(122);
+	var _internalsIsMatching = __webpack_require__(123);
 
 	var _internalsIsMatching2 = _interopRequireDefault(_internalsIsMatching);
 
@@ -28283,8 +28377,8 @@
 	var STREAM_ID_ATTRIBUTE_NAME = _internalsConstants2.default.STREAM_ID_ATTRIBUTE_NAME;
 	var INDEX_SEPARATOR = _internalsConstants2.default.INDEX_SEPARATOR;
 
-	var topics = global.topics = {};
-	var eventListener;
+	var topics = {};
+	var eventListener = undefined;
 
 	var EventListener = (function () {
 		function EventListener() {
@@ -28459,7 +28553,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 121 */
+/* 122 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -28482,7 +28576,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 122 */
+/* 123 */
 /***/ function(module, exports) {
 
 	/**
@@ -28555,7 +28649,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 123 */
+/* 124 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28867,7 +28961,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 124 */
+/* 125 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28885,19 +28979,19 @@
 
 	var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 
-	var _parseAshNodeId = __webpack_require__(121);
+	var _parseAshNodeId = __webpack_require__(122);
 
 	var _parseAshNodeId2 = _interopRequireDefault(_parseAshNodeId);
 
-	var _createNodeTree = __webpack_require__(116);
+	var _createNodeTree = __webpack_require__(117);
 
 	var _createNodeTree2 = _interopRequireDefault(_createNodeTree);
 
-	var _setNodeProperties = __webpack_require__(118);
+	var _setNodeProperties = __webpack_require__(119);
 
 	var _setNodeProperties2 = _interopRequireDefault(_setNodeProperties);
 
-	var _removeNodeProperties = __webpack_require__(125);
+	var _removeNodeProperties = __webpack_require__(126);
 
 	var _removeNodeProperties2 = _interopRequireDefault(_removeNodeProperties);
 
@@ -28905,11 +28999,11 @@
 
 	var _findNode2 = _interopRequireDefault(_findNode);
 
-	var _classesEventListener = __webpack_require__(120);
+	var _classesEventListener = __webpack_require__(121);
 
 	var _classesEventListener2 = _interopRequireDefault(_classesEventListener);
 
-	var _internalsIsElement = __webpack_require__(126);
+	var _internalsIsElement = __webpack_require__(127);
 
 	var _internalsIsElement2 = _interopRequireDefault(_internalsIsElement);
 
@@ -29176,7 +29270,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 125 */
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29190,7 +29284,7 @@
 		return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _classesEventListener = __webpack_require__(120);
+	var _classesEventListener = __webpack_require__(121);
 
 	var _classesEventListener2 = _interopRequireDefault(_classesEventListener);
 
@@ -29232,7 +29326,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 126 */
+/* 127 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29246,7 +29340,7 @@
 	  return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _isObjectLike = __webpack_require__(127);
+	var _isObjectLike = __webpack_require__(128);
 
 	var _isObjectLike2 = _interopRequireDefault(_isObjectLike);
 
@@ -29274,7 +29368,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 127 */
+/* 128 */
 /***/ function(module, exports) {
 
 	/**
@@ -29298,7 +29392,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 128 */
+/* 129 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29312,7 +29406,7 @@
 		return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _internalsIsAshNode = __webpack_require__(129);
+	var _internalsIsAshNode = __webpack_require__(130);
 
 	var _internalsIsAshNode2 = _interopRequireDefault(_internalsIsAshNode);
 
@@ -29422,7 +29516,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 129 */
+/* 130 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29449,7 +29543,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 130 */
+/* 131 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29463,7 +29557,7 @@
 		return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _classesEventListener = __webpack_require__(120);
+	var _classesEventListener = __webpack_require__(121);
 
 	var _classesEventListener2 = _interopRequireDefault(_classesEventListener);
 
@@ -29528,7 +29622,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 131 */
+/* 132 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29580,7 +29674,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 132 */
+/* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
@@ -29594,11 +29688,11 @@
 		return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _classesAshNode = __webpack_require__(133);
+	var _classesAshNode = __webpack_require__(134);
 
 	var _classesAshNode2 = _interopRequireDefault(_classesAshNode);
 
-	var _classesAshElement = __webpack_require__(134);
+	var _classesAshElement = __webpack_require__(135);
 
 	var _classesAshElement2 = _interopRequireDefault(_classesAshElement);
 
@@ -29690,7 +29784,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 133 */
+/* 134 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29719,6 +29813,7 @@
 	var AshNode = function AshNode(tagName, properties) {
 		_classCallCheck(this, AshNode);
 
+		this.type = null;
 		this.id = null;
 		this.index = null;
 		this.indices = null;
@@ -29739,13 +29834,15 @@
 			this.type = ASH_TEXT_NODE;
 			this.text = tagName;
 		}
+
+		return this;
 	};
 
 	exports.default = AshNode;
 	module.exports = exports.default;
 
 /***/ },
-/* 134 */
+/* 135 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29778,7 +29875,6 @@
 
 	var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 
-	// constants references
 	var ASH_NODE_ASH_ELEMENT = _internalsConstants2.default.ASH_NODE_ASH_ELEMENT;
 	var COMPONENT_ASH_ELEMENT = _internalsConstants2.default.COMPONENT_ASH_ELEMENT;
 
@@ -29789,6 +29885,13 @@
 	var AshElement = (function () {
 		function AshElement(type, Spec) {
 			_classCallCheck(this, AshElement);
+
+			this.type = null;
+			this.Spec = null;
+			this.args = null;
+			this.children = [];
+			this.parent = null;
+			this.owner = null;
 
 			if (type !== COMPONENT_ASH_ELEMENT && type !== ASH_NODE_ASH_ELEMENT) {
 				throw new Error(type + ' "type" must be "' + COMPONENT_ASH_ELEMENT + '" or "' + ASH_NODE_ASH_ELEMENT + '".');
@@ -29808,8 +29911,6 @@
 				} else {
 					this.args = null;
 				}
-
-				this.children = [];
 			} else {
 				this.type = ASH_NODE_ASH_ELEMENT;
 				this.Spec = Spec;
@@ -29824,20 +29925,16 @@
 
 				if (arguments.length >= 5 && arguments[4]) {
 					this.children = arguments[4];
-				} else {
-					this.children = [];
 				}
 			}
 
-			this.parent = null;
-			this.owner = null;
+			return this;
 		}
 
 		_createClass(AshElement, [{
 			key: 'instantiate',
 			value: function instantiate() {
 				if (this.type === COMPONENT_ASH_ELEMENT) {
-					// console.log('COMPONENT_ASH_ELEMENT instantiate...', this.args[0]);
 					if (this.args) {
 						this.instance = new this.Spec(this.args[0]);
 					} else {
@@ -29846,7 +29943,6 @@
 
 					this.instance.__element = this;
 				} else if (this.type === ASH_NODE_ASH_ELEMENT) {
-					// console.log('ASH_NODE_ASH_ELEMENT instantiate...', this.args[0], this.args[1]);
 					if (this.args) {
 						this.instance = new this.Spec(this.args[0], this.args[1]);
 					} else {
@@ -29867,7 +29963,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 135 */
+/* 136 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -29905,7 +30001,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 136 */
+/* 137 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -34868,6 +34964,105 @@
 	  return Immutable;
 
 	}));
+
+/***/ },
+/* 138 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+		value: true
+	});
+
+	var _createClass = (function () {
+		function defineProperties(target, props) {
+			for (var i = 0; i < props.length; i++) {
+				var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+			}
+		}return function (Constructor, protoProps, staticProps) {
+			if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+		};
+	})();
+
+	var _get = function get(object, property, receiver) {
+		if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+			var parent = Object.getPrototypeOf(object);if (parent === null) {
+				return undefined;
+			} else {
+				return get(parent, property, receiver);
+			}
+		} else if ('value' in desc) {
+			return desc.value;
+		} else {
+			var getter = desc.get;if (getter === undefined) {
+				return undefined;
+			}return getter.call(receiver);
+		}
+	};
+
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
+
+	function _classCallCheck(instance, Constructor) {
+		if (!(instance instanceof Constructor)) {
+			throw new TypeError('Cannot call a class as a function');
+		}
+	}
+
+	function _inherits(subClass, superClass) {
+		if (typeof superClass !== 'function' && superClass !== null) {
+			throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
+		}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+	}
+
+	var _ash = __webpack_require__(99);
+
+	var _ash2 = _interopRequireDefault(_ash);
+
+	var TestApp1 = (function (_ash$Component) {
+		_inherits(TestApp1, _ash$Component);
+
+		function TestApp1() {
+			_classCallCheck(this, TestApp1);
+
+			_get(Object.getPrototypeOf(TestApp1.prototype), 'constructor', this).apply(this, arguments);
+
+			this.state = {
+				count: 0
+			};
+		}
+
+		_createClass(TestApp1, [{
+			key: 'render',
+			value: function render() {
+				return _ash2.default.createElement('main', null, 'render ' + this.state.count);
+			}
+		}, {
+			key: 'onMount',
+			value: function onMount() {
+				if (this.props && this.props.updateStream) {
+					this.props.updateStream.on(this.update);
+				}
+			}
+		}, {
+			key: 'onRender',
+			value: function onRender() {
+				this.state.count++;
+				this.doneStream.push(this.state.count);
+			}
+		}], [{
+			key: 'doneStream',
+			value: new _ash2.default.Stream(),
+			enumerable: true
+		}]);
+
+		return TestApp1;
+	})(_ash2.default.Component);
+
+	exports.default = TestApp1;
+	module.exports = exports.default;
 
 /***/ }
 /******/ ]);

@@ -4,13 +4,12 @@ import isFunction from '../internals/isFunction';
 import isMatching from '../internals/isMatching';
 
 
-
 const ID_ATTRIBUTE_NAME = constants.ID_ATTRIBUTE_NAME;
 const STREAM_ID_ATTRIBUTE_NAME = constants.STREAM_ID_ATTRIBUTE_NAME;
 const INDEX_SEPARATOR = constants.INDEX_SEPARATOR;
 
-var	topics = global.topics = {};
-var eventListener;
+let	topics = {};
+let eventListener;
 
 export default class EventListener {
 	constructor() {

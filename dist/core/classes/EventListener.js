@@ -44,8 +44,8 @@ var ID_ATTRIBUTE_NAME = _internalsConstants2.default.ID_ATTRIBUTE_NAME;
 var STREAM_ID_ATTRIBUTE_NAME = _internalsConstants2.default.STREAM_ID_ATTRIBUTE_NAME;
 var INDEX_SEPARATOR = _internalsConstants2.default.INDEX_SEPARATOR;
 
-var topics = global.topics = {};
-var eventListener;
+var topics = {};
+var eventListener = undefined;
 
 var EventListener = (function () {
 	function EventListener() {

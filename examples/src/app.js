@@ -165,22 +165,58 @@ global.storeStream = storeStream;
 
 
 
+import TestApp1 from './components/TestApp1';
+
+// let viewStream = new ash.ViewStream(<App />);
+// let renderStream = new ash.RenderStream(viewStream, global.document.querySelector('.page'));
 
 
 
-// var viewStream = ash.AshNodeStream.from(<App />);
+function assertAshNodeTree(expected, actual) {
+	for (let nodeProperty in actual) {
+		if (actual.hasOwnProperty(nodeProperty)) {
+			if (nodeProperty === 'properties') {
+				for (let propertiesProperty in actual[nodeProperty]) {
+					if (actual[nodeProperty][propertiesProperty].hasOwnProperty(propertiesProperty)) {
+						if (expected[nodeProperty][propertiesProperty] !== actual[nodeProperty][propertiesProperty]) {
+							throw new Error(`Expected and actual property mismatch: ${actual[nodeProperty][propertiesProperty]} should be ${expected[nodeProperty][propertiesProperty]}`);
+						}
+					}
+				}
+			} else if (nodeProperty !== 'children' && expected[nodeProperty] !== actual[nodeProperty]) {
+				throw new Error(`Expected and actual property mismatch: ${actual[nodeProperty]} should be ${expected[nodeProperty]}`);
+			}
+		}
+	}
 
-// Renderer.addStream(viewStream, global.document.querySelector('.page'));
+	if (actual.children && actual.children.length) {
+		for (let i = 0; i < actual.children.length; i++) {
 
-let viewStream = new ash.ViewStream(<App />);
+			if (!(expected.children && expected.children[i])) {
+				throw new Error(`Expected ash node tree doesn't have expected child!`);
+			}
+
+			assertAshNodeTree(expected.children[i], actual.children[i]);
+		}
+	}
+}
+
+
+let updateStream = new ash.Stream();
+let viewStream = new ash.ViewStream(<TestApp1 updateStream={updateStream} />);
 let renderStream = new ash.RenderStream(viewStream, global.document.querySelector('.page'));
 
-// console.log(renderStream.stringify());
 
+let doneCount = 0;
 
+TestApp1.doneStream.on((count) => {
+	doneCount++;
 
+	console.log('doneStream on...', count, TestApp1.doneStream);
+	let ashNodeTree = viewStream.get().ashNodeTree;
+});
 
-
+updateStream.push(true);
 
 
 /*var Utils = global.Utils = {

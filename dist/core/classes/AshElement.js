@@ -28,7 +28,6 @@ var _internalsConstants = require('../internals/constants');
 
 var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 
-// constants references
 var ASH_NODE_ASH_ELEMENT = _internalsConstants2.default.ASH_NODE_ASH_ELEMENT;
 var COMPONENT_ASH_ELEMENT = _internalsConstants2.default.COMPONENT_ASH_ELEMENT;
 
@@ -39,6 +38,13 @@ var COMPONENT_ASH_ELEMENT = _internalsConstants2.default.COMPONENT_ASH_ELEMENT;
 var AshElement = (function () {
 	function AshElement(type, Spec) {
 		_classCallCheck(this, AshElement);
+
+		this.type = null;
+		this.Spec = null;
+		this.args = null;
+		this.children = [];
+		this.parent = null;
+		this.owner = null;
 
 		if (type !== COMPONENT_ASH_ELEMENT && type !== ASH_NODE_ASH_ELEMENT) {
 			throw new Error(type + ' "type" must be "' + COMPONENT_ASH_ELEMENT + '" or "' + ASH_NODE_ASH_ELEMENT + '".');
@@ -58,8 +64,6 @@ var AshElement = (function () {
 			} else {
 				this.args = null;
 			}
-
-			this.children = [];
 		} else {
 			this.type = ASH_NODE_ASH_ELEMENT;
 			this.Spec = Spec;
@@ -74,20 +78,16 @@ var AshElement = (function () {
 
 			if (arguments.length >= 5 && arguments[4]) {
 				this.children = arguments[4];
-			} else {
-				this.children = [];
 			}
 		}
 
-		this.parent = null;
-		this.owner = null;
+		return this;
 	}
 
 	_createClass(AshElement, [{
 		key: 'instantiate',
 		value: function instantiate() {
 			if (this.type === COMPONENT_ASH_ELEMENT) {
-				// console.log('COMPONENT_ASH_ELEMENT instantiate...', this.args[0]);
 				if (this.args) {
 					this.instance = new this.Spec(this.args[0]);
 				} else {
@@ -96,7 +96,6 @@ var AshElement = (function () {
 
 				this.instance.__element = this;
 			} else if (this.type === ASH_NODE_ASH_ELEMENT) {
-				// console.log('ASH_NODE_ASH_ELEMENT instantiate...', this.args[0], this.args[1]);
 				if (this.args) {
 					this.instance = new this.Spec(this.args[0], this.args[1]);
 				} else {

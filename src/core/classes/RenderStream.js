@@ -8,9 +8,12 @@ import isElement from '../internals/isElement';
 import Stream from './Stream';
 import ViewStream from './ViewStream';
 import mountComponents from '../DOM/mountComponents';
+import setAnimationTimeout from '../internals/setAnimationTimeout';
 
 
 const ID_ATTRIBUTE_NAME = constants.ID_ATTRIBUTE_NAME;
+const RENDER_STREAM_DOM_TARGET = constants.RENDER_STREAM_DOM_TARGET;
+const RENDER_STREAM_STRING_TARGET = constants.RENDER_STREAM_STRING_TARGET;
 
 function render(stream, changed, dependencies) {
 	let viewStream = dependencies[0];
@@ -23,7 +26,7 @@ function render(stream, changed, dependencies) {
 		stream.previousAshNodeTree = ashNodeTree;
 
 		// there are some element nodes?
-		if (stream.containerNode.childNodes.length) {
+		if (this.target === RENDER_STREAM_DOM_TARGET && stream.containerNode.childNodes.length) {
 			isNodeTreeValidated = true;
 			isNodeTreeValid = validateNodeTree(stream.containerNode.childNodes[0], ashNodeTree, viewStream.id);
 		}
@@ -35,15 +38,19 @@ function render(stream, changed, dependencies) {
 			}
 
 			// remove existing nodes
-			while (stream.containerNode.firstChild) {
-				stream.containerNode.removeChild(stream.containerNode.firstChild);
+			if (this.target === RENDER_STREAM_DOM_TARGET) {
+				while (stream.containerNode.firstChild) {
+					stream.containerNode.removeChild(stream.containerNode.firstChild);
+				}
 			}
 			
-			global.requestAnimationFrame(() => {
-				let nodeTree = createNodeTree(ashNodeTree);
+			setAnimationTimeout(() => {
+				if (this.target === RENDER_STREAM_DOM_TARGET) {
+					let nodeTree = createNodeTree(ashNodeTree);
 
-				if (nodeTree) {
-					stream.containerNode.appendChild(nodeTree);
+					if (nodeTree) {
+						stream.containerNode.appendChild(nodeTree);
+					}
 				}
 				
 				mountComponents(ashElementTree);
@@ -55,10 +62,13 @@ function render(stream, changed, dependencies) {
 		}
 	} else {
 		let patches = diffAshNodeTree(stream.previousAshNodeTree, ashNodeTree);
-		let isSuccessful = patchNodeTree(stream.rootNode, patches);
 
-		if (!isSuccessful) {
-			throw new Error('Patching the DOM was unsuccesful!');
+		if (this.target === RENDER_STREAM_DOM_TARGET) {
+			let isSuccessful = patchNodeTree(stream.rootNode, patches);
+
+			if (!isSuccessful) {
+				throw new Error('Patching the DOM was unsuccesful!');
+			}
 		}
 
 		stream.previousAshNodeTree = ashNodeTree;
@@ -70,27 +80,31 @@ function render(stream, changed, dependencies) {
 export default class RenderStream extends Stream {
 	containerNode = null;
 	previousAshNodeTree = null;
+	target = RENDER_STREAM_DOM_TARGET;
 
 	constructor(viewStream, node) {
+		super();
+
 		if (!(viewStream instanceof ViewStream)) {
 			throw new Error(`${viewStream} (viewStream) must be an ViewStream instance.`);
 		}
 
 		if (!isElement(node)) {
-			throw new Error(`${node} (node) must be a DOM Element.`);
+			this.target = RENDER_STREAM_STRING_TARGET;
 		}
 
-		super();
-
 		this.fn = render;
-		this.containerNode = node;
 
-		// remove child nodes which are not element nodes
-		for (let j = 0; j < this.containerNode.childNodes.length; j++) {
-			if (this.containerNode.childNodes[j].nodeType !== 1) {
-				this.containerNode.removeChild(this.containerNode.childNodes[j]);
+		if (this.target === RENDER_STREAM_DOM_TARGET) {
+			this.containerNode = node;
 
-				j--;
+			// remove child nodes which are not element nodes
+			for (let j = 0; j < this.containerNode.childNodes.length; j++) {
+				if (this.containerNode.childNodes[j].nodeType !== 1) {
+					this.containerNode.removeChild(this.containerNode.childNodes[j]);
+
+					j--;
+				}
 			}
 		}
 
@@ -100,9 +114,11 @@ export default class RenderStream extends Stream {
 	}
 
 	get rootNode() {
-		for (let i = 0; i < this.containerNode.childNodes.length; i++) {
-			if (typeof this.containerNode.childNodes[i][ID_ATTRIBUTE_NAME] !== 'undefined') {
-				return this.containerNode.childNodes[i];
+		if (this.target === RENDER_STREAM_DOM_TARGET) {
+			for (let i = 0; i < this.containerNode.childNodes.length; i++) {
+				if (typeof this.containerNode.childNodes[i][ID_ATTRIBUTE_NAME] !== 'undefined') {
+					return this.containerNode.childNodes[i];
+				}
 			}
 		}
 
