@@ -33,13 +33,23 @@ var _findNode = require('./findNode');
 
 var _findNode2 = _interopRequireDefault(_findNode);
 
-var _classesEventListener = require('../classes/EventListener');
-
-var _classesEventListener2 = _interopRequireDefault(_classesEventListener);
+// import EventListener from '../classes/EventListener';
 
 var _internalsIsElement = require('../internals/isElement');
 
 var _internalsIsElement2 = _interopRequireDefault(_internalsIsElement);
+
+var _detachEvents = require('./detachEvents');
+
+var _detachEvents2 = _interopRequireDefault(_detachEvents);
+
+var _markEvents = require('./markEvents');
+
+var _markEvents2 = _interopRequireDefault(_markEvents);
+
+var _reindexEvents = require('./reindexEvents');
+
+var _reindexEvents2 = _interopRequireDefault(_reindexEvents);
 
 var ID_ATTRIBUTE_NAME = _internalsConstants2.default.ID_ATTRIBUTE_NAME;
 var INDEX_ATTRIBUTE_NAME = _internalsConstants2.default.INDEX_ATTRIBUTE_NAME;
@@ -51,7 +61,7 @@ var PATCH_INSERT = _internalsConstants2.default.PATCH_INSERT;
 var PATCH_REMOVE = _internalsConstants2.default.PATCH_REMOVE;
 var INDEX_SEPARATOR = _internalsConstants2.default.INDEX_SEPARATOR;
 
-var eventListener = new _classesEventListener2.default();
+// var eventListener = new EventListener();
 
 function zeroPadNumber(number, length) {
 	var n = Math.pow(10, length);
@@ -210,7 +220,8 @@ function patchNodeTree(nodeTree /*, patches*/) {
 			// console.log('applying patch', 'PATCH_ASH_NODE', patches[i]);
 
 			// remove old events
-			eventListener.removeEvents(patches[i].id, patches[i].streamId);
+			// eventListener.removeEvents(patches[i].id, patches[i].streamId);
+			(0, _detachEvents2.default)(patches[i].id, patches[i].streamId);
 
 			// find node
 			node = (0, _findNode2.default)(nodeTree, patches[i].id, patches[i].indices);
@@ -257,7 +268,8 @@ function patchNodeTree(nodeTree /*, patches*/) {
 			}
 
 			// remove old events
-			eventListener.removeEvents(patches[i].id, patches[i].streamId);
+			// eventListener.removeEvents(patches[i].id, patches[i].streamId);
+			(0, _detachEvents2.default)(patches[i].id, patches[i].streamId);
 
 			node.parentNode.removeChild(node);
 		} else if (patches[i].type === PATCH_INSERT) {
@@ -282,7 +294,8 @@ function patchNodeTree(nodeTree /*, patches*/) {
 			}
 
 			// reindex events
-			eventListener.reindexEvents(patches[i].id, patches[i].indices, patches[i].index, patches[i].streamId);
+			// eventListener.reindexEvents(patches[i].id, patches[i].indices, patches[i].index, patches[i].streamId);
+			(0, _reindexEvents2.default)(patches[i].id, patches[i].indices, patches[i].index, patches[i].streamId);
 
 			reindexCache.push({
 				node: node,
@@ -296,7 +309,8 @@ function patchNodeTree(nodeTree /*, patches*/) {
 	}
 
 	flushCache(reindexCache, reorderCache);
-	eventListener.markEvents(patches.streamId);
+	// eventListener.markEvents(patches.streamId);
+	(0, _markEvents2.default)(patches.streamId);
 
 	return true;
 }

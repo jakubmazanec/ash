@@ -60,13 +60,6 @@ var _immutable = require('immutable');
 
 var _immutable2 = _interopRequireDefault(_immutable);
 
-var _componentsTestApp1 = require('./components/TestApp1');
-
-var _componentsTestApp12 = _interopRequireDefault(_componentsTestApp1);
-
-// let viewStream = new ash.ViewStream(<App />);
-// let renderStream = new ash.RenderStream(viewStream, global.document.querySelector('.page'));
-
 global.$ = _jquery2.default;
 global._ = _lodashFp2.default;
 global.ash = _ash2.default;
@@ -209,7 +202,8 @@ var App = (function (_ash$Component5) {
 
 		this.state = {
 			show: 'bar',
-			foo: false
+			foo: false,
+			useAlternativeHandler: false
 		};
 	}
 
@@ -218,30 +212,58 @@ var App = (function (_ash$Component5) {
 		value: function render() {
 			var amount = storeStream.get().amount;
 
-			return this.state.foo ? _ash2.default.createElement('b', null, 'Oj!') : _ash2.default.createElement(Content, { show: this.state.show });
+			// return this.state.foo ? <b>Oj!</b> : <Content show={this.state.show} />;
 
-			return _ash2.default.createElement('div', null, _ash2.default.createElement('p', null, amount), _ash2.default.createElement('a', { href: '#', events: { click: this.add } }, '+1'), _ash2.default.createElement('a', { href: '#', events: { click: this.showFoo } }, 'FooContent'), _ash2.default.createElement('a', { href: '#', events: { click: this.showBar } }, 'BarContent'), _ash2.default.createElement('div', null, amount ? _ash2.default.createElement(Content, { show: this.state.show }) : null));
+			// return <div>
+			// 	<p>{amount}</p>
+			// 	<a href="#" events={{click: this.add}}>+1</a>
+			// 	<a href="#" events={{click: this.showFoo}}>FooContent</a>
+			// 	<a href="#" events={{click: this.showBar}}>BarContent</a>
+			// 	<div>{amount ? <Content show={this.state.show} /> : null }</div>
+			// </div>;
+
+			return _ash2.default.createElement('div', null, _ash2.default.createElement('p', { events: { click: this.state.useAlternativeHandler ? this.handleClickAlternatively : this.handleClick } }, _ash2.default.createElement('a', { id: 'link-1', href: '#' }, '(1)'), _ash2.default.createElement('a', { id: 'link-2', href: '#' }, '(2)'), _ash2.default.createElement('a', { id: 'link-3', href: '#' }, '(3)'), _ash2.default.createElement('a', { id: 'link-4', href: '#' }, '(4)')), _ash2.default.createElement('p', null, _ash2.default.createElement('a', { href: '#', events: { click: this.changeHandler } }, 'Change event handler!')));
+		}
+	}, {
+		key: 'changeHandler',
+		value: function changeHandler(event) {
+			event.preventDefault();
+
+			console.log('changeHandler...', event);
+
+			this.state.useAlternativeHandler = !this.state.useAlternativeHandler;
+
+			this.update();
+		}
+	}, {
+		key: 'handleClick',
+		value: function handleClick(event) {
+			event.preventDefault();
+
+			console.log('handleClick...', event);
+		}
+	}, {
+		key: 'handleClickAlternatively',
+		value: function handleClickAlternatively(event) {
+			event.preventDefault();
+
+			console.log('handleClickAlternatively...', event);
 		}
 	}, {
 		key: 'onMount',
 		value: function onMount() {
-			var _this = this;
-
 			storeStream.on(this.update);
 
-			setTimeout(function () {
-				console.log('updating!');
-				_this.state.foo = true;
-
-				_this.update();
-			}, 2000);
-
-			setTimeout(function () {
-				console.log('updating 2!');
-				_this.state.foo = false;
-
-				_this.update();
-			}, 4000);
+			/*setTimeout(() => {
+   	console.log('updating!');
+   	this.state.foo = true;
+   			this.update();
+   }, 2000);
+   		setTimeout(() => {
+   	console.log('updating 2!');
+   	this.state.foo = false;
+   			this.update();
+   }, 4000);*/
 		}
 	}, {
 		key: 'add',
@@ -281,49 +303,8 @@ storeStream.from(App.increaseStream);
 
 global.storeStream = storeStream;
 
-function assertAshNodeTree(expected, actual) {
-	for (var nodeProperty in actual) {
-		if (actual.hasOwnProperty(nodeProperty)) {
-			if (nodeProperty === 'properties') {
-				for (var propertiesProperty in actual[nodeProperty]) {
-					if (actual[nodeProperty][propertiesProperty].hasOwnProperty(propertiesProperty)) {
-						if (expected[nodeProperty][propertiesProperty] !== actual[nodeProperty][propertiesProperty]) {
-							throw new Error('Expected and actual property mismatch: ' + actual[nodeProperty][propertiesProperty] + ' should be ' + expected[nodeProperty][propertiesProperty]);
-						}
-					}
-				}
-			} else if (nodeProperty !== 'children' && expected[nodeProperty] !== actual[nodeProperty]) {
-				throw new Error('Expected and actual property mismatch: ' + actual[nodeProperty] + ' should be ' + expected[nodeProperty]);
-			}
-		}
-	}
-
-	if (actual.children && actual.children.length) {
-		for (var i = 0; i < actual.children.length; i++) {
-
-			if (!(expected.children && expected.children[i])) {
-				throw new Error('Expected ash node tree doesn\'t have expected child!');
-			}
-
-			assertAshNodeTree(expected.children[i], actual.children[i]);
-		}
-	}
-}
-
-var updateStream = new _ash2.default.Stream();
-var viewStream = new _ash2.default.ViewStream(_ash2.default.createElement(_componentsTestApp12.default, { updateStream: updateStream }));
+var viewStream = new _ash2.default.ViewStream(_ash2.default.createElement(App, null));
 var renderStream = new _ash2.default.RenderStream(viewStream, global.document.querySelector('.page'));
-
-var doneCount = 0;
-
-_componentsTestApp12.default.doneStream.on(function (count) {
-	doneCount++;
-
-	console.log('doneStream on...', count, _componentsTestApp12.default.doneStream);
-	var ashNodeTree = viewStream.get().ashNodeTree;
-});
-
-updateStream.push(true);
 
 /*var Utils = global.Utils = {
 	uuid() {

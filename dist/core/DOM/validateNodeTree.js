@@ -1,3 +1,4 @@
+// import EventListener from '../classes/EventListener';
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9,19 +10,19 @@ function _interopRequireDefault(obj) {
 	return obj && obj.__esModule ? obj : { 'default': obj };
 }
 
-var _classesEventListener = require('../classes/EventListener');
-
-var _classesEventListener2 = _interopRequireDefault(_classesEventListener);
-
 var _internalsConstants = require('../internals/constants');
 
 var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
+
+var _attachEvents = require('./attachEvents');
+
+var _attachEvents2 = _interopRequireDefault(_attachEvents);
 
 var ID_ATTRIBUTE_NAME = _internalsConstants2.default.ID_ATTRIBUTE_NAME;
 var INDEX_ATTRIBUTE_NAME = _internalsConstants2.default.INDEX_ATTRIBUTE_NAME;
 var STREAM_ID_ATTRIBUTE_NAME = _internalsConstants2.default.STREAM_ID_ATTRIBUTE_NAME;
 
-var eventListener = new _classesEventListener2.default();
+// var eventListener = new EventListener();
 
 function walkValidateNodeTree(nodeTree, ashNodeTree, streamId, eventsCache) {
 	if (nodeTree.tagName && nodeTree.tagName.toLowerCase() !== ashNodeTree.tagName) {
@@ -64,7 +65,8 @@ function validateNodeTree(nodeTree, ashNodeTree, streamId) {
 
 	if (isNodeTreeValid) {
 		for (var i = 0; i < eventsCache.length; i++) {
-			eventListener.addEvents(eventsCache[i].node, eventsCache[i].events);
+			// eventListener.addEvents(eventsCache[i].node, eventsCache[i].events);
+			(0, _attachEvents2.default)(eventsCache[i].node, eventsCache[i].events);
 		}
 	}
 

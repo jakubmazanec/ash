@@ -1,8 +1,9 @@
 import isObject from '../internals/isObject';
-import EventListener from '../classes/EventListener';
+// import EventListener from '../classes/EventListener';
+import attachEvents from './attachEvents';
 
 
-var eventListener = new EventListener();
+// var eventListener = new EventListener();
 
 export default function setNodeProperties(node, properties, isNewlyInserted) {
 	for (let prop in properties) {
@@ -14,7 +15,8 @@ export default function setNodeProperties(node, properties, isNewlyInserted) {
 					}
 				}
 			} else if (prop === 'events' && isObject(properties[prop])) {
-				eventListener.addEvents(node, properties[prop], isNewlyInserted);
+				// eventListener.addEvents(node, properties[prop], isNewlyInserted);
+				attachEvents(node, properties[prop], isNewlyInserted);
 			} else if (prop === 'className' || prop === 'class') {
 				if (typeof node.className === 'string' && properties[prop]) {
 					node.className = properties[prop];

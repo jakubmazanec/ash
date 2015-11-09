@@ -1,5 +1,6 @@
-import EventListener from '../classes/EventListener';
+// import EventListener from '../classes/EventListener';
 import constants from '../internals/constants';
+import attachEvents from './attachEvents';
 
 
 
@@ -7,7 +8,7 @@ const ID_ATTRIBUTE_NAME = constants.ID_ATTRIBUTE_NAME;
 const INDEX_ATTRIBUTE_NAME = constants.INDEX_ATTRIBUTE_NAME;
 const STREAM_ID_ATTRIBUTE_NAME = constants.STREAM_ID_ATTRIBUTE_NAME;
 
-var eventListener = new EventListener();
+// var eventListener = new EventListener();
 
 function walkValidateNodeTree(nodeTree, ashNodeTree, streamId, eventsCache) {
 	if (nodeTree.tagName && nodeTree.tagName.toLowerCase() !== ashNodeTree.tagName) {
@@ -50,7 +51,8 @@ export default function validateNodeTree(nodeTree, ashNodeTree, streamId) {
 
 	if (isNodeTreeValid) {
 		for (let i = 0; i < eventsCache.length; i++) {
-			eventListener.addEvents(eventsCache[i].node, eventsCache[i].events);
+			// eventListener.addEvents(eventsCache[i].node, eventsCache[i].events);
+			attachEvents(eventsCache[i].node, eventsCache[i].events);
 		}
 	}
 

@@ -102,16 +102,9 @@
 
 	var _ash2 = _interopRequireDefault(_ash);
 
-	var _immutable = __webpack_require__(137);
+	var _immutable = __webpack_require__(141);
 
 	var _immutable2 = _interopRequireDefault(_immutable);
-
-	var _componentsTestApp1 = __webpack_require__(138);
-
-	var _componentsTestApp12 = _interopRequireDefault(_componentsTestApp1);
-
-	// let viewStream = new ash.ViewStream(<App />);
-	// let renderStream = new ash.RenderStream(viewStream, global.document.querySelector('.page'));
 
 	global.$ = _jquery2.default;
 	global._ = _lodashFp2.default;
@@ -255,7 +248,8 @@
 
 			this.state = {
 				show: 'bar',
-				foo: false
+				foo: false,
+				useAlternativeHandler: false
 			};
 		}
 
@@ -264,30 +258,58 @@
 			value: function render() {
 				var amount = storeStream.get().amount;
 
-				return this.state.foo ? _ash2.default.createElement('b', null, 'Oj!') : _ash2.default.createElement(Content, { show: this.state.show });
+				// return this.state.foo ? <b>Oj!</b> : <Content show={this.state.show} />;
 
-				return _ash2.default.createElement('div', null, _ash2.default.createElement('p', null, amount), _ash2.default.createElement('a', { href: '#', events: { click: this.add } }, '+1'), _ash2.default.createElement('a', { href: '#', events: { click: this.showFoo } }, 'FooContent'), _ash2.default.createElement('a', { href: '#', events: { click: this.showBar } }, 'BarContent'), _ash2.default.createElement('div', null, amount ? _ash2.default.createElement(Content, { show: this.state.show }) : null));
+				// return <div>
+				// 	<p>{amount}</p>
+				// 	<a href="#" events={{click: this.add}}>+1</a>
+				// 	<a href="#" events={{click: this.showFoo}}>FooContent</a>
+				// 	<a href="#" events={{click: this.showBar}}>BarContent</a>
+				// 	<div>{amount ? <Content show={this.state.show} /> : null }</div>
+				// </div>;
+
+				return _ash2.default.createElement('div', null, _ash2.default.createElement('p', { events: { click: this.state.useAlternativeHandler ? this.handleClickAlternatively : this.handleClick } }, _ash2.default.createElement('a', { id: 'link-1', href: '#' }, '(1)'), _ash2.default.createElement('a', { id: 'link-2', href: '#' }, '(2)'), _ash2.default.createElement('a', { id: 'link-3', href: '#' }, '(3)'), _ash2.default.createElement('a', { id: 'link-4', href: '#' }, '(4)')), _ash2.default.createElement('p', null, _ash2.default.createElement('a', { href: '#', events: { click: this.changeHandler } }, 'Change event handler!')));
+			}
+		}, {
+			key: 'changeHandler',
+			value: function changeHandler(event) {
+				event.preventDefault();
+
+				console.log('changeHandler...', event);
+
+				this.state.useAlternativeHandler = !this.state.useAlternativeHandler;
+
+				this.update();
+			}
+		}, {
+			key: 'handleClick',
+			value: function handleClick(event) {
+				event.preventDefault();
+
+				console.log('handleClick...', event);
+			}
+		}, {
+			key: 'handleClickAlternatively',
+			value: function handleClickAlternatively(event) {
+				event.preventDefault();
+
+				console.log('handleClickAlternatively...', event);
 			}
 		}, {
 			key: 'onMount',
 			value: function onMount() {
-				var _this = this;
-
 				storeStream.on(this.update);
 
-				setTimeout(function () {
-					console.log('updating!');
-					_this.state.foo = true;
-
-					_this.update();
-				}, 2000);
-
-				setTimeout(function () {
-					console.log('updating 2!');
-					_this.state.foo = false;
-
-					_this.update();
-				}, 4000);
+				/*setTimeout(() => {
+	   	console.log('updating!');
+	   	this.state.foo = true;
+	   			this.update();
+	   }, 2000);
+	   		setTimeout(() => {
+	   	console.log('updating 2!');
+	   	this.state.foo = false;
+	   			this.update();
+	   }, 4000);*/
 			}
 		}, {
 			key: 'add',
@@ -327,49 +349,8 @@
 
 	global.storeStream = storeStream;
 
-	function assertAshNodeTree(expected, actual) {
-		for (var nodeProperty in actual) {
-			if (actual.hasOwnProperty(nodeProperty)) {
-				if (nodeProperty === 'properties') {
-					for (var propertiesProperty in actual[nodeProperty]) {
-						if (actual[nodeProperty][propertiesProperty].hasOwnProperty(propertiesProperty)) {
-							if (expected[nodeProperty][propertiesProperty] !== actual[nodeProperty][propertiesProperty]) {
-								throw new Error('Expected and actual property mismatch: ' + actual[nodeProperty][propertiesProperty] + ' should be ' + expected[nodeProperty][propertiesProperty]);
-							}
-						}
-					}
-				} else if (nodeProperty !== 'children' && expected[nodeProperty] !== actual[nodeProperty]) {
-					throw new Error('Expected and actual property mismatch: ' + actual[nodeProperty] + ' should be ' + expected[nodeProperty]);
-				}
-			}
-		}
-
-		if (actual.children && actual.children.length) {
-			for (var i = 0; i < actual.children.length; i++) {
-
-				if (!(expected.children && expected.children[i])) {
-					throw new Error('Expected ash node tree doesn\'t have expected child!');
-				}
-
-				assertAshNodeTree(expected.children[i], actual.children[i]);
-			}
-		}
-	}
-
-	var updateStream = new _ash2.default.Stream();
-	var viewStream = new _ash2.default.ViewStream(_ash2.default.createElement(_componentsTestApp12.default, { updateStream: updateStream }));
+	var viewStream = new _ash2.default.ViewStream(_ash2.default.createElement(App, null));
 	var renderStream = new _ash2.default.RenderStream(viewStream, global.document.querySelector('.page'));
-
-	var doneCount = 0;
-
-	_componentsTestApp12.default.doneStream.on(function (count) {
-		doneCount++;
-
-		console.log('doneStream on...', count, _componentsTestApp12.default.doneStream);
-		var ashNodeTree = viewStream.get().ashNodeTree;
-	});
-
-	updateStream.push(true);
 
 	/*var Utils = global.Utils = {
 		uuid() {
@@ -26271,11 +26252,11 @@
 
 	var _coreClassesRenderStream2 = _interopRequireDefault(_coreClassesRenderStream);
 
-	var _coreInternalsCreateElement = __webpack_require__(133);
+	var _coreInternalsCreateElement = __webpack_require__(137);
 
 	var _coreInternalsCreateElement2 = _interopRequireDefault(_coreInternalsCreateElement);
 
-	var _coreInternalsAssign = __webpack_require__(136);
+	var _coreInternalsAssign = __webpack_require__(140);
 
 	var _coreInternalsAssign2 = _interopRequireDefault(_coreInternalsAssign);
 
@@ -26807,25 +26788,11 @@
 		value: true
 	});
 
-	var _createClass = (function () {
-		function defineProperties(target, props) {
-			for (var i = 0; i < props.length; i++) {
-				var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-			}
-		}return function (Constructor, protoProps, staticProps) {
-			if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-		};
-	})();
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-	function _interopRequireDefault(obj) {
-		return obj && obj.__esModule ? obj : { 'default': obj };
-	}
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	function _classCallCheck(instance, Constructor) {
-		if (!(instance instanceof Constructor)) {
-			throw new TypeError('Cannot call a class as a function');
-		}
-	}
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 	var _internalsIsFunction = __webpack_require__(106);
 
@@ -26929,7 +26896,7 @@
 					detachDependencies(stream.__listeners[i].end);
 				}
 			} else {
-				if (stream.__listeners[i].__changedDependencies !== undefined) {
+				if (stream.__listeners[i].__changedDependencies != null) {
 					stream.__listeners[i].__changedDependencies.push(stream);
 				}
 
@@ -26965,7 +26932,7 @@
 			this.fn = null;
 			this.__dependencies = [];
 			this.__dependenciesMet = false;
-			this.__changedDependencies = [];
+			this.__changedDependencies = null;
 			this.__shouldUpdate = false;
 			this.isEndStream = false;
 
@@ -27016,6 +26983,7 @@
 				if (dependencies.length) {
 					// add listeners to stream
 					this.__dependencies = dependencies;
+					this.__changedDependencies = [];
 
 					for (var i = 0; i < dependencies.length; ++i) {
 						dependencies[i].__listeners.push(this);
@@ -27065,7 +27033,7 @@
 					// mark listeners
 					for (var i = 0; i < this.__listeners.length; ++i) {
 						if (this.__listeners[i].end !== this) {
-							if (this.__listeners[i].__changedDependencies !== undefined) {
+							if (this.__listeners[i].__changedDependencies != null) {
 								this.__listeners[i].__changedDependencies.push(this);
 							}
 							this.__listeners[i].__shouldUpdate = true;
@@ -27942,11 +27910,11 @@
 
 	var _DOMPatchNodeTree2 = _interopRequireDefault(_DOMPatchNodeTree);
 
-	var _DOMStringifyAshNodeTree = __webpack_require__(129);
+	var _DOMStringifyAshNodeTree = __webpack_require__(133);
 
 	var _DOMStringifyAshNodeTree2 = _interopRequireDefault(_DOMStringifyAshNodeTree);
 
-	var _DOMValidateNodeTree = __webpack_require__(131);
+	var _DOMValidateNodeTree = __webpack_require__(135);
 
 	var _DOMValidateNodeTree2 = _interopRequireDefault(_DOMValidateNodeTree);
 
@@ -27954,7 +27922,7 @@
 
 	var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 
-	var _internalsIsElement = __webpack_require__(127);
+	var _internalsIsElement = __webpack_require__(129);
 
 	var _internalsIsElement2 = _interopRequireDefault(_internalsIsElement);
 
@@ -27966,7 +27934,7 @@
 
 	var _ViewStream2 = _interopRequireDefault(_ViewStream);
 
-	var _DOMMountComponents = __webpack_require__(132);
+	var _DOMMountComponents = __webpack_require__(136);
 
 	var _DOMMountComponents2 = _interopRequireDefault(_DOMMountComponents);
 
@@ -28235,11 +28203,13 @@
 
 	var _internalsIsObject2 = _interopRequireDefault(_internalsIsObject);
 
-	var _classesEventListener = __webpack_require__(121);
+	// import EventListener from '../classes/EventListener';
 
-	var _classesEventListener2 = _interopRequireDefault(_classesEventListener);
+	var _attachEvents = __webpack_require__(121);
 
-	var eventListener = new _classesEventListener2.default();
+	var _attachEvents2 = _interopRequireDefault(_attachEvents);
+
+	// var eventListener = new EventListener();
 
 	function setNodeProperties(node, properties, isNewlyInserted) {
 		for (var prop in properties) {
@@ -28251,7 +28221,8 @@
 						}
 					}
 				} else if (prop === 'events' && (0, _internalsIsObject2.default)(properties[prop])) {
-					eventListener.addEvents(node, properties[prop], isNewlyInserted);
+					// eventListener.addEvents(node, properties[prop], isNewlyInserted);
+					(0, _attachEvents2.default)(node, properties[prop], isNewlyInserted);
 				} else if (prop === 'className' || prop === 'class') {
 					if (typeof node.className === 'string' && properties[prop]) {
 						node.className = properties[prop];
@@ -28336,219 +28307,85 @@
 	Object.defineProperty(exports, '__esModule', {
 		value: true
 	});
-
-	var _createClass = (function () {
-		function defineProperties(target, props) {
-			for (var i = 0; i < props.length; i++) {
-				var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-			}
-		}return function (Constructor, protoProps, staticProps) {
-			if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-		};
-	})();
+	exports.default = attachEvents;
 
 	function _interopRequireDefault(obj) {
 		return obj && obj.__esModule ? obj : { 'default': obj };
-	}
-
-	function _classCallCheck(instance, Constructor) {
-		if (!(instance instanceof Constructor)) {
-			throw new TypeError('Cannot call a class as a function');
-		}
 	}
 
 	var _internalsConstants = __webpack_require__(104);
 
 	var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
 
-	var _DOMParseAshNodeId = __webpack_require__(122);
-
-	var _DOMParseAshNodeId2 = _interopRequireDefault(_DOMParseAshNodeId);
-
 	var _internalsIsFunction = __webpack_require__(106);
 
 	var _internalsIsFunction2 = _interopRequireDefault(_internalsIsFunction);
 
-	var _internalsIsMatching = __webpack_require__(123);
+	var _DOMParseAshNodeId = __webpack_require__(122);
 
-	var _internalsIsMatching2 = _interopRequireDefault(_internalsIsMatching);
+	var _DOMParseAshNodeId2 = _interopRequireDefault(_DOMParseAshNodeId);
+
+	var _events = __webpack_require__(123);
+
+	var _events2 = _interopRequireDefault(_events);
 
 	var ID_ATTRIBUTE_NAME = _internalsConstants2.default.ID_ATTRIBUTE_NAME;
 	var STREAM_ID_ATTRIBUTE_NAME = _internalsConstants2.default.STREAM_ID_ATTRIBUTE_NAME;
 	var INDEX_SEPARATOR = _internalsConstants2.default.INDEX_SEPARATOR;
 
-	var topics = {};
-	var eventListener = undefined;
+	function eventHandler(eventName, event) {
+		var id = event.target[ID_ATTRIBUTE_NAME];
+		var streamId = event.target[STREAM_ID_ATTRIBUTE_NAME];
 
-	var EventListener = (function () {
-		function EventListener() {
-			_classCallCheck(this, EventListener);
+		if (id) {
+			var indices = (0, _DOMParseAshNodeId2.default)(id);
 
-			if (eventListener) {
-				return eventListener;
-			}
-
-			eventListener = this;
-
-			return eventListener;
-		}
-
-		_createClass(EventListener, [{
-			key: 'addEvent',
-			value: function addEvent(node, eventName, callback, isNewlyInserted) {
-				if (!topics[eventName]) {
-					topics[eventName] = [];
-
-					global.document.addEventListener(eventName, this.callback.bind(this, eventName), true);
-				}
-
-				for (var i = 0; i < topics[eventName].length; i++) {
-					if (topics[eventName][i].streamId === node[STREAM_ID_ATTRIBUTE_NAME] && topics[eventName][i].id === node[ID_ATTRIBUTE_NAME]) {
-						topics[eventName][i].callback = callback;
-						topics[eventName][i].isNewlyInserted = isNewlyInserted;
-
-						return this;
+			while (indices.length) {
+				for (var i = 0; i < _events2.default[eventName].length; i++) {
+					if (_events2.default[eventName][i].id === id && _events2.default[eventName][i].streamId === streamId) {
+						_events2.default[eventName][i].callback(event);
 					}
 				}
 
-				topics[eventName].push({
+				indices.pop();
+
+				id = indices.join(INDEX_SEPARATOR);
+			}
+		}
+	}
+
+	function attachEvents(node, events, isNewlyInserted) {
+		for (var eventName in events) {
+			if (events.hasOwnProperty(eventName) && (0, _internalsIsFunction2.default)(events[eventName])) {
+				if (!_events2.default[eventName]) {
+					_events2.default[eventName] = [];
+
+					global.document.addEventListener(eventName, eventHandler.bind(this, eventName), true);
+				}
+
+				for (var i = 0; i < _events2.default[eventName].length; i++) {
+					if (_events2.default[eventName][i].streamId === node[STREAM_ID_ATTRIBUTE_NAME] && _events2.default[eventName][i].id === node[ID_ATTRIBUTE_NAME]) {
+						_events2.default[eventName][i].callback = events[eventName];
+						_events2.default[eventName][i].isNewlyInserted = !!isNewlyInserted;
+
+						return;
+					}
+				}
+
+				// push new event
+				_events2.default[eventName].push({
 					id: node[ID_ATTRIBUTE_NAME],
 					streamId: node[STREAM_ID_ATTRIBUTE_NAME],
-					callback: callback,
-					isNewlyInserted: isNewlyInserted,
+					callback: events[eventName],
+					isNewlyInserted: !!isNewlyInserted,
 					isReindexed: {}
 				});
 
-				return this;
+				return;
 			}
-		}, {
-			key: 'addEvents',
-			value: function addEvents(node, events, isNewlyInserted) {
-				for (var eventName in events) {
-					if (events.hasOwnProperty(eventName)) {
-						if ((0, _internalsIsFunction2.default)(events[eventName])) {
-							this.addEvent(node, eventName, events[eventName], isNewlyInserted);
-						}
-					}
-				}
+		}
+	}
 
-				return this;
-			}
-		}, {
-			key: 'removeEvent',
-			value: function removeEvent(node, eventName) {
-				if (eventName && topics[eventName]) {
-					for (var i = 0; i < topics[eventName].length; i++) {
-						if (topics[eventName][i].streamId === node[STREAM_ID_ATTRIBUTE_NAME] && topics[eventName][i].id === node[ID_ATTRIBUTE_NAME]) {
-							topics[eventName].splice(i, 1);
-
-							return this;
-						}
-					}
-				} else if (!eventName) {
-					for (var topicName in topics) {
-						if (topics.hasOwnProperty(topicName)) {
-							for (var i = 0; i < topics[topicName].length; i++) {
-								if (topics[topicName][i].streamId === node[STREAM_ID_ATTRIBUTE_NAME] && topics[topicName][i].id === node[ID_ATTRIBUTE_NAME]) {
-									topics[topicName].splice(i, 1);
-
-									return this;
-								}
-							}
-						}
-					}
-				}
-
-				return this;
-			}
-
-			// removes all events, that has id same or matching via isMatching()
-			// removeEvents('0.1') removes events '0.1', '0.1.0', '0.1.1', etc.
-			// if eventName is specified, only events with that name are removed
-		}, {
-			key: 'removeEvents',
-			value: function removeEvents(id, streamId) {
-				var splitId = id.split(INDEX_SEPARATOR);
-
-				for (var topicName in topics) {
-					if (topics.hasOwnProperty(topicName)) {
-						for (var i = 0; i < topics[topicName].length; i++) {
-							if (streamId === topics[topicName][i].streamId && (0, _internalsIsMatching2.default)(splitId, topics[topicName][i].id.split(INDEX_SEPARATOR), true) && !topics[topicName][i].isNewlyInserted) {
-								topics[topicName].splice(i, 1);
-
-								i--;
-							}
-						}
-					}
-				}
-
-				return this;
-			}
-		}, {
-			key: 'reindexEvents',
-			value: function reindexEvents(oldId, oldIndices, newIndex, streamId) {
-				var splitOldId = oldId.split(INDEX_SEPARATOR);
-
-				for (var topicName in topics) {
-					if (topics.hasOwnProperty(topicName)) {
-						for (var i = 0; i < topics[topicName].length; i++) {
-							if (streamId === topics[topicName][i].streamId && (0, _internalsIsMatching2.default)(splitOldId, topics[topicName][i].id.split(INDEX_SEPARATOR), true) && !topics[topicName][i].isNewlyInserted && !topics[topicName][i].isReindexed[oldIndices.length - 1]) {
-								var indices = (0, _DOMParseAshNodeId2.default)(topics[topicName][i].id);
-
-								indices[oldIndices.length - 1] = newIndex;
-								topics[topicName][i].id = indices.join(INDEX_SEPARATOR);
-								topics[topicName][i].isReindexed[oldIndices.length - 1] = true;
-							}
-						}
-					}
-				}
-
-				return this;
-			}
-		}, {
-			key: 'markEvents',
-			value: function markEvents(streamId) {
-				for (var topicName in topics) {
-					if (topics.hasOwnProperty(topicName)) {
-						for (var i = 0; i < topics[topicName].length; i++) {
-							if (streamId === topics[topicName][i].streamId) {
-								topics[topicName][i].isNewlyInserted = false;
-								topics[topicName][i].isReindexed = {};
-							}
-						}
-					}
-				}
-
-				return this;
-			}
-		}, {
-			key: 'callback',
-			value: function callback(eventName, eventObject) {
-				var id = eventObject.target[ID_ATTRIBUTE_NAME];
-				var streamId = eventObject.target[STREAM_ID_ATTRIBUTE_NAME];
-
-				if (id) {
-					var indices = (0, _DOMParseAshNodeId2.default)(id);
-
-					while (indices.length) {
-						for (var i = 0; i < topics[eventName].length; i++) {
-							if (topics[eventName][i].id === id && topics[eventName][i].streamId === streamId) {
-								topics[eventName][i].callback(eventObject);
-							}
-						}
-
-						indices.pop();
-
-						id = indices.join(INDEX_SEPARATOR);
-					}
-				}
-			}
-		}]);
-
-		return EventListener;
-	})();
-
-	exports.default = EventListener;
 	module.exports = exports.default;
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
@@ -28579,73 +28416,14 @@
 /* 123 */
 /***/ function(module, exports) {
 
-	/**
-	 * Checks if the chains of ; i.e all categories from the template chain must be present in the second chain, and in the same order.
-	 * Strict comparison (===) is used.
-	 * if strict options is used, the order must be precisely the same
-	 *
-	 * @method
-	 * @memberof ash
-	 * @param {array} chain1 The chain to check against.
-	 * @param {array} chain2 The chain being checked.
-	 * @returns {boolean} Returns true if the second chain matches the first, else false.
-	 *
-	 * @example
-	 * ash.isMatching([1, 2, 3], [1, 2, 3]); // -> true
-	 * ash.isMatching([1, 2, 3], [1, 2, 3, 4, 5]); // -> true
-	 * ash.isMatching([1, 2, 3], [1, 4, 2, 5, 3]); // -> true
-	 * ash.isMatching([1, 2, 3], [1, 2]); // -> false
-	 * ash.isMatching([1, 2, 3], [1, 3, 2]); // -> false
-	 * ash.isMatching([1, 2, 3], [1, 4, 2, 5, 3], true); // -> false
-	 * ash.isMatching([1, 2, 3], [1, 2, 3, 5, 5], true); // -> true
-	 */
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-		value: true
+	  value: true
 	});
-	exports.default = isMatching;
+	var topics = {};
 
-	function isMatching(chain1, chain2, options) {
-		if (!Array.isArray(chain1) || !Array.isArray(chain2)) {
-			return false;
-		} // if
-
-		var indexes = [];
-
-		if (options === true || options && options.strict) {
-			for (var i = 0; i < chain1.length; i++) {
-				if (chain1[i] !== chain2[i]) {
-					return false;
-				}
-			}
-
-			return true;
-		} else {
-			for (var i = 0; i < chain1.length; i++) {
-				for (var j = 0; j < chain2.length; j++) {
-					if (chain1[i] === chain2[j]) {
-						indexes.push(j);
-						break;
-					} // if
-
-					if (j === chain2.length - 1) {
-						return false; // item from chain1 is not in chain2, therefore there is no match
-					} // if
-				} // for
-			} // for
-
-			for (var i = 0; i < indexes.length - 1; i++) {
-				if (indexes[i] >= indexes[i + 1]) {
-					// indexes are't ordered, therefore there is no match
-					return false;
-				}
-			} // for
-		}
-
-		return true;
-	}
-
+	exports.default = topics;
 	module.exports = exports.default;
 
 /***/ },
@@ -28999,13 +28777,23 @@
 
 	var _findNode2 = _interopRequireDefault(_findNode);
 
-	var _classesEventListener = __webpack_require__(121);
+	// import EventListener from '../classes/EventListener';
 
-	var _classesEventListener2 = _interopRequireDefault(_classesEventListener);
-
-	var _internalsIsElement = __webpack_require__(127);
+	var _internalsIsElement = __webpack_require__(129);
 
 	var _internalsIsElement2 = _interopRequireDefault(_internalsIsElement);
+
+	var _detachEvents = __webpack_require__(127);
+
+	var _detachEvents2 = _interopRequireDefault(_detachEvents);
+
+	var _markEvents = __webpack_require__(131);
+
+	var _markEvents2 = _interopRequireDefault(_markEvents);
+
+	var _reindexEvents = __webpack_require__(132);
+
+	var _reindexEvents2 = _interopRequireDefault(_reindexEvents);
 
 	var ID_ATTRIBUTE_NAME = _internalsConstants2.default.ID_ATTRIBUTE_NAME;
 	var INDEX_ATTRIBUTE_NAME = _internalsConstants2.default.INDEX_ATTRIBUTE_NAME;
@@ -29017,7 +28805,7 @@
 	var PATCH_REMOVE = _internalsConstants2.default.PATCH_REMOVE;
 	var INDEX_SEPARATOR = _internalsConstants2.default.INDEX_SEPARATOR;
 
-	var eventListener = new _classesEventListener2.default();
+	// var eventListener = new EventListener();
 
 	function zeroPadNumber(number, length) {
 		var n = Math.pow(10, length);
@@ -29176,7 +28964,8 @@
 				// console.log('applying patch', 'PATCH_ASH_NODE', patches[i]);
 
 				// remove old events
-				eventListener.removeEvents(patches[i].id, patches[i].streamId);
+				// eventListener.removeEvents(patches[i].id, patches[i].streamId);
+				(0, _detachEvents2.default)(patches[i].id, patches[i].streamId);
 
 				// find node
 				node = (0, _findNode2.default)(nodeTree, patches[i].id, patches[i].indices);
@@ -29223,7 +29012,8 @@
 				}
 
 				// remove old events
-				eventListener.removeEvents(patches[i].id, patches[i].streamId);
+				// eventListener.removeEvents(patches[i].id, patches[i].streamId);
+				(0, _detachEvents2.default)(patches[i].id, patches[i].streamId);
 
 				node.parentNode.removeChild(node);
 			} else if (patches[i].type === PATCH_INSERT) {
@@ -29248,7 +29038,8 @@
 				}
 
 				// reindex events
-				eventListener.reindexEvents(patches[i].id, patches[i].indices, patches[i].index, patches[i].streamId);
+				// eventListener.reindexEvents(patches[i].id, patches[i].indices, patches[i].index, patches[i].streamId);
+				(0, _reindexEvents2.default)(patches[i].id, patches[i].indices, patches[i].index, patches[i].streamId);
 
 				reindexCache.push({
 					node: node,
@@ -29262,7 +29053,8 @@
 		}
 
 		flushCache(reindexCache, reorderCache);
-		eventListener.markEvents(patches.streamId);
+		// eventListener.markEvents(patches.streamId);
+		(0, _markEvents2.default)(patches.streamId);
 
 		return true;
 	}
@@ -29273,6 +29065,7 @@
 /* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
+	// import EventListener from '../classes/EventListener';
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
@@ -29284,11 +29077,18 @@
 		return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _classesEventListener = __webpack_require__(121);
+	var _detachEvents = __webpack_require__(127);
 
-	var _classesEventListener2 = _interopRequireDefault(_classesEventListener);
+	var _detachEvents2 = _interopRequireDefault(_detachEvents);
 
-	var eventListener = new _classesEventListener2.default();
+	var _internalsConstants = __webpack_require__(104);
+
+	var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
+
+	var ID_ATTRIBUTE_NAME = _internalsConstants2.default.ID_ATTRIBUTE_NAME;
+	var STREAM_ID_ATTRIBUTE_NAME = _internalsConstants2.default.STREAM_ID_ATTRIBUTE_NAME;
+
+	// var eventListener = new EventListener();
 
 	function removeNodeProperties(node, properties) {
 		for (var i = 0; i < properties.length; i++) {
@@ -29317,7 +29117,8 @@
 				if (props[0] === 'style') {
 					node.style[props[1]] = '';
 				} else if (props[0] === 'events') {
-					eventListener.removeEvent(node, props[1]);
+					// eventListener.removeEvent(node, props[1]);
+					(0, _detachEvents2.default)(node[ID_ATTRIBUTE_NAME], node[STREAM_ID_ATTRIBUTE_NAME], props[1]);
 				}
 			}
 		}
@@ -29332,6 +29133,141 @@
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
+		value: true
+	});
+	exports.default = detachEvents;
+
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
+
+	var _internalsConstants = __webpack_require__(104);
+
+	var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
+
+	var _internalsIsMatching = __webpack_require__(128);
+
+	var _internalsIsMatching2 = _interopRequireDefault(_internalsIsMatching);
+
+	var _events = __webpack_require__(123);
+
+	var _events2 = _interopRequireDefault(_events);
+
+	var INDEX_SEPARATOR = _internalsConstants2.default.INDEX_SEPARATOR;
+
+	// removes all events, that has id same or matching via isMatching()
+	// removeEvents('0.1') removes events '0.1', '0.1.0', '0.1.1', etc.
+	// if eventName is specified, only events with that name are removed
+
+	function detachEvents(id, streamId, eventName) {
+		var splitId = id.split(INDEX_SEPARATOR);
+
+		if (eventName && _events2.default[eventName]) {
+			for (var i = 0; i < _events2.default[eventName].length; i++) {
+				if (streamId === _events2.default[eventName][i].streamId && id === _events2.default[eventName][i].id) {
+					_events2.default[eventName].splice(i, 1);
+
+					return;
+				}
+			}
+		} else if (!eventName) {
+			// remove all events with id and ids that are matching it (ie. for 0.1 remove 0.1, 0.1.0, 0.1.1, etc.)
+			for (var topicName in _events2.default) {
+				if (_events2.default.hasOwnProperty(topicName)) {
+					for (var i = 0; i < _events2.default[topicName].length; i++) {
+						if (_events2.default[topicName][i].streamId && (0, _internalsIsMatching2.default)(splitId, _events2.default[topicName][i].id.split(INDEX_SEPARATOR), true) && !_events2.default[topicName][i].isNewlyInserted) {
+							_events2.default[topicName].splice(i, 1);
+
+							i--;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	module.exports = exports.default;
+
+/***/ },
+/* 128 */
+/***/ function(module, exports) {
+
+	/**
+	 * Checks if the chains of ; i.e all categories from the template chain must be present in the second chain, and in the same order.
+	 * Strict comparison (===) is used.
+	 * if strict options is used, the order must be precisely the same
+	 *
+	 * @method
+	 * @memberof ash
+	 * @param {array} chain1 The chain to check against.
+	 * @param {array} chain2 The chain being checked.
+	 * @returns {boolean} Returns true if the second chain matches the first, else false.
+	 *
+	 * @example
+	 * ash.isMatching([1, 2, 3], [1, 2, 3]); // -> true
+	 * ash.isMatching([1, 2, 3], [1, 2, 3, 4, 5]); // -> true
+	 * ash.isMatching([1, 2, 3], [1, 4, 2, 5, 3]); // -> true
+	 * ash.isMatching([1, 2, 3], [1, 2]); // -> false
+	 * ash.isMatching([1, 2, 3], [1, 3, 2]); // -> false
+	 * ash.isMatching([1, 2, 3], [1, 4, 2, 5, 3], true); // -> false
+	 * ash.isMatching([1, 2, 3], [1, 2, 3, 5, 5], true); // -> true
+	 */
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.default = isMatching;
+
+	function isMatching(chain1, chain2, options) {
+		if (!Array.isArray(chain1) || !Array.isArray(chain2)) {
+			return false;
+		} // if
+
+		var indexes = [];
+
+		if (options === true || options && options.strict) {
+			for (var i = 0; i < chain1.length; i++) {
+				if (chain1[i] !== chain2[i]) {
+					return false;
+				}
+			}
+
+			return true;
+		} else {
+			for (var i = 0; i < chain1.length; i++) {
+				for (var j = 0; j < chain2.length; j++) {
+					if (chain1[i] === chain2[j]) {
+						indexes.push(j);
+						break;
+					} // if
+
+					if (j === chain2.length - 1) {
+						return false; // item from chain1 is not in chain2, therefore there is no match
+					} // if
+				} // for
+			} // for
+
+			for (var i = 0; i < indexes.length - 1; i++) {
+				if (indexes[i] >= indexes[i + 1]) {
+					// indexes are't ordered, therefore there is no match
+					return false;
+				}
+			} // for
+		}
+
+		return true;
+	}
+
+	module.exports = exports.default;
+
+/***/ },
+/* 129 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 	exports.default = isElement;
@@ -29340,7 +29276,7 @@
 	  return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _isObjectLike = __webpack_require__(128);
+	var _isObjectLike = __webpack_require__(130);
 
 	var _isObjectLike2 = _interopRequireDefault(_isObjectLike);
 
@@ -29368,7 +29304,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 128 */
+/* 130 */
 /***/ function(module, exports) {
 
 	/**
@@ -29392,7 +29328,94 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 129 */
+/* 131 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+		value: true
+	});
+	exports.default = markEvents;
+
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
+
+	var _events = __webpack_require__(123);
+
+	var _events2 = _interopRequireDefault(_events);
+
+	function markEvents(streamId) {
+		for (var topicName in _events2.default) {
+			if (_events2.default.hasOwnProperty(topicName)) {
+				for (var i = 0; i < _events2.default[topicName].length; i++) {
+					if (streamId === _events2.default[topicName][i].streamId) {
+						_events2.default[topicName][i].isNewlyInserted = false;
+						_events2.default[topicName][i].isReindexed = {};
+					}
+				}
+			}
+		}
+	}
+
+	module.exports = exports.default;
+
+/***/ },
+/* 132 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+		value: true
+	});
+	exports.default = reindexEvents;
+
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
+
+	var _internalsConstants = __webpack_require__(104);
+
+	var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
+
+	var _DOMParseAshNodeId = __webpack_require__(122);
+
+	var _DOMParseAshNodeId2 = _interopRequireDefault(_DOMParseAshNodeId);
+
+	var _internalsIsMatching = __webpack_require__(128);
+
+	var _internalsIsMatching2 = _interopRequireDefault(_internalsIsMatching);
+
+	var _events = __webpack_require__(123);
+
+	var _events2 = _interopRequireDefault(_events);
+
+	var INDEX_SEPARATOR = _internalsConstants2.default.INDEX_SEPARATOR;
+
+	function reindexEvents(oldId, oldIndices, newIndex, streamId) {
+		var splitOldId = oldId.split(INDEX_SEPARATOR);
+
+		for (var topicName in _events2.default) {
+			if (_events2.default.hasOwnProperty(topicName)) {
+				for (var i = 0; i < _events2.default[topicName].length; i++) {
+					if (streamId === _events2.default[topicName][i].streamId && (0, _internalsIsMatching2.default)(splitOldId, _events2.default[topicName][i].id.split(INDEX_SEPARATOR), true) && !_events2.default[topicName][i].isNewlyInserted && !_events2.default[topicName][i].isReindexed[oldIndices.length - 1]) {
+						var indices = (0, _DOMParseAshNodeId2.default)(_events2.default[topicName][i].id);
+
+						indices[oldIndices.length - 1] = newIndex;
+						_events2.default[topicName][i].id = indices.join(INDEX_SEPARATOR);
+						_events2.default[topicName][i].isReindexed[oldIndices.length - 1] = true;
+					}
+				}
+			}
+		}
+	}
+
+	module.exports = exports.default;
+
+/***/ },
+/* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29406,7 +29429,7 @@
 		return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _internalsIsAshNode = __webpack_require__(130);
+	var _internalsIsAshNode = __webpack_require__(134);
 
 	var _internalsIsAshNode2 = _interopRequireDefault(_internalsIsAshNode);
 
@@ -29516,7 +29539,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 130 */
+/* 134 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29543,9 +29566,10 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 131 */
+/* 135 */
 /***/ function(module, exports, __webpack_require__) {
 
+	// import EventListener from '../classes/EventListener';
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
@@ -29557,19 +29581,19 @@
 		return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _classesEventListener = __webpack_require__(121);
-
-	var _classesEventListener2 = _interopRequireDefault(_classesEventListener);
-
 	var _internalsConstants = __webpack_require__(104);
 
 	var _internalsConstants2 = _interopRequireDefault(_internalsConstants);
+
+	var _attachEvents = __webpack_require__(121);
+
+	var _attachEvents2 = _interopRequireDefault(_attachEvents);
 
 	var ID_ATTRIBUTE_NAME = _internalsConstants2.default.ID_ATTRIBUTE_NAME;
 	var INDEX_ATTRIBUTE_NAME = _internalsConstants2.default.INDEX_ATTRIBUTE_NAME;
 	var STREAM_ID_ATTRIBUTE_NAME = _internalsConstants2.default.STREAM_ID_ATTRIBUTE_NAME;
 
-	var eventListener = new _classesEventListener2.default();
+	// var eventListener = new EventListener();
 
 	function walkValidateNodeTree(nodeTree, ashNodeTree, streamId, eventsCache) {
 		if (nodeTree.tagName && nodeTree.tagName.toLowerCase() !== ashNodeTree.tagName) {
@@ -29612,7 +29636,8 @@
 
 		if (isNodeTreeValid) {
 			for (var i = 0; i < eventsCache.length; i++) {
-				eventListener.addEvents(eventsCache[i].node, eventsCache[i].events);
+				// eventListener.addEvents(eventsCache[i].node, eventsCache[i].events);
+				(0, _attachEvents2.default)(eventsCache[i].node, eventsCache[i].events);
 			}
 		}
 
@@ -29622,7 +29647,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 132 */
+/* 136 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29674,7 +29699,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 133 */
+/* 137 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
@@ -29688,11 +29713,11 @@
 		return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _classesAshNode = __webpack_require__(134);
+	var _classesAshNode = __webpack_require__(138);
 
 	var _classesAshNode2 = _interopRequireDefault(_classesAshNode);
 
-	var _classesAshElement = __webpack_require__(135);
+	var _classesAshElement = __webpack_require__(139);
 
 	var _classesAshElement2 = _interopRequireDefault(_classesAshElement);
 
@@ -29784,7 +29809,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 134 */
+/* 138 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29842,7 +29867,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 135 */
+/* 139 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29963,7 +29988,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 136 */
+/* 140 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -30001,7 +30026,7 @@
 	module.exports = exports.default;
 
 /***/ },
-/* 137 */
+/* 141 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -34964,105 +34989,6 @@
 	  return Immutable;
 
 	}));
-
-/***/ },
-/* 138 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-		value: true
-	});
-
-	var _createClass = (function () {
-		function defineProperties(target, props) {
-			for (var i = 0; i < props.length; i++) {
-				var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-			}
-		}return function (Constructor, protoProps, staticProps) {
-			if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-		};
-	})();
-
-	var _get = function get(object, property, receiver) {
-		if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-			var parent = Object.getPrototypeOf(object);if (parent === null) {
-				return undefined;
-			} else {
-				return get(parent, property, receiver);
-			}
-		} else if ('value' in desc) {
-			return desc.value;
-		} else {
-			var getter = desc.get;if (getter === undefined) {
-				return undefined;
-			}return getter.call(receiver);
-		}
-	};
-
-	function _interopRequireDefault(obj) {
-		return obj && obj.__esModule ? obj : { 'default': obj };
-	}
-
-	function _classCallCheck(instance, Constructor) {
-		if (!(instance instanceof Constructor)) {
-			throw new TypeError('Cannot call a class as a function');
-		}
-	}
-
-	function _inherits(subClass, superClass) {
-		if (typeof superClass !== 'function' && superClass !== null) {
-			throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-		}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-	}
-
-	var _ash = __webpack_require__(99);
-
-	var _ash2 = _interopRequireDefault(_ash);
-
-	var TestApp1 = (function (_ash$Component) {
-		_inherits(TestApp1, _ash$Component);
-
-		function TestApp1() {
-			_classCallCheck(this, TestApp1);
-
-			_get(Object.getPrototypeOf(TestApp1.prototype), 'constructor', this).apply(this, arguments);
-
-			this.state = {
-				count: 0
-			};
-		}
-
-		_createClass(TestApp1, [{
-			key: 'render',
-			value: function render() {
-				return _ash2.default.createElement('main', null, 'render ' + this.state.count);
-			}
-		}, {
-			key: 'onMount',
-			value: function onMount() {
-				if (this.props && this.props.updateStream) {
-					this.props.updateStream.on(this.update);
-				}
-			}
-		}, {
-			key: 'onRender',
-			value: function onRender() {
-				this.state.count++;
-				this.doneStream.push(this.state.count);
-			}
-		}], [{
-			key: 'doneStream',
-			value: new _ash2.default.Stream(),
-			enumerable: true
-		}]);
-
-		return TestApp1;
-	})(_ash2.default.Component);
-
-	exports.default = TestApp1;
-	module.exports = exports.default;
 
 /***/ }
 /******/ ]);

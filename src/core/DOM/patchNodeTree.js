@@ -4,8 +4,11 @@ import createNodeTree from './createNodeTree';
 import setNodeProperties from './setNodeProperties';
 import removeNodeProperties from './removeNodeProperties';
 import findNode from './findNode';
-import EventListener from '../classes/EventListener';
+// import EventListener from '../classes/EventListener';
 import isElement from '../internals/isElement';
+import detachEvents from './detachEvents';
+import markEvents from './markEvents';
+import reindexEvents from './reindexEvents';
 
 
 const ID_ATTRIBUTE_NAME = constants.ID_ATTRIBUTE_NAME;
@@ -18,7 +21,7 @@ const PATCH_INSERT = constants.PATCH_INSERT;
 const PATCH_REMOVE = constants.PATCH_REMOVE;
 const INDEX_SEPARATOR = constants.INDEX_SEPARATOR;
 
-var eventListener = new EventListener();
+// var eventListener = new EventListener();
 
 function zeroPadNumber(number, length) {
 	var n = Math.pow(10, length);
@@ -176,7 +179,8 @@ export default function patchNodeTree(nodeTree /*, patches*/) {
 			// console.log('applying patch', 'PATCH_ASH_NODE', patches[i]);
 
 			// remove old events
-			eventListener.removeEvents(patches[i].id, patches[i].streamId);
+			// eventListener.removeEvents(patches[i].id, patches[i].streamId);
+			detachEvents(patches[i].id, patches[i].streamId);
 
 			// find node
 			node = findNode(nodeTree, patches[i].id, patches[i].indices);
@@ -223,7 +227,8 @@ export default function patchNodeTree(nodeTree /*, patches*/) {
 			}
 
 			// remove old events
-			eventListener.removeEvents(patches[i].id, patches[i].streamId);
+			// eventListener.removeEvents(patches[i].id, patches[i].streamId);
+			detachEvents(patches[i].id, patches[i].streamId);
 
 			node.parentNode.removeChild(node);
 		} else if (patches[i].type === PATCH_INSERT) {
@@ -248,7 +253,8 @@ export default function patchNodeTree(nodeTree /*, patches*/) {
 			}
 
 			// reindex events
-			eventListener.reindexEvents(patches[i].id, patches[i].indices, patches[i].index, patches[i].streamId);
+			// eventListener.reindexEvents(patches[i].id, patches[i].indices, patches[i].index, patches[i].streamId);
+			reindexEvents(patches[i].id, patches[i].indices, patches[i].index, patches[i].streamId);
 
 			reindexCache.push({
 				node,
@@ -262,7 +268,8 @@ export default function patchNodeTree(nodeTree /*, patches*/) {
 	}
 
 	flushCache(reindexCache, reorderCache);
-	eventListener.markEvents(patches.streamId);
+	// eventListener.markEvents(patches.streamId);
+	markEvents(patches.streamId);
 
 	return true;
 }

@@ -4,25 +4,11 @@ Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 
-var _createClass = (function () {
-	function defineProperties(target, props) {
-		for (var i = 0; i < props.length; i++) {
-			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-		}
-	}return function (Constructor, protoProps, staticProps) {
-		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-	};
-})();
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-function _interopRequireDefault(obj) {
-	return obj && obj.__esModule ? obj : { 'default': obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-function _classCallCheck(instance, Constructor) {
-	if (!(instance instanceof Constructor)) {
-		throw new TypeError('Cannot call a class as a function');
-	}
-}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var _internalsIsFunction = require('../internals/isFunction');
 
@@ -126,7 +112,7 @@ function updateDependencies(stream) {
 				detachDependencies(stream.__listeners[i].end);
 			}
 		} else {
-			if (stream.__listeners[i].__changedDependencies !== undefined) {
+			if (stream.__listeners[i].__changedDependencies != null) {
 				stream.__listeners[i].__changedDependencies.push(stream);
 			}
 
@@ -162,7 +148,7 @@ var Stream = (function () {
 		this.fn = null;
 		this.__dependencies = [];
 		this.__dependenciesMet = false;
-		this.__changedDependencies = [];
+		this.__changedDependencies = null;
 		this.__shouldUpdate = false;
 		this.isEndStream = false;
 
@@ -213,6 +199,7 @@ var Stream = (function () {
 			if (dependencies.length) {
 				// add listeners to stream
 				this.__dependencies = dependencies;
+				this.__changedDependencies = [];
 
 				for (var i = 0; i < dependencies.length; ++i) {
 					dependencies[i].__listeners.push(this);
@@ -262,7 +249,7 @@ var Stream = (function () {
 				// mark listeners
 				for (var i = 0; i < this.__listeners.length; ++i) {
 					if (this.__listeners[i].end !== this) {
-						if (this.__listeners[i].__changedDependencies !== undefined) {
+						if (this.__listeners[i].__changedDependencies != null) {
 							this.__listeners[i].__changedDependencies.push(this);
 						}
 						this.__listeners[i].__shouldUpdate = true;

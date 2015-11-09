@@ -98,7 +98,8 @@ storeStream.push({amount: 0});
 class App extends ash.Component {
 	state = {
 		show: 'bar',
-		foo: false
+		foo: false,
+		useAlternativeHandler: false
 	};
 
 	static increaseStream = new ash.Stream();
@@ -106,21 +107,55 @@ class App extends ash.Component {
 	render() {
 		let amount = storeStream.get().amount;
 
-		return this.state.foo ? <b>Oj!</b> : <Content show={this.state.show} />;
+		// return this.state.foo ? <b>Oj!</b> : <Content show={this.state.show} />;
+
+		// return <div>
+		// 	<p>{amount}</p>
+		// 	<a href="#" events={{click: this.add}}>+1</a>
+		// 	<a href="#" events={{click: this.showFoo}}>FooContent</a>
+		// 	<a href="#" events={{click: this.showBar}}>BarContent</a>
+		// 	<div>{amount ? <Content show={this.state.show} /> : null }</div>
+		// </div>;
 
 		return <div>
-			<p>{amount}</p>
-			<a href="#" events={{click: this.add}}>+1</a>
-			<a href="#" events={{click: this.showFoo}}>FooContent</a>
-			<a href="#" events={{click: this.showBar}}>BarContent</a>
-			<div>{amount ? <Content show={this.state.show} /> : null }</div>
+			<p events={{click: this.state.useAlternativeHandler ? this.handleClickAlternatively : this.handleClick}}>
+				<a id="link-1" href="#">(1)</a>
+				<a id="link-2" href="#">(2)</a>
+				<a id="link-3" href="#">(3)</a>
+				<a id="link-4" href="#">(4)</a>
+			</p>
+			<p>
+				<a href="#" events={{click: this.changeHandler}}>Change event handler!</a>
+			</p>
 		</div>;
+	}
+
+	changeHandler(event) {
+		event.preventDefault();
+
+		console.log('changeHandler...', event);
+
+		this.state.useAlternativeHandler = !this.state.useAlternativeHandler;
+
+		this.update();
+	}
+
+	handleClick(event) {
+		event.preventDefault();
+
+		console.log('handleClick...', event);
+	}
+
+	handleClickAlternatively(event) {
+		event.preventDefault();
+
+		console.log('handleClickAlternatively...', event);
 	}
 
 	onMount() {
 		storeStream.on(this.update);
 
-		setTimeout(() => {
+		/*setTimeout(() => {
 			console.log('updating!');
 			this.state.foo = true;
 
@@ -132,7 +167,7 @@ class App extends ash.Component {
 			this.state.foo = false;
 
 			this.update();
-		}, 4000);
+		}, 4000);*/
 	}
 
 	add(event) {
@@ -165,58 +200,9 @@ global.storeStream = storeStream;
 
 
 
-import TestApp1 from './components/TestApp1';
-
-// let viewStream = new ash.ViewStream(<App />);
-// let renderStream = new ash.RenderStream(viewStream, global.document.querySelector('.page'));
-
-
-
-function assertAshNodeTree(expected, actual) {
-	for (let nodeProperty in actual) {
-		if (actual.hasOwnProperty(nodeProperty)) {
-			if (nodeProperty === 'properties') {
-				for (let propertiesProperty in actual[nodeProperty]) {
-					if (actual[nodeProperty][propertiesProperty].hasOwnProperty(propertiesProperty)) {
-						if (expected[nodeProperty][propertiesProperty] !== actual[nodeProperty][propertiesProperty]) {
-							throw new Error(`Expected and actual property mismatch: ${actual[nodeProperty][propertiesProperty]} should be ${expected[nodeProperty][propertiesProperty]}`);
-						}
-					}
-				}
-			} else if (nodeProperty !== 'children' && expected[nodeProperty] !== actual[nodeProperty]) {
-				throw new Error(`Expected and actual property mismatch: ${actual[nodeProperty]} should be ${expected[nodeProperty]}`);
-			}
-		}
-	}
-
-	if (actual.children && actual.children.length) {
-		for (let i = 0; i < actual.children.length; i++) {
-
-			if (!(expected.children && expected.children[i])) {
-				throw new Error(`Expected ash node tree doesn't have expected child!`);
-			}
-
-			assertAshNodeTree(expected.children[i], actual.children[i]);
-		}
-	}
-}
-
-
-let updateStream = new ash.Stream();
-let viewStream = new ash.ViewStream(<TestApp1 updateStream={updateStream} />);
+let viewStream = new ash.ViewStream(<App />);
 let renderStream = new ash.RenderStream(viewStream, global.document.querySelector('.page'));
 
-
-let doneCount = 0;
-
-TestApp1.doneStream.on((count) => {
-	doneCount++;
-
-	console.log('doneStream on...', count, TestApp1.doneStream);
-	let ashNodeTree = viewStream.get().ashNodeTree;
-});
-
-updateStream.push(true);
 
 
 /*var Utils = global.Utils = {

@@ -1,6 +1,12 @@
-import EventListener from '../classes/EventListener';
+// import EventListener from '../classes/EventListener';
+import detachEvents from './detachEvents';
+import constants from '../internals/constants';
 
-var eventListener = new EventListener();
+
+const ID_ATTRIBUTE_NAME = constants.ID_ATTRIBUTE_NAME;
+const STREAM_ID_ATTRIBUTE_NAME = constants.STREAM_ID_ATTRIBUTE_NAME;
+
+// var eventListener = new EventListener();
 
 export default function removeNodeProperties(node, properties) {
 	for (let i = 0; i < properties.length; i++) {
@@ -29,7 +35,8 @@ export default function removeNodeProperties(node, properties) {
 			if (props[0] === 'style') {
 				node.style[props[1]] = '';
 			} else if (props[0] === 'events') {
-				eventListener.removeEvent(node, props[1]);
+				// eventListener.removeEvent(node, props[1]);
+				detachEvents(node[ID_ATTRIBUTE_NAME], node[STREAM_ID_ATTRIBUTE_NAME], props[1]);
 			}
 		}
 	}

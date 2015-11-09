@@ -13,11 +13,13 @@ var _internalsIsObject = require('../internals/isObject');
 
 var _internalsIsObject2 = _interopRequireDefault(_internalsIsObject);
 
-var _classesEventListener = require('../classes/EventListener');
+// import EventListener from '../classes/EventListener';
 
-var _classesEventListener2 = _interopRequireDefault(_classesEventListener);
+var _attachEvents = require('./attachEvents');
 
-var eventListener = new _classesEventListener2.default();
+var _attachEvents2 = _interopRequireDefault(_attachEvents);
+
+// var eventListener = new EventListener();
 
 function setNodeProperties(node, properties, isNewlyInserted) {
 	for (var prop in properties) {
@@ -29,7 +31,8 @@ function setNodeProperties(node, properties, isNewlyInserted) {
 					}
 				}
 			} else if (prop === 'events' && (0, _internalsIsObject2.default)(properties[prop])) {
-				eventListener.addEvents(node, properties[prop], isNewlyInserted);
+				// eventListener.addEvents(node, properties[prop], isNewlyInserted);
+				(0, _attachEvents2.default)(node, properties[prop], isNewlyInserted);
 			} else if (prop === 'className' || prop === 'class') {
 				if (typeof node.className === 'string' && properties[prop]) {
 					node.className = properties[prop];

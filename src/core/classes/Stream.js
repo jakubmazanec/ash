@@ -97,7 +97,7 @@ function updateDependencies(stream) {
 				detachDependencies(stream.__listeners[i].end);
 			}
 		} else {
-			if (stream.__listeners[i].__changedDependencies !== undefined) {
+			if (stream.__listeners[i].__changedDependencies != null) {
 				stream.__listeners[i].__changedDependencies.push(stream);
 			}
 
@@ -126,7 +126,7 @@ export default class Stream {
 	fn = null;
 	__dependencies = [];
 	__dependenciesMet = false;
-	__changedDependencies = [];
+	__changedDependencies = null;
 	__shouldUpdate = false;
 	isEndStream = false;
 
@@ -176,6 +176,7 @@ export default class Stream {
 		if (dependencies.length) {
 			// add listeners to stream
 			this.__dependencies = dependencies;
+			this.__changedDependencies = [];
 
 			for (let i = 0; i < dependencies.length; ++i) {
 				dependencies[i].__listeners.push(this);
@@ -223,7 +224,7 @@ export default class Stream {
 			// mark listeners
 			for (let i = 0; i < this.__listeners.length; ++i) {
 				if (this.__listeners[i].end !== this) {
-					if (this.__listeners[i].__changedDependencies !== undefined) {
+					if (this.__listeners[i].__changedDependencies != null) {
 						this.__listeners[i].__changedDependencies.push(this);
 					}
 					this.__listeners[i].__shouldUpdate = true;
