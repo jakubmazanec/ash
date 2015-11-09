@@ -66,7 +66,8 @@ function updateStream(stream) {
 	} else {
 		inStream = stream;
 
-		let returnValue = stream.fn(stream, stream.__changedDependencies, stream.__dependencies);
+		// let returnValue = stream.fn(stream, stream.__changedDependencies, stream.__dependencies);
+		let returnValue = stream.fn(...stream.__dependencies, stream, stream.__changedDependencies);
 
 		if (returnValue !== undefined) {
 			stream.push(returnValue);
@@ -263,11 +264,11 @@ export default class Stream {
 	}
 
 	static map(fn, stream) {
-		return new Stream((self) => { self.push(fn(stream.value)); }, stream);
+		return new Stream((dependency, self) => { self.push(fn(dependency.value)); }, stream);
 	}
 
 	static on(fn, stream) {
-		return new Stream(() => { fn(stream.value); }, stream);
+		return new Stream((dependency) => { fn(dependency.value); }, stream);
 	}
 
 	map(fn) {
@@ -279,6 +280,6 @@ export default class Stream {
 	}
 
 	ap(stream) {
-		return new Stream(() => this.get()(stream.get()), this, stream);
+		return new Stream((dependency1, dependency2) => dependency1.get()(dependency2.get()), this, stream);
 	}
 }

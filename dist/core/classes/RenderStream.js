@@ -4,47 +4,15 @@ Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 
-var _createClass = (function () {
-	function defineProperties(target, props) {
-		for (var i = 0; i < props.length; i++) {
-			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-		}
-	}return function (Constructor, protoProps, staticProps) {
-		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-	};
-})();
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(object, property, receiver) {
-	if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-		var parent = Object.getPrototypeOf(object);if (parent === null) {
-			return undefined;
-		} else {
-			return get(parent, property, receiver);
-		}
-	} else if ('value' in desc) {
-		return desc.value;
-	} else {
-		var getter = desc.get;if (getter === undefined) {
-			return undefined;
-		}return getter.call(receiver);
-	}
-};
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-function _interopRequireDefault(obj) {
-	return obj && obj.__esModule ? obj : { 'default': obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-function _classCallCheck(instance, Constructor) {
-	if (!(instance instanceof Constructor)) {
-		throw new TypeError('Cannot call a class as a function');
-	}
-}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) {
-	if (typeof superClass !== 'function' && superClass !== null) {
-		throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _DOMCreateNodeTree = require('../DOM/createNodeTree');
 
@@ -94,26 +62,24 @@ var ID_ATTRIBUTE_NAME = _internalsConstants2.default.ID_ATTRIBUTE_NAME;
 var RENDER_STREAM_DOM_TARGET = _internalsConstants2.default.RENDER_STREAM_DOM_TARGET;
 var RENDER_STREAM_STRING_TARGET = _internalsConstants2.default.RENDER_STREAM_STRING_TARGET;
 
-function render(stream, changed, dependencies) {
+function render(viewStream, renderStream) {
 	var _this = this;
-
-	var viewStream = dependencies[0];
 
 	var _viewStream$get = viewStream.get();
 
 	var ashElementTree = _viewStream$get.ashElementTree;
 	var ashNodeTree = _viewStream$get.ashNodeTree;
 
-	if (!stream.previousAshNodeTree) {
+	if (!renderStream.previousAshNodeTree) {
 		var isNodeTreeValid = false;
 		var isNodeTreeValidated = false;
 
-		stream.previousAshNodeTree = ashNodeTree;
+		renderStream.previousAshNodeTree = ashNodeTree;
 
 		// there are some element nodes?
-		if (this.target === RENDER_STREAM_DOM_TARGET && stream.containerNode.childNodes.length) {
+		if (this.target === RENDER_STREAM_DOM_TARGET && renderStream.containerNode.childNodes.length) {
 			isNodeTreeValidated = true;
-			isNodeTreeValid = (0, _DOMValidateNodeTree2.default)(stream.containerNode.childNodes[0], ashNodeTree, viewStream.id);
+			isNodeTreeValid = (0, _DOMValidateNodeTree2.default)(renderStream.containerNode.childNodes[0], ashNodeTree, viewStream.id);
 		}
 
 		// render to the Real DOM, if needed
@@ -124,8 +90,8 @@ function render(stream, changed, dependencies) {
 
 			// remove existing nodes
 			if (this.target === RENDER_STREAM_DOM_TARGET) {
-				while (stream.containerNode.firstChild) {
-					stream.containerNode.removeChild(stream.containerNode.firstChild);
+				while (renderStream.containerNode.firstChild) {
+					renderStream.containerNode.removeChild(renderStream.containerNode.firstChild);
 				}
 			}
 
@@ -134,7 +100,7 @@ function render(stream, changed, dependencies) {
 					var nodeTree = (0, _DOMCreateNodeTree2.default)(ashNodeTree);
 
 					if (nodeTree) {
-						stream.containerNode.appendChild(nodeTree);
+						renderStream.containerNode.appendChild(nodeTree);
 					}
 				}
 
@@ -146,17 +112,17 @@ function render(stream, changed, dependencies) {
 			(0, _DOMMountComponents2.default)(ashElementTree);
 		}
 	} else {
-		var patches = (0, _DOMDiffAshNodeTree2.default)(stream.previousAshNodeTree, ashNodeTree);
+		var patches = (0, _DOMDiffAshNodeTree2.default)(renderStream.previousAshNodeTree, ashNodeTree);
 
 		if (this.target === RENDER_STREAM_DOM_TARGET) {
-			var isSuccessful = (0, _DOMPatchNodeTree2.default)(stream.rootNode, patches);
+			var isSuccessful = (0, _DOMPatchNodeTree2.default)(renderStream.rootNode, patches);
 
 			if (!isSuccessful) {
 				throw new Error('Patching the DOM was unsuccesful!');
 			}
 		}
 
-		stream.previousAshNodeTree = ashNodeTree;
+		renderStream.previousAshNodeTree = ashNodeTree;
 
 		(0, _DOMMountComponents2.default)(ashElementTree);
 	}

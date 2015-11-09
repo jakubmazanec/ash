@@ -15,20 +15,19 @@ const ID_ATTRIBUTE_NAME = constants.ID_ATTRIBUTE_NAME;
 const RENDER_STREAM_DOM_TARGET = constants.RENDER_STREAM_DOM_TARGET;
 const RENDER_STREAM_STRING_TARGET = constants.RENDER_STREAM_STRING_TARGET;
 
-function render(stream, changed, dependencies) {
-	let viewStream = dependencies[0];
+function render(viewStream, renderStream) {
 	let {ashElementTree, ashNodeTree} = viewStream.get();
 
-	if (!stream.previousAshNodeTree) {
+	if (!renderStream.previousAshNodeTree) {
 		let isNodeTreeValid = false;
 		let isNodeTreeValidated = false;
 
-		stream.previousAshNodeTree = ashNodeTree;
+		renderStream.previousAshNodeTree = ashNodeTree;
 
 		// there are some element nodes?
-		if (this.target === RENDER_STREAM_DOM_TARGET && stream.containerNode.childNodes.length) {
+		if (this.target === RENDER_STREAM_DOM_TARGET && renderStream.containerNode.childNodes.length) {
 			isNodeTreeValidated = true;
-			isNodeTreeValid = validateNodeTree(stream.containerNode.childNodes[0], ashNodeTree, viewStream.id);
+			isNodeTreeValid = validateNodeTree(renderStream.containerNode.childNodes[0], ashNodeTree, viewStream.id);
 		}
 
 		// render to the Real DOM, if needed
@@ -39,8 +38,8 @@ function render(stream, changed, dependencies) {
 
 			// remove existing nodes
 			if (this.target === RENDER_STREAM_DOM_TARGET) {
-				while (stream.containerNode.firstChild) {
-					stream.containerNode.removeChild(stream.containerNode.firstChild);
+				while (renderStream.containerNode.firstChild) {
+					renderStream.containerNode.removeChild(renderStream.containerNode.firstChild);
 				}
 			}
 			
@@ -49,7 +48,7 @@ function render(stream, changed, dependencies) {
 					let nodeTree = createNodeTree(ashNodeTree);
 
 					if (nodeTree) {
-						stream.containerNode.appendChild(nodeTree);
+						renderStream.containerNode.appendChild(nodeTree);
 					}
 				}
 				
@@ -61,17 +60,17 @@ function render(stream, changed, dependencies) {
 			mountComponents(ashElementTree);
 		}
 	} else {
-		let patches = diffAshNodeTree(stream.previousAshNodeTree, ashNodeTree);
+		let patches = diffAshNodeTree(renderStream.previousAshNodeTree, ashNodeTree);
 
 		if (this.target === RENDER_STREAM_DOM_TARGET) {
-			let isSuccessful = patchNodeTree(stream.rootNode, patches);
+			let isSuccessful = patchNodeTree(renderStream.rootNode, patches);
 
 			if (!isSuccessful) {
 				throw new Error('Patching the DOM was unsuccesful!');
 			}
 		}
 
-		stream.previousAshNodeTree = ashNodeTree;
+		renderStream.previousAshNodeTree = ashNodeTree;
 
 		mountComponents(ashElementTree);
 	}

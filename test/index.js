@@ -67,7 +67,7 @@ describe('ash.Stream', () => {
 	it('can set result by calling callback', () => {
 		var stream1 = new ash.Stream(3);
 		var stream2 = new ash.Stream(4);
-		var sumStream = new ash.Stream((stream) => {
+		var sumStream = new ash.Stream((dep1, dep2, stream) => {
 			stream.push(stream1.get() + stream2.get());
 		}, stream1, stream2);
 
@@ -169,7 +169,7 @@ describe('ash.Stream', () => {
 
 	it('can get its own value', () => {
 		var num = new ash.Stream(0);
-		var sum = new ash.Stream((stream) => (stream.get() || 0) + num.get(), num);
+		var sum = new ash.Stream((dep1, stream) => (stream.get() || 0) + num.get(), num);
 
 		num.push(2).push(3).push(8).push(7);
 
@@ -180,7 +180,7 @@ describe('ash.Stream', () => {
 		var s1 = new ash.Stream(0);
 		var s2 = new ash.Stream(0);
 		var result = [];
-		var dependend = new ash.Stream((d, changed) => {
+		var dependend = new ash.Stream((dep1, dep2, self, changed) => {
 			if (changed[0] === s1) {
 				result.push(1);
 			}
@@ -998,7 +998,7 @@ describe('ash.Stream', () => {
 			var e = new ash.Stream(() => d.get() + 4, d);
 			var f = new ash.Stream(() => d.get() + 5, d);
 			var g = new ash.Stream(() => d.get() + 6, d);
-			var h = new ash.Stream((self, changed) => {
+			var h = new ash.Stream((d1, d2, d3, d4, d5, d6, d7, self, changed) => {
 				var vals = changed.map((s) => s.get());
 				
 				result.push(vals);

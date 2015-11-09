@@ -26788,11 +26788,33 @@
 		value: true
 	});
 
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () {
+		function defineProperties(target, props) {
+			for (var i = 0; i < props.length; i++) {
+				var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+			}
+		}return function (Constructor, protoProps, staticProps) {
+			if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+		};
+	})();
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { 'default': obj };
+	}
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	function _toConsumableArray(arr) {
+		if (Array.isArray(arr)) {
+			for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];return arr2;
+		} else {
+			return Array.from(arr);
+		}
+	}
+
+	function _classCallCheck(instance, Constructor) {
+		if (!(instance instanceof Constructor)) {
+			throw new TypeError('Cannot call a class as a function');
+		}
+	}
 
 	var _internalsIsFunction = __webpack_require__(106);
 
@@ -26865,7 +26887,8 @@
 		} else {
 			inStream = stream;
 
-			var returnValue = stream.fn(stream, stream.__changedDependencies, stream.__dependencies);
+			// let returnValue = stream.fn(stream, stream.__changedDependencies, stream.__dependencies);
+			var returnValue = stream.fn.apply(stream, _toConsumableArray(stream.__dependencies).concat([stream, stream.__changedDependencies]));
 
 			if (returnValue !== undefined) {
 				stream.push(returnValue);
@@ -27081,10 +27104,8 @@
 		}, {
 			key: 'ap',
 			value: function ap(stream) {
-				var _this = this;
-
-				return new Stream(function () {
-					return _this.get()(stream.get());
+				return new Stream(function (dependency1, dependency2) {
+					return dependency1.get()(dependency2.get());
 				}, this, stream);
 			}
 		}], [{
@@ -27095,15 +27116,15 @@
 		}, {
 			key: 'map',
 			value: function map(fn, stream) {
-				return new Stream(function (self) {
-					self.push(fn(stream.value));
+				return new Stream(function (dependency, self) {
+					self.push(fn(dependency.value));
 				}, stream);
 			}
 		}, {
 			key: 'on',
 			value: function on(fn, stream) {
-				return new Stream(function () {
-					fn(stream.value);
+				return new Stream(function (dependency) {
+					fn(dependency.value);
 				}, stream);
 			}
 		}]);
@@ -27856,47 +27877,15 @@
 		value: true
 	});
 
-	var _createClass = (function () {
-		function defineProperties(target, props) {
-			for (var i = 0; i < props.length; i++) {
-				var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-			}
-		}return function (Constructor, protoProps, staticProps) {
-			if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-		};
-	})();
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-	var _get = function get(object, property, receiver) {
-		if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-			var parent = Object.getPrototypeOf(object);if (parent === null) {
-				return undefined;
-			} else {
-				return get(parent, property, receiver);
-			}
-		} else if ('value' in desc) {
-			return desc.value;
-		} else {
-			var getter = desc.get;if (getter === undefined) {
-				return undefined;
-			}return getter.call(receiver);
-		}
-	};
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	function _interopRequireDefault(obj) {
-		return obj && obj.__esModule ? obj : { 'default': obj };
-	}
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	function _classCallCheck(instance, Constructor) {
-		if (!(instance instanceof Constructor)) {
-			throw new TypeError('Cannot call a class as a function');
-		}
-	}
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	function _inherits(subClass, superClass) {
-		if (typeof superClass !== 'function' && superClass !== null) {
-			throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-		}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-	}
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var _DOMCreateNodeTree = __webpack_require__(117);
 
@@ -27946,26 +27935,24 @@
 	var RENDER_STREAM_DOM_TARGET = _internalsConstants2.default.RENDER_STREAM_DOM_TARGET;
 	var RENDER_STREAM_STRING_TARGET = _internalsConstants2.default.RENDER_STREAM_STRING_TARGET;
 
-	function render(stream, changed, dependencies) {
+	function render(viewStream, renderStream) {
 		var _this = this;
-
-		var viewStream = dependencies[0];
 
 		var _viewStream$get = viewStream.get();
 
 		var ashElementTree = _viewStream$get.ashElementTree;
 		var ashNodeTree = _viewStream$get.ashNodeTree;
 
-		if (!stream.previousAshNodeTree) {
+		if (!renderStream.previousAshNodeTree) {
 			var isNodeTreeValid = false;
 			var isNodeTreeValidated = false;
 
-			stream.previousAshNodeTree = ashNodeTree;
+			renderStream.previousAshNodeTree = ashNodeTree;
 
 			// there are some element nodes?
-			if (this.target === RENDER_STREAM_DOM_TARGET && stream.containerNode.childNodes.length) {
+			if (this.target === RENDER_STREAM_DOM_TARGET && renderStream.containerNode.childNodes.length) {
 				isNodeTreeValidated = true;
-				isNodeTreeValid = (0, _DOMValidateNodeTree2.default)(stream.containerNode.childNodes[0], ashNodeTree, viewStream.id);
+				isNodeTreeValid = (0, _DOMValidateNodeTree2.default)(renderStream.containerNode.childNodes[0], ashNodeTree, viewStream.id);
 			}
 
 			// render to the Real DOM, if needed
@@ -27976,8 +27963,8 @@
 
 				// remove existing nodes
 				if (this.target === RENDER_STREAM_DOM_TARGET) {
-					while (stream.containerNode.firstChild) {
-						stream.containerNode.removeChild(stream.containerNode.firstChild);
+					while (renderStream.containerNode.firstChild) {
+						renderStream.containerNode.removeChild(renderStream.containerNode.firstChild);
 					}
 				}
 
@@ -27986,7 +27973,7 @@
 						var nodeTree = (0, _DOMCreateNodeTree2.default)(ashNodeTree);
 
 						if (nodeTree) {
-							stream.containerNode.appendChild(nodeTree);
+							renderStream.containerNode.appendChild(nodeTree);
 						}
 					}
 
@@ -27998,17 +27985,17 @@
 				(0, _DOMMountComponents2.default)(ashElementTree);
 			}
 		} else {
-			var patches = (0, _DOMDiffAshNodeTree2.default)(stream.previousAshNodeTree, ashNodeTree);
+			var patches = (0, _DOMDiffAshNodeTree2.default)(renderStream.previousAshNodeTree, ashNodeTree);
 
 			if (this.target === RENDER_STREAM_DOM_TARGET) {
-				var isSuccessful = (0, _DOMPatchNodeTree2.default)(stream.rootNode, patches);
+				var isSuccessful = (0, _DOMPatchNodeTree2.default)(renderStream.rootNode, patches);
 
 				if (!isSuccessful) {
 					throw new Error('Patching the DOM was unsuccesful!');
 				}
 			}
 
-			stream.previousAshNodeTree = ashNodeTree;
+			renderStream.previousAshNodeTree = ashNodeTree;
 
 			(0, _DOMMountComponents2.default)(ashElementTree);
 		}
