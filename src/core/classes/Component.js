@@ -53,11 +53,11 @@ export default class Component {
 			// this.__element.stream.push(this);
 		}
 
-		if (arguments[0] instanceof Stream) {
+		/*if (arguments.length) {
 			return undefined;
 		}
 
-		return this;
+		return this;*/
 	}
 
 	get __lifecycle() {

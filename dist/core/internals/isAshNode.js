@@ -5,9 +5,7 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports.default = isAshNode;
 
-function _interopRequireDefault(obj) {
-	return obj && obj.__esModule ? obj : { 'default': obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _constants = require('./constants');
 

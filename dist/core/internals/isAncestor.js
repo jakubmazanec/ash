@@ -5,9 +5,7 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports.default = isAncestor;
 
-function _interopRequireDefault(obj) {
-	return obj && obj.__esModule ? obj : { 'default': obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _isFunction = require('./isFunction');
 

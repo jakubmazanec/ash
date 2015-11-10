@@ -199,7 +199,21 @@ describe('ash.Stream', () => {
 
 		assert.deepEqual(result, [1, 2, 2, 1, 2, 1]);
 	});
-	
+
+	it('should call dependent streams with dependencies', () => {
+		let a = new ash.Stream();
+		let b = new ash.Stream(0);
+		let collect = (x, y, self) => (self.get() || []).concat([x.get(), y.get()]);
+		let history = new ash.Stream(collect, a, b);
+
+		a.push(1).push(2); // [1, 0, 2, 0]
+		b.push(3);    // [1, 0, 2, 0, 2, 3]
+		a.push(4);    // [1, 0, 2, 0, 2, 3, 4, 3]
+		assert.deepEqual(history.get(), [
+			1, 0, 2, 0, 2, 3, 4, 3
+		]);
+	});
+
 	it('handles dependencies when streams are triggered in streams', () => {
 		var x = new ash.Stream(4);
 		var y = new ash.Stream(3);
