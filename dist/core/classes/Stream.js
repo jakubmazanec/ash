@@ -4,13 +4,33 @@ Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = (function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+})();
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { 'default': obj };
+}
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+function _toConsumableArray(arr) {
+	if (Array.isArray(arr)) {
+		for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];return arr2;
+	} else {
+		return Array.from(arr);
+	}
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError('Cannot call a class as a function');
+	}
+}
 
 var _internalsIsFunction = require('../internals/isFunction');
 
@@ -298,6 +318,11 @@ var Stream = (function () {
 			return Stream.on(fn, this);
 		}
 	}, {
+		key: 'subscribe',
+		value: function subscribe(fn) {
+			return Stream.subscribe(fn, this);
+		}
+	}, {
 		key: 'ap',
 		value: function ap(stream) {
 			return new Stream(function (dependency1, dependency2) {
@@ -321,6 +346,20 @@ var Stream = (function () {
 		value: function on(fn, stream) {
 			return new Stream(function (dependency) {
 				fn(dependency.value);
+			}, stream);
+		}
+	}, {
+		key: 'subscribe',
+		value: function subscribe(fn, stream) {
+			var omitFirstRun = stream.hasValue;
+			var hasRun = false;
+
+			return new Stream(function (dependency) {
+				if (hasRun || !omitFirstRun && !hasRun) {
+					fn(dependency.value);
+				}
+
+				hasRun = true;
 			}, stream);
 		}
 	}]);

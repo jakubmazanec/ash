@@ -2,15 +2,47 @@
 
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = (function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+})();
 
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+var _get = function get(object, property, receiver) {
+	if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+		var parent = Object.getPrototypeOf(object);if (parent === null) {
+			return undefined;
+		} else {
+			return get(parent, property, receiver);
+		}
+	} else if ('value' in desc) {
+		return desc.value;
+	} else {
+		var getter = desc.get;if (getter === undefined) {
+			return undefined;
+		}return getter.call(receiver);
+	}
+};
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { 'default': obj };
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError('Cannot call a class as a function');
+	}
+}
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== 'function' && superClass !== null) {
+		throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var _jquery = require('jquery');
 
@@ -45,11 +77,7 @@ var Header = (function (_ash$Component) {
 	_createClass(Header, [{
 		key: 'render',
 		value: function render() {
-			return _ash2.default.createElement(
-				'header',
-				null,
-				'Test component!'
-			);
+			return _ash2.default.createElement('header', null, 'Test component!');
 		}
 	}]);
 
@@ -68,24 +96,7 @@ var FooContent = (function (_ash$Component2) {
 	_createClass(FooContent, [{
 		key: 'render',
 		value: function render() {
-			return _ash2.default.createElement(
-				'section',
-				null,
-				_ash2.default.createElement(
-					'div',
-					{ key: 'content' },
-					_ash2.default.createElement(
-						'h1',
-						null,
-						'FooContent'
-					)
-				),
-				_ash2.default.createElement(
-					'p',
-					null,
-					'Spinner!'
-				)
-			);
+			return _ash2.default.createElement('section', null, _ash2.default.createElement('div', { key: 'content' }, _ash2.default.createElement('h1', null, 'FooContent')), _ash2.default.createElement('p', null, 'Spinner!'));
 		}
 	}, {
 		key: 'onMount',
@@ -114,20 +125,14 @@ var BarContent = (function (_ash$Component3) {
 	_createClass(BarContent, [{
 		key: 'render',
 		value: function render() {
-			return _ash2.default.createElement(
-				'section',
-				null,
-				_ash2.default.createElement(
-					'h1',
-					null,
-					'About us'
-				),
-				_ash2.default.createElement(
-					'h2',
-					null,
-					'Eva'
-				)
-			);
+			return _ash2.default.createElement('section', null, _ash2.default.createElement('h1', null, 'About us'), _ash2.default.createElement('h2', null, 'Eva'));
+		}
+	}, {
+		key: 'onMount',
+		value: function onMount() {
+			console.log('BarContent onMount...');
+
+			// this.update();
 		}
 	}]);
 
@@ -159,20 +164,12 @@ var Content = (function (_ash$Component4) {
    }*/
 
 			for (var i = 0; i < 10; i++) {
-				elements.push(_ash2.default.createElement(
-					'i',
-					null,
-					this.props.show + ' ' + i
-				));
+				elements.push(_ash2.default.createElement('i', null, this.props.show + ' ' + i));
 			}
 
 			return _ash2.default.createElement(FooContent, null);
 
-			return _ash2.default.createElement(
-				'main',
-				null,
-				elements
-			);
+			return _ash2.default.createElement('main', null, elements);
 		}
 	}, {
 		key: 'onMount',
@@ -211,6 +208,7 @@ var App = (function (_ash$Component5) {
 		_get(Object.getPrototypeOf(App.prototype), 'constructor', this).apply(this, arguments);
 
 		this.state = {
+			renderCount: 0,
 			show: 'bar',
 			foo: false,
 			useAlternativeHandler: false
@@ -222,6 +220,8 @@ var App = (function (_ash$Component5) {
 		value: function render() {
 			var amount = storeStream.get().amount;
 
+			this.state.renderCount++;
+
 			// return this.state.foo ? <b>Oj!</b> : <Content show={this.state.show} />;
 
 			// return <div>
@@ -232,43 +232,27 @@ var App = (function (_ash$Component5) {
 			// 	<div>{amount ? <Content show={this.state.show} /> : null }</div>
 			// </div>;
 
-			return _ash2.default.createElement(
-				'div',
-				null,
-				_ash2.default.createElement(
-					'p',
-					{ events: { click: this.state.useAlternativeHandler ? this.handleClickAlternatively : this.handleClick } },
-					_ash2.default.createElement(
-						'a',
-						{ id: 'link-1', href: '#' },
-						'(1)'
-					),
-					_ash2.default.createElement(
-						'a',
-						{ id: 'link-2', href: '#' },
-						'(2)'
-					),
-					_ash2.default.createElement(
-						'a',
-						{ id: 'link-3', href: '#' },
-						'(3)'
-					),
-					_ash2.default.createElement(
-						'a',
-						{ id: 'link-4', href: '#' },
-						'(4)'
-					)
-				),
-				_ash2.default.createElement(
-					'p',
-					null,
-					_ash2.default.createElement(
-						'a',
-						{ href: '#', events: { click: this.changeHandler } },
-						'Change event handler!'
-					)
-				)
-			);
+			if (this.state.renderCount > 1) {
+				this.update();
+			}
+
+			return _ash2.default.createElement('div', null, _ash2.default.createElement('p', null, this.state.renderCount), _ash2.default.createElement(BarContent, null), _ash2.default.createElement('p', { events: {
+					click: this.state.useAlternativeHandler ? this.handleClickAlternatively : this.handleClick,
+					mouseenter: this.sayFoo,
+					mouseleave: this.sayBar
+				} }, _ash2.default.createElement('a', { id: 'link-1', href: '#' }, '(1)'), _ash2.default.createElement('a', { id: 'link-2', href: '#' }, '(2)'), _ash2.default.createElement('a', { id: 'link-3', href: '#' }, '(3)'), _ash2.default.createElement('a', { id: 'link-4', href: '#' }, '(4)')), _ash2.default.createElement('p', null, _ash2.default.createElement('a', { href: '#', events: {
+					click: this.changeHandler
+				} }, 'Change event handler!')));
+		}
+	}, {
+		key: 'sayFoo',
+		value: function sayFoo() {
+			console.log('sayFoo...');
+		}
+	}, {
+		key: 'sayBar',
+		value: function sayBar() {
+			console.log('sayBar...');
 		}
 	}, {
 		key: 'changeHandler',
@@ -298,7 +282,14 @@ var App = (function (_ash$Component5) {
 	}, {
 		key: 'onMount',
 		value: function onMount() {
-			storeStream.on(this.update);
+			console.log('onMount...');
+
+			// this.update();
+
+			/*storeStream.on((store) => {
+   	// debugger;
+   			this.update();
+   });*/
 
 			/*setTimeout(() => {
    	console.log('updating!');
@@ -351,6 +342,22 @@ global.storeStream = storeStream;
 
 var viewStream = new _ash2.default.ViewStream(_ash2.default.createElement(App, null));
 var renderStream = new _ash2.default.RenderStream(viewStream, global.document.querySelector('.page'));
+
+var foo = new _ash2.default.Stream({ pax: 42 });
+var bar = new _ash2.default.Stream();
+
+foo.name = 'foo';
+bar.name = 'bar';
+
+foo.subscribe(function (value) {
+	console.log('foo.on runs!', value);
+});
+
+bar.subscribe(function (value) {
+	console.log('bar.on runs!', value);
+});
+
+bar.push({ pax: 47 });
 
 /*var Utils = global.Utils = {
 	uuid() {

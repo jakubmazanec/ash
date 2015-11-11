@@ -271,12 +271,29 @@ export default class Stream {
 		return new Stream((dependency) => { fn(dependency.value); }, stream);
 	}
 
+	static subscribe(fn, stream) {
+		let omitFirstRun = stream.hasValue;
+		let hasRun = false;
+
+		return new Stream((dependency) => {
+			if (hasRun || !omitFirstRun && !hasRun) {
+				fn(dependency.value);
+			}
+
+			hasRun = true;
+		}, stream);
+	}
+
 	map(fn) {
 		return Stream.map(fn, this);
 	}
 
 	on(fn) {
 		return Stream.on(fn, this);
+	}
+
+	subscribe(fn) {
+		return Stream.subscribe(fn, this);
 	}
 
 	ap(stream) {

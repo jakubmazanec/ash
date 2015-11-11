@@ -45,6 +45,12 @@ class BarContent extends ash.Component {
 			<h2>Eva</h2>
 		</section>;
 	}
+
+	onMount() {
+		console.log('BarContent onMount...');
+
+		// this.update();
+	}
 }
 
 class Content extends ash.Component {
@@ -97,6 +103,7 @@ storeStream.push({amount: 0});
 
 class App extends ash.Component {
 	state = {
+		renderCount: 0,
 		show: 'bar',
 		foo: false,
 		useAlternativeHandler: false
@@ -106,6 +113,8 @@ class App extends ash.Component {
 
 	render() {
 		let amount = storeStream.get().amount;
+
+		this.state.renderCount++;
 
 		// return this.state.foo ? <b>Oj!</b> : <Content show={this.state.show} />;
 
@@ -117,17 +126,39 @@ class App extends ash.Component {
 		// 	<div>{amount ? <Content show={this.state.show} /> : null }</div>
 		// </div>;
 
+		if (this.state.renderCount > 1) {
+			this.update();
+		}
+
+		
+
 		return <div>
-			<p events={{click: this.state.useAlternativeHandler ? this.handleClickAlternatively : this.handleClick}}>
+			<p>{this.state.renderCount}</p>
+			<BarContent />
+			<p events={{
+				click: this.state.useAlternativeHandler ? this.handleClickAlternatively : this.handleClick,
+				mouseenter: this.sayFoo,
+				mouseleave: this.sayBar
+			}}>
 				<a id="link-1" href="#">(1)</a>
 				<a id="link-2" href="#">(2)</a>
 				<a id="link-3" href="#">(3)</a>
 				<a id="link-4" href="#">(4)</a>
 			</p>
 			<p>
-				<a href="#" events={{click: this.changeHandler}}>Change event handler!</a>
+				<a href="#" events={{
+					click: this.changeHandler
+				}}>Change event handler!</a>
 			</p>
 		</div>;
+	}
+
+	sayFoo() {
+		console.log('sayFoo...');
+	}
+
+	sayBar() {
+		console.log('sayBar...');
 	}
 
 	changeHandler(event) {
@@ -153,7 +184,15 @@ class App extends ash.Component {
 	}
 
 	onMount() {
-		storeStream.on(this.update);
+		console.log('onMount...');
+
+		// this.update();
+
+		/*storeStream.on((store) => {
+			// debugger;
+
+			this.update();
+		});*/
 
 		/*setTimeout(() => {
 			console.log('updating!');
@@ -204,6 +243,22 @@ let viewStream = new ash.ViewStream(<App />);
 let renderStream = new ash.RenderStream(viewStream, global.document.querySelector('.page'));
 
 
+
+let foo = new ash.Stream({pax: 42});
+let bar = new ash.Stream();
+
+foo.name = 'foo';
+bar.name = 'bar';
+
+foo.subscribe((value) => {
+	console.log('foo.on runs!', value);
+});
+
+bar.subscribe((value) => {
+	console.log('bar.on runs!', value);
+});
+
+bar.push({pax: 47});
 
 /*var Utils = global.Utils = {
 	uuid() {

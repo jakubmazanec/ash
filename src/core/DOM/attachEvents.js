@@ -55,8 +55,6 @@ export default function attachEvents(node, events, isNewlyInserted) {
 				isNewlyInserted: !!isNewlyInserted,
 				isReindexed: {}
 			});
-
-			return;
 		}
 	}
 }

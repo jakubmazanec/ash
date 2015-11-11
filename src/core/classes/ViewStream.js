@@ -11,6 +11,7 @@ let streamId = 0;
 export default class ViewStream extends Stream {
 	id = streamId++;
 	isUpdating = false;
+	isRendering = false;
 
 	constructor(componentAshElement) {
 		if (!isComponentAshElement(componentAshElement)) {
@@ -45,14 +46,21 @@ export default class ViewStream extends Stream {
 
 			this.isUpdating = true;
 
-			setAnimationTimeout(() => {
-				super.push({
-					ashElementTree: updateAshElementTree(this.value.ashElementTree, this),
-					ashNodeTree: createAshNodeTree(this.value.ashElementTree)
-				});
+			// if there is already a scheduled update, we won't render twice
+			if (!this.isRendering) {
+				this.isRendering = true;
 
-				this.isUpdating = false;
-			});
+				setAnimationTimeout(() => {
+					super.push({
+						ashElementTree: updateAshElementTree(this.value.ashElementTree, this),
+						ashNodeTree: createAshNodeTree(this.value.ashElementTree)
+					});
+
+					this.isRendering = false;
+				});
+			}
+
+			this.isUpdating = false;
 		} else {
 			super.push(value);
 		}

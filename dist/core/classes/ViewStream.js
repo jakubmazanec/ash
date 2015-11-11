@@ -58,6 +58,7 @@ var ViewStream = (function (_Stream) {
 
 		this.id = streamId++;
 		this.isUpdating = false;
+		this.isRendering = false;
 		this.isUpdating = true;
 
 		var ashElementTree = (0, _DOMCreateAshElementTree2.default)(componentAshElement, this);
@@ -84,14 +85,21 @@ var ViewStream = (function (_Stream) {
 
 				this.isUpdating = true;
 
-				(0, _internalsSetAnimationTimeout2.default)(function () {
-					_get(Object.getPrototypeOf(ViewStream.prototype), 'push', _this).call(_this, {
-						ashElementTree: (0, _DOMUpdateAshElementTree2.default)(_this.value.ashElementTree, _this),
-						ashNodeTree: (0, _DOMCreateAshNodeTree2.default)(_this.value.ashElementTree)
-					});
+				// if there is already a scheduled update, we won't render twice
+				if (!this.isRendering) {
+					this.isRendering = true;
 
-					_this.isUpdating = false;
-				});
+					(0, _internalsSetAnimationTimeout2.default)(function () {
+						_get(Object.getPrototypeOf(ViewStream.prototype), 'push', _this).call(_this, {
+							ashElementTree: (0, _DOMUpdateAshElementTree2.default)(_this.value.ashElementTree, _this),
+							ashNodeTree: (0, _DOMCreateAshNodeTree2.default)(_this.value.ashElementTree)
+						});
+
+						_this.isRendering = false;
+					});
+				}
+
+				this.isUpdating = false;
 			} else {
 				_get(Object.getPrototypeOf(ViewStream.prototype), 'push', this).call(this, value);
 			}
