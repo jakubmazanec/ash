@@ -77,6 +77,19 @@ function compareNodes(a, b) {
 	return a[INDEX_ATTRIBUTE_NAME] - b[INDEX_ATTRIBUTE_NAME];
 }
 
+function nodeIndex() {
+	var index = 0;
+	var node = arguments[0].previousSibling;
+
+	while (node) {
+		++index;
+
+		node = node.previousSibling;
+	}
+
+	return index;
+}
+
 function walkReindexChildNodes(node, level, newIndex) {
 	var childIndices = undefined;
 
@@ -124,16 +137,22 @@ function flushCache(reindexCache, reorderCache) {
 	}
 
 	while (reorderCache.length > 0) {
-		var children = [];
-
 		for (var i = 0; i < reorderCache[0].childNodes.length; i++) {
-			children[i] = reorderCache[0].childNodes[i];
-		}
+			var index = nodeIndex(reorderCache[0].childNodes[i]);
 
-		children.sort(compareNodes);
+			if (index === reorderCache[0].childNodes[i][INDEX_ATTRIBUTE_NAME] || index + 1 === reorderCache[0].childNodes[i][INDEX_ATTRIBUTE_NAME]) {
+				continue;
+			} else {
+				if (reorderCache[0].childNodes[i][INDEX_ATTRIBUTE_NAME] > reorderCache[0].childNodes[i].length - 1) {
+					reorderCache[0].appendChild(reorderCache[0].childNodes[i]);
+				} else {
+					reorderCache[0].insertBefore(reorderCache[0].childNodes[i], reorderCache[0].childNodes[reorderCache[0].childNodes[i][INDEX_ATTRIBUTE_NAME]]);
+				}
 
-		for (var i = 0; i < children.length; i++) {
-			reorderCache[0].appendChild(children[i]);
+				if (index + 1 < reorderCache[0].childNodes[i][INDEX_ATTRIBUTE_NAME]) {
+					i--;
+				}
+			}
 		}
 
 		// remove cache item
@@ -217,10 +236,7 @@ function patchNodeTree(nodeTree /*, patches*/) {
 		}
 
 		if (patches[i].type === PATCH_ASH_NODE) {
-			// console.log('applying patch', 'PATCH_ASH_NODE', patches[i]);
-
 			// remove old events
-			// eventListener.removeEvents(patches[i].id, patches[i].streamId);
 			(0, _detachEvents2.default)(patches[i].id, patches[i].streamId);
 
 			// find node
@@ -238,8 +254,6 @@ function patchNodeTree(nodeTree /*, patches*/) {
 
 			node.parentNode.replaceChild(newNode, node);
 		} else if (patches[i].type === PATCH_ASH_TEXT_NODE) {
-			// console.log('applying patch', 'PATCH_ASH_TEXT_NODE', patches[i]);
-
 			node = (0, _findNode2.default)(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
@@ -248,8 +262,6 @@ function patchNodeTree(nodeTree /*, patches*/) {
 
 			node.nodeValue = patches[i].text;
 		} else if (patches[i].type === PATCH_PROPERTIES) {
-			// console.log('applying patch', 'PATCH_PROPERTIES', patches[i]);
-
 			node = (0, _findNode2.default)(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
@@ -259,8 +271,6 @@ function patchNodeTree(nodeTree /*, patches*/) {
 			(0, _setNodeProperties2.default)(node, patches[i].propertiesToChange, false);
 			(0, _removeNodeProperties2.default)(node, patches[i].propertiesToRemove);
 		} else if (patches[i].type === PATCH_REMOVE) {
-			// console.log('applying patch', 'PATCH_REMOVE', patches[i]);
-
 			node = (0, _findNode2.default)(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
@@ -268,13 +278,10 @@ function patchNodeTree(nodeTree /*, patches*/) {
 			}
 
 			// remove old events
-			// eventListener.removeEvents(patches[i].id, patches[i].streamId);
 			(0, _detachEvents2.default)(patches[i].id, patches[i].streamId);
 
 			node.parentNode.removeChild(node);
 		} else if (patches[i].type === PATCH_INSERT) {
-			// console.log('applying patch', 'PATCH_INSERT', patches[i]);
-
 			node = (0, _findNode2.default)(nodeTree, patches[i].parentId, patches[i].parentIndices);
 
 			if (!node) {
@@ -285,8 +292,6 @@ function patchNodeTree(nodeTree /*, patches*/) {
 
 			reorderCache.push(node);
 		} else if (patches[i].type === PATCH_ORDER) {
-			// console.log('applying patch', 'PATCH_ORDER', patches[i]);
-
 			node = (0, _findNode2.default)(nodeTree, patches[i].id, patches[i].indices);
 
 			if (!node) {
@@ -294,7 +299,6 @@ function patchNodeTree(nodeTree /*, patches*/) {
 			}
 
 			// reindex events
-			// eventListener.reindexEvents(patches[i].id, patches[i].indices, patches[i].index, patches[i].streamId);
 			(0, _reindexEvents2.default)(patches[i].id, patches[i].indices, patches[i].index, patches[i].streamId);
 
 			reindexCache.push({
@@ -309,7 +313,6 @@ function patchNodeTree(nodeTree /*, patches*/) {
 	}
 
 	flushCache(reindexCache, reorderCache);
-	// eventListener.markEvents(patches.streamId);
 	(0, _markEvents2.default)(patches.streamId);
 
 	return true;

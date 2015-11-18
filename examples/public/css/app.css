@@ -4162,3 +4162,70 @@ textarea {
     opacity: 0; }
   100% {
     opacity: 1; } }
+.root {
+  position: fixed;
+  left: 0;
+  top: 28px;
+  z-index: 5; }
+
+.root2 {
+  position: fixed;
+  left: 200px;
+  top: 28px;
+  z-index: 5; }
+
+.notifications {
+  position: relative;
+  list-style: none; }
+
+.notification {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  -webkit-transition: all 1s ease-out;
+          transition: all 1s ease-out;
+  color: black;
+  background-color: yellow; }
+  .notification:nth-child(even) {
+    background-color: red; }
+  .notification:nth-child(1) {
+    -webkit-transform: translateY(0%);
+        -ms-transform: translateY(0%);
+            transform: translateY(0%); }
+  .notification:nth-child(2) {
+    -webkit-transform: translateY(100%);
+        -ms-transform: translateY(100%);
+            transform: translateY(100%); }
+  .notification:nth-child(3) {
+    -webkit-transform: translateY(200%);
+        -ms-transform: translateY(200%);
+            transform: translateY(200%); }
+  .notification:nth-child(4) {
+    -webkit-transform: translateY(300%);
+        -ms-transform: translateY(300%);
+            transform: translateY(300%); }
+  .notification:nth-child(5) {
+    -webkit-transform: translateY(400%);
+        -ms-transform: translateY(400%);
+            transform: translateY(400%); }
+  .notification:nth-child(6) {
+    -webkit-transform: translateY(500%);
+        -ms-transform: translateY(500%);
+            transform: translateY(500%); }
+  .notification:nth-child(7) {
+    -webkit-transform: translateY(600%);
+        -ms-transform: translateY(600%);
+            transform: translateY(600%); }
+  .notification:nth-child(8) {
+    -webkit-transform: translateY(700%);
+        -ms-transform: translateY(700%);
+            transform: translateY(700%); }
+  .notification:nth-child(9) {
+    -webkit-transform: translateY(800%);
+        -ms-transform: translateY(800%);
+            transform: translateY(800%); }
+  .notification:nth-child(10) {
+    -webkit-transform: translateY(900%);
+        -ms-transform: translateY(900%);
+            transform: translateY(900%); }

@@ -239,26 +239,260 @@ global.storeStream = storeStream;
 
 
 
-let viewStream = new ash.ViewStream(<App />);
+// let viewStream = new ash.ViewStream(<App />);
+// let renderStream = new ash.RenderStream(viewStream, global.document.querySelector('.page'));
+
+
+
+
+
+
+class List extends ash.Component {
+	state = {
+		notifications: [{
+			id: 1,
+			text: 'Info 1'
+		}, {
+			id: 2,
+			text: 'Info 2'
+		}, {
+			id: 3,
+			text: 'Info 3'
+		}, {
+			id: 4,
+			text: 'Info 4'
+		}]
+	};
+
+	render() {
+		let children = [];
+
+		this.state.notifications.forEach((notification) => {
+			children.push(<li key={'notification-' + notification.id} class="notification">{notification.text + ''}</li>);
+		});
+
+		return <div class="root2">
+			<ul class="notifications">{children}</ul>
+		</div>;
+	}
+
+	onMount() {
+		setTimeout(() => {
+			// let old = this.state.notifications.splice(1, 1);
+			// let old2 = this.state.notifications.splice(1, 1);
+
+			// this.state.notifications = this.state.notifications.concat(old2, old);
+
+
+			// this.state.notifications = [{
+			// 	id: 1,
+			// 	text: 'Info 1'
+			// }, {
+			// 	id: 4,
+			// 	text: 'Info 4'
+			// }, {
+			// 	id: 3,
+			// 	text: 'Info 3'
+			// }, {
+			// 	id: 2,
+			// 	text: 'Info 2'
+			// }];
+
+
+			// let old = this.state.notifications.splice(0, 1);
+			// let old2 = this.state.notifications.splice(1, 1);
+
+			// this.state.notifications = this.state.notifications.concat(old2, old);
+
+
+			this.state.notifications.unshift({
+				id: 10,
+				text: 'new 10'
+			});
+
+
+			// this.state.notifications = [{
+			// 	id: 2,
+			// 	text: 'Info 2'
+			// }, {
+			// 	id: 1,
+			// 	text: 'Info 1'
+			// }, {
+			// 	id: 4,
+			// 	text: 'Info 4'
+			// }, {
+			// 	id: 3,
+			// 	text: 'Info 3'
+			// }];
+
+
+			// this.state.notifications = [{
+			// 	id: 2,
+			// 	text: 'Info 2'
+			// }, {
+			// 	id: 10,
+			// 	text: 'New 10'
+			// }, {
+			// 	id: 1,
+			// 	text: 'Info 1'
+			// }, {
+			// 	id: 3,
+			// 	text: 'Info 3'
+			// }, {
+			// 	id: 4,
+			// 	text: 'Info 4'
+			// }];
+
+			// this.state.notifications = [{
+			// 	id: 1,
+			// 	text: 'Info 1'
+			// }, {
+			// 	id: 2,
+			// 	text: 'Info 2'
+			// }, {
+			// 	id: 3,
+			// 	text: 'Info 3'
+			// }, {
+			// 	id: 10,
+			// 	text: 'New 10'
+			// }, {
+			// 	id: 4,
+			// 	text: 'Info 4'
+			// }];
+
+
+			// this.state.notifications = [{
+			// 	id: 4,
+			// 	text: 'Info 4'
+			// }, {
+			// 	id: 3,
+			// 	text: 'Info 3'
+			// }, {
+			// 	id: 2,
+			// 	text: 'Info 2'
+			// }, {
+			// 	id: 1,
+			// 	text: 'Info 1'
+			// }];
+
+			console.log(this);
+
+			this.update();
+		}, 500);
+	}
+}
+
+
+
+let viewStream = new ash.ViewStream(<List />);
 let renderStream = new ash.RenderStream(viewStream, global.document.querySelector('.page'));
 
 
 
-let foo = new ash.Stream({pax: 42});
-let bar = new ash.Stream();
 
-foo.name = 'foo';
-bar.name = 'bar';
 
-foo.subscribe((value) => {
-	console.log('foo.on runs!', value);
-});
+var h = require('virtual-dom/h');
+var diff = require('virtual-dom/diff');
+var patch = require('virtual-dom/patch');
+var createElement = require('virtual-dom/create-element');
 
-bar.subscribe((value) => {
-	console.log('bar.on runs!', value);
-});
+// 1: Create a function that declares what the DOM should look like
+function render(notifications) {
+	let children = [];
 
-bar.push({pax: 47});
+	notifications.forEach((notification) => {
+		children.push(h('li', {
+			key: 'notification-' + notification.id,
+			className: 'notification'
+		}, ['' + notification.text]));
+	});
+
+	return h('div', {className: 'root'}, [h('ul', {className: 'notifications'}, children)]);
+}
+
+// 2: Initialise the document
+var notifications = [{
+	id: 1,
+	text: 'Info 1'
+}, {
+	id: 2,
+	text: 'Info 2'
+}, {
+	id: 3,
+	text: 'Info 3'
+}, {
+	id: 4,
+	text: 'Info 4'
+}];      // We need some app data. Here we just store a count.
+
+var tree = render(notifications);               // We need an initial tree
+var rootNode = createElement(tree);     // Create an initial root DOM node ...
+
+global.document.querySelector('.pageVirtualDom').appendChild(rootNode);    // ... and it should be in the document
+
+// 3: Wire up the update logic
+setTimeout(() => {
+	
+
+	let old = notifications.splice(1, 1);
+	let old2 = notifications.splice(1, 1);
+
+	notifications = notifications.concat(old2, old);
+
+	// let old = notifications.splice(0, 1);
+	// let old2 = notifications.splice(1, 1);
+
+	// notifications = notifications.concat(old2, old);
+
+	// notifications.unshift({
+	// 	id: 10,
+	// 	text: 'new 10'
+	// });
+
+	// notifications = [{
+	// 	id: 2,
+	// 	text: 'Info 2'
+	// }, {
+	// 	id: 10,
+	// 	text: 'New 10'
+	// }, {
+	// 	id: 1,
+	// 	text: 'Info 1'
+	// }, {
+	// 	id: 3,
+	// 	text: 'Info 3'
+	// }, {
+	// 	id: 4,
+	// 	text: 'Info 4'
+	// }];
+
+	var newTree = render(notifications);
+	var patches = diff(tree, newTree);
+
+	// console.log(patches);
+
+	rootNode = patch(rootNode, patches);
+	tree = newTree;
+}, 500);
+
+
+// import TestList1 from './components/TestList1';
+
+// let updateStream = new ash.Stream();
+// let viewStream = new ash.ViewStream(<TestList1 updateStream={updateStream} />);
+// let renderStream = new ash.RenderStream(viewStream);
+
+// console.log(renderStream.stringify());
+
+// TestList1.doneStream.on(() => {
+// 	console.log(renderStream.stringify());
+// });
+
+// updateStream.push([{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}]);
+
+
+
+
 
 /*var Utils = global.Utils = {
 	uuid() {

@@ -2,47 +2,15 @@
 
 'use strict';
 
-var _createClass = (function () {
-	function defineProperties(target, props) {
-		for (var i = 0; i < props.length; i++) {
-			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-		}
-	}return function (Constructor, protoProps, staticProps) {
-		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-	};
-})();
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(object, property, receiver) {
-	if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-		var parent = Object.getPrototypeOf(object);if (parent === null) {
-			return undefined;
-		} else {
-			return get(parent, property, receiver);
-		}
-	} else if ('value' in desc) {
-		return desc.value;
-	} else {
-		var getter = desc.get;if (getter === undefined) {
-			return undefined;
-		}return getter.call(receiver);
-	}
-};
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-function _interopRequireDefault(obj) {
-	return obj && obj.__esModule ? obj : { 'default': obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-function _classCallCheck(instance, Constructor) {
-	if (!(instance instanceof Constructor)) {
-		throw new TypeError('Cannot call a class as a function');
-	}
-}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) {
-	if (typeof superClass !== 'function' && superClass !== null) {
-		throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _jquery = require('jquery');
 
@@ -77,7 +45,11 @@ var Header = (function (_ash$Component) {
 	_createClass(Header, [{
 		key: 'render',
 		value: function render() {
-			return _ash2.default.createElement('header', null, 'Test component!');
+			return _ash2.default.createElement(
+				'header',
+				null,
+				'Test component!'
+			);
 		}
 	}]);
 
@@ -96,7 +68,24 @@ var FooContent = (function (_ash$Component2) {
 	_createClass(FooContent, [{
 		key: 'render',
 		value: function render() {
-			return _ash2.default.createElement('section', null, _ash2.default.createElement('div', { key: 'content' }, _ash2.default.createElement('h1', null, 'FooContent')), _ash2.default.createElement('p', null, 'Spinner!'));
+			return _ash2.default.createElement(
+				'section',
+				null,
+				_ash2.default.createElement(
+					'div',
+					{ key: 'content' },
+					_ash2.default.createElement(
+						'h1',
+						null,
+						'FooContent'
+					)
+				),
+				_ash2.default.createElement(
+					'p',
+					null,
+					'Spinner!'
+				)
+			);
 		}
 	}, {
 		key: 'onMount',
@@ -125,7 +114,20 @@ var BarContent = (function (_ash$Component3) {
 	_createClass(BarContent, [{
 		key: 'render',
 		value: function render() {
-			return _ash2.default.createElement('section', null, _ash2.default.createElement('h1', null, 'About us'), _ash2.default.createElement('h2', null, 'Eva'));
+			return _ash2.default.createElement(
+				'section',
+				null,
+				_ash2.default.createElement(
+					'h1',
+					null,
+					'About us'
+				),
+				_ash2.default.createElement(
+					'h2',
+					null,
+					'Eva'
+				)
+			);
 		}
 	}, {
 		key: 'onMount',
@@ -164,12 +166,20 @@ var Content = (function (_ash$Component4) {
    }*/
 
 			for (var i = 0; i < 10; i++) {
-				elements.push(_ash2.default.createElement('i', null, this.props.show + ' ' + i));
+				elements.push(_ash2.default.createElement(
+					'i',
+					null,
+					this.props.show + ' ' + i
+				));
 			}
 
 			return _ash2.default.createElement(FooContent, null);
 
-			return _ash2.default.createElement('main', null, elements);
+			return _ash2.default.createElement(
+				'main',
+				null,
+				elements
+			);
 		}
 	}, {
 		key: 'onMount',
@@ -236,13 +246,55 @@ var App = (function (_ash$Component5) {
 				this.update();
 			}
 
-			return _ash2.default.createElement('div', null, _ash2.default.createElement('p', null, this.state.renderCount), _ash2.default.createElement(BarContent, null), _ash2.default.createElement('p', { events: {
-					click: this.state.useAlternativeHandler ? this.handleClickAlternatively : this.handleClick,
-					mouseenter: this.sayFoo,
-					mouseleave: this.sayBar
-				} }, _ash2.default.createElement('a', { id: 'link-1', href: '#' }, '(1)'), _ash2.default.createElement('a', { id: 'link-2', href: '#' }, '(2)'), _ash2.default.createElement('a', { id: 'link-3', href: '#' }, '(3)'), _ash2.default.createElement('a', { id: 'link-4', href: '#' }, '(4)')), _ash2.default.createElement('p', null, _ash2.default.createElement('a', { href: '#', events: {
-					click: this.changeHandler
-				} }, 'Change event handler!')));
+			return _ash2.default.createElement(
+				'div',
+				null,
+				_ash2.default.createElement(
+					'p',
+					null,
+					this.state.renderCount
+				),
+				_ash2.default.createElement(BarContent, null),
+				_ash2.default.createElement(
+					'p',
+					{ events: {
+							click: this.state.useAlternativeHandler ? this.handleClickAlternatively : this.handleClick,
+							mouseenter: this.sayFoo,
+							mouseleave: this.sayBar
+						} },
+					_ash2.default.createElement(
+						'a',
+						{ id: 'link-1', href: '#' },
+						'(1)'
+					),
+					_ash2.default.createElement(
+						'a',
+						{ id: 'link-2', href: '#' },
+						'(2)'
+					),
+					_ash2.default.createElement(
+						'a',
+						{ id: 'link-3', href: '#' },
+						'(3)'
+					),
+					_ash2.default.createElement(
+						'a',
+						{ id: 'link-4', href: '#' },
+						'(4)'
+					)
+				),
+				_ash2.default.createElement(
+					'p',
+					null,
+					_ash2.default.createElement(
+						'a',
+						{ href: '#', events: {
+								click: this.changeHandler
+							} },
+						'Change event handler!'
+					)
+				)
+			);
 		}
 	}, {
 		key: 'sayFoo',
@@ -340,24 +392,263 @@ storeStream.from(App.increaseStream);
 
 global.storeStream = storeStream;
 
-var viewStream = new _ash2.default.ViewStream(_ash2.default.createElement(App, null));
+// let viewStream = new ash.ViewStream(<App />);
+// let renderStream = new ash.RenderStream(viewStream, global.document.querySelector('.page'));
+
+var List = (function (_ash$Component6) {
+	_inherits(List, _ash$Component6);
+
+	function List() {
+		_classCallCheck(this, List);
+
+		_get(Object.getPrototypeOf(List.prototype), 'constructor', this).apply(this, arguments);
+
+		this.state = {
+			notifications: [{
+				id: 1,
+				text: 'Info 1'
+			}, {
+				id: 2,
+				text: 'Info 2'
+			}, {
+				id: 3,
+				text: 'Info 3'
+			}, {
+				id: 4,
+				text: 'Info 4'
+			}]
+		};
+	}
+
+	_createClass(List, [{
+		key: 'render',
+		value: function render() {
+			var children = [];
+
+			this.state.notifications.forEach(function (notification) {
+				children.push(_ash2.default.createElement(
+					'li',
+					{ key: 'notification-' + notification.id, class: 'notification' },
+					notification.text + ''
+				));
+			});
+
+			return _ash2.default.createElement(
+				'div',
+				{ class: 'root2' },
+				_ash2.default.createElement(
+					'ul',
+					{ class: 'notifications' },
+					children
+				)
+			);
+		}
+	}, {
+		key: 'onMount',
+		value: function onMount() {
+			var _this = this;
+
+			setTimeout(function () {
+				// let old = this.state.notifications.splice(1, 1);
+				// let old2 = this.state.notifications.splice(1, 1);
+
+				// this.state.notifications = this.state.notifications.concat(old2, old);
+
+				// this.state.notifications = [{
+				// 	id: 1,
+				// 	text: 'Info 1'
+				// }, {
+				// 	id: 4,
+				// 	text: 'Info 4'
+				// }, {
+				// 	id: 3,
+				// 	text: 'Info 3'
+				// }, {
+				// 	id: 2,
+				// 	text: 'Info 2'
+				// }];
+
+				// let old = this.state.notifications.splice(0, 1);
+				// let old2 = this.state.notifications.splice(1, 1);
+
+				// this.state.notifications = this.state.notifications.concat(old2, old);
+
+				_this.state.notifications.unshift({
+					id: 10,
+					text: 'new 10'
+				});
+
+				// this.state.notifications = [{
+				// 	id: 2,
+				// 	text: 'Info 2'
+				// }, {
+				// 	id: 1,
+				// 	text: 'Info 1'
+				// }, {
+				// 	id: 4,
+				// 	text: 'Info 4'
+				// }, {
+				// 	id: 3,
+				// 	text: 'Info 3'
+				// }];
+
+				// this.state.notifications = [{
+				// 	id: 2,
+				// 	text: 'Info 2'
+				// }, {
+				// 	id: 10,
+				// 	text: 'New 10'
+				// }, {
+				// 	id: 1,
+				// 	text: 'Info 1'
+				// }, {
+				// 	id: 3,
+				// 	text: 'Info 3'
+				// }, {
+				// 	id: 4,
+				// 	text: 'Info 4'
+				// }];
+
+				// this.state.notifications = [{
+				// 	id: 1,
+				// 	text: 'Info 1'
+				// }, {
+				// 	id: 2,
+				// 	text: 'Info 2'
+				// }, {
+				// 	id: 3,
+				// 	text: 'Info 3'
+				// }, {
+				// 	id: 10,
+				// 	text: 'New 10'
+				// }, {
+				// 	id: 4,
+				// 	text: 'Info 4'
+				// }];
+
+				// this.state.notifications = [{
+				// 	id: 4,
+				// 	text: 'Info 4'
+				// }, {
+				// 	id: 3,
+				// 	text: 'Info 3'
+				// }, {
+				// 	id: 2,
+				// 	text: 'Info 2'
+				// }, {
+				// 	id: 1,
+				// 	text: 'Info 1'
+				// }];
+
+				console.log(_this);
+
+				_this.update();
+			}, 500);
+		}
+	}]);
+
+	return List;
+})(_ash2.default.Component);
+
+var viewStream = new _ash2.default.ViewStream(_ash2.default.createElement(List, null));
 var renderStream = new _ash2.default.RenderStream(viewStream, global.document.querySelector('.page'));
 
-var foo = new _ash2.default.Stream({ pax: 42 });
-var bar = new _ash2.default.Stream();
+var h = require('virtual-dom/h');
+var diff = require('virtual-dom/diff');
+var patch = require('virtual-dom/patch');
+var createElement = require('virtual-dom/create-element');
 
-foo.name = 'foo';
-bar.name = 'bar';
+// 1: Create a function that declares what the DOM should look like
+function render(notifications) {
+	var children = [];
 
-foo.subscribe(function (value) {
-	console.log('foo.on runs!', value);
-});
+	notifications.forEach(function (notification) {
+		children.push(h('li', {
+			key: 'notification-' + notification.id,
+			className: 'notification'
+		}, ['' + notification.text]));
+	});
 
-bar.subscribe(function (value) {
-	console.log('bar.on runs!', value);
-});
+	return h('div', { className: 'root' }, [h('ul', { className: 'notifications' }, children)]);
+}
 
-bar.push({ pax: 47 });
+// 2: Initialise the document
+var notifications = [{
+	id: 1,
+	text: 'Info 1'
+}, {
+	id: 2,
+	text: 'Info 2'
+}, {
+	id: 3,
+	text: 'Info 3'
+}, {
+	id: 4,
+	text: 'Info 4'
+}]; // We need some app data. Here we just store a count.
+
+var tree = render(notifications); // We need an initial tree
+var rootNode = createElement(tree); // Create an initial root DOM node ...
+
+global.document.querySelector('.pageVirtualDom').appendChild(rootNode); // ... and it should be in the document
+
+// 3: Wire up the update logic
+setTimeout(function () {
+
+	var old = notifications.splice(1, 1);
+	var old2 = notifications.splice(1, 1);
+
+	notifications = notifications.concat(old2, old);
+
+	// let old = notifications.splice(0, 1);
+	// let old2 = notifications.splice(1, 1);
+
+	// notifications = notifications.concat(old2, old);
+
+	// notifications.unshift({
+	// 	id: 10,
+	// 	text: 'new 10'
+	// });
+
+	// notifications = [{
+	// 	id: 2,
+	// 	text: 'Info 2'
+	// }, {
+	// 	id: 10,
+	// 	text: 'New 10'
+	// }, {
+	// 	id: 1,
+	// 	text: 'Info 1'
+	// }, {
+	// 	id: 3,
+	// 	text: 'Info 3'
+	// }, {
+	// 	id: 4,
+	// 	text: 'Info 4'
+	// }];
+
+	var newTree = render(notifications);
+	var patches = diff(tree, newTree);
+
+	// console.log(patches);
+
+	rootNode = patch(rootNode, patches);
+	tree = newTree;
+}, 500);
+
+// import TestList1 from './components/TestList1';
+
+// let updateStream = new ash.Stream();
+// let viewStream = new ash.ViewStream(<TestList1 updateStream={updateStream} />);
+// let renderStream = new ash.RenderStream(viewStream);
+
+// console.log(renderStream.stringify());
+
+// TestList1.doneStream.on(() => {
+// 	console.log(renderStream.stringify());
+// });
+
+// updateStream.push([{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}]);
 
 /*var Utils = global.Utils = {
 	uuid() {
